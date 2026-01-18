@@ -34,13 +34,15 @@ export function SectionSheet({
 }: SectionSheetProps) {
   return (
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{title}</SheetTitle>
-          {description && <SheetDescription>{description}</SheetDescription>}
-        </SheetHeader>
-        <div className="mt-6 space-y-6">
-          {children}
+      <SheetContent className="w-[50vw] sm:w-[55vw] lg:w-[50vw] max-w-none overflow-y-auto p-0">
+        <div className="h-full flex flex-col">
+          <SheetHeader className="px-6 pt-6 pb-4 border-b">
+            <SheetTitle>{title}</SheetTitle>
+            {description && <SheetDescription>{description}</SheetDescription>}
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            {children}
+          </div>
         </div>
       </SheetContent>
     </Sheet>
