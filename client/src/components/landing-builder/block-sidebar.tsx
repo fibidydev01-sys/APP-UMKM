@@ -1,18 +1,17 @@
 /**
- * BlockSidebar Component
+ * BlockSidebar Component - Canva-Style
  *
- * Canva-style block selector sidebar
- * Shows block options when a section is selected
+ * Icon toolbar with hover panel overlay
+ * Panel floats on top (z-index), doesn't push content
  */
 
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import {
   Check,
-  ChevronLeft,
   Layers,
   Minimize2,
   Grid3x3,
@@ -22,119 +21,96 @@ import {
   GlassWater,
   LayoutGrid,
   Cloud,
-  Focus,
-  Waves,
-  Zap,
-  Brush,
-  Type,
-  Maximize2,
   SplitSquareHorizontal,
   Circle,
   Clock,
   BookOpen,
-  Image as ImageIcon,
-  BarChart3,
-  Images,
-  Tags,
-  ChevronDown,
-  Users,
-  GitCompare,
   ArrowDownUp,
-  Filter,
-  Tag,
-  Table2,
-  DollarSign,
-  Eye,
-  FolderOpen,
-  MessageSquare,
-  Star,
-  UserCircle2,
   Quote,
-  TrendingUp,
   Hash,
   MapPin,
-  Send,
-  Phone as PhoneIcon,
-  MessageCircle,
-  HelpCircle,
-  Building2,
   Mail,
   Megaphone,
-  Rocket,
-  Timer,
-  CreditCard,
-  Trophy,
   ThumbsUp,
   Video,
-  Smartphone,
   List,
+  Focus,
+  Timer,
+  Star,
+  Users,
+  MessageSquare,
+  Zap,
+  type LucideIcon,
 } from 'lucide-react';
 import type { SectionType } from './builder-sidebar';
 
 interface BlockOption {
   value: string;
   label: string;
-  description: string;
-  icon: any;
+  icon: LucideIcon;
 }
 
 /**
- * v3.0 NUMBERING SYSTEM
- * See MAPPING.md for design name references
+ * v3.0 NUMBERING SYSTEM - 7 blocks each
  */
 const HERO_BLOCKS: BlockOption[] = [
-  { value: 'hero1', label: 'hero1', description: 'Centered - Classic centered hero', icon: Minimize2 },
-  { value: 'hero2', label: 'hero2', description: 'Split Screen - Content left, image right', icon: SplitSquareHorizontal },
-  { value: 'hero3', label: 'hero3', description: 'Video Background - Click to play video', icon: Film },
-  { value: 'hero4', label: 'hero4', description: 'Parallax - Scrolling effect', icon: Move },
-  { value: 'hero5', label: 'hero5', description: 'Animated Gradient - Light rays effect', icon: Sparkles },
-  { value: 'hero6', label: 'hero6', description: 'Glass Morphism - Blur effects', icon: GlassWater },
+  { value: 'hero1', label: 'hero1', icon: Minimize2 },
+  { value: 'hero2', label: 'hero2', icon: SplitSquareHorizontal },
+  { value: 'hero3', label: 'hero3', icon: Film },
+  { value: 'hero4', label: 'hero4', icon: Move },
+  { value: 'hero5', label: 'hero5', icon: Sparkles },
+  { value: 'hero6', label: 'hero6', icon: GlassWater },
+  { value: 'hero7', label: 'hero7', icon: LayoutGrid },
 ];
 
 const ABOUT_BLOCKS: BlockOption[] = [
-  { value: 'about1', label: 'about1', description: 'Grid - Features showcase', icon: Grid3x3 },
-  { value: 'about2', label: 'about2', description: 'Side by Side - Image and content', icon: SplitSquareHorizontal },
-  { value: 'about3', label: 'about3', description: 'Centered - Clean typography', icon: Circle },
-  { value: 'about4', label: 'about4', description: 'Timeline - Story layout', icon: Clock },
-  { value: 'about5', label: 'about5', description: 'Cards - Feature highlights', icon: Grid3x3 },
-  { value: 'about6', label: 'about6', description: 'Magazine - Editorial layout', icon: BookOpen },
-  { value: 'about7', label: 'about7', description: 'Storytelling - Narrative layout', icon: Type },
+  { value: 'about1', label: 'about1', icon: Grid3x3 },
+  { value: 'about2', label: 'about2', icon: SplitSquareHorizontal },
+  { value: 'about3', label: 'about3', icon: Circle },
+  { value: 'about4', label: 'about4', icon: Clock },
+  { value: 'about5', label: 'about5', icon: Grid3x3 },
+  { value: 'about6', label: 'about6', icon: BookOpen },
+  { value: 'about7', label: 'about7', icon: MessageSquare },
 ];
 
 const PRODUCTS_BLOCKS: BlockOption[] = [
-  { value: 'products1', label: 'products1', description: 'Grid - Clean product grid', icon: Grid3x3 },
-  { value: 'products2', label: 'products2', description: 'Grid Hover - Interactive effects', icon: Grid3x3 },
-  { value: 'products3', label: 'products3', description: 'Masonry - Pinterest-style', icon: LayoutGrid },
-  { value: 'products4', label: 'products4', description: 'Carousel - Sliding showcase', icon: ArrowDownUp },
-  { value: 'products5', label: 'products5', description: 'Catalog - List view', icon: BookOpen },
-  { value: 'products6', label: 'products6', description: 'Minimal List - Minimalist', icon: List },
+  { value: 'products1', label: 'products1', icon: Grid3x3 },
+  { value: 'products2', label: 'products2', icon: Grid3x3 },
+  { value: 'products3', label: 'products3', icon: LayoutGrid },
+  { value: 'products4', label: 'products4', icon: ArrowDownUp },
+  { value: 'products5', label: 'products5', icon: BookOpen },
+  { value: 'products6', label: 'products6', icon: List },
+  { value: 'products7', label: 'products7', icon: Star },
 ];
 
 const TESTIMONIALS_BLOCKS: BlockOption[] = [
-  { value: 'testimonials1', label: 'testimonials1', description: 'Grid Cards - Card grid', icon: Grid3x3 },
-  { value: 'testimonials2', label: 'testimonials2', description: 'Card Slider - Sliding cards', icon: ArrowDownUp },
-  { value: 'testimonials3', label: 'testimonials3', description: 'Quote Highlight - Featured quote', icon: Quote },
-  { value: 'testimonials4', label: 'testimonials4', description: 'Single Focus - One at a time', icon: Focus },
-  { value: 'testimonials5', label: 'testimonials5', description: 'Video - Video testimonials', icon: Video },
-  { value: 'testimonials6', label: 'testimonials6', description: 'Social Proof - Social style', icon: ThumbsUp },
+  { value: 'testimonials1', label: 'testimonials1', icon: Grid3x3 },
+  { value: 'testimonials2', label: 'testimonials2', icon: ArrowDownUp },
+  { value: 'testimonials3', label: 'testimonials3', icon: Quote },
+  { value: 'testimonials4', label: 'testimonials4', icon: Focus },
+  { value: 'testimonials5', label: 'testimonials5', icon: Video },
+  { value: 'testimonials6', label: 'testimonials6', icon: ThumbsUp },
+  { value: 'testimonials7', label: 'testimonials7', icon: Zap },
 ];
 
 const CONTACT_BLOCKS: BlockOption[] = [
-  { value: 'contact1', label: 'contact1', description: 'Default - Standard layout', icon: Mail },
-  { value: 'contact2', label: 'contact2', description: 'Split Form - Form with info', icon: SplitSquareHorizontal },
-  { value: 'contact3', label: 'contact3', description: 'Centered - Centered form', icon: Circle },
-  { value: 'contact4', label: 'contact4', description: 'Map Focus - Map layout', icon: MapPin },
-  { value: 'contact5', label: 'contact5', description: 'Minimal - Minimalist', icon: Minimize2 },
-  { value: 'contact6', label: 'contact6', description: 'Social Focused - Social media', icon: Hash },
+  { value: 'contact1', label: 'contact1', icon: Mail },
+  { value: 'contact2', label: 'contact2', icon: SplitSquareHorizontal },
+  { value: 'contact3', label: 'contact3', icon: Circle },
+  { value: 'contact4', label: 'contact4', icon: MapPin },
+  { value: 'contact5', label: 'contact5', icon: Minimize2 },
+  { value: 'contact6', label: 'contact6', icon: Hash },
+  { value: 'contact7', label: 'contact7', icon: Grid3x3 },
 ];
 
 const CTA_BLOCKS: BlockOption[] = [
-  { value: 'cta1', label: 'cta1', description: 'Default - Standard CTA', icon: Megaphone },
-  { value: 'cta2', label: 'cta2', description: 'Bold Center - Bold centered', icon: Megaphone },
-  { value: 'cta3', label: 'cta3', description: 'Gradient Banner - Gradient bg', icon: Layers },
-  { value: 'cta4', label: 'cta4', description: 'Split Action - Multiple actions', icon: SplitSquareHorizontal },
-  { value: 'cta5', label: 'cta5', description: 'Floating - Floating card', icon: Cloud },
-  { value: 'cta6', label: 'cta6', description: 'Minimal Line - Single line', icon: Minimize2 },
+  { value: 'cta1', label: 'cta1', icon: Megaphone },
+  { value: 'cta2', label: 'cta2', icon: Megaphone },
+  { value: 'cta3', label: 'cta3', icon: Layers },
+  { value: 'cta4', label: 'cta4', icon: SplitSquareHorizontal },
+  { value: 'cta5', label: 'cta5', icon: Cloud },
+  { value: 'cta6', label: 'cta6', icon: Minimize2 },
+  { value: 'cta7', label: 'cta7', icon: Timer },
 ];
 
 const BLOCK_OPTIONS_MAP = {
@@ -146,100 +122,122 @@ const BLOCK_OPTIONS_MAP = {
   cta: CTA_BLOCKS,
 } as const;
 
-const SECTION_LABELS = {
-  hero: 'Hero',
-  about: 'About',
-  products: 'Products',
-  testimonials: 'Testimonials',
-  contact: 'Contact',
-  cta: 'CTA',
-} as const;
+const SECTION_ICONS: Record<SectionType, LucideIcon> = {
+  hero: Sparkles,
+  about: Users,
+  products: Grid3x3,
+  testimonials: Quote,
+  contact: Mail,
+  cta: Megaphone,
+};
 
 interface BlockSidebarProps {
-  section: SectionType;
+  section: SectionType | null;
   currentBlock?: string;
   onBlockSelect: (block: string) => void;
   onBack: () => void;
+  onSectionHover: (section: SectionType | null) => void;
   className?: string;
 }
 
+/**
+ * Canva-style sidebar with icon toolbar + hover panel
+ */
 export function BlockSidebar({
   section,
   currentBlock,
   onBlockSelect,
   onBack,
+  onSectionHover,
   className,
 }: BlockSidebarProps) {
-  const blocks = BLOCK_OPTIONS_MAP[section];
-  const sectionLabel = SECTION_LABELS[section];
+  const [hoveredSection, setHoveredSection] = useState<SectionType | null>(null);
+  const activeSection = hoveredSection || section;
+  const blocks = activeSection ? BLOCK_OPTIONS_MAP[activeSection] : null;
+
+  const handleMouseEnter = (sectionType: SectionType) => {
+    setHoveredSection(sectionType);
+    onSectionHover(sectionType);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredSection(null);
+    onSectionHover(null);
+  };
 
   return (
-    <div
-      className={cn(
-        'w-80 border-r bg-background flex flex-col',
-        className
-      )}
-    >
-      {/* Header */}
-      <div className="p-4 border-b">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onBack}
-          className="gap-2 mb-3"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Back
-        </Button>
-        <h3 className="font-semibold text-lg">{sectionLabel} Section</h3>
-        <p className="text-sm text-muted-foreground">Choose a block style</p>
+    <div className={cn('relative flex', className)}>
+      {/* Icon Toolbar - Always visible */}
+      <div className="w-16 bg-background border-r flex flex-col items-center py-2 gap-1">
+        {(Object.keys(SECTION_ICONS) as SectionType[]).map((sectionType) => {
+          const Icon = SECTION_ICONS[sectionType];
+          const isActive = activeSection === sectionType;
+
+          return (
+            <button
+              key={sectionType}
+              onMouseEnter={() => handleMouseEnter(sectionType)}
+              className={cn(
+                'w-12 h-14 flex flex-col items-center justify-center gap-0.5 rounded-lg transition-all',
+                isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              )}
+            >
+              <Icon className="h-5 w-5" />
+              <span className="text-[10px] font-medium capitalize">{sectionType}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Variants List */}
-      <ScrollArea className="flex-1">
-        <div className="p-4 space-y-2">
-          {blocks.map((block) => {
-            const isSelected = currentBlock === block.value;
-            const Icon = block.icon;
+      {/* Floating Panel - Shows on hover, z-index overlay */}
+      {activeSection && blocks && (
+        <div
+          className="absolute left-16 top-0 bottom-0 w-56 bg-background border-r shadow-xl z-50"
+          onMouseEnter={() => setHoveredSection(activeSection)}
+          onMouseLeave={handleMouseLeave}
+        >
+          {/* Panel Header */}
+          <div className="p-3 border-b">
+            <h3 className="font-semibold text-sm capitalize">{activeSection}</h3>
+            <p className="text-xs text-muted-foreground">Select block</p>
+          </div>
 
-            return (
-              <button
-                key={block.value}
-                onClick={() => onBlockSelect(block.value)}
-                className={cn(
-                  'w-full text-left p-3 rounded-lg border-2 transition-all hover:shadow-md',
-                  isSelected
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border hover:border-primary/50'
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  {/* Icon */}
-                  <div className={cn(
-                    'p-2 rounded-md flex-shrink-0',
-                    isSelected ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-                  )}>
-                    <Icon className="h-4 w-4" />
-                  </div>
+          {/* Block Grid */}
+          <ScrollArea className="h-[calc(100%-60px)]">
+            <div className="p-2 grid grid-cols-2 gap-1.5">
+              {blocks.map((block) => {
+                const isSelected = currentBlock === block.value;
+                const Icon = block.icon;
 
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium text-sm">{block.label}</p>
-                      {isSelected && (
-                        <Check className="h-4 w-4 text-primary flex-shrink-0" />
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground line-clamp-1">
-                      {block.description}
-                    </p>
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+                return (
+                  <button
+                    key={block.value}
+                    onClick={() => {
+                      onBlockSelect(block.value);
+                      setHoveredSection(null);
+                    }}
+                    className={cn(
+                      'flex flex-col items-center justify-center p-2 rounded-lg border-2 transition-all aspect-square',
+                      isSelected
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
+                    )}
+                  >
+                    <Icon className="h-5 w-5 mb-1" />
+                    <span className="text-[10px] font-medium">{block.label}</span>
+                    {isSelected && <Check className="h-3 w-3 mt-0.5" />}
+                  </button>
+                );
+              })}
+            </div>
+          </ScrollArea>
         </div>
-      </ScrollArea>
+      )}
     </div>
   );
 }
+
+// Export blocks for external use
+export { HERO_BLOCKS, ABOUT_BLOCKS, PRODUCTS_BLOCKS, TESTIMONIALS_BLOCKS, CONTACT_BLOCKS, CTA_BLOCKS };

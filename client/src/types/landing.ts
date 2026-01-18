@@ -18,7 +18,8 @@ export type HeroBlock =
   | 'hero3'  // Video Background
   | 'hero4'  // Parallax
   | 'hero5'  // Animated Gradient
-  | 'hero6'; // Glass Morphism
+  | 'hero6'  // Glass Morphism
+  | 'hero7'; // Bento Grid
 
 export type AboutBlock =
   | 'about1'  // Grid (default)
@@ -35,7 +36,8 @@ export type ProductsBlock =
   | 'products3'  // Masonry
   | 'products4'  // Carousel
   | 'products5'  // Catalog
-  | 'products6'; // Minimal List
+  | 'products6'  // Minimal List
+  | 'products7'; // Featured Hero
 
 export type TestimonialsBlock =
   | 'testimonials1'  // Grid Cards (default)
@@ -43,7 +45,8 @@ export type TestimonialsBlock =
   | 'testimonials3'  // Quote Highlight
   | 'testimonials4'  // Single Focus
   | 'testimonials5'  // Video
-  | 'testimonials6'; // Social Proof
+  | 'testimonials6'  // Social Proof
+  | 'testimonials7'; // Marquee
 
 export type ContactBlock =
   | 'contact1'  // Default
@@ -51,7 +54,8 @@ export type ContactBlock =
   | 'contact3'  // Centered
   | 'contact4'  // Map Focus
   | 'contact5'  // Minimal
-  | 'contact6'; // Social Focused
+  | 'contact6'  // Social Focused
+  | 'contact7'; // Card Grid
 
 export type CtaBlock =
   | 'cta1'  // Default
@@ -59,7 +63,8 @@ export type CtaBlock =
   | 'cta3'  // Gradient Banner
   | 'cta4'  // Split Action
   | 'cta5'  // Floating
-  | 'cta6'; // Minimal Line
+  | 'cta6'  // Minimal Line
+  | 'cta7'; // Countdown
 
 // ==========================================
 // TYPE ALIASES (for backward compatibility)

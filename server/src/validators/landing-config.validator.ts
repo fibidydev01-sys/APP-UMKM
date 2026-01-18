@@ -55,7 +55,8 @@ export type HeroBlock =
   | 'hero3'   // Video Background
   | 'hero4'   // Parallax
   | 'hero5'   // Animated Gradient
-  | 'hero6';  // Glass Morphism
+  | 'hero6'   // Glass Morphism
+  | 'hero7';  // Bento Grid
 
 export type AboutBlock =
   | 'about1'  // Grid (default)
@@ -72,7 +73,8 @@ export type ProductsBlock =
   | 'products3'  // Masonry
   | 'products4'  // Carousel
   | 'products5'  // Catalog
-  | 'products6'; // Minimal List
+  | 'products6'  // Minimal List
+  | 'products7'; // Featured Hero
 
 export type TestimonialsBlock =
   | 'testimonials1'  // Grid Cards (default)
@@ -80,7 +82,8 @@ export type TestimonialsBlock =
   | 'testimonials3'  // Quote Highlight
   | 'testimonials4'  // Single Focus
   | 'testimonials5'  // Video
-  | 'testimonials6'; // Social Proof
+  | 'testimonials6'  // Social Proof
+  | 'testimonials7'; // Marquee
 
 export type ContactBlock =
   | 'contact1'  // Default
@@ -88,7 +91,8 @@ export type ContactBlock =
   | 'contact3'  // Centered
   | 'contact4'  // Map Focus
   | 'contact5'  // Minimal
-  | 'contact6'; // Social Focused
+  | 'contact6'  // Social Focused
+  | 'contact7'; // Card Grid
 
 export type CtaBlock =
   | 'cta1'  // Default
@@ -96,7 +100,8 @@ export type CtaBlock =
   | 'cta3'  // Gradient Banner
   | 'cta4'  // Split Action
   | 'cta5'  // Floating
-  | 'cta6'; // Minimal Line
+  | 'cta6'  // Minimal Line
+  | 'cta7'; // Countdown
 
 // ==========================================
 // CONFIG INTERFACES (Updated with variant)
@@ -245,7 +250,7 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'],
+          enum: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7'],
         },
         config: {
           type: 'object' as const,
@@ -308,7 +313,7 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6'],
+          enum: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7'],
         },
         config: {
           type: 'object' as const,
@@ -337,7 +342,7 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6'],
+          enum: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7'],
         },
         config: {
           type: 'object' as const,
@@ -365,7 +370,7 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6'],
+          enum: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7'],
         },
         config: {
           type: 'object' as const,
@@ -391,7 +396,7 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6'],
+          enum: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6', 'cta7'],
         },
         config: {
           type: 'object' as const,
@@ -668,7 +673,7 @@ export function isValidTemplate(template: string): template is TemplateId {
 }
 
 export function isValidHeroBlock(block: string): block is HeroBlock {
-  const validBlocks: HeroBlock[] = ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'];
+  const validBlocks: HeroBlock[] = ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7'];
   return validBlocks.includes(block as HeroBlock);
 }
 
@@ -766,10 +771,10 @@ export const AVAILABLE_TEMPLATES: TemplateId[] = [
 ];
 
 export const AVAILABLE_BLOCKS = {
-  hero: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'] as HeroBlock[],
+  hero: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7'] as HeroBlock[],
   about: ['about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7'] as AboutBlock[],
-  products: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6'] as ProductsBlock[],
-  testimonials: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6'] as TestimonialsBlock[],
-  contact: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6'] as ContactBlock[],
-  cta: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6'] as CtaBlock[],
+  products: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7'] as ProductsBlock[],
+  testimonials: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7'] as TestimonialsBlock[],
+  contact: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7'] as ContactBlock[],
+  cta: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6', 'cta7'] as CtaBlock[],
 };

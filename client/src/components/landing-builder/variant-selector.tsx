@@ -30,58 +30,63 @@ interface VariantOption {
 }
 
 const HERO_VARIANTS: VariantOption[] = [
-  { value: 'hero1', label: 'hero1', description: 'Centered - Classic centered hero' },
-  { value: 'hero2', label: 'hero2', description: 'Split Screen - Content left, image right' },
-  { value: 'hero3', label: 'hero3', description: 'Video Background - Click to play video' },
-  { value: 'hero4', label: 'hero4', description: 'Parallax - Scrolling effect' },
-  { value: 'hero5', label: 'hero5', description: 'Animated Gradient - Light rays effect' },
-  { value: 'hero6', label: 'hero6', description: 'Glass Morphism - Blur effects' },
+  { value: 'hero1', label: 'hero1', description: 'Centered' },
+  { value: 'hero2', label: 'hero2', description: 'Split Screen' },
+  { value: 'hero3', label: 'hero3', description: 'Video Background' },
+  { value: 'hero4', label: 'hero4', description: 'Parallax' },
+  { value: 'hero5', label: 'hero5', description: 'Animated Gradient' },
+  { value: 'hero6', label: 'hero6', description: 'Glass Morphism' },
+  { value: 'hero7', label: 'hero7', description: 'Bento Grid' },
 ];
 
 const ABOUT_VARIANTS: VariantOption[] = [
-  { value: 'about1', label: 'about1', description: 'Grid - Features showcase' },
-  { value: 'about2', label: 'about2', description: 'Side by Side - Image and content' },
-  { value: 'about3', label: 'about3', description: 'Centered - Clean typography' },
-  { value: 'about4', label: 'about4', description: 'Timeline - Story layout' },
-  { value: 'about5', label: 'about5', description: 'Cards - Feature highlights' },
-  { value: 'about6', label: 'about6', description: 'Magazine - Editorial layout' },
-  { value: 'about7', label: 'about7', description: 'Storytelling - Narrative layout' },
+  { value: 'about1', label: 'about1', description: 'Grid' },
+  { value: 'about2', label: 'about2', description: 'Side by Side' },
+  { value: 'about3', label: 'about3', description: 'Centered' },
+  { value: 'about4', label: 'about4', description: 'Timeline' },
+  { value: 'about5', label: 'about5', description: 'Cards' },
+  { value: 'about6', label: 'about6', description: 'Magazine' },
+  { value: 'about7', label: 'about7', description: 'Storytelling' },
 ];
 
 const PRODUCTS_VARIANTS: VariantOption[] = [
-  { value: 'products1', label: 'products1', description: 'Grid - Clean product grid' },
-  { value: 'products2', label: 'products2', description: 'Grid Hover - Interactive effects' },
-  { value: 'products3', label: 'products3', description: 'Masonry - Pinterest-style' },
-  { value: 'products4', label: 'products4', description: 'Carousel - Sliding showcase' },
-  { value: 'products5', label: 'products5', description: 'Catalog - List view' },
-  { value: 'products6', label: 'products6', description: 'Minimal List - Minimalist' },
+  { value: 'products1', label: 'products1', description: 'Grid' },
+  { value: 'products2', label: 'products2', description: 'Grid Hover' },
+  { value: 'products3', label: 'products3', description: 'Masonry' },
+  { value: 'products4', label: 'products4', description: 'Carousel' },
+  { value: 'products5', label: 'products5', description: 'Catalog' },
+  { value: 'products6', label: 'products6', description: 'Minimal List' },
+  { value: 'products7', label: 'products7', description: 'Featured Hero' },
 ];
 
 const TESTIMONIALS_VARIANTS: VariantOption[] = [
-  { value: 'testimonials1', label: 'testimonials1', description: 'Grid Cards - Card grid' },
-  { value: 'testimonials2', label: 'testimonials2', description: 'Card Slider - Sliding cards' },
-  { value: 'testimonials3', label: 'testimonials3', description: 'Quote Highlight - Featured quote' },
-  { value: 'testimonials4', label: 'testimonials4', description: 'Single Focus - One at a time' },
-  { value: 'testimonials5', label: 'testimonials5', description: 'Video - Video testimonials' },
-  { value: 'testimonials6', label: 'testimonials6', description: 'Social Proof - Social style' },
+  { value: 'testimonials1', label: 'testimonials1', description: 'Grid Cards' },
+  { value: 'testimonials2', label: 'testimonials2', description: 'Card Slider' },
+  { value: 'testimonials3', label: 'testimonials3', description: 'Quote Highlight' },
+  { value: 'testimonials4', label: 'testimonials4', description: 'Single Focus' },
+  { value: 'testimonials5', label: 'testimonials5', description: 'Video' },
+  { value: 'testimonials6', label: 'testimonials6', description: 'Social Proof' },
+  { value: 'testimonials7', label: 'testimonials7', description: 'Marquee' },
 ];
 
 const CONTACT_VARIANTS: VariantOption[] = [
-  { value: 'contact1', label: 'contact1', description: 'Default - Standard layout' },
-  { value: 'contact2', label: 'contact2', description: 'Split Form - Form with info' },
-  { value: 'contact3', label: 'contact3', description: 'Centered - Centered form' },
-  { value: 'contact4', label: 'contact4', description: 'Map Focus - Map layout' },
-  { value: 'contact5', label: 'contact5', description: 'Minimal - Minimalist' },
-  { value: 'contact6', label: 'contact6', description: 'Social Focused - Social media' },
+  { value: 'contact1', label: 'contact1', description: 'Default' },
+  { value: 'contact2', label: 'contact2', description: 'Split Form' },
+  { value: 'contact3', label: 'contact3', description: 'Centered' },
+  { value: 'contact4', label: 'contact4', description: 'Map Focus' },
+  { value: 'contact5', label: 'contact5', description: 'Minimal' },
+  { value: 'contact6', label: 'contact6', description: 'Social Focused' },
+  { value: 'contact7', label: 'contact7', description: 'Card Grid' },
 ];
 
 const CTA_VARIANTS: VariantOption[] = [
-  { value: 'cta1', label: 'cta1', description: 'Default - Standard CTA' },
-  { value: 'cta2', label: 'cta2', description: 'Bold Center - Bold centered' },
-  { value: 'cta3', label: 'cta3', description: 'Gradient Banner - Gradient bg' },
-  { value: 'cta4', label: 'cta4', description: 'Split Action - Multiple actions' },
-  { value: 'cta5', label: 'cta5', description: 'Floating - Floating card' },
-  { value: 'cta6', label: 'cta6', description: 'Minimal Line - Single line' },
+  { value: 'cta1', label: 'cta1', description: 'Default' },
+  { value: 'cta2', label: 'cta2', description: 'Bold Center' },
+  { value: 'cta3', label: 'cta3', description: 'Gradient Banner' },
+  { value: 'cta4', label: 'cta4', description: 'Split Action' },
+  { value: 'cta5', label: 'cta5', description: 'Floating' },
+  { value: 'cta6', label: 'cta6', description: 'Minimal Line' },
+  { value: 'cta7', label: 'cta7', description: 'Countdown' },
 ];
 
 const VARIANT_OPTIONS_MAP = {
