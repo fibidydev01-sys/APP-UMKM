@@ -4,12 +4,12 @@ import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getCtaConfig, extractCtaLink, extractCtaButtonText, useCtaBlock } from '@/lib/landing';
 import { LANDING_CONSTANTS } from '@/lib/landing';
 import {
-  CtaDefault,
-  CtaBoldCenter,
-  CtaGradientBanner,
-  CtaSplitAction,
-  CtaFloating,
-  CtaMinimalLine,
+  Cta1,
+  Cta2,
+  Cta3,
+  Cta4,
+  Cta5,
+  Cta6,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -29,13 +29,13 @@ interface TenantCtaProps {
  * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
- * 🚀 ALL 6 VARIANTS IMPLEMENTED:
- * - default -> CtaDefault
- * - bold-center -> CtaBoldCenter
- * - gradient-banner -> CtaGradientBanner
- * - split-action -> CtaSplitAction
- * - floating -> CtaFloating
- * - minimal-line -> CtaMinimalLine
+ * 🚀 v3.0 NUMBERING SYSTEM:
+ * - cta1 → Default
+ * - cta2 → Bold Center
+ * - cta3 → Gradient Banner
+ * - cta4 → Split Action
+ * - cta5 → Floating
+ * - cta6 → Minimal Line
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -72,23 +72,24 @@ export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps)
 
   // Render appropriate block based on template
   switch (block) {
-    case 'bold-center':
-      return <CtaBoldCenter {...commonProps} />;
+    case 'cta2':
+      return <Cta2 {...commonProps} />;
 
-    case 'gradient-banner':
-      return <CtaGradientBanner {...commonProps} />;
+    case 'cta3':
+      return <Cta3 {...commonProps} />;
 
-    case 'split-action':
-      return <CtaSplitAction {...commonProps} />;
+    case 'cta4':
+      return <Cta4 {...commonProps} />;
 
-    case 'floating':
-      return <CtaFloating {...commonProps} />;
+    case 'cta5':
+      return <Cta5 {...commonProps} />;
 
-    case 'minimal-line':
-      return <CtaMinimalLine {...commonProps} />;
+    case 'cta6':
+      return <Cta6 {...commonProps} />;
 
-    // Default variant
+    // Default: cta1 (Default)
+    case 'cta1':
     default:
-      return <CtaDefault {...commonProps} />;
+      return <Cta1 {...commonProps} />;
   }
 }

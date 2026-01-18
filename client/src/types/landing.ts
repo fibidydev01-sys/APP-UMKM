@@ -7,58 +7,59 @@
 // BLOCK TYPES (from backend)
 // ==========================================
 
+/**
+ * v3.0 NUMBERING SYSTEM
+ * See MAPPING.md for design name references
+ */
+
 export type HeroBlock =
-  | 'default'
-  | 'gradient-overlay'
-  | 'centered-minimal'
-  | 'split-screen'
-  | 'video-background'
-  | 'parallax'
-  | 'animated-gradient'
-  | 'glass-morphism';
+  | 'hero1'  // Centered (default)
+  | 'hero2'  // Split Screen
+  | 'hero3'  // Video Background
+  | 'hero4'  // Parallax
+  | 'hero5'  // Animated Gradient
+  | 'hero6'; // Glass Morphism
 
 export type AboutBlock =
-  | 'default'
-  | 'side-by-side'
-  | 'centered'
-  | 'timeline'
-  | 'cards'
-  | 'magazine'
-  | 'storytelling';
+  | 'about1'  // Grid (default)
+  | 'about2'  // Side by Side
+  | 'about3'  // Centered
+  | 'about4'  // Timeline
+  | 'about5'  // Cards
+  | 'about6'  // Magazine
+  | 'about7'; // Storytelling
 
 export type ProductsBlock =
-  | 'default'
-  | 'grid-hover'
-  | 'masonry'
-  | 'carousel'
-  | 'featured-hero'
-  | 'catalog'
-  | 'minimal-list';
+  | 'products1'  // Grid (default)
+  | 'products2'  // Grid Hover
+  | 'products3'  // Masonry
+  | 'products4'  // Carousel
+  | 'products5'  // Catalog
+  | 'products6'; // Minimal List
 
 export type TestimonialsBlock =
-  | 'default'
-  | 'card-slider'
-  | 'quote-highlight'
-  | 'grid-cards'
-  | 'single-focus'
-  | 'video-testimonials'
-  | 'social-proof';
+  | 'testimonials1'  // Grid Cards (default)
+  | 'testimonials2'  // Card Slider
+  | 'testimonials3'  // Quote Highlight
+  | 'testimonials4'  // Single Focus
+  | 'testimonials5'  // Video
+  | 'testimonials6'; // Social Proof
 
 export type ContactBlock =
-  | 'default'
-  | 'split-form'
-  | 'centered'
-  | 'map-focus'
-  | 'minimal'
-  | 'social-focused';
+  | 'contact1'  // Default
+  | 'contact2'  // Split Form
+  | 'contact3'  // Centered
+  | 'contact4'  // Map Focus
+  | 'contact5'  // Minimal
+  | 'contact6'; // Social Focused
 
 export type CtaBlock =
-  | 'default'
-  | 'bold-center'
-  | 'gradient-banner'
-  | 'split-action'
-  | 'floating'
-  | 'minimal-line';
+  | 'cta1'  // Default
+  | 'cta2'  // Bold Center
+  | 'cta3'  // Gradient Banner
+  | 'cta4'  // Split Action
+  | 'cta5'  // Floating
+  | 'cta6'; // Minimal Line
 
 // ==========================================
 // SECTION BASE INTERFACE

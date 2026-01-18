@@ -4,12 +4,12 @@ import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getProductsConfig } from '@/lib/landing';
 import { LANDING_CONSTANTS, useProductsBlock } from '@/lib/landing';
 import {
-  ProductsGrid,
-  ProductsCarousel,
-  ProductsGridHover,
-  ProductsMasonry,
-  ProductsCatalog,
-  ProductsMinimalList,
+  Products1,
+  Products2,
+  Products3,
+  Products4,
+  Products5,
+  Products6,
 } from './blocks';
 import type { Product, TenantLandingConfig } from '@/types';
 
@@ -34,14 +34,13 @@ interface TenantProductsProps {
  * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
- * 🚀 ALL 7 VARIANTS IMPLEMENTED:
- * - default -> ProductsGrid
- * - grid-hover -> ProductsGridHover
- * - masonry -> ProductsMasonry
- * - carousel -> ProductsCarousel
- * - featured-hero -> ProductsCarousel
- * - catalog -> ProductsCatalog
- * - minimal-list -> ProductsMinimalList
+ * 🚀 v3.0 NUMBERING SYSTEM:
+ * - products1 → Grid (default)
+ * - products2 → Grid Hover
+ * - products3 → Masonry
+ * - products4 → Carousel
+ * - products5 → Catalog
+ * - products6 → Minimal List
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -76,24 +75,24 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
 
   // Render appropriate block based on template
   switch (block) {
-    case 'grid-hover':
-      return <ProductsGridHover {...commonProps} />;
+    case 'products2':
+      return <Products2 {...commonProps} />;
 
-    case 'masonry':
-      return <ProductsMasonry {...commonProps} />;
+    case 'products3':
+      return <Products3 {...commonProps} />;
 
-    case 'carousel':
-    case 'featured-hero':
-      return <ProductsCarousel {...commonProps} />;
+    case 'products4':
+      return <Products4 {...commonProps} />;
 
-    case 'catalog':
-      return <ProductsCatalog {...commonProps} />;
+    case 'products5':
+      return <Products5 {...commonProps} />;
 
-    case 'minimal-list':
-      return <ProductsMinimalList {...commonProps} />;
+    case 'products6':
+      return <Products6 {...commonProps} />;
 
-    // Default variant
+    // Default: products1 (Grid)
+    case 'products1':
     default:
-      return <ProductsGrid {...commonProps} />;
+      return <Products1 {...commonProps} />;
   }
 }

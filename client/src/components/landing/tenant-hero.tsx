@@ -3,12 +3,12 @@
 import { extractSectionText, getHeroConfig, extractBackgroundImage } from '@/lib/landing';
 import { LANDING_CONSTANTS, useHeroBlock } from '@/lib/landing';
 import {
-  HeroCentered,
-  HeroSplit,
-  HeroGlassMorphism,
-  HeroVideoBackground,
-  HeroAnimatedGradient,
-  HeroParallax,
+  Hero1,
+  Hero2,
+  Hero3,
+  Hero4,
+  Hero5,
+  Hero6,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -29,13 +29,13 @@ interface TenantHeroProps {
  * Wrapper that selects and renders the appropriate hero block
  * based on the current template context
  *
- * 🚀 IMPLEMENTED BLOCKS:
- * - default, centered-minimal, gradient-overlay → HeroCentered
- * - split-screen → HeroSplit
- * - glass-morphism → HeroGlassMorphism
- * - video-background → HeroVideoBackground
- * - animated-gradient → HeroAnimatedGradient
- * - parallax → HeroParallax
+ * 🚀 v3.0 NUMBERING SYSTEM:
+ * - hero1 → Centered (default)
+ * - hero2 → Split Screen
+ * - hero3 → Video Background
+ * - hero4 → Parallax
+ * - hero5 → Animated Gradient
+ * - hero6 → Glass Morphism
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -70,23 +70,24 @@ export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
 
   // 🚀 Render appropriate block based on template
   switch (block) {
-    case 'split-screen':
-      return <HeroSplit {...commonProps} />;
+    case 'hero2':
+      return <Hero2 {...commonProps} />;
 
-    case 'glass-morphism':
-      return <HeroGlassMorphism {...commonProps} />;
+    case 'hero3':
+      return <Hero3 {...commonProps} />;
 
-    case 'video-background':
-      return <HeroVideoBackground {...commonProps} />;
+    case 'hero4':
+      return <Hero4 {...commonProps} />;
 
-    case 'animated-gradient':
-      return <HeroAnimatedGradient {...commonProps} />;
+    case 'hero5':
+      return <Hero5 {...commonProps} />;
 
-    case 'parallax':
-      return <HeroParallax {...commonProps} />;
+    case 'hero6':
+      return <Hero6 {...commonProps} />;
 
-    // Default blocks: default, centered-minimal, gradient-overlay
+    // Default: hero1 (Centered)
+    case 'hero1':
     default:
-      return <HeroCentered {...commonProps} overlayOpacity={overlayOpacity} />;
+      return <Hero1 {...commonProps} overlayOpacity={overlayOpacity} />;
   }
 }

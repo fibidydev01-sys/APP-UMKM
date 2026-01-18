@@ -3,13 +3,13 @@
 import { extractSectionText, getAboutConfig, extractAboutImage } from '@/lib/landing';
 import { LANDING_CONSTANTS, useAboutBlock } from '@/lib/landing';
 import {
-  AboutGrid,
-  AboutCards,
-  AboutTimeline,
-  AboutMagazine,
-  AboutStorytelling,
-  AboutSideBySide,
-  AboutCentered,
+  About1,
+  About2,
+  About3,
+  About4,
+  About5,
+  About6,
+  About7,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -29,14 +29,14 @@ interface TenantAboutProps {
  * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
- * 🚀 ALL 7 VARIANTS IMPLEMENTED:
- * - default → AboutGrid
- * - side-by-side → AboutSideBySide
- * - centered → AboutCentered
- * - timeline → AboutTimeline
- * - cards → AboutCards
- * - magazine → AboutMagazine
- * - storytelling → AboutStorytelling
+ * 🚀 v3.0 NUMBERING SYSTEM:
+ * - about1 → Grid (default)
+ * - about2 → Side by Side
+ * - about3 → Centered
+ * - about4 → Timeline
+ * - about5 → Cards
+ * - about6 → Magazine
+ * - about7 → Storytelling
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -66,26 +66,27 @@ export function TenantAbout({ config, fallbacks = {} }: TenantAboutProps) {
 
   // 🚀 Render appropriate block based on template
   switch (block) {
-    case 'side-by-side':
-      return <AboutSideBySide {...commonProps} />;
+    case 'about2':
+      return <About2 {...commonProps} />;
 
-    case 'centered':
-      return <AboutCentered {...commonProps} />;
+    case 'about3':
+      return <About3 {...commonProps} />;
 
-    case 'timeline':
-      return <AboutTimeline {...commonProps} />;
+    case 'about4':
+      return <About4 {...commonProps} />;
 
-    case 'cards':
-      return <AboutCards {...commonProps} />;
+    case 'about5':
+      return <About5 {...commonProps} />;
 
-    case 'magazine':
-      return <AboutMagazine {...commonProps} />;
+    case 'about6':
+      return <About6 {...commonProps} />;
 
-    case 'storytelling':
-      return <AboutStorytelling {...commonProps} />;
+    case 'about7':
+      return <About7 {...commonProps} />;
 
-    // Default variant
+    // Default: about1 (Grid)
+    case 'about1':
     default:
-      return <AboutGrid {...commonProps} />;
+      return <About1 {...commonProps} />;
   }
 }

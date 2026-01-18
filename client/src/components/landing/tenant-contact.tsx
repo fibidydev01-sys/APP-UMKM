@@ -3,12 +3,12 @@
 import { extractSectionText, useContactBlock } from '@/lib/landing';
 import { LANDING_CONSTANTS } from '@/lib/landing';
 import {
-  ContactDefault,
-  ContactSplitForm,
-  ContactCentered,
-  ContactMapFocus,
-  ContactMinimal,
-  ContactSocialFocused,
+  Contact1,
+  Contact2,
+  Contact3,
+  Contact4,
+  Contact5,
+  Contact6,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -30,13 +30,13 @@ interface TenantContactProps {
  * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
- * 🚀 ALL 6 VARIANTS IMPLEMENTED:
- * - default -> ContactDefault
- * - split-form -> ContactSplitForm
- * - centered -> ContactCentered
- * - map-focus -> ContactMapFocus
- * - minimal -> ContactMinimal
- * - social-focused -> ContactSocialFocused
+ * 🚀 v3.0 NUMBERING SYSTEM:
+ * - contact1 → Default
+ * - contact2 → Split Form
+ * - contact3 → Centered
+ * - contact4 → Map Focus
+ * - contact5 → Minimal
+ * - contact6 → Social Focused
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -62,23 +62,24 @@ export function TenantContact({ config, fallbacks = {} }: TenantContactProps) {
 
   // Render appropriate block based on template
   switch (block) {
-    case 'split-form':
-      return <ContactSplitForm {...commonProps} />;
+    case 'contact2':
+      return <Contact2 {...commonProps} />;
 
-    case 'centered':
-      return <ContactCentered {...commonProps} />;
+    case 'contact3':
+      return <Contact3 {...commonProps} />;
 
-    case 'map-focus':
-      return <ContactMapFocus {...commonProps} />;
+    case 'contact4':
+      return <Contact4 {...commonProps} />;
 
-    case 'minimal':
-      return <ContactMinimal {...commonProps} />;
+    case 'contact5':
+      return <Contact5 {...commonProps} />;
 
-    case 'social-focused':
-      return <ContactSocialFocused {...commonProps} />;
+    case 'contact6':
+      return <Contact6 {...commonProps} />;
 
-    // Default variant
+    // Default: contact1 (Default)
+    case 'contact1':
     default:
-      return <ContactDefault {...commonProps} />;
+      return <Contact1 {...commonProps} />;
   }
 }

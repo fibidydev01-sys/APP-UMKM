@@ -2,12 +2,12 @@
 
 import { normalizeTestimonials, useTestimonialsBlock } from '@/lib/landing';
 import {
-  TestimonialsCardSlider,
-  TestimonialsQuoteHighlight,
-  TestimonialsGridCards,
-  TestimonialsSingleFocus,
-  TestimonialsVideo,
-  TestimonialsSocialProof,
+  Testimonials1,
+  Testimonials2,
+  Testimonials3,
+  Testimonials4,
+  Testimonials5,
+  Testimonials6,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -21,14 +21,13 @@ interface TenantTestimonialsProps {
  * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
- * 🚀 ALL 7 VARIANTS IMPLEMENTED:
- * - default -> TestimonialsGridCards
- * - card-slider -> TestimonialsCardSlider
- * - quote-highlight -> TestimonialsQuoteHighlight
- * - grid-cards -> TestimonialsGridCards
- * - single-focus -> TestimonialsSingleFocus
- * - video-testimonials -> TestimonialsVideo
- * - social-proof -> TestimonialsSocialProof
+ * 🚀 v3.0 NUMBERING SYSTEM:
+ * - testimonials1 → Grid Cards (default)
+ * - testimonials2 → Card Slider
+ * - testimonials3 → Quote Highlight
+ * - testimonials4 → Single Focus
+ * - testimonials5 → Video
+ * - testimonials6 → Social Proof
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -52,23 +51,24 @@ export function TenantTestimonials({ config }: TenantTestimonialsProps) {
 
   // Render appropriate block based on template
   switch (block) {
-    case 'card-slider':
-      return <TestimonialsCardSlider {...commonProps} />;
+    case 'testimonials2':
+      return <Testimonials2 {...commonProps} />;
 
-    case 'quote-highlight':
-      return <TestimonialsQuoteHighlight {...commonProps} />;
+    case 'testimonials3':
+      return <Testimonials3 {...commonProps} />;
 
-    case 'single-focus':
-      return <TestimonialsSingleFocus {...commonProps} />;
+    case 'testimonials4':
+      return <Testimonials4 {...commonProps} />;
 
-    case 'video-testimonials':
-      return <TestimonialsVideo {...commonProps} />;
+    case 'testimonials5':
+      return <Testimonials5 {...commonProps} />;
 
-    case 'social-proof':
-      return <TestimonialsSocialProof {...commonProps} />;
+    case 'testimonials6':
+      return <Testimonials6 {...commonProps} />;
 
-    // Default blocks: default, grid-cards
+    // Default: testimonials1 (Grid Cards)
+    case 'testimonials1':
     default:
-      return <TestimonialsGridCards {...commonProps} />;
+      return <Testimonials1 {...commonProps} />;
   }
 }

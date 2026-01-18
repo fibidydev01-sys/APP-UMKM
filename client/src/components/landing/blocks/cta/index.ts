@@ -1,10 +1,13 @@
 /**
- * CTA Section Variants
+ * CTA Section Blocks
+ *
+ * v3.0 Numbering System
+ * See MAPPING.md for design name references
  */
 
-export * from './cta-default';
-export * from './cta-bold-center';
-export * from './cta-gradient-banner';
-export * from './cta-split-action';
-export * from './cta-floating';
-export * from './cta-minimal-line';
+export * from './cta1'; // Default
+export * from './cta2'; // Bold Center
+export * from './cta3'; // Gradient Banner
+export * from './cta4'; // Split Action
+export * from './cta5'; // Floating
+export * from './cta6'; // Minimal Line

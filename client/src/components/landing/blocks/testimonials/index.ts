@@ -1,10 +1,13 @@
 /**
- * Testimonials Section Variants
+ * Testimonials Section Blocks
+ *
+ * v3.0 Numbering System
+ * See MAPPING.md for design name references
  */
 
-export * from './testimonials-card-slider';
-export * from './testimonials-quote-highlight';
-export * from './testimonials-grid-cards';
-export * from './testimonials-single-focus';
-export * from './testimonials-video';
-export * from './testimonials-social-proof';
+export * from './testimonials1'; // Grid Cards
+export * from './testimonials2'; // Card Slider
+export * from './testimonials3'; // Quote Highlight
+export * from './testimonials4'; // Single Focus
+export * from './testimonials5'; // Video
+export * from './testimonials6'; // Social Proof
