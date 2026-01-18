@@ -22,6 +22,7 @@ import {
 } from '@/components/landing-builder';
 import type { SectionType } from '@/components/landing-builder';
 import { SectionSheet } from '@/components/landing-builder/section-sheet';
+import { VariantSidebar } from '@/components/landing-builder/variant-sidebar';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
@@ -44,6 +45,8 @@ export default function LandingBuilderPage() {
 
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
+  const [showVariantSidebar, setShowVariantSidebar] = useState(false);
+  const [showFormSheet, setShowFormSheet] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // ============================================================================
@@ -114,15 +117,32 @@ export default function LandingBuilderPage() {
   }, [initialTemplateParam, tenant?.name, tenant?.category]);
 
   // ============================================================================
-  // SECTION SHEET HANDLERS
+  // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
+  // Step 1: User clicks section → Show variant sidebar
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
+    setShowVariantSidebar(true);
+    setShowFormSheet(false);
   }, []);
 
-  const handleSheetClose = useCallback(() => {
+  // Step 2: User clicks variant → Open form sheet/drawer
+  const handleVariantSelect = useCallback((variant: string) => {
+    // Variant change will be handled by LandingBuilder
+    setShowFormSheet(true);
+  }, []);
+
+  // Close variant sidebar
+  const handleVariantSidebarClose = useCallback(() => {
+    setShowVariantSidebar(false);
     setActiveSection(null);
+  }, []);
+
+  // Close form sheet
+  const handleFormSheetClose = useCallback(() => {
+    setShowFormSheet(false);
+    // Keep variant sidebar open
   }, []);
 
   // ============================================================================
@@ -230,16 +250,26 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* Main Layout: Sidebar + Preview (Sheet is overlay) */}
+      {/* Main Layout: Sidebar + Variant Sidebar + Preview (Sheet is overlay) */}
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT: Sidebar (Fixed) */}
+        {/* LEFT: Section Sidebar (Fixed) */}
         <BuilderSidebar
           activeSection={activeSection}
           onSectionClick={handleSectionClick}
           collapsed={sidebarCollapsed}
         />
 
-        {/* CENTER: Live Preview with Device Frame */}
+        {/* LEFT 2: Variant Sidebar (Canva-style) */}
+        {showVariantSidebar && activeSection && (
+          <VariantSidebar
+            section={activeSection}
+            currentVariant={landingConfig?.[activeSection]?.variant}
+            onVariantSelect={handleVariantSelect}
+            onBack={handleVariantSidebarClose}
+          />
+        )}
+
+        {/* CENTER: Live Preview */}
         <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
           <LandingErrorBoundary>
             <LivePreview
@@ -252,14 +282,14 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* RIGHT: Wide Sheet */}
-      {activeSection && (
+      {/* RIGHT: Form Sheet/Drawer (opens when variant is selected) */}
+      {showFormSheet && activeSection && (
         <SectionSheet
           section={activeSection}
-          isOpen={true}
-          onClose={handleSheetClose}
-          title="Edit Section"
-          description="Customize your landing page sections"
+          isOpen={showFormSheet}
+          onClose={handleFormSheetClose}
+          title={`Edit ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} Section`}
+          description="Configure section settings"
         >
           <LandingErrorBoundary>
             <LandingBuilder
