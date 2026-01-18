@@ -68,19 +68,29 @@ const sections: Section[] = [
 interface BuilderSidebarProps {
   activeSection: SectionType | null;
   onSectionClick: (section: SectionType) => void;
+  collapsed?: boolean;
   className?: string;
 }
 
 export function BuilderSidebar({
   activeSection,
   onSectionClick,
+  collapsed = false,
   className,
 }: BuilderSidebarProps) {
   return (
-    <div className={cn('w-64 border-r bg-muted/30 p-4 space-y-2', className)}>
-      <h3 className="font-semibold text-sm text-muted-foreground mb-4 px-2">
-        SECTIONS
-      </h3>
+    <div
+      className={cn(
+        'border-r bg-muted/30 p-4 space-y-2 transition-all duration-300',
+        collapsed ? 'w-20' : 'w-64',
+        className
+      )}
+    >
+      {!collapsed && (
+        <h3 className="font-semibold text-sm text-muted-foreground mb-4 px-2">
+          SECTIONS
+        </h3>
+      )}
 
       {sections.map((section) => {
         const Icon = section.icon;
@@ -91,18 +101,24 @@ export function BuilderSidebar({
             key={section.id}
             variant={isActive ? 'secondary' : 'ghost'}
             className={cn(
-              'w-full justify-start gap-3 h-auto py-3',
+              'w-full h-auto transition-all',
+              collapsed
+                ? 'justify-center p-3'
+                : 'justify-start gap-3 py-3',
               isActive && 'bg-primary/10 text-primary hover:bg-primary/15'
             )}
             onClick={() => onSectionClick(section.id)}
+            title={collapsed ? section.label : undefined}
           >
-            <Icon className={cn('h-5 w-5', isActive && 'text-primary')} />
-            <div className="flex-1 text-left">
-              <div className="font-medium">{section.label}</div>
-              <div className="text-xs text-muted-foreground">
-                {section.description}
+            <Icon className={cn('h-5 w-5 flex-shrink-0', isActive && 'text-primary')} />
+            {!collapsed && (
+              <div className="flex-1 text-left">
+                <div className="font-medium">{section.label}</div>
+                <div className="text-xs text-muted-foreground">
+                  {section.description}
+                </div>
               </div>
-            </div>
+            )}
           </Button>
         );
       })}

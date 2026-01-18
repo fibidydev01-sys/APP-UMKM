@@ -36,7 +36,7 @@ import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
 import { getAllTemplates, mergeWithTemplateDefaults } from '@/lib/landing';
-import { Save, ArrowLeft, Home } from 'lucide-react';
+import { Save, ArrowLeft, Home, PanelLeftClose, PanelLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { TenantLandingConfig, Product } from '@/types';
 
@@ -56,6 +56,7 @@ export default function LandingBuilderPage() {
   // UI State
   const [previewMode, setPreviewMode] = useState<DeviceMode>('normal');
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // ============================================================================
   // LANDING CONFIG HOOK
@@ -195,6 +196,22 @@ export default function LandingBuilderPage() {
       {/* Custom Header (Minimal, not PageHeader) */}
       <div className="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-4">
         <div className="flex items-center gap-4">
+          {/* Sidebar Toggle */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+            className="gap-2"
+          >
+            {sidebarCollapsed ? (
+              <PanelLeft className="h-4 w-4" />
+            ) : (
+              <PanelLeftClose className="h-4 w-4" />
+            )}
+          </Button>
+
+          <div className="h-6 w-px bg-border" />
+
           <Link href="/dashboard">
             <Button variant="ghost" size="sm" className="gap-2">
               <Home className="h-4 w-4" />
@@ -268,7 +285,11 @@ export default function LandingBuilderPage() {
       {/* Main Layout: Sidebar + Preview (Sheet is overlay) */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT: Sidebar (Fixed) */}
-        <BuilderSidebar activeSection={activeSection} onSectionClick={handleSectionClick} />
+        <BuilderSidebar
+          activeSection={activeSection}
+          onSectionClick={handleSectionClick}
+          collapsed={sidebarCollapsed}
+        />
 
         {/* CENTER: Live Preview with Device Frame */}
         <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
@@ -319,6 +340,7 @@ export default function LandingBuilderPage() {
                   onDiscard={handleDiscard}
                   onReset={handleReset}
                   onClearErrors={clearErrors}
+                  activeSection={activeSection}
                 />
               </LandingErrorBoundary>
             </TabsContent>

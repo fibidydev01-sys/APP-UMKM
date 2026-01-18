@@ -77,6 +77,7 @@ interface LandingBuilderProps {
   onDiscard: () => void;
   onReset: () => Promise<boolean>;
   onClearErrors?: () => void;
+  activeSection?: string | null; // Filter to show only specific section
 }
 
 // ============================================================================
@@ -139,10 +140,16 @@ export function LandingBuilder({
   onDiscard,
   onReset,
   onClearErrors,
+  activeSection,
 }: LandingBuilderProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>(['hero']);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
+
+  // Filter sections based on activeSection prop
+  const visibleSections = activeSection
+    ? SECTIONS.filter((section) => section.key === activeSection)
+    : SECTIONS;
 
   // ==========================================================================
   // TOGGLE SECTION - LOCAL ONLY, NO AUTO-SAVE!
@@ -364,7 +371,7 @@ export function LandingBuilder({
         onValueChange={setExpandedSections}
         className="space-y-3"
       >
-        {SECTIONS.map((section) => {
+        {visibleSections.map((section) => {
           const IconComponent = section.icon;
           const sectionConfig = config[section.key];
           const isEnabled = sectionConfig?.enabled ?? false;
