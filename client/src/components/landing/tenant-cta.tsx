@@ -1,7 +1,7 @@
 'use client';
 
 import { useStoreUrls } from '@/lib/store-url';
-import { extractSectionText, getCtaConfig, extractCtaLink, extractCtaButtonText, useCtaVariant } from '@/lib/landing';
+import { extractSectionText, getCtaConfig, extractCtaLink, extractCtaButtonText, useCtaBlock } from '@/lib/landing';
 import { LANDING_CONSTANTS } from '@/lib/landing';
 import {
   CtaDefault,
@@ -10,7 +10,7 @@ import {
   CtaSplitAction,
   CtaFloating,
   CtaMinimalLine,
-} from './variants';
+} from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
 interface TenantCtaProps {
@@ -26,7 +26,7 @@ interface TenantCtaProps {
 /**
  * Tenant CTA Component
  *
- * Wrapper that selects and renders the appropriate CTA variant
+ * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
  * 🚀 ALL 6 VARIANTS IMPLEMENTED:
@@ -37,13 +37,13 @@ interface TenantCtaProps {
  * - floating -> CtaFloating
  * - minimal-line -> CtaMinimalLine
  *
- * 🎯 VARIANT PRIORITY:
- * 1. config.variant (user override)
+ * 🎯 BLOCK PRIORITY:
+ * 1. config.block (user override)
  * 2. template variant (from TemplateProvider)
  */
 export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps) {
-  const templateVariant = useCtaVariant();
-  const variant = config?.variant || templateVariant;
+  const templateBlock = useCtaBlock();
+  const block = config?.block || templateBlock;
 
   const { title, subtitle } = extractSectionText(config, {
     title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.CTA,
@@ -70,8 +70,8 @@ export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps)
     buttonVariant,
   };
 
-  // Render appropriate variant based on template
-  switch (variant) {
+  // Render appropriate block based on template
+  switch (block) {
     case 'bold-center':
       return <CtaBoldCenter {...commonProps} />;
 

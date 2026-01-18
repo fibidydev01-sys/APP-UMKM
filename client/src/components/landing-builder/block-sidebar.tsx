@@ -1,8 +1,8 @@
 /**
- * VariantSidebar Component
+ * BlockSidebar Component
  *
- * Canva-style variant selector sidebar
- * Shows variant options when a section is selected
+ * Canva-style block selector sidebar
+ * Shows block options when a section is selected
  */
 
 'use client';
@@ -71,14 +71,14 @@ import {
 } from 'lucide-react';
 import type { SectionType } from './builder-sidebar';
 
-interface VariantOption {
+interface BlockOption {
   value: string;
   label: string;
   description: string;
   icon: any;
 }
 
-const HERO_VARIANTS: VariantOption[] = [
+const HERO_BLOCKS: BlockOption[] = [
   { value: 'gradient-overlay', label: 'Gradient Overlay', description: 'Background with gradient overlay', icon: Layers },
   { value: 'centered-minimal', label: 'Centered Minimal', description: 'Minimalist centered design', icon: Minimize2 },
   { value: 'split-screen', label: 'Split Screen', description: 'Content on left, image on right', icon: SplitSquareHorizontal },
@@ -96,7 +96,7 @@ const HERO_VARIANTS: VariantOption[] = [
   { value: 'immersive-hero', label: 'Immersive Hero', description: 'Full immersive experience', icon: Maximize2 },
 ];
 
-const ABOUT_VARIANTS: VariantOption[] = [
+const ABOUT_BLOCKS: BlockOption[] = [
   { value: 'side-by-side', label: 'Side by Side', description: 'Image alongside content', icon: SplitSquareHorizontal },
   { value: 'centered', label: 'Centered', description: 'Centered content layout', icon: Circle },
   { value: 'timeline', label: 'Timeline', description: 'Timeline-style layout', icon: Clock },
@@ -114,7 +114,7 @@ const ABOUT_VARIANTS: VariantOption[] = [
   { value: 'comparison', label: 'Comparison', description: 'Before/after comparison', icon: GitCompare },
 ];
 
-const PRODUCTS_VARIANTS: VariantOption[] = [
+const PRODUCTS_BLOCKS: BlockOption[] = [
   { value: 'grid-hover', label: 'Grid Hover', description: 'Grid with hover effects', icon: Grid3x3 },
   { value: 'masonry', label: 'Masonry', description: 'Pinterest-style masonry grid', icon: LayoutGrid },
   { value: 'carousel', label: 'Carousel', description: 'Sliding carousel', icon: ArrowDownUp },
@@ -132,7 +132,7 @@ const PRODUCTS_VARIANTS: VariantOption[] = [
   { value: 'category-grid', label: 'Category Grid', description: 'Category grid layout', icon: FolderOpen },
 ];
 
-const TESTIMONIALS_VARIANTS: VariantOption[] = [
+const TESTIMONIALS_BLOCKS: BlockOption[] = [
   { value: 'card-slider', label: 'Card Slider', description: 'Sliding cards', icon: ArrowDownUp },
   { value: 'quote-highlight', label: 'Quote Highlight', description: 'Highlighted quotes', icon: Quote },
   { value: 'grid-cards', label: 'Grid Cards', description: 'Grid of testimonial cards', icon: Grid3x3 },
@@ -150,7 +150,7 @@ const TESTIMONIALS_VARIANTS: VariantOption[] = [
   { value: 'social-media', label: 'Social Media', description: 'Social media feed', icon: Hash },
 ];
 
-const CONTACT_VARIANTS: VariantOption[] = [
+const CONTACT_BLOCKS: BlockOption[] = [
   { value: 'split-form', label: 'Split Form', description: 'Form with info split', icon: SplitSquareHorizontal },
   { value: 'centered', label: 'Centered', description: 'Centered contact form', icon: Circle },
   { value: 'map-focus', label: 'Map Focus', description: 'Map-focused layout', icon: MapPin },
@@ -168,7 +168,7 @@ const CONTACT_VARIANTS: VariantOption[] = [
   { value: 'newsletter', label: 'Newsletter', description: 'Newsletter signup', icon: Mail },
 ];
 
-const CTA_VARIANTS: VariantOption[] = [
+const CTA_BLOCKS: BlockOption[] = [
   { value: 'bold-center', label: 'Bold Center', description: 'Bold centered CTA', icon: Megaphone },
   { value: 'gradient-banner', label: 'Gradient Banner', description: 'Gradient background banner', icon: Layers },
   { value: 'split-action', label: 'Split Action', description: 'Split with multiple actions', icon: SplitSquareHorizontal },
@@ -186,13 +186,13 @@ const CTA_VARIANTS: VariantOption[] = [
   { value: 'waitlist', label: 'Waitlist', description: 'Waitlist signup CTA', icon: List },
 ];
 
-const VARIANT_OPTIONS_MAP = {
-  hero: HERO_VARIANTS,
-  about: ABOUT_VARIANTS,
-  products: PRODUCTS_VARIANTS,
-  testimonials: TESTIMONIALS_VARIANTS,
-  contact: CONTACT_VARIANTS,
-  cta: CTA_VARIANTS,
+const BLOCK_OPTIONS_MAP = {
+  hero: HERO_BLOCKS,
+  about: ABOUT_BLOCKS,
+  products: PRODUCTS_BLOCKS,
+  testimonials: TESTIMONIALS_BLOCKS,
+  contact: CONTACT_BLOCKS,
+  cta: CTA_BLOCKS,
 } as const;
 
 const SECTION_LABELS = {
@@ -204,22 +204,22 @@ const SECTION_LABELS = {
   cta: 'CTA',
 } as const;
 
-interface VariantSidebarProps {
+interface BlockSidebarProps {
   section: SectionType;
-  currentVariant?: string;
-  onVariantSelect: (variant: string) => void;
+  currentBlock?: string;
+  onBlockSelect: (block: string) => void;
   onBack: () => void;
   className?: string;
 }
 
-export function VariantSidebar({
+export function BlockSidebar({
   section,
-  currentVariant,
-  onVariantSelect,
+  currentBlock,
+  onBlockSelect,
   onBack,
   className,
-}: VariantSidebarProps) {
-  const variants = VARIANT_OPTIONS_MAP[section];
+}: BlockSidebarProps) {
+  const blocks = BLOCK_OPTIONS_MAP[section];
   const sectionLabel = SECTION_LABELS[section];
 
   return (
@@ -241,20 +241,20 @@ export function VariantSidebar({
           Back
         </Button>
         <h3 className="font-semibold text-lg">{sectionLabel} Section</h3>
-        <p className="text-sm text-muted-foreground">Choose a variant style</p>
+        <p className="text-sm text-muted-foreground">Choose a block style</p>
       </div>
 
       {/* Variants List */}
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-2">
-          {variants.map((variant) => {
-            const isSelected = currentVariant === variant.value;
-            const Icon = variant.icon;
+          {blocks.map((block) => {
+            const isSelected = currentBlock === block.value;
+            const Icon = block.icon;
 
             return (
               <button
-                key={variant.value}
-                onClick={() => onVariantSelect(variant.value)}
+                key={block.value}
+                onClick={() => onBlockSelect(block.value)}
                 className={cn(
                   'w-full text-left p-3 rounded-lg border-2 transition-all hover:shadow-md',
                   isSelected
@@ -274,13 +274,13 @@ export function VariantSidebar({
                   {/* Content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium text-sm">{variant.label}</p>
+                      <p className="font-medium text-sm">{block.label}</p>
                       {isSelected && (
                         <Check className="h-4 w-4 text-primary flex-shrink-0" />
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground line-clamp-1">
-                      {variant.description}
+                      {block.description}
                     </p>
                   </div>
                 </div>

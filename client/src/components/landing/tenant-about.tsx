@@ -1,7 +1,7 @@
 'use client';
 
 import { extractSectionText, getAboutConfig, extractAboutImage } from '@/lib/landing';
-import { LANDING_CONSTANTS, useAboutVariant } from '@/lib/landing';
+import { LANDING_CONSTANTS, useAboutBlock } from '@/lib/landing';
 import {
   AboutGrid,
   AboutCards,
@@ -10,7 +10,7 @@ import {
   AboutStorytelling,
   AboutSideBySide,
   AboutCentered,
-} from './variants';
+} from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
 interface TenantAboutProps {
@@ -26,7 +26,7 @@ interface TenantAboutProps {
 /**
  * Tenant About Component
  *
- * Wrapper that selects and renders the appropriate about variant
+ * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
  * 🚀 ALL 7 VARIANTS IMPLEMENTED:
@@ -38,13 +38,13 @@ interface TenantAboutProps {
  * - magazine → AboutMagazine
  * - storytelling → AboutStorytelling
  *
- * 🎯 VARIANT PRIORITY:
- * 1. config.variant (user override)
+ * 🎯 BLOCK PRIORITY:
+ * 1. config.block (user override)
  * 2. template variant (from TemplateProvider)
  */
 export function TenantAbout({ config, fallbacks = {} }: TenantAboutProps) {
-  const templateVariant = useAboutVariant();
-  const variant = config?.variant || templateVariant;
+  const templateBlock = useAboutBlock();
+  const block = config?.block || templateBlock;
 
   const { title, subtitle } = extractSectionText(config, {
     title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.ABOUT,
@@ -64,8 +64,8 @@ export function TenantAbout({ config, fallbacks = {} }: TenantAboutProps) {
     features,
   };
 
-  // 🚀 Render appropriate variant based on template
-  switch (variant) {
+  // 🚀 Render appropriate block based on template
+  switch (block) {
     case 'side-by-side':
       return <AboutSideBySide {...commonProps} />;
 

@@ -378,7 +378,7 @@ class HeroSectionDto {
 
   @IsOptional()
   @IsString()
-  variant?: string;
+  block?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -401,7 +401,7 @@ class AboutSectionDto {
 
   @IsOptional()
   @IsString()
-  variant?: string;
+  block?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -424,7 +424,7 @@ class ProductsSectionDto {
 
   @IsOptional()
   @IsString()
-  variant?: string;
+  block?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -448,7 +448,7 @@ class TestimonialsSectionDto {
 
   @IsOptional()
   @IsString()
-  variant?: string;
+  block?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -471,7 +471,7 @@ class ContactSectionDto {
 
   @IsOptional()
   @IsString()
-  variant?: string;
+  block?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -494,7 +494,7 @@ class CtaSectionDto {
 
   @IsOptional()
   @IsString()
-  variant?: string;
+  block?: string;
 
   @IsOptional()
   @ValidateNested()

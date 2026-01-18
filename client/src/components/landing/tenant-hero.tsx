@@ -1,7 +1,7 @@
 'use client';
 
 import { extractSectionText, getHeroConfig, extractBackgroundImage } from '@/lib/landing';
-import { LANDING_CONSTANTS, useHeroVariant } from '@/lib/landing';
+import { LANDING_CONSTANTS, useHeroBlock } from '@/lib/landing';
 import {
   HeroCentered,
   HeroSplit,
@@ -9,7 +9,7 @@ import {
   HeroVideoBackground,
   HeroAnimatedGradient,
   HeroParallax,
-} from './variants';
+} from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
 interface TenantHeroProps {
@@ -26,10 +26,10 @@ interface TenantHeroProps {
 /**
  * Tenant Hero Component
  *
- * Wrapper that selects and renders the appropriate hero variant
+ * Wrapper that selects and renders the appropriate hero block
  * based on the current template context
  *
- * 🚀 IMPLEMENTED VARIANTS:
+ * 🚀 IMPLEMENTED BLOCKS:
  * - default, centered-minimal, gradient-overlay → HeroCentered
  * - split-screen → HeroSplit
  * - glass-morphism → HeroGlassMorphism
@@ -37,13 +37,13 @@ interface TenantHeroProps {
  * - animated-gradient → HeroAnimatedGradient
  * - parallax → HeroParallax
  *
- * 🎯 VARIANT PRIORITY:
- * 1. config.variant (user override)
- * 2. template variant (from TemplateProvider)
+ * 🎯 BLOCK PRIORITY:
+ * 1. config.block (user override)
+ * 2. template block (from TemplateProvider)
  */
 export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
-  const templateVariant = useHeroVariant();
-  const variant = config?.variant || templateVariant;
+  const templateBlock = useHeroBlock();
+  const block = config?.block || templateBlock;
 
   const { title, subtitle } = extractSectionText(config, {
     title: fallbacks.title || fallbacks.storeName,
@@ -68,8 +68,8 @@ export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
     storeName: fallbacks.storeName,
   };
 
-  // 🚀 Render appropriate variant based on template
-  switch (variant) {
+  // 🚀 Render appropriate block based on template
+  switch (block) {
     case 'split-screen':
       return <HeroSplit {...commonProps} />;
 
@@ -85,7 +85,7 @@ export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
     case 'parallax':
       return <HeroParallax {...commonProps} />;
 
-    // Default variants: default, centered-minimal, gradient-overlay
+    // Default blocks: default, centered-minimal, gradient-overlay
     default:
       return <HeroCentered {...commonProps} overlayOpacity={overlayOpacity} />;
   }

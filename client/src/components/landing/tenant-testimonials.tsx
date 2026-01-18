@@ -1,6 +1,6 @@
 'use client';
 
-import { normalizeTestimonials, useTestimonialsVariant } from '@/lib/landing';
+import { normalizeTestimonials, useTestimonialsBlock } from '@/lib/landing';
 import {
   TestimonialsCardSlider,
   TestimonialsQuoteHighlight,
@@ -8,7 +8,7 @@ import {
   TestimonialsSingleFocus,
   TestimonialsVideo,
   TestimonialsSocialProof,
-} from './variants';
+} from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
 interface TenantTestimonialsProps {
@@ -18,7 +18,7 @@ interface TenantTestimonialsProps {
 /**
  * Tenant Testimonials Component
  *
- * Wrapper that selects and renders the appropriate testimonials variant
+ * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
  * 🚀 ALL 7 VARIANTS IMPLEMENTED:
@@ -30,13 +30,13 @@ interface TenantTestimonialsProps {
  * - video-testimonials -> TestimonialsVideo
  * - social-proof -> TestimonialsSocialProof
  *
- * 🎯 VARIANT PRIORITY:
- * 1. config.variant (user override)
+ * 🎯 BLOCK PRIORITY:
+ * 1. config.block (user override)
  * 2. template variant (from TemplateProvider)
  */
 export function TenantTestimonials({ config }: TenantTestimonialsProps) {
-  const templateVariant = useTestimonialsVariant();
-  const variant = config?.variant || templateVariant;
+  const templateBlock = useTestimonialsBlock();
+  const block = config?.block || templateBlock;
 
   const title = config?.title || 'Testimoni';
   const subtitle = config?.subtitle || '';
@@ -50,8 +50,8 @@ export function TenantTestimonials({ config }: TenantTestimonialsProps) {
     subtitle,
   };
 
-  // Render appropriate variant based on template
-  switch (variant) {
+  // Render appropriate block based on template
+  switch (block) {
     case 'card-slider':
       return <TestimonialsCardSlider {...commonProps} />;
 
@@ -67,7 +67,7 @@ export function TenantTestimonials({ config }: TenantTestimonialsProps) {
     case 'social-proof':
       return <TestimonialsSocialProof {...commonProps} />;
 
-    // Default variants: default, grid-cards
+    // Default blocks: default, grid-cards
     default:
       return <TestimonialsGridCards {...commonProps} />;
   }

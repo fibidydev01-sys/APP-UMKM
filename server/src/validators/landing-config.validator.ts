@@ -44,7 +44,7 @@ export type TemplateId =
   | 'professional-starter'
   | 'custom';
 
-export type HeroVariant =
+export type HeroBlock =
   | 'default'
   | 'gradient-overlay'
   | 'centered-minimal'
@@ -54,7 +54,7 @@ export type HeroVariant =
   | 'animated-gradient'
   | 'glass-morphism';
 
-export type AboutVariant =
+export type AboutBlock =
   | 'default'
   | 'side-by-side'
   | 'centered'
@@ -63,7 +63,7 @@ export type AboutVariant =
   | 'magazine'
   | 'storytelling';
 
-export type ProductsVariant =
+export type ProductsBlock =
   | 'default'
   | 'grid-hover'
   | 'masonry'
@@ -72,7 +72,7 @@ export type ProductsVariant =
   | 'catalog'
   | 'minimal-list';
 
-export type TestimonialsVariant =
+export type TestimonialsBlock =
   | 'default'
   | 'card-slider'
   | 'quote-highlight'
@@ -81,7 +81,7 @@ export type TestimonialsVariant =
   | 'video-testimonials'
   | 'social-proof';
 
-export type ContactVariant =
+export type ContactBlock =
   | 'default'
   | 'split-form'
   | 'centered'
@@ -89,7 +89,7 @@ export type ContactVariant =
   | 'minimal'
   | 'social-focused';
 
-export type CtaVariant =
+export type CtaBlock =
   | 'default'
   | 'bold-center'
   | 'gradient-banner'
@@ -140,14 +140,14 @@ export interface CtaConfig {
 }
 
 // ==========================================
-// 🚀 UPDATED: Landing Section with Variant
+// 🚀 UPDATED: Landing Section with Block
 // ==========================================
 
 export interface LandingSection<T = Record<string, unknown>, V = string> {
   enabled?: boolean;
   title?: string;
   subtitle?: string;
-  variant?: V; // 🚀 NEW: Variant field
+  block?: V; // 🚀 Block field (renamed from variant)
   config?: T;
 }
 
@@ -160,12 +160,12 @@ export interface LandingConfig {
   enabled?: boolean;
   template?: TemplateId; // 🚀 NEW: Template ID
   templateId?: string; // Legacy support
-  hero?: LandingSection<HeroConfig, HeroVariant>;
-  about?: LandingSection<AboutConfig, AboutVariant>;
-  products?: LandingSection<ProductsConfig, ProductsVariant>;
-  testimonials?: LandingSection<TestimonialsConfig, TestimonialsVariant>;
-  contact?: LandingSection<ContactConfig, ContactVariant>;
-  cta?: LandingSection<CtaConfig, CtaVariant>;
+  hero?: LandingSection<HeroConfig, HeroBlock>;
+  about?: LandingSection<AboutConfig, AboutBlock>;
+  products?: LandingSection<ProductsConfig, ProductsBlock>;
+  testimonials?: LandingSection<TestimonialsConfig, TestimonialsBlock>;
+  contact?: LandingSection<ContactConfig, ContactBlock>;
+  cta?: LandingSection<CtaConfig, CtaBlock>;
 }
 
 export interface ValidationResult {
@@ -233,15 +233,15 @@ const landingConfigSchema = {
       ],
     },
 
-    // 🚀 UPDATED: Hero with variant
+    // 🚀 UPDATED: Hero with block
     hero: {
       type: 'object' as const,
       properties: {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 NEW: Variant field
-        variant: {
+        // 🚀 Block field
+        block: {
           type: 'string' as const,
           maxLength: 50,
           enum: [
@@ -274,15 +274,15 @@ const landingConfigSchema = {
       additionalProperties: true,
     },
 
-    // 🚀 UPDATED: About with variant
+    // 🚀 UPDATED: About with block
     about: {
       type: 'object' as const,
       properties: {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 NEW: Variant field
-        variant: {
+        // 🚀 Block field
+        block: {
           type: 'string' as const,
           maxLength: 50,
           enum: [
@@ -313,15 +313,15 @@ const landingConfigSchema = {
       additionalProperties: true,
     },
 
-    // 🚀 UPDATED: Products with variant
+    // 🚀 UPDATED: Products with block
     products: {
       type: 'object' as const,
       properties: {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 NEW: Variant field
-        variant: {
+        // 🚀 Block field
+        block: {
           type: 'string' as const,
           maxLength: 50,
           enum: [
@@ -350,15 +350,15 @@ const landingConfigSchema = {
       additionalProperties: true,
     },
 
-    // 🚀 UPDATED: Testimonials with variant
+    // 🚀 UPDATED: Testimonials with block
     testimonials: {
       type: 'object' as const,
       properties: {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 NEW: Variant field
-        variant: {
+        // 🚀 Block field
+        block: {
           type: 'string' as const,
           maxLength: 50,
           enum: [
@@ -386,15 +386,15 @@ const landingConfigSchema = {
       additionalProperties: true,
     },
 
-    // 🚀 UPDATED: Contact with variant
+    // 🚀 UPDATED: Contact with block
     contact: {
       type: 'object' as const,
       properties: {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 NEW: Variant field
-        variant: {
+        // 🚀 Block field
+        block: {
           type: 'string' as const,
           maxLength: 50,
           enum: [
@@ -419,15 +419,15 @@ const landingConfigSchema = {
       additionalProperties: true,
     },
 
-    // 🚀 UPDATED: CTA with variant
+    // 🚀 UPDATED: CTA with block
     cta: {
       type: 'object' as const,
       properties: {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 NEW: Variant field
-        variant: {
+        // 🚀 Block field
+        block: {
           type: 'string' as const,
           maxLength: 50,
           enum: [
@@ -713,8 +713,8 @@ export function isValidTemplate(template: string): template is TemplateId {
   return validTemplates.includes(template as TemplateId);
 }
 
-export function isValidHeroVariant(variant: string): variant is HeroVariant {
-  const validVariants: HeroVariant[] = [
+export function isValidHeroBlock(block: string): block is HeroBlock {
+  const validBlocks: HeroBlock[] = [
     'default',
     'gradient-overlay',
     'centered-minimal',
@@ -724,7 +724,7 @@ export function isValidHeroVariant(variant: string): variant is HeroVariant {
     'animated-gradient',
     'glass-morphism',
   ];
-  return validVariants.includes(variant as HeroVariant);
+  return validBlocks.includes(block as HeroBlock);
 }
 
 // ==========================================
@@ -739,7 +739,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: '',
       subtitle: '',
-      variant: 'default', // 🚀 NEW: Default variant
+      block: 'default', // 🚀 Default block
       config: {
         layout: 'centered',
         showCta: false,
@@ -751,7 +751,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Tentang Kami',
       subtitle: '',
-      variant: 'default', // 🚀 NEW: Default variant
+      block: 'default', // 🚀 Default block
       config: {
         showImage: false,
         features: [],
@@ -761,7 +761,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Produk Kami',
       subtitle: 'Pilihan produk terbaik untuk Anda',
-      variant: 'default', // 🚀 NEW: Default variant
+      block: 'default', // 🚀 Default block
       config: {
         displayMode: 'featured',
         limit: 8,
@@ -772,7 +772,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Testimoni',
       subtitle: 'Apa kata pelanggan kami',
-      variant: 'default', // 🚀 NEW: Default variant
+      block: 'default', // 🚀 Default block
       config: {
         items: [],
       },
@@ -781,7 +781,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Hubungi Kami',
       subtitle: '',
-      variant: 'default', // 🚀 NEW: Default variant
+      block: 'default', // 🚀 Default block
       config: {
         showMap: false,
         showForm: false,
@@ -792,7 +792,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Siap Berbelanja?',
       subtitle: '',
-      variant: 'default', // 🚀 NEW: Default variant
+      block: 'default', // 🚀 Default block
       config: {
         buttonText: 'Mulai Belanja',
         style: 'primary',
@@ -802,7 +802,7 @@ export function getDefaultLandingConfig(): LandingConfig {
 }
 
 // ==========================================
-// 🚀 NEW: Available Templates & Variants Export
+// 🚀 Available Templates & Blocks Export
 // For Frontend to consume
 // ==========================================
 
@@ -820,7 +820,7 @@ export const AVAILABLE_TEMPLATES: TemplateId[] = [
   'custom',
 ];
 
-export const AVAILABLE_VARIANTS = {
+export const AVAILABLE_BLOCKS = {
   hero: [
     'default',
     'gradient-overlay',
@@ -830,7 +830,7 @@ export const AVAILABLE_VARIANTS = {
     'parallax',
     'animated-gradient',
     'glass-morphism',
-  ] as HeroVariant[],
+  ] as HeroBlock[],
   about: [
     'default',
     'side-by-side',
@@ -839,7 +839,7 @@ export const AVAILABLE_VARIANTS = {
     'cards',
     'magazine',
     'storytelling',
-  ] as AboutVariant[],
+  ] as AboutBlock[],
   products: [
     'default',
     'grid-hover',
@@ -848,7 +848,7 @@ export const AVAILABLE_VARIANTS = {
     'featured-hero',
     'catalog',
     'minimal-list',
-  ] as ProductsVariant[],
+  ] as ProductsBlock[],
   testimonials: [
     'default',
     'card-slider',
@@ -857,7 +857,7 @@ export const AVAILABLE_VARIANTS = {
     'single-focus',
     'video-testimonials',
     'social-proof',
-  ] as TestimonialsVariant[],
+  ] as TestimonialsBlock[],
   contact: [
     'default',
     'split-form',
@@ -865,7 +865,7 @@ export const AVAILABLE_VARIANTS = {
     'map-focus',
     'minimal',
     'social-focused',
-  ] as ContactVariant[],
+  ] as ContactBlock[],
   cta: [
     'default',
     'bold-center',
@@ -873,5 +873,5 @@ export const AVAILABLE_VARIANTS = {
     'split-action',
     'floating',
     'minimal-line',
-  ] as CtaVariant[],
+  ] as CtaBlock[],
 };

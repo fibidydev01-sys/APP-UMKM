@@ -4,10 +4,10 @@
 // ==========================================
 
 // ==========================================
-// VARIANT TYPES (from backend)
+// BLOCK TYPES (from backend)
 // ==========================================
 
-export type HeroVariant =
+export type HeroBlock =
   | 'default'
   | 'gradient-overlay'
   | 'centered-minimal'
@@ -17,7 +17,7 @@ export type HeroVariant =
   | 'animated-gradient'
   | 'glass-morphism';
 
-export type AboutVariant =
+export type AboutBlock =
   | 'default'
   | 'side-by-side'
   | 'centered'
@@ -26,7 +26,7 @@ export type AboutVariant =
   | 'magazine'
   | 'storytelling';
 
-export type ProductsVariant =
+export type ProductsBlock =
   | 'default'
   | 'grid-hover'
   | 'masonry'
@@ -35,7 +35,7 @@ export type ProductsVariant =
   | 'catalog'
   | 'minimal-list';
 
-export type TestimonialsVariant =
+export type TestimonialsBlock =
   | 'default'
   | 'card-slider'
   | 'quote-highlight'
@@ -44,7 +44,7 @@ export type TestimonialsVariant =
   | 'video-testimonials'
   | 'social-proof';
 
-export type ContactVariant =
+export type ContactBlock =
   | 'default'
   | 'split-form'
   | 'centered'
@@ -52,7 +52,7 @@ export type ContactVariant =
   | 'minimal'
   | 'social-focused';
 
-export type CtaVariant =
+export type CtaBlock =
   | 'default'
   | 'bold-center'
   | 'gradient-banner'
@@ -68,7 +68,7 @@ export interface LandingSection<V = string> {
   enabled?: boolean;
   title?: string;
   subtitle?: string;
-  variant?: V;
+  block?: V;
   config?: Record<string, unknown>;
 }
 
@@ -137,12 +137,12 @@ export interface CtaSectionConfig {
 export interface TenantLandingConfig {
   enabled: boolean;
   template?: string; // Template ID
-  hero?: LandingSection<HeroVariant> & { config?: HeroSectionConfig };
-  about?: LandingSection<AboutVariant> & { config?: AboutSectionConfig };
-  products?: LandingSection<ProductsVariant> & { config?: ProductsSectionConfig };
-  testimonials?: LandingSection<TestimonialsVariant> & { config?: TestimonialsSectionConfig };
-  contact?: LandingSection<ContactVariant> & { config?: ContactSectionConfig };
-  cta?: LandingSection<CtaVariant> & { config?: CtaSectionConfig };
+  hero?: LandingSection<HeroBlock> & { config?: HeroSectionConfig };
+  about?: LandingSection<AboutBlock> & { config?: AboutSectionConfig };
+  products?: LandingSection<ProductsBlock> & { config?: ProductsSectionConfig };
+  testimonials?: LandingSection<TestimonialsBlock> & { config?: TestimonialsSectionConfig };
+  contact?: LandingSection<ContactBlock> & { config?: ContactSectionConfig };
+  cta?: LandingSection<CtaBlock> & { config?: CtaSectionConfig };
 }
 
 // ==========================================

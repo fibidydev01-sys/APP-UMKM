@@ -22,7 +22,7 @@ import {
 } from '@/components/landing-builder';
 import type { SectionType } from '@/components/landing-builder';
 import { SectionSheet } from '@/components/landing-builder/section-sheet';
-import { VariantSidebar } from '@/components/landing-builder/variant-sidebar';
+import { BlockSidebar } from '@/components/landing-builder/block-sidebar';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
@@ -45,7 +45,7 @@ export default function LandingBuilderPage() {
 
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
-  const [showVariantSidebar, setShowVariantSidebar] = useState(false);
+  const [showBlockSidebar, setShowBlockSidebar] = useState(false);
   const [showFormSheet, setShowFormSheet] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -120,24 +120,24 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Show variant sidebar
+  // Step 1: User clicks section → Show block sidebar
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
-    setShowVariantSidebar(true);
+    setShowBlockSidebar(true);
     setShowFormSheet(false);
   }, []);
 
-  // Step 2: User clicks variant → Update config and open form sheet/drawer
-  const handleVariantSelect = useCallback((variant: string) => {
+  // Step 2: User clicks block → Update config and open form sheet/drawer
+  const handleBlockSelect = useCallback((block: string) => {
     if (!activeSection || !landingConfig) return;
 
-    // Update variant in config
+    // Update block in config
     const currentSection = landingConfig[activeSection] || {};
     setLandingConfig({
       ...landingConfig,
       [activeSection]: {
         ...currentSection,
-        variant,
+        block,
       },
     } as TenantLandingConfig);
 
@@ -145,16 +145,16 @@ export default function LandingBuilderPage() {
     setShowFormSheet(true);
   }, [activeSection, landingConfig, setLandingConfig]);
 
-  // Close variant sidebar
-  const handleVariantSidebarClose = useCallback(() => {
-    setShowVariantSidebar(false);
+  // Close block sidebar
+  const handleBlockSidebarClose = useCallback(() => {
+    setShowBlockSidebar(false);
     setActiveSection(null);
   }, []);
 
   // Close form sheet
   const handleFormSheetClose = useCallback(() => {
     setShowFormSheet(false);
-    // Keep variant sidebar open
+    // Keep block sidebar open
   }, []);
 
   // ============================================================================
@@ -271,13 +271,13 @@ export default function LandingBuilderPage() {
           collapsed={sidebarCollapsed}
         />
 
-        {/* LEFT 2: Variant Sidebar (Canva-style) */}
-        {showVariantSidebar && activeSection && (
-          <VariantSidebar
+        {/* LEFT 2: Block Sidebar (Canva-style) */}
+        {showBlockSidebar && activeSection && (
+          <BlockSidebar
             section={activeSection}
-            currentVariant={landingConfig?.[activeSection]?.variant}
-            onVariantSelect={handleVariantSelect}
-            onBack={handleVariantSidebarClose}
+            currentBlock={landingConfig?.[activeSection]?.block}
+            onBlockSelect={handleBlockSelect}
+            onBack={handleBlockSidebarClose}
           />
         )}
 

@@ -8,7 +8,7 @@ import type { LandingTemplate, TemplateId } from './template-types';
 /**
  * Available landing page templates
  *
- * Each template defines a unique combination of section variants
+ * Each template defines a unique combination of section blocks
  * to create different visual styles.
  *
  * 🚀 SYNCED WITH BACKEND: All 11 templates from backend validator
@@ -19,7 +19,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Suspended Minimalist',
     description: 'Ultra minimal design for suspended tenants - clean and simple',
     category: 'minimal',
-    variants: {
+    blocks: {
       hero: 'centered-minimal',
       about: 'centered',
       products: 'minimal-list',
@@ -33,7 +33,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Modern Starter',
     description: 'Clean and contemporary design - perfect for modern brands',
     category: 'modern',
-    variants: {
+    blocks: {
       hero: 'gradient-overlay',
       about: 'side-by-side',
       products: 'grid-hover',
@@ -47,7 +47,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Bold Starter',
     description: 'Eye-catching design with bold visuals - make a statement',
     category: 'creative',
-    variants: {
+    blocks: {
       hero: 'animated-gradient',
       about: 'magazine',
       products: 'featured-hero',
@@ -61,7 +61,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Classic Starter',
     description: 'Traditional layout with timeless appeal',
     category: 'classic',
-    variants: {
+    blocks: {
       hero: 'split-screen',
       about: 'timeline',
       products: 'carousel',
@@ -75,7 +75,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Brand Starter',
     description: 'Emphasize brand identity with storytelling elements',
     category: 'creative',
-    variants: {
+    blocks: {
       hero: 'glass-morphism',
       about: 'storytelling',
       products: 'masonry',
@@ -89,7 +89,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Catalog Starter',
     description: 'Product-focused design - ideal for catalogs and e-commerce',
     category: 'catalog',
-    variants: {
+    blocks: {
       hero: 'default',
       about: 'default',
       products: 'catalog',
@@ -103,7 +103,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Fresh Starter',
     description: 'Light and airy design with modern aesthetics',
     category: 'modern',
-    variants: {
+    blocks: {
       hero: 'centered-minimal',
       about: 'centered',
       products: 'grid-hover',
@@ -117,7 +117,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Elegant Starter',
     description: 'Sophisticated and refined design for premium brands',
     category: 'professional',
-    variants: {
+    blocks: {
       hero: 'parallax',
       about: 'magazine',
       products: 'masonry',
@@ -131,7 +131,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Dynamic Starter',
     description: 'Energetic design with motion and interactivity',
     category: 'creative',
-    variants: {
+    blocks: {
       hero: 'video-background',
       about: 'cards',
       products: 'featured-hero',
@@ -145,7 +145,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Professional Starter',
     description: 'Clean and trustworthy design for businesses',
     category: 'professional',
-    variants: {
+    blocks: {
       hero: 'split-screen',
       about: 'side-by-side',
       products: 'grid-hover',
@@ -159,7 +159,7 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     name: 'Custom',
     description: 'Start from scratch and build your own unique design',
     category: 'modern',
-    variants: {
+    blocks: {
       hero: 'default',
       about: 'default',
       products: 'default',

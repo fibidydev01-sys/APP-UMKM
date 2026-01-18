@@ -2,7 +2,7 @@
 
 import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getProductsConfig } from '@/lib/landing';
-import { LANDING_CONSTANTS, useProductsVariant } from '@/lib/landing';
+import { LANDING_CONSTANTS, useProductsBlock } from '@/lib/landing';
 import {
   ProductsGrid,
   ProductsCarousel,
@@ -10,7 +10,7 @@ import {
   ProductsMasonry,
   ProductsCatalog,
   ProductsMinimalList,
-} from './variants';
+} from './blocks';
 import type { Product, TenantLandingConfig } from '@/types';
 
 // ==========================================
@@ -31,7 +31,7 @@ interface TenantProductsProps {
 /**
  * Tenant Products Component
  *
- * Wrapper that selects and renders the appropriate products variant
+ * Wrapper that selects and renders the appropriate block
  * based on the current template context
  *
  * 🚀 ALL 7 VARIANTS IMPLEMENTED:
@@ -43,13 +43,13 @@ interface TenantProductsProps {
  * - catalog -> ProductsCatalog
  * - minimal-list -> ProductsMinimalList
  *
- * 🎯 VARIANT PRIORITY:
- * 1. config.variant (user override)
+ * 🎯 BLOCK PRIORITY:
+ * 1. config.block (user override)
  * 2. template variant (from TemplateProvider)
  */
 export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: TenantProductsProps) {
-  const templateVariant = useProductsVariant();
-  const variant = config?.variant || templateVariant;
+  const templateBlock = useProductsBlock();
+  const block = config?.block || templateBlock;
 
   const { title, subtitle } = extractSectionText(config, {
     title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.PRODUCTS,
@@ -74,8 +74,8 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
     limit,
   };
 
-  // Render appropriate variant based on template
-  switch (variant) {
+  // Render appropriate block based on template
+  switch (block) {
     case 'grid-hover':
       return <ProductsGridHover {...commonProps} />;
 
