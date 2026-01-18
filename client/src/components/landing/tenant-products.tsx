@@ -3,7 +3,14 @@
 import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getProductsConfig } from '@/lib/landing';
 import { LANDING_CONSTANTS, useProductsVariant } from '@/lib/landing';
-import { ProductsGrid, ProductsCarousel } from './variants';
+import {
+  ProductsGrid,
+  ProductsCarousel,
+  ProductsGridHover,
+  ProductsMasonry,
+  ProductsCatalog,
+  ProductsMinimalList,
+} from './variants';
 import type { Product, TenantLandingConfig } from '@/types';
 
 // ==========================================
@@ -27,10 +34,14 @@ interface TenantProductsProps {
  * Wrapper that selects and renders the appropriate products variant
  * based on the current template context
  *
- * 🚀 NOTE: Currently only 2 products variants are implemented:
- * - default, grid-hover, masonry, catalog, minimal-list -> ProductsGrid
- * - carousel, featured-hero -> ProductsCarousel
- * Other variants will fallback to default (ProductsGrid)
+ * 🚀 ALL 7 VARIANTS IMPLEMENTED:
+ * - default -> ProductsGrid
+ * - grid-hover -> ProductsGridHover
+ * - masonry -> ProductsMasonry
+ * - carousel -> ProductsCarousel
+ * - featured-hero -> ProductsCarousel
+ * - catalog -> ProductsCatalog
+ * - minimal-list -> ProductsMinimalList
  *
  * 🎯 VARIANT PRIORITY:
  * 1. config.variant (user override)
@@ -64,11 +75,25 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
   };
 
   // Render appropriate variant based on template
-  // Carousel-based variants
-  if (variant === 'carousel' || variant === 'featured-hero') {
-    return <ProductsCarousel {...commonProps} />;
-  }
+  switch (variant) {
+    case 'grid-hover':
+      return <ProductsGridHover {...commonProps} />;
 
-  // Default: grid variant (covers: default, grid-hover, masonry, catalog, minimal-list)
-  return <ProductsGrid {...commonProps} />;
+    case 'masonry':
+      return <ProductsMasonry {...commonProps} />;
+
+    case 'carousel':
+    case 'featured-hero':
+      return <ProductsCarousel {...commonProps} />;
+
+    case 'catalog':
+      return <ProductsCatalog {...commonProps} />;
+
+    case 'minimal-list':
+      return <ProductsMinimalList {...commonProps} />;
+
+    // Default variant
+    default:
+      return <ProductsGrid {...commonProps} />;
+  }
 }

@@ -1,16 +1,17 @@
 'use client';
 
-import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useStoreUrls } from '@/lib/store-url';
-import { extractSectionText, getCtaConfig, extractCtaLink, extractCtaButtonText } from '@/lib/landing';
+import { extractSectionText, getCtaConfig, extractCtaLink, extractCtaButtonText, useCtaVariant } from '@/lib/landing';
 import { LANDING_CONSTANTS } from '@/lib/landing';
+import {
+  CtaDefault,
+  CtaBoldCenter,
+  CtaGradientBanner,
+  CtaSplitAction,
+  CtaFloating,
+  CtaMinimalLine,
+} from './variants';
 import type { TenantLandingConfig } from '@/types';
-
-// ==========================================
-// TENANT CTA COMPONENT - Decoupled
-// ==========================================
 
 interface TenantCtaProps {
   config?: TenantLandingConfig['cta'];
@@ -22,7 +23,28 @@ interface TenantCtaProps {
   };
 }
 
+/**
+ * Tenant CTA Component
+ *
+ * Wrapper that selects and renders the appropriate CTA variant
+ * based on the current template context
+ *
+ * 🚀 ALL 6 VARIANTS IMPLEMENTED:
+ * - default -> CtaDefault
+ * - bold-center -> CtaBoldCenter
+ * - gradient-banner -> CtaGradientBanner
+ * - split-action -> CtaSplitAction
+ * - floating -> CtaFloating
+ * - minimal-line -> CtaMinimalLine
+ *
+ * 🎯 VARIANT PRIORITY:
+ * 1. config.variant (user override)
+ * 2. template variant (from TemplateProvider)
+ */
 export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps) {
+  const templateVariant = useCtaVariant();
+  const variant = config?.variant || templateVariant;
+
   const { title, subtitle } = extractSectionText(config, {
     title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.CTA,
     subtitle: fallbacks.subtitle,
@@ -40,20 +62,33 @@ export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps)
   const buttonVariant =
     style === 'outline' ? 'outline' : style === 'secondary' ? 'secondary' : 'default';
 
-  return (
-    <section className="py-16 my-8 rounded-xl bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10">
-      <div className="text-center max-w-2xl mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-        {subtitle && (
-          <p className="text-muted-foreground mt-2 mb-6">{subtitle}</p>
-        )}
-        <Link href={buttonLink}>
-          <Button size="lg" variant={buttonVariant} className="gap-2 mt-4">
-            {buttonText}
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </Link>
-      </div>
-    </section>
-  );
+  const commonProps = {
+    title,
+    subtitle,
+    buttonText,
+    buttonLink,
+    buttonVariant,
+  };
+
+  // Render appropriate variant based on template
+  switch (variant) {
+    case 'bold-center':
+      return <CtaBoldCenter {...commonProps} />;
+
+    case 'gradient-banner':
+      return <CtaGradientBanner {...commonProps} />;
+
+    case 'split-action':
+      return <CtaSplitAction {...commonProps} />;
+
+    case 'floating':
+      return <CtaFloating {...commonProps} />;
+
+    case 'minimal-line':
+      return <CtaMinimalLine {...commonProps} />;
+
+    // Default variant
+    default:
+      return <CtaDefault {...commonProps} />;
+  }
 }
