@@ -10,6 +10,7 @@ import {
   Products4,
   Products5,
   Products6,
+  Products7,
 } from './blocks';
 import type { Product, TenantLandingConfig } from '@/types';
 
@@ -41,6 +42,7 @@ interface TenantProductsProps {
  * - products4 → Carousel
  * - products5 → Catalog
  * - products6 → Minimal List
+ * - products7 → Featured Hero
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -89,6 +91,9 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
 
     case 'products6':
       return <Products6 {...commonProps} />;
+
+    case 'products7':
+      return <Products7 {...commonProps} />;
 
     // Default: products1 (Grid)
     case 'products1':

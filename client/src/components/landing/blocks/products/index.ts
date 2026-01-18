@@ -11,3 +11,4 @@ export * from './products3'; // Masonry
 export * from './products4'; // Carousel
 export * from './products5'; // Catalog
 export * from './products6'; // Minimal List
+export * from './products7'; // Featured Hero

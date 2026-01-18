@@ -9,6 +9,7 @@ import {
   Contact4,
   Contact5,
   Contact6,
+  Contact7,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -37,6 +38,7 @@ interface TenantContactProps {
  * - contact4 → Map Focus
  * - contact5 → Minimal
  * - contact6 → Social Focused
+ * - contact7 → Card Grid
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -76,6 +78,9 @@ export function TenantContact({ config, fallbacks = {} }: TenantContactProps) {
 
     case 'contact6':
       return <Contact6 {...commonProps} />;
+
+    case 'contact7':
+      return <Contact7 {...commonProps} />;
 
     // Default: contact1 (Default)
     case 'contact1':

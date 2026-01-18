@@ -11,3 +11,4 @@ export * from './contact3'; // Centered
 export * from './contact4'; // Map Focus
 export * from './contact5'; // Minimal
 export * from './contact6'; // Social Focused
+export * from './contact7'; // Card Grid

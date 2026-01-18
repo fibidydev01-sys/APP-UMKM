@@ -11,3 +11,4 @@ export * from './hero3'; // Video Background
 export * from './hero4'; // Parallax
 export * from './hero5'; // Animated Gradient
 export * from './hero6'; // Glass Morphism
+export * from './hero7'; // Bento Grid

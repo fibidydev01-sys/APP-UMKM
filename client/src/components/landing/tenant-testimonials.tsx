@@ -8,6 +8,7 @@ import {
   Testimonials4,
   Testimonials5,
   Testimonials6,
+  Testimonials7,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -28,6 +29,7 @@ interface TenantTestimonialsProps {
  * - testimonials4 → Single Focus
  * - testimonials5 → Video
  * - testimonials6 → Social Proof
+ * - testimonials7 → Marquee
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -65,6 +67,9 @@ export function TenantTestimonials({ config }: TenantTestimonialsProps) {
 
     case 'testimonials6':
       return <Testimonials6 {...commonProps} />;
+
+    case 'testimonials7':
+      return <Testimonials7 {...commonProps} />;
 
     // Default: testimonials1 (Grid Cards)
     case 'testimonials1':

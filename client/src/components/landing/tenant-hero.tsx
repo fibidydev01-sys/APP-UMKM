@@ -9,6 +9,7 @@ import {
   Hero4,
   Hero5,
   Hero6,
+  Hero7,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -36,6 +37,7 @@ interface TenantHeroProps {
  * - hero4 → Parallax
  * - hero5 → Animated Gradient
  * - hero6 → Glass Morphism
+ * - hero7 → Bento Grid
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -84,6 +86,9 @@ export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
 
     case 'hero6':
       return <Hero6 {...commonProps} />;
+
+    case 'hero7':
+      return <Hero7 {...commonProps} />;
 
     // Default: hero1 (Centered)
     case 'hero1':

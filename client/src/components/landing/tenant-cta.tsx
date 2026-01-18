@@ -10,6 +10,7 @@ import {
   Cta4,
   Cta5,
   Cta6,
+  Cta7,
 } from './blocks';
 import type { TenantLandingConfig } from '@/types';
 
@@ -36,6 +37,7 @@ interface TenantCtaProps {
  * - cta4 → Split Action
  * - cta5 → Floating
  * - cta6 → Minimal Line
+ * - cta7 → Countdown
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
@@ -86,6 +88,9 @@ export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps)
 
     case 'cta6':
       return <Cta6 {...commonProps} />;
+
+    case 'cta7':
+      return <Cta7 {...commonProps} />;
 
     // Default: cta1 (Default)
     case 'cta1':

@@ -11,3 +11,4 @@ export * from './testimonials3'; // Quote Highlight
 export * from './testimonials4'; // Single Focus
 export * from './testimonials5'; // Video
 export * from './testimonials6'; // Social Proof
+export * from './testimonials7'; // Marquee
