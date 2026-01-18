@@ -18,12 +18,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   LivePreview,
   LandingErrorBoundary,
-  DeviceFrame,
-  PreviewModeToggle,
   BuilderSidebar,
   LandingBuilder,
 } from '@/components/landing-builder';
-import type { DeviceMode, SectionType } from '@/components/landing-builder';
+import type { SectionType } from '@/components/landing-builder';
 import { SectionSheet } from '@/components/landing-builder/section-sheet';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
@@ -46,7 +44,6 @@ export default function LandingBuilderPage() {
   const [productsLoading, setProductsLoading] = useState(true);
 
   // UI State
-  const [previewMode, setPreviewMode] = useState<DeviceMode>('laptop');
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -234,40 +231,15 @@ export default function LandingBuilderPage() {
         />
 
         {/* CENTER: Live Preview with Device Frame */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
-          {/* Live Preview Header */}
-          <div className="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-4">
-            <h2 className="font-medium text-sm">Live Preview</h2>
-            <div className="flex items-center gap-3">
-              <PreviewModeToggle activeMode={previewMode} onChange={setPreviewMode} />
-              <Button
-                variant="outline"
-                size="sm"
-                className="gap-2"
-                onClick={() => {
-                  if (tenant?.slug) {
-                    window.open(`/${tenant.slug}`, '_blank');
-                  }
-                }}
-              >
-                <span>Open</span>
-              </Button>
-            </div>
-          </div>
-
-          {/* Preview Content */}
-          <div className="flex-1 overflow-hidden">
-            <LandingErrorBoundary>
-              <DeviceFrame mode={previewMode}>
-                <LivePreview
-                  config={landingConfig}
-                  tenant={tenant}
-                  products={products}
-                  isLoading={productsLoading}
-                />
-              </DeviceFrame>
-            </LandingErrorBoundary>
-          </div>
+        <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
+          <LandingErrorBoundary>
+            <LivePreview
+              config={landingConfig}
+              tenant={tenant}
+              products={products}
+              isLoading={productsLoading}
+            />
+          </LandingErrorBoundary>
         </div>
       </div>
 
