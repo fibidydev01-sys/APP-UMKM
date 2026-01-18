@@ -203,15 +203,14 @@ export default function CustomizeLandingPage() {
       <PageHeader
         title="Landing Page Builder"
         description="Pilih section dari sidebar, edit di panel samping"
-        action={
-          <Link href="/dashboard/landing-builder/gallery">
-            <Button variant="outline" className="gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              Back to Gallery
-            </Button>
-          </Link>
-        }
-      />
+      >
+        <Link href="/dashboard/landing-builder/gallery">
+          <Button variant="outline" className="gap-2">
+            <ArrowLeft className="h-4 w-4" />
+            Back to Gallery
+          </Button>
+        </Link>
+      </PageHeader>
 
       {/* Top Bar: Template + Preview Mode + Actions */}
       <div className="flex items-center justify-between gap-4 p-4 border-b bg-muted/30 mt-4">

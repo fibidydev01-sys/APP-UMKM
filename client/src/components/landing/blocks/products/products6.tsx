@@ -60,7 +60,7 @@ export function Products6({
       {/* Minimal List */}
       <div className="space-y-4">
         {displayProducts.map((product) => {
-          const { type, url } = getImageSource(product.images?.[0]);
+          const { type, src: url } = getImageSource(product.images?.[0]);
           const productUrl = urls?.product(product.id) || `/store/${storeSlug}/products/${product.id}`;
 
           return (
@@ -100,7 +100,7 @@ export function Products6({
               {/* Price */}
               <div className="flex-shrink-0 text-right">
                 <p className="font-bold text-lg">{formatPrice(product.price)}</p>
-                {product.stock !== undefined && (
+                {product.stock !== undefined && product.stock !== null && (
                   <p className="text-xs text-muted-foreground">
                     {product.stock > 0 ? `${product.stock} tersedia` : 'Habis'}
                   </p>

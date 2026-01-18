@@ -132,21 +132,21 @@ export default function TemplateGalleryPage() {
             </CardHeader>
 
             <CardContent>
-              {/* Variant Info */}
+              {/* Block Info */}
               <div className="space-y-2 mb-4">
-                <p className="text-xs font-medium text-muted-foreground">Included Variants:</p>
+                <p className="text-xs font-medium text-muted-foreground">Included Blocks:</p>
                 <div className="grid grid-cols-2 gap-1 text-xs">
                   <div className="flex items-center gap-1">
                     <div className="h-2 w-2 rounded-full bg-primary/60" />
-                    <span className="capitalize">{template.variants.hero}</span>
+                    <span className="capitalize">{template.blocks.hero}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="h-2 w-2 rounded-full bg-blue-500/60" />
-                    <span className="capitalize">{template.variants.about}</span>
+                    <span className="capitalize">{template.blocks.about}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <div className="h-2 w-2 rounded-full bg-green-500/60" />
-                    <span className="capitalize">{template.variants.products}</span>
+                    <span className="capitalize">{template.blocks.products}</span>
                   </div>
                 </div>
               </div>

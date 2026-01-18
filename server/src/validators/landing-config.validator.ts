@@ -2,7 +2,7 @@
 // LANDING CONFIG VALIDATOR
 // server/src/validators/landing-config.validator.ts
 // ==========================================
-// 🚀 UPDATED: Added template & variant support for Landing Page Template System
+// 🚀 UPDATED: Added template & block support for Landing Page Template System
 // ==========================================
 
 import Ajv, { ErrorObject } from 'ajv';
@@ -104,7 +104,7 @@ export type CtaBlock =
   | 'cta7'; // Countdown
 
 // ==========================================
-// CONFIG INTERFACES (Updated with variant)
+// CONFIG INTERFACES (Updated with block)
 // ==========================================
 
 export interface HeroConfig {
@@ -211,7 +211,7 @@ const featureItemSchema = {
 };
 
 // ==========================================
-// 🚀 UPDATED: Schema with template & variants
+// 🚀 UPDATED: Schema with template & blocks
 // ==========================================
 
 const landingConfigSchema = {
@@ -423,7 +423,7 @@ const landingConfigSchema = {
 
 const ajv = new Ajv({
   allErrors: true,
-  removeAdditional: false, // 🔥 FIX: Don't strip additional fields (like variant)!
+  removeAdditional: false, // 🔥 FIX: Don't strip additional fields (like block)!
   useDefaults: true,
   coerceTypes: false,
 });

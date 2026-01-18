@@ -1,8 +1,8 @@
 'use client';
 
 // ==========================================
-// VARIANT SELECTOR COMPONENT
-// Visual selector for section variants
+// BLOCK SELECTOR COMPONENT
+// Visual selector for section blocks
 // ==========================================
 
 import { Check } from 'lucide-react';
@@ -10,26 +10,26 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import type {
-  HeroVariant,
-  AboutVariant,
-  ProductsVariant,
-  TestimonialsVariant,
-  ContactVariant,
-  CtaVariant,
+  HeroBlock,
+  AboutBlock,
+  ProductsBlock,
+  TestimonialsBlock,
+  ContactBlock,
+  CtaBlock,
 } from '@/types/landing';
 
 // ==========================================
-// VARIANT METADATA (v3.0 NUMBERING SYSTEM)
+// BLOCK METADATA (v3.0 NUMBERING SYSTEM)
 // See MAPPING.md for design name references
 // ==========================================
 
-interface VariantOption {
+interface BlockOption {
   value: string;
   label: string;
   description: string;
 }
 
-const HERO_VARIANTS: VariantOption[] = [
+const HERO_BLOCKS: BlockOption[] = [
   { value: 'hero1', label: 'hero1', description: 'Centered' },
   { value: 'hero2', label: 'hero2', description: 'Split Screen' },
   { value: 'hero3', label: 'hero3', description: 'Video Background' },
@@ -39,7 +39,7 @@ const HERO_VARIANTS: VariantOption[] = [
   { value: 'hero7', label: 'hero7', description: 'Bento Grid' },
 ];
 
-const ABOUT_VARIANTS: VariantOption[] = [
+const ABOUT_BLOCKS: BlockOption[] = [
   { value: 'about1', label: 'about1', description: 'Grid' },
   { value: 'about2', label: 'about2', description: 'Side by Side' },
   { value: 'about3', label: 'about3', description: 'Centered' },
@@ -49,7 +49,7 @@ const ABOUT_VARIANTS: VariantOption[] = [
   { value: 'about7', label: 'about7', description: 'Storytelling' },
 ];
 
-const PRODUCTS_VARIANTS: VariantOption[] = [
+const PRODUCTS_BLOCKS: BlockOption[] = [
   { value: 'products1', label: 'products1', description: 'Grid' },
   { value: 'products2', label: 'products2', description: 'Grid Hover' },
   { value: 'products3', label: 'products3', description: 'Masonry' },
@@ -59,7 +59,7 @@ const PRODUCTS_VARIANTS: VariantOption[] = [
   { value: 'products7', label: 'products7', description: 'Featured Hero' },
 ];
 
-const TESTIMONIALS_VARIANTS: VariantOption[] = [
+const TESTIMONIALS_BLOCKS: BlockOption[] = [
   { value: 'testimonials1', label: 'testimonials1', description: 'Grid Cards' },
   { value: 'testimonials2', label: 'testimonials2', description: 'Card Slider' },
   { value: 'testimonials3', label: 'testimonials3', description: 'Quote Highlight' },
@@ -69,7 +69,7 @@ const TESTIMONIALS_VARIANTS: VariantOption[] = [
   { value: 'testimonials7', label: 'testimonials7', description: 'Marquee' },
 ];
 
-const CONTACT_VARIANTS: VariantOption[] = [
+const CONTACT_BLOCKS: BlockOption[] = [
   { value: 'contact1', label: 'contact1', description: 'Default' },
   { value: 'contact2', label: 'contact2', description: 'Split Form' },
   { value: 'contact3', label: 'contact3', description: 'Centered' },
@@ -79,7 +79,7 @@ const CONTACT_VARIANTS: VariantOption[] = [
   { value: 'contact7', label: 'contact7', description: 'Card Grid' },
 ];
 
-const CTA_VARIANTS: VariantOption[] = [
+const CTA_BLOCKS: BlockOption[] = [
   { value: 'cta1', label: 'cta1', description: 'Default' },
   { value: 'cta2', label: 'cta2', description: 'Bold Center' },
   { value: 'cta3', label: 'cta3', description: 'Gradient Banner' },
@@ -89,26 +89,26 @@ const CTA_VARIANTS: VariantOption[] = [
   { value: 'cta7', label: 'cta7', description: 'Countdown' },
 ];
 
-const VARIANT_OPTIONS_MAP = {
-  hero: HERO_VARIANTS,
-  about: ABOUT_VARIANTS,
-  products: PRODUCTS_VARIANTS,
-  testimonials: TESTIMONIALS_VARIANTS,
-  contact: CONTACT_VARIANTS,
-  cta: CTA_VARIANTS,
+const BLOCK_OPTIONS_MAP = {
+  hero: HERO_BLOCKS,
+  about: ABOUT_BLOCKS,
+  products: PRODUCTS_BLOCKS,
+  testimonials: TESTIMONIALS_BLOCKS,
+  contact: CONTACT_BLOCKS,
+  cta: CTA_BLOCKS,
 } as const;
 
 // ==========================================
 // TYPES
 // ==========================================
 
-type SectionType = keyof typeof VARIANT_OPTIONS_MAP;
-type VariantType = HeroVariant | AboutVariant | ProductsVariant | TestimonialsVariant | ContactVariant | CtaVariant;
+type SectionType = keyof typeof BLOCK_OPTIONS_MAP;
+type BlockType = HeroBlock | AboutBlock | ProductsBlock | TestimonialsBlock | ContactBlock | CtaBlock;
 
-interface VariantSelectorProps {
+interface BlockSelectorProps {
   section: SectionType;
-  selectedVariant?: string;
-  onSelect: (variant: string) => void;
+  selectedBlock?: string;
+  onSelect: (block: string) => void;
   disabled?: boolean;
 }
 
@@ -116,42 +116,42 @@ interface VariantSelectorProps {
 // MAIN COMPONENT
 // ==========================================
 
-export function VariantSelector({
+export function BlockSelector({
   section,
-  selectedVariant,
+  selectedBlock,
   onSelect,
   disabled = false,
-}: VariantSelectorProps) {
-  const variants = VARIANT_OPTIONS_MAP[section];
+}: BlockSelectorProps) {
+  const blocks = BLOCK_OPTIONS_MAP[section];
 
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">Variant Style</Label>
+      <Label className="text-sm font-medium">Block Style</Label>
       <div className="grid grid-cols-2 gap-2">
-        {variants.map((variant) => {
-          const isSelected = selectedVariant === variant.value;
+        {blocks.map((block) => {
+          const isSelected = selectedBlock === block.value;
 
           return (
             <Card
-              key={variant.value}
+              key={block.value}
               className={cn(
                 'cursor-pointer transition-all hover:shadow-md',
                 isSelected && 'border-2 border-primary bg-primary/5',
                 disabled && 'opacity-50 cursor-not-allowed'
               )}
-              onClick={() => !disabled && onSelect(variant.value)}
+              onClick={() => !disabled && onSelect(block.value)}
             >
               <CardContent className="p-3">
                 <div className="flex items-start gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-medium text-sm truncate">{variant.label}</p>
+                      <p className="font-medium text-sm truncate">{block.label}</p>
                       {isSelected && (
                         <Check className="h-4 w-4 text-primary flex-shrink-0" />
                       )}
                     </div>
                     <p className="text-xs text-muted-foreground line-clamp-2">
-                      {variant.description}
+                      {block.description}
                     </p>
                   </div>
                 </div>
@@ -162,9 +162,9 @@ export function VariantSelector({
       </div>
 
       {/* Selected indicator */}
-      {selectedVariant && (
+      {selectedBlock && (
         <p className="text-xs text-muted-foreground">
-          Selected: <span className="font-medium">{variants.find((v) => v.value === selectedVariant)?.label}</span>
+          Selected: <span className="font-medium">{blocks.find((b) => b.value === selectedBlock)?.label}</span>
         </p>
       )}
     </div>
@@ -172,7 +172,7 @@ export function VariantSelector({
 }
 
 // ==========================================
-// EXPORT VARIANT OPTIONS for external use
+// EXPORT BLOCK OPTIONS for external use
 // ==========================================
 
-export { HERO_VARIANTS, ABOUT_VARIANTS, PRODUCTS_VARIANTS, TESTIMONIALS_VARIANTS, CONTACT_VARIANTS, CTA_VARIANTS };
+export { HERO_BLOCKS, ABOUT_BLOCKS, PRODUCTS_BLOCKS, TESTIMONIALS_BLOCKS, CONTACT_BLOCKS, CTA_BLOCKS };

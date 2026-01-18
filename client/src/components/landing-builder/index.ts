@@ -10,7 +10,7 @@ export { TestimonialEditor } from './testimonial-editor';
 export { LandingErrorBoundary } from './landing-error-boundary';
 export { TemplateSelector } from './template-selector';
 export { LivePreview } from './live-preview';
-export { VariantSelector } from './variant-selector';
+export { BlockSelector } from './block-selector';
 
 // New builder UI components
 export { DeviceFrame } from './device-frame';

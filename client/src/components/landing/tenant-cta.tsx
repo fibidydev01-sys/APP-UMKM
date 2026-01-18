@@ -59,7 +59,7 @@ export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps)
   const defaultLink = urls?.products() || fallbacks.buttonLink || '/products';
   const buttonLink = extractCtaLink(ctaConfig, defaultLink);
 
-  const buttonVariant =
+  const buttonVariant: 'default' | 'secondary' | 'outline' =
     style === 'outline' ? 'outline' : style === 'secondary' ? 'secondary' : 'default';
 
   const commonProps = {

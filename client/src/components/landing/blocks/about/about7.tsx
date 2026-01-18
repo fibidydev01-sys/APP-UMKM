@@ -58,7 +58,7 @@ export function About7({ title, subtitle, content, image, features = [] }: About
 
               <div className="prose prose-lg max-w-none pl-8">
                 <p className="text-lg md:text-xl leading-relaxed text-muted-foreground italic">
-                  "{content}"
+                  &ldquo;{content}&rdquo;
                 </p>
               </div>
             </div>
