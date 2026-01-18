@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useStoreUrls } from '@/lib/store-url';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
-import { formatCurrency } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
 
 interface ProductsMinimalListProps {
@@ -98,7 +98,7 @@ export function ProductsMinimalList({
 
               {/* Price */}
               <div className="flex-shrink-0 text-right">
-                <p className="font-bold text-lg">{formatCurrency(product.price)}</p>
+                <p className="font-bold text-lg">{formatPrice(product.price)}</p>
                 {product.stock !== undefined && (
                   <p className="text-xs text-muted-foreground">
                     {product.stock > 0 ? `${product.stock} tersedia` : 'Habis'}
