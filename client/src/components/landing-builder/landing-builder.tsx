@@ -20,7 +20,6 @@ import {
   Rocket,
   AlertCircle,
   AlertTriangle,
-  ChevronDown,
   X,
 } from 'lucide-react';
 
@@ -30,12 +29,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
 import {
   Select,
   SelectContent,
@@ -142,7 +135,6 @@ export function LandingBuilder({
   onClearErrors,
   activeSection,
 }: LandingBuilderProps) {
-  const [expandedSections, setExpandedSections] = useState<string[]>(['hero']);
   const [showResetDialog, setShowResetDialog] = useState(false);
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
@@ -364,46 +356,34 @@ export function LandingBuilder({
         </div>
       </div>
 
-      {/* Sections Accordion */}
-      <Accordion
-        type="multiple"
-        value={expandedSections}
-        onValueChange={setExpandedSections}
-        className="space-y-3"
-      >
+      {/* Section Editor */}
+      <div className="space-y-6">
         {visibleSections.map((section) => {
           const IconComponent = section.icon;
           const sectionConfig = config[section.key];
           const isEnabled = sectionConfig?.enabled ?? false;
 
           return (
-            <AccordionItem
-              key={section.key}
-              value={section.key}
-              className={cn(
-                'border rounded-lg overflow-hidden transition-colors',
-                isEnabled && 'border-primary/50 bg-primary/5'
-              )}
-            >
+            <div key={section.key}>
               {/* Section Header */}
-              <div className="flex items-center gap-4 px-4 py-3">
-                <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
                   <div className={cn(
                     'p-2 rounded-lg',
                     isEnabled ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                   )}>
-                    <IconComponent className="h-4 w-4" />
+                    <IconComponent className="h-5 w-5" />
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div>
                     <div className="flex items-center gap-2">
-                      <p className="font-medium truncate">{section.title}</p>
+                      <h3 className="font-semibold text-lg">{section.title}</h3>
                       {isEnabled && (
                         <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
                           Aktif
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-sm text-muted-foreground">
                       {section.description}
                     </p>
                   </div>
@@ -411,16 +391,11 @@ export function LandingBuilder({
                 <Switch
                   checked={isEnabled}
                   onCheckedChange={(enabled) => handleToggleSection(section.key, enabled)}
-                  onClick={(e) => e.stopPropagation()}
                 />
-                <AccordionTrigger className="hover:no-underline p-0 [&[data-state=open]>svg]:rotate-180">
-                  <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                </AccordionTrigger>
               </div>
 
               {/* Section Content */}
-              <AccordionContent className="px-4 pb-4">
-                <Separator className="mb-4" />
+              <div className="space-y-4">
                 {section.key === 'testimonials' ? (
                   <TestimonialsSection
                     config={config.testimonials}
@@ -439,11 +414,11 @@ export function LandingBuilder({
                     onVariantChange={(variant) => handleVariantChange(section.key, variant)}
                   />
                 )}
-              </AccordionContent>
-            </AccordionItem>
+              </div>
+            </div>
           );
         })}
-      </Accordion>
+      </div>
 
       {/* Reset Confirmation Dialog */}
       <AlertDialog open={showResetDialog} onOpenChange={setShowResetDialog}>

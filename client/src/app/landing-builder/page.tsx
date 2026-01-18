@@ -14,7 +14,6 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   LivePreview,
   LandingErrorBoundary,
@@ -243,7 +242,7 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* RIGHT: Wide Sheet with Tabs */}
+      {/* RIGHT: Wide Sheet */}
       {activeSection && (
         <SectionSheet
           section={activeSection}
@@ -252,36 +251,21 @@ export default function LandingBuilderPage() {
           title="Edit Section"
           description="Customize your landing page sections"
         >
-          {/* Tabs for all sections */}
-          <Tabs value={activeSection} onValueChange={(v) => setActiveSection(v as SectionType)}>
-            <TabsList className="w-full grid grid-cols-6 mb-6">
-              <TabsTrigger value="hero">Hero</TabsTrigger>
-              <TabsTrigger value="about">About</TabsTrigger>
-              <TabsTrigger value="products">Products</TabsTrigger>
-              <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-              <TabsTrigger value="contact">Contact</TabsTrigger>
-              <TabsTrigger value="cta">CTA</TabsTrigger>
-            </TabsList>
-
-            {/* All tab contents */}
-            <TabsContent value={activeSection} className="space-y-6">
-              <LandingErrorBoundary>
-                <LandingBuilder
-                  config={landingConfig}
-                  onConfigChange={setLandingConfig}
-                  tenantSlug={tenant.slug}
-                  hasUnsavedChanges={hasUnsavedChanges}
-                  isSaving={isSaving}
-                  validationErrors={validationErrors}
-                  onPublish={handlePublish}
-                  onDiscard={handleDiscard}
-                  onReset={handleReset}
-                  onClearErrors={clearErrors}
-                  activeSection={activeSection}
-                />
-              </LandingErrorBoundary>
-            </TabsContent>
-          </Tabs>
+          <LandingErrorBoundary>
+            <LandingBuilder
+              config={landingConfig}
+              onConfigChange={setLandingConfig}
+              tenantSlug={tenant.slug}
+              hasUnsavedChanges={hasUnsavedChanges}
+              isSaving={isSaving}
+              validationErrors={validationErrors}
+              onPublish={handlePublish}
+              onDiscard={handleDiscard}
+              onReset={handleReset}
+              onClearErrors={clearErrors}
+              activeSection={activeSection}
+            />
+          </LandingErrorBoundary>
         </SectionSheet>
       )}
     </div>
