@@ -18,10 +18,9 @@ interface PreviewModeToggleProps {
 }
 
 const modes: { value: DeviceMode; label: string; icon: typeof Monitor }[] = [
-  { value: 'normal', label: 'Normal', icon: Monitor },
-  { value: 'laptop', label: 'Laptop', icon: Laptop },
-  { value: 'tablet', label: 'Tablet', icon: Tablet },
   { value: 'mobile', label: 'Mobile', icon: Smartphone },
+  { value: 'tablet', label: 'Tablet', icon: Tablet },
+  { value: 'laptop', label: 'Desktop', icon: Monitor },
 ];
 
 export function PreviewModeToggle({

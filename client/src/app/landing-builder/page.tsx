@@ -10,18 +10,11 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import {
   LivePreview,
   LandingErrorBoundary,
@@ -35,8 +28,8 @@ import { SectionSheet } from '@/components/landing-builder/section-sheet';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
-import { getAllTemplates, mergeWithTemplateDefaults } from '@/lib/landing';
-import { Save, ArrowLeft, Home, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { mergeWithTemplateDefaults } from '@/lib/landing';
+import { Save, Home, PanelLeftClose, PanelLeft } from 'lucide-react';
 import Link from 'next/link';
 import type { TenantLandingConfig, Product } from '@/types';
 
@@ -54,7 +47,7 @@ export default function LandingBuilderPage() {
   const [productsLoading, setProductsLoading] = useState(true);
 
   // UI State
-  const [previewMode, setPreviewMode] = useState<DeviceMode>('normal');
+  const [previewMode, setPreviewMode] = useState<DeviceMode>('laptop');
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
@@ -102,31 +95,6 @@ export default function LandingBuilderPage() {
 
     fetchProducts();
   }, [tenant]);
-
-  // ============================================================================
-  // TEMPLATE SWITCHING
-  // ============================================================================
-
-  const templates = getAllTemplates();
-  const currentTemplateId = landingConfig?.template || 'suspended-minimalist';
-
-  const handleTemplateChange = useCallback(
-    (templateId: string) => {
-      if (!tenant) return;
-
-      const mergedConfig = mergeWithTemplateDefaults(
-        landingConfig,
-        templateId as any,
-        {
-          name: tenant.name,
-          category: tenant.category,
-        }
-      );
-
-      setLandingConfig(mergedConfig as TenantLandingConfig);
-    },
-    [tenant, landingConfig, setLandingConfig]
-  );
 
   // ============================================================================
   // INITIAL TEMPLATE APPLICATION
@@ -257,31 +225,6 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* Top Controls Bar */}
-      <div className="h-14 border-b bg-muted/30 flex items-center justify-between px-4">
-        <div className="flex items-center gap-4">
-          {/* Template Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Template:</span>
-            <Select value={currentTemplateId} onValueChange={handleTemplateChange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {templates.map((template) => (
-                  <SelectItem key={template.id} value={template.id}>
-                    {template.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {/* Preview Mode Toggle */}
-        <PreviewModeToggle activeMode={previewMode} onChange={setPreviewMode} />
-      </div>
-
       {/* Main Layout: Sidebar + Preview (Sheet is overlay) */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT: Sidebar (Fixed) */}
@@ -292,17 +235,40 @@ export default function LandingBuilderPage() {
         />
 
         {/* CENTER: Live Preview with Device Frame */}
-        <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
-          <LandingErrorBoundary>
-            <DeviceFrame mode={previewMode}>
-              <LivePreview
-                config={landingConfig}
-                tenant={tenant}
-                products={products}
-                isLoading={productsLoading}
-              />
-            </DeviceFrame>
-          </LandingErrorBoundary>
+        <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
+          {/* Live Preview Header */}
+          <div className="h-14 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 flex items-center justify-between px-4">
+            <h2 className="font-medium text-sm">Live Preview</h2>
+            <div className="flex items-center gap-3">
+              <PreviewModeToggle activeMode={previewMode} onChange={setPreviewMode} />
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                onClick={() => {
+                  if (tenant?.slug) {
+                    window.open(`/${tenant.slug}`, '_blank');
+                  }
+                }}
+              >
+                <span>Open</span>
+              </Button>
+            </div>
+          </div>
+
+          {/* Preview Content */}
+          <div className="flex-1 overflow-hidden">
+            <LandingErrorBoundary>
+              <DeviceFrame mode={previewMode}>
+                <LivePreview
+                  config={landingConfig}
+                  tenant={tenant}
+                  products={products}
+                  isLoading={productsLoading}
+                />
+              </DeviceFrame>
+            </LandingErrorBoundary>
+          </div>
         </div>
       </div>
 
