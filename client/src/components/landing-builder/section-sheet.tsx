@@ -43,8 +43,8 @@ export function SectionSheet({
 }: SectionSheetProps) {
   return (
     <>
-      {/* Mobile: Drawer (< md) */}
-      <div className="md:hidden">
+      {/* Mobile + Tablet: Drawer (< lg) */}
+      <div className="lg:hidden">
         <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()} direction="bottom">
           <DrawerContent className="max-h-[85vh]">
             <div className="flex flex-col h-full">
@@ -60,10 +60,10 @@ export function SectionSheet({
         </Drawer>
       </div>
 
-      {/* Desktop: Sheet (>= md) */}
-      <div className="hidden md:block">
+      {/* Desktop: Sheet (>= lg) */}
+      <div className="hidden lg:block">
         <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-          <SheetContent className="w-[50vw] sm:w-[55vw] lg:w-[50vw] max-w-none overflow-y-auto p-0">
+          <SheetContent className="w-[50vw] lg:w-[45vw] xl:w-[40vw] max-w-none overflow-y-auto p-0">
             <div className="h-full flex flex-col">
               <SheetHeader className="px-6 pt-6 pb-4 border-b">
                 <SheetTitle>{title}</SheetTitle>
