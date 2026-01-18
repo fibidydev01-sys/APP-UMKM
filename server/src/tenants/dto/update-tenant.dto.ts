@@ -377,6 +377,10 @@ class HeroSectionDto {
   subtitle?: string;
 
   @IsOptional()
+  @IsString()
+  variant?: string;
+
+  @IsOptional()
   @ValidateNested()
   @Type(() => HeroSectionConfigDto)
   config?: HeroSectionConfigDto;
@@ -396,6 +400,10 @@ class AboutSectionDto {
   subtitle?: string;
 
   @IsOptional()
+  @IsString()
+  variant?: string;
+
+  @IsOptional()
   @ValidateNested()
   @Type(() => AboutSectionConfigDto)
   config?: AboutSectionConfigDto;
@@ -413,6 +421,10 @@ class ProductsSectionDto {
   @IsOptional()
   @IsString()
   subtitle?: string;
+
+  @IsOptional()
+  @IsString()
+  variant?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -435,6 +447,10 @@ class TestimonialsSectionDto {
   subtitle?: string;
 
   @IsOptional()
+  @IsString()
+  variant?: string;
+
+  @IsOptional()
   @ValidateNested()
   @Type(() => TestimonialsSectionConfigDto)
   config?: TestimonialsSectionConfigDto;
@@ -452,6 +468,10 @@ class ContactSectionDto {
   @IsOptional()
   @IsString()
   subtitle?: string;
+
+  @IsOptional()
+  @IsString()
+  variant?: string;
 
   @IsOptional()
   @ValidateNested()
@@ -473,6 +493,10 @@ class CtaSectionDto {
   subtitle?: string;
 
   @IsOptional()
+  @IsString()
+  variant?: string;
+
+  @IsOptional()
   @ValidateNested()
   @Type(() => CtaSectionConfigDto)
   config?: CtaSectionConfigDto;
@@ -486,6 +510,10 @@ class LandingConfigDto {
   @IsOptional()
   @IsBoolean()
   enabled?: boolean;
+
+  @IsOptional()
+  @IsString()
+  template?: string;
 
   @IsOptional()
   @ValidateNested()
