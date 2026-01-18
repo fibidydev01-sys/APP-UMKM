@@ -23,7 +23,8 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "ts-node prisma/seed.ts",
-    "prisma:reset": "prisma migrate reset --skip-seed && npm run prisma:seed"
+    "prisma:reset": "prisma migrate reset --skip-seed && npm run prisma:seed",
+    "migrate:variant-to-block": "ts-node src/migrations/variant-to-block.migration.ts"
   },
   "dependencies": {
     "@nestjs/axios": "^4.0.1",
