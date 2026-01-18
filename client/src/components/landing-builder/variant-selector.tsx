@@ -19,7 +19,8 @@ import type {
 } from '@/types/landing';
 
 // ==========================================
-// VARIANT METADATA
+// VARIANT METADATA (v3.0 NUMBERING SYSTEM)
+// See MAPPING.md for design name references
 // ==========================================
 
 interface VariantOption {
@@ -29,56 +30,58 @@ interface VariantOption {
 }
 
 const HERO_VARIANTS: VariantOption[] = [
-  { value: 'gradient-overlay', label: 'Gradient Overlay', description: 'Background with gradient overlay' },
-  { value: 'centered-minimal', label: 'Centered Minimal', description: 'Minimalist centered design' },
-  { value: 'split-screen', label: 'Split Screen', description: 'Content on left, image on right' },
-  { value: 'video-background', label: 'Video Background', description: 'Video or animated background' },
-  { value: 'parallax', label: 'Parallax', description: 'Parallax scrolling effect' },
-  { value: 'animated-gradient', label: 'Animated Gradient', description: 'Animated gradient background' },
-  { value: 'glass-morphism', label: 'Glass Morphism', description: 'Glassmorphism effect' },
+  { value: 'hero1', label: 'Centered', description: 'Classic centered hero with optional background image' },
+  { value: 'hero2', label: 'Split Screen', description: 'Split layout with content on left, image on right' },
+  { value: 'hero3', label: 'Video Background', description: 'Hero with video dialog - click to play video' },
+  { value: 'hero4', label: 'Parallax', description: 'Parallax scrolling effect with layered content' },
+  { value: 'hero5', label: 'Animated Gradient', description: 'Dynamic animated gradient with light rays' },
+  { value: 'hero6', label: 'Glass Morphism', description: 'Modern glass-morphism design with blur effects' },
 ];
 
 const ABOUT_VARIANTS: VariantOption[] = [
-  { value: 'side-by-side', label: 'Side by Side', description: 'Image alongside content' },
-  { value: 'centered', label: 'Centered', description: 'Centered content layout' },
-  { value: 'timeline', label: 'Timeline', description: 'Timeline-style layout' },
-  { value: 'cards', label: 'Cards', description: 'Card-based layout' },
-  { value: 'magazine', label: 'Magazine', description: 'Magazine-style layout' },
-  { value: 'storytelling', label: 'Storytelling', description: 'Story-focused layout' },
+  { value: 'about1', label: 'Grid', description: 'Grid layout with features showcase' },
+  { value: 'about2', label: 'Side by Side', description: 'Classic side-by-side layout with image and content' },
+  { value: 'about3', label: 'Centered', description: 'Centered content with clean typography' },
+  { value: 'about4', label: 'Timeline', description: 'Timeline-style story layout' },
+  { value: 'about5', label: 'Cards', description: 'Card-based feature highlights' },
+  { value: 'about6', label: 'Magazine', description: 'Magazine-style editorial layout' },
+  { value: 'about7', label: 'Storytelling', description: 'Story-focused narrative layout' },
 ];
 
 const PRODUCTS_VARIANTS: VariantOption[] = [
-  { value: 'grid-hover', label: 'Grid Hover', description: 'Grid with hover effects' },
-  { value: 'masonry', label: 'Masonry', description: 'Pinterest-style masonry grid' },
-  { value: 'carousel', label: 'Carousel', description: 'Sliding carousel' },
-  { value: 'featured-hero', label: 'Featured Hero', description: 'Hero product with grid' },
-  { value: 'catalog', label: 'Catalog', description: 'Catalog list view' },
-  { value: 'minimal-list', label: 'Minimal List', description: 'Minimalist list layout' },
+  { value: 'products1', label: 'Grid', description: 'Clean product grid layout' },
+  { value: 'products2', label: 'Grid Hover', description: 'Grid with interactive hover effects' },
+  { value: 'products3', label: 'Masonry', description: 'Pinterest-style masonry grid' },
+  { value: 'products4', label: 'Carousel', description: 'Sliding carousel showcase' },
+  { value: 'products5', label: 'Catalog', description: 'Catalog list view' },
+  { value: 'products6', label: 'Minimal List', description: 'Minimalist list layout' },
 ];
 
 const TESTIMONIALS_VARIANTS: VariantOption[] = [
-  { value: 'card-slider', label: 'Card Slider', description: 'Sliding cards' },
-  { value: 'quote-highlight', label: 'Quote Highlight', description: 'Highlighted quotes' },
-  { value: 'grid-cards', label: 'Grid Cards', description: 'Grid of testimonial cards' },
-  { value: 'single-focus', label: 'Single Focus', description: 'One testimonial at a time' },
-  { value: 'video-testimonials', label: 'Video Testimonials', description: 'Video-based testimonials' },
-  { value: 'social-proof', label: 'Social Proof', description: 'Social proof style' },
+  { value: 'testimonials1', label: 'Grid Cards', description: 'Grid of testimonial cards' },
+  { value: 'testimonials2', label: 'Card Slider', description: 'Sliding testimonial cards' },
+  { value: 'testimonials3', label: 'Quote Highlight', description: 'Highlighted quote focus' },
+  { value: 'testimonials4', label: 'Single Focus', description: 'One testimonial at a time' },
+  { value: 'testimonials5', label: 'Video', description: 'Video-based testimonials' },
+  { value: 'testimonials6', label: 'Social Proof', description: 'Social proof style layout' },
 ];
 
 const CONTACT_VARIANTS: VariantOption[] = [
-  { value: 'split-form', label: 'Split Form', description: 'Form with info split' },
-  { value: 'centered', label: 'Centered', description: 'Centered contact form' },
-  { value: 'map-focus', label: 'Map Focus', description: 'Map-focused layout' },
-  { value: 'minimal', label: 'Minimal', description: 'Minimalist contact' },
-  { value: 'social-focused', label: 'Social Focused', description: 'Social media focused' },
+  { value: 'contact1', label: 'Default', description: 'Standard contact layout' },
+  { value: 'contact2', label: 'Split Form', description: 'Form with info split layout' },
+  { value: 'contact3', label: 'Centered', description: 'Centered contact form' },
+  { value: 'contact4', label: 'Map Focus', description: 'Map-focused contact layout' },
+  { value: 'contact5', label: 'Minimal', description: 'Minimalist contact design' },
+  { value: 'contact6', label: 'Social Focused', description: 'Social media focused layout' },
 ];
 
 const CTA_VARIANTS: VariantOption[] = [
-  { value: 'bold-center', label: 'Bold Center', description: 'Bold centered CTA' },
-  { value: 'gradient-banner', label: 'Gradient Banner', description: 'Gradient background banner' },
-  { value: 'split-action', label: 'Split Action', description: 'Split with multiple actions' },
-  { value: 'floating', label: 'Floating', description: 'Floating CTA card' },
-  { value: 'minimal-line', label: 'Minimal Line', description: 'Minimal single line' },
+  { value: 'cta1', label: 'Default', description: 'Standard call-to-action' },
+  { value: 'cta2', label: 'Bold Center', description: 'Bold centered CTA' },
+  { value: 'cta3', label: 'Gradient Banner', description: 'Gradient background banner' },
+  { value: 'cta4', label: 'Split Action', description: 'Split with multiple actions' },
+  { value: 'cta5', label: 'Floating', description: 'Floating CTA card' },
+  { value: 'cta6', label: 'Minimal Line', description: 'Minimal single line CTA' },
 ];
 
 const VARIANT_OPTIONS_MAP = {

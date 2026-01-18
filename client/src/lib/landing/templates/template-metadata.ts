@@ -13,6 +13,11 @@ import type { LandingTemplate, TemplateId } from './template-types';
  *
  * 🚀 SYNCED WITH BACKEND: All 11 templates from backend validator
  */
+/**
+ * v3.0 NUMBERING SYSTEM
+ * All blocks now use numbered format (hero1, about2, etc.)
+ * See MAPPING.md for design name references
+ */
 export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
   'suspended-minimalist': {
     id: 'suspended-minimalist',
@@ -20,12 +25,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Ultra minimal design for suspended tenants - clean and simple',
     category: 'minimal',
     blocks: {
-      hero: 'centered-minimal',
-      about: 'centered',
-      products: 'minimal-list',
-      testimonials: 'default',
-      contact: 'minimal',
-      cta: 'minimal-line',
+      hero: 'hero1',      // Centered
+      about: 'about3',    // Centered
+      products: 'products6', // Minimal List
+      testimonials: 'testimonials1', // Grid Cards
+      contact: 'contact5', // Minimal
+      cta: 'cta6',        // Minimal Line
     },
   },
   'modern-starter': {
@@ -34,12 +39,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Clean and contemporary design - perfect for modern brands',
     category: 'modern',
     blocks: {
-      hero: 'gradient-overlay',
-      about: 'side-by-side',
-      products: 'grid-hover',
-      testimonials: 'card-slider',
-      contact: 'split-form',
-      cta: 'bold-center',
+      hero: 'hero1',      // Centered (was gradient-overlay)
+      about: 'about2',    // Side by Side
+      products: 'products2', // Grid Hover
+      testimonials: 'testimonials2', // Card Slider
+      contact: 'contact2', // Split Form
+      cta: 'cta2',        // Bold Center
     },
   },
   'bold-starter': {
@@ -48,12 +53,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Eye-catching design with bold visuals - make a statement',
     category: 'creative',
     blocks: {
-      hero: 'animated-gradient',
-      about: 'magazine',
-      products: 'featured-hero',
-      testimonials: 'quote-highlight',
-      contact: 'social-focused',
-      cta: 'gradient-banner',
+      hero: 'hero5',      // Animated Gradient
+      about: 'about6',    // Magazine
+      products: 'products2', // Grid Hover (was featured-hero)
+      testimonials: 'testimonials3', // Quote Highlight
+      contact: 'contact6', // Social Focused
+      cta: 'cta3',        // Gradient Banner
     },
   },
   'classic-starter': {
@@ -62,12 +67,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Traditional layout with timeless appeal',
     category: 'classic',
     blocks: {
-      hero: 'split-screen',
-      about: 'timeline',
-      products: 'carousel',
-      testimonials: 'grid-cards',
-      contact: 'map-focus',
-      cta: 'split-action',
+      hero: 'hero2',      // Split Screen
+      about: 'about4',    // Timeline
+      products: 'products4', // Carousel
+      testimonials: 'testimonials1', // Grid Cards
+      contact: 'contact4', // Map Focus
+      cta: 'cta4',        // Split Action
     },
   },
   'brand-starter': {
@@ -76,12 +81,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Emphasize brand identity with storytelling elements',
     category: 'creative',
     blocks: {
-      hero: 'glass-morphism',
-      about: 'storytelling',
-      products: 'masonry',
-      testimonials: 'single-focus',
-      contact: 'centered',
-      cta: 'floating',
+      hero: 'hero6',      // Glass Morphism
+      about: 'about7',    // Storytelling
+      products: 'products3', // Masonry
+      testimonials: 'testimonials4', // Single Focus
+      contact: 'contact3', // Centered
+      cta: 'cta5',        // Floating
     },
   },
   'catalog-starter': {
@@ -90,12 +95,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Product-focused design - ideal for catalogs and e-commerce',
     category: 'catalog',
     blocks: {
-      hero: 'default',
-      about: 'default',
-      products: 'catalog',
-      testimonials: 'social-proof',
-      contact: 'default',
-      cta: 'default',
+      hero: 'hero1',      // Centered (default)
+      about: 'about1',    // Grid (default)
+      products: 'products5', // Catalog
+      testimonials: 'testimonials6', // Social Proof
+      contact: 'contact1', // Default
+      cta: 'cta1',        // Default
     },
   },
   'fresh-starter': {
@@ -104,12 +109,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Light and airy design with modern aesthetics',
     category: 'modern',
     blocks: {
-      hero: 'centered-minimal',
-      about: 'centered',
-      products: 'grid-hover',
-      testimonials: 'card-slider',
-      contact: 'split-form',
-      cta: 'minimal-line',
+      hero: 'hero1',      // Centered
+      about: 'about3',    // Centered
+      products: 'products2', // Grid Hover
+      testimonials: 'testimonials2', // Card Slider
+      contact: 'contact2', // Split Form
+      cta: 'cta6',        // Minimal Line
     },
   },
   'elegant-starter': {
@@ -118,12 +123,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Sophisticated and refined design for premium brands',
     category: 'professional',
     blocks: {
-      hero: 'parallax',
-      about: 'magazine',
-      products: 'masonry',
-      testimonials: 'quote-highlight',
-      contact: 'centered',
-      cta: 'bold-center',
+      hero: 'hero4',      // Parallax
+      about: 'about6',    // Magazine
+      products: 'products3', // Masonry
+      testimonials: 'testimonials3', // Quote Highlight
+      contact: 'contact3', // Centered
+      cta: 'cta2',        // Bold Center
     },
   },
   'dynamic-starter': {
@@ -132,12 +137,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Energetic design with motion and interactivity',
     category: 'creative',
     blocks: {
-      hero: 'video-background',
-      about: 'cards',
-      products: 'featured-hero',
-      testimonials: 'video-testimonials',
-      contact: 'social-focused',
-      cta: 'gradient-banner',
+      hero: 'hero3',      // Video Background
+      about: 'about5',    // Cards
+      products: 'products2', // Grid Hover (was featured-hero)
+      testimonials: 'testimonials5', // Video
+      contact: 'contact6', // Social Focused
+      cta: 'cta3',        // Gradient Banner
     },
   },
   'professional-starter': {
@@ -146,12 +151,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Clean and trustworthy design for businesses',
     category: 'professional',
     blocks: {
-      hero: 'split-screen',
-      about: 'side-by-side',
-      products: 'grid-hover',
-      testimonials: 'grid-cards',
-      contact: 'map-focus',
-      cta: 'split-action',
+      hero: 'hero2',      // Split Screen
+      about: 'about2',    // Side by Side
+      products: 'products2', // Grid Hover
+      testimonials: 'testimonials1', // Grid Cards
+      contact: 'contact4', // Map Focus
+      cta: 'cta4',        // Split Action
     },
   },
   custom: {
@@ -160,12 +165,12 @@ export const LANDING_TEMPLATES: Record<TemplateId, LandingTemplate> = {
     description: 'Start from scratch and build your own unique design',
     category: 'modern',
     blocks: {
-      hero: 'default',
-      about: 'default',
-      products: 'default',
-      testimonials: 'default',
-      contact: 'default',
-      cta: 'default',
+      hero: 'hero1',      // Default
+      about: 'about1',    // Default
+      products: 'products1', // Default
+      testimonials: 'testimonials1', // Default
+      contact: 'contact1', // Default
+      cta: 'cta1',        // Default
     },
   },
 } as const;

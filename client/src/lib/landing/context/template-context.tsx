@@ -39,15 +39,16 @@ export function TemplateProvider({ children, initialTemplateId }: TemplateProvid
 
   const currentTemplate = useMemo(() => getTemplate(templateId), [templateId]);
 
+  // v3.0 NUMBERING SYSTEM - fallback to default numbered blocks
   const value: TemplateContextValue = {
     currentTemplate,
     setTemplate: setTemplateId,
     getHeroBlock: () => currentTemplate.blocks.hero,
     getAboutBlock: () => currentTemplate.blocks.about,
     getProductsBlock: () => currentTemplate.blocks.products,
-    getTestimonialsBlock: () => currentTemplate.blocks.testimonials || 'default',
-    getContactBlock: () => currentTemplate.blocks.contact || 'default',
-    getCtaBlock: () => currentTemplate.blocks.cta || 'default',
+    getTestimonialsBlock: () => currentTemplate.blocks.testimonials || 'testimonials1',
+    getContactBlock: () => currentTemplate.blocks.contact || 'contact1',
+    getCtaBlock: () => currentTemplate.blocks.cta || 'cta1',
   };
 
   return <TemplateContext.Provider value={value}>{children}</TemplateContext.Provider>;

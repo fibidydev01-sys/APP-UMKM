@@ -62,6 +62,16 @@ export type CtaBlock =
   | 'cta6'; // Minimal Line
 
 // ==========================================
+// TYPE ALIASES (for backward compatibility)
+// ==========================================
+export type HeroVariant = HeroBlock;
+export type AboutVariant = AboutBlock;
+export type ProductsVariant = ProductsBlock;
+export type TestimonialsVariant = TestimonialsBlock;
+export type ContactVariant = ContactBlock;
+export type CtaVariant = CtaBlock;
+
+// ==========================================
 // SECTION BASE INTERFACE
 // ==========================================
 
