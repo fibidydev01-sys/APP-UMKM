@@ -2,8 +2,10 @@
  * Landing Builder Layout
  *
  * Minimal layout for full-screen builder experience
- * No dashboard sidebar, no header - just the builder
+ * Protected with AuthGuard - requires authentication
  */
+
+import { AuthGuard } from '@/components/auth';
 
 export default function LandingBuilderLayout({
   children,
@@ -11,8 +13,10 @@ export default function LandingBuilderLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="h-screen w-screen overflow-hidden">
-      {children}
-    </div>
+    <AuthGuard requireAuth redirectTo="/login">
+      <div className="h-screen w-screen overflow-hidden">
+        {children}
+      </div>
+    </AuthGuard>
   );
 }
