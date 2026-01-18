@@ -44,58 +44,59 @@ export type TemplateId =
   | 'professional-starter'
   | 'custom';
 
+/**
+ * v3.0 NUMBERING SYSTEM
+ * See client/src/components/landing/blocks/MAPPING.md for design name references
+ */
+
 export type HeroBlock =
-  | 'default'
-  | 'gradient-overlay'
-  | 'centered-minimal'
-  | 'split-screen'
-  | 'video-background'
-  | 'parallax'
-  | 'animated-gradient'
-  | 'glass-morphism';
+  | 'hero1'   // Centered (default)
+  | 'hero2'   // Split Screen
+  | 'hero3'   // Video Background
+  | 'hero4'   // Parallax
+  | 'hero5'   // Animated Gradient
+  | 'hero6';  // Glass Morphism
 
 export type AboutBlock =
-  | 'default'
-  | 'side-by-side'
-  | 'centered'
-  | 'timeline'
-  | 'cards'
-  | 'magazine'
-  | 'storytelling';
+  | 'about1'  // Grid (default)
+  | 'about2'  // Side by Side
+  | 'about3'  // Centered
+  | 'about4'  // Timeline
+  | 'about5'  // Cards
+  | 'about6'  // Magazine
+  | 'about7'; // Storytelling
 
 export type ProductsBlock =
-  | 'default'
-  | 'grid-hover'
-  | 'masonry'
-  | 'carousel'
-  | 'featured-hero'
-  | 'catalog'
-  | 'minimal-list';
+  | 'products1'  // Grid (default)
+  | 'products2'  // Grid Hover
+  | 'products3'  // Masonry
+  | 'products4'  // Carousel
+  | 'products5'  // Catalog
+  | 'products6'; // Minimal List
 
 export type TestimonialsBlock =
-  | 'default'
-  | 'card-slider'
-  | 'quote-highlight'
-  | 'grid-cards'
-  | 'single-focus'
-  | 'video-testimonials'
-  | 'social-proof';
+  | 'testimonials1'  // Grid Cards (default)
+  | 'testimonials2'  // Card Slider
+  | 'testimonials3'  // Quote Highlight
+  | 'testimonials4'  // Single Focus
+  | 'testimonials5'  // Video
+  | 'testimonials6'; // Social Proof
 
 export type ContactBlock =
-  | 'default'
-  | 'split-form'
-  | 'centered'
-  | 'map-focus'
-  | 'minimal'
-  | 'social-focused';
+  | 'contact1'  // Default
+  | 'contact2'  // Split Form
+  | 'contact3'  // Centered
+  | 'contact4'  // Map Focus
+  | 'contact5'  // Minimal
+  | 'contact6'; // Social Focused
 
 export type CtaBlock =
-  | 'default'
-  | 'bold-center'
-  | 'gradient-banner'
-  | 'split-action'
-  | 'floating'
-  | 'minimal-line';
+  | 'cta1'  // Default
+  | 'cta2'  // Bold Center
+  | 'cta3'  // Gradient Banner
+  | 'cta4'  // Split Action
+  | 'cta5'  // Floating
+  | 'cta6'; // Minimal Line
 
 // ==========================================
 // CONFIG INTERFACES (Updated with variant)
@@ -240,20 +241,11 @@ const landingConfigSchema = {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 Block field
+        // 🚀 Block field (v3.0 numbering)
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: [
-            'default',
-            'gradient-overlay',
-            'centered-minimal',
-            'split-screen',
-            'video-background',
-            'parallax',
-            'animated-gradient',
-            'glass-morphism',
-          ],
+          enum: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'],
         },
         config: {
           type: 'object' as const,
@@ -281,19 +273,11 @@ const landingConfigSchema = {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 Block field
+        // 🚀 Block field (v3.0 numbering)
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: [
-            'default',
-            'side-by-side',
-            'centered',
-            'timeline',
-            'cards',
-            'magazine',
-            'storytelling',
-          ],
+          enum: ['about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7'],
         },
         config: {
           type: 'object' as const,
@@ -320,19 +304,11 @@ const landingConfigSchema = {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 Block field
+        // 🚀 Block field (v3.0 numbering)
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: [
-            'default',
-            'grid-hover',
-            'masonry',
-            'carousel',
-            'featured-hero',
-            'catalog',
-            'minimal-list',
-          ],
+          enum: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6'],
         },
         config: {
           type: 'object' as const,
@@ -357,19 +333,11 @@ const landingConfigSchema = {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 Block field
+        // 🚀 Block field (v3.0 numbering)
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: [
-            'default',
-            'card-slider',
-            'quote-highlight',
-            'grid-cards',
-            'single-focus',
-            'video-testimonials',
-            'social-proof',
-          ],
+          enum: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6'],
         },
         config: {
           type: 'object' as const,
@@ -393,18 +361,11 @@ const landingConfigSchema = {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 Block field
+        // 🚀 Block field (v3.0 numbering)
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: [
-            'default',
-            'split-form',
-            'centered',
-            'map-focus',
-            'minimal',
-            'social-focused',
-          ],
+          enum: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6'],
         },
         config: {
           type: 'object' as const,
@@ -426,18 +387,11 @@ const landingConfigSchema = {
         enabled: { type: 'boolean' as const },
         title: { type: 'string' as const, maxLength: 200 },
         subtitle: { type: 'string' as const, maxLength: 500 },
-        // 🚀 Block field
+        // 🚀 Block field (v3.0 numbering)
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: [
-            'default',
-            'bold-center',
-            'gradient-banner',
-            'split-action',
-            'floating',
-            'minimal-line',
-          ],
+          enum: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6'],
         },
         config: {
           type: 'object' as const,
@@ -714,16 +668,7 @@ export function isValidTemplate(template: string): template is TemplateId {
 }
 
 export function isValidHeroBlock(block: string): block is HeroBlock {
-  const validBlocks: HeroBlock[] = [
-    'default',
-    'gradient-overlay',
-    'centered-minimal',
-    'split-screen',
-    'video-background',
-    'parallax',
-    'animated-gradient',
-    'glass-morphism',
-  ];
+  const validBlocks: HeroBlock[] = ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'];
   return validBlocks.includes(block as HeroBlock);
 }
 
@@ -734,12 +679,12 @@ export function isValidHeroBlock(block: string): block is HeroBlock {
 export function getDefaultLandingConfig(): LandingConfig {
   return {
     enabled: false,
-    template: 'suspended-minimalist', // 🚀 NEW: Default template
+    template: 'suspended-minimalist', // 🚀 Default template
     hero: {
       enabled: false,
       title: '',
       subtitle: '',
-      block: 'default', // 🚀 Default block
+      block: 'hero1', // 🚀 v3.0 Default block
       config: {
         layout: 'centered',
         showCta: false,
@@ -751,7 +696,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Tentang Kami',
       subtitle: '',
-      block: 'default', // 🚀 Default block
+      block: 'about1', // 🚀 v3.0 Default block
       config: {
         showImage: false,
         features: [],
@@ -761,7 +706,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Produk Kami',
       subtitle: 'Pilihan produk terbaik untuk Anda',
-      block: 'default', // 🚀 Default block
+      block: 'products1', // 🚀 v3.0 Default block
       config: {
         displayMode: 'featured',
         limit: 8,
@@ -772,7 +717,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Testimoni',
       subtitle: 'Apa kata pelanggan kami',
-      block: 'default', // 🚀 Default block
+      block: 'testimonials1', // 🚀 v3.0 Default block
       config: {
         items: [],
       },
@@ -781,7 +726,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Hubungi Kami',
       subtitle: '',
-      block: 'default', // 🚀 Default block
+      block: 'contact1', // 🚀 v3.0 Default block
       config: {
         showMap: false,
         showForm: false,
@@ -792,7 +737,7 @@ export function getDefaultLandingConfig(): LandingConfig {
       enabled: false,
       title: 'Siap Berbelanja?',
       subtitle: '',
-      block: 'default', // 🚀 Default block
+      block: 'cta1', // 🚀 v3.0 Default block
       config: {
         buttonText: 'Mulai Belanja',
         style: 'primary',
@@ -821,57 +766,10 @@ export const AVAILABLE_TEMPLATES: TemplateId[] = [
 ];
 
 export const AVAILABLE_BLOCKS = {
-  hero: [
-    'default',
-    'gradient-overlay',
-    'centered-minimal',
-    'split-screen',
-    'video-background',
-    'parallax',
-    'animated-gradient',
-    'glass-morphism',
-  ] as HeroBlock[],
-  about: [
-    'default',
-    'side-by-side',
-    'centered',
-    'timeline',
-    'cards',
-    'magazine',
-    'storytelling',
-  ] as AboutBlock[],
-  products: [
-    'default',
-    'grid-hover',
-    'masonry',
-    'carousel',
-    'featured-hero',
-    'catalog',
-    'minimal-list',
-  ] as ProductsBlock[],
-  testimonials: [
-    'default',
-    'card-slider',
-    'quote-highlight',
-    'grid-cards',
-    'single-focus',
-    'video-testimonials',
-    'social-proof',
-  ] as TestimonialsBlock[],
-  contact: [
-    'default',
-    'split-form',
-    'centered',
-    'map-focus',
-    'minimal',
-    'social-focused',
-  ] as ContactBlock[],
-  cta: [
-    'default',
-    'bold-center',
-    'gradient-banner',
-    'split-action',
-    'floating',
-    'minimal-line',
-  ] as CtaBlock[],
+  hero: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6'] as HeroBlock[],
+  about: ['about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7'] as AboutBlock[],
+  products: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6'] as ProductsBlock[],
+  testimonials: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6'] as TestimonialsBlock[],
+  contact: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6'] as ContactBlock[],
+  cta: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6'] as CtaBlock[],
 };
