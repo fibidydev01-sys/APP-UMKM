@@ -8,10 +8,6 @@
 
 import { useState, useCallback } from 'react';
 import {
-  Loader2,
-  Eye,
-  Upload,
-  RotateCcw,
   Target,
   BookOpen,
   ShoppingBag,
@@ -244,10 +240,6 @@ export function LandingBuilder({
     setShowResetDialog(false);
   };
 
-  const handlePreview = () => {
-    window.open(`/store/${tenantSlug}`, '_blank');
-  };
-
   // ==========================================================================
   // RENDER
   // ==========================================================================
@@ -301,60 +293,6 @@ export function LandingBuilder({
           </div>
         </Card>
       )}
-
-      {/* Header & Actions */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">Konfigurasi Section</h3>
-          <p className="text-sm text-muted-foreground">
-            Aktifkan dan atur setiap bagian landing page
-          </p>
-        </div>
-        <div className="flex gap-2 flex-wrap">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleReset}
-            disabled={isSaving}
-          >
-            <RotateCcw className="h-4 w-4 mr-2" />
-            Reset
-          </Button>
-          {hasUnsavedChanges && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDiscard}
-              disabled={isSaving}
-            >
-              Batalkan
-            </Button>
-          )}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handlePreview}
-          >
-            <Eye className="h-4 w-4 mr-2" />
-            Preview
-          </Button>
-          <Button
-            size="sm"
-            onClick={handlePublish}
-            disabled={isSaving || !hasUnsavedChanges}
-            className={cn(
-              hasUnsavedChanges && !isSaving && 'bg-green-600 hover:bg-green-700'
-            )}
-          >
-            {isSaving ? (
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            ) : (
-              <Upload className="h-4 w-4 mr-2" />
-            )}
-            {isSaving ? 'Publishing...' : 'Publish'}
-          </Button>
-        </div>
-      </div>
 
       {/* Section Editor */}
       <div className="space-y-6">

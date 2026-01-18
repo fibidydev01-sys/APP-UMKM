@@ -26,7 +26,7 @@ import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
 import { mergeWithTemplateDefaults } from '@/lib/landing';
-import { Save, Home, PanelLeftClose, PanelLeft } from 'lucide-react';
+import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import type { TenantLandingConfig, Product } from '@/types';
 
@@ -199,6 +199,16 @@ export default function LandingBuilderPage() {
               Discard
             </Button>
           )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleReset}
+            disabled={isSaving}
+            className="gap-2"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Reset
+          </Button>
           <Button
             size="sm"
             onClick={handlePublish}
