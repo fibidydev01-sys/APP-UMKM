@@ -1,7 +1,9 @@
 /**
  * SectionSheet Component
  *
- * Base wrapper for section edit sheets that slide from the right
+ * Responsive wrapper for section editing:
+ * - Mobile: Drawer (slide from bottom)
+ * - Desktop: Sheet (slide from right)
  */
 
 'use client';
@@ -13,6 +15,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import type { SectionType } from './builder-sidebar';
 
 interface SectionSheetProps {
@@ -33,18 +42,40 @@ export function SectionSheet({
   children,
 }: SectionSheetProps) {
   return (
-    <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <SheetContent className="w-[50vw] sm:w-[55vw] lg:w-[50vw] max-w-none overflow-y-auto p-0">
-        <div className="h-full flex flex-col">
-          <SheetHeader className="px-6 pt-6 pb-4 border-b">
-            <SheetTitle>{title}</SheetTitle>
-            {description && <SheetDescription>{description}</SheetDescription>}
-          </SheetHeader>
-          <div className="flex-1 overflow-y-auto px-6 py-6">
-            {children}
-          </div>
-        </div>
-      </SheetContent>
-    </Sheet>
+    <>
+      {/* Mobile: Drawer (< md) */}
+      <div className="md:hidden">
+        <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()} direction="bottom">
+          <DrawerContent className="max-h-[85vh]">
+            <div className="flex flex-col h-full">
+              <DrawerHeader className="px-4 pt-4 pb-3 border-b">
+                <DrawerTitle>{title}</DrawerTitle>
+                {description && <DrawerDescription>{description}</DrawerDescription>}
+              </DrawerHeader>
+              <div className="flex-1 overflow-y-auto px-4 py-4">
+                {children}
+              </div>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </div>
+
+      {/* Desktop: Sheet (>= md) */}
+      <div className="hidden md:block">
+        <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
+          <SheetContent className="w-[50vw] sm:w-[55vw] lg:w-[50vw] max-w-none overflow-y-auto p-0">
+            <div className="h-full flex flex-col">
+              <SheetHeader className="px-6 pt-6 pb-4 border-b">
+                <SheetTitle>{title}</SheetTitle>
+                {description && <SheetDescription>{description}</SheetDescription>}
+              </SheetHeader>
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                {children}
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
   );
 }
