@@ -39,7 +39,6 @@ import type { TenantLandingConfig, Product } from '@/types';
 
 export default function LandingBuilderPage() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const initialTemplateParam = searchParams.get('template');
 
   const { tenant, refresh } = useTenant();
