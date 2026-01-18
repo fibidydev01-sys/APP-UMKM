@@ -127,11 +127,23 @@ export default function LandingBuilderPage() {
     setShowFormSheet(false);
   }, []);
 
-  // Step 2: User clicks variant → Open form sheet/drawer
+  // Step 2: User clicks variant → Update config and open form sheet/drawer
   const handleVariantSelect = useCallback((variant: string) => {
-    // Variant change will be handled by LandingBuilder
+    if (!activeSection || !landingConfig) return;
+
+    // Update variant in config
+    const currentSection = landingConfig[activeSection] || {};
+    setLandingConfig({
+      ...landingConfig,
+      [activeSection]: {
+        ...currentSection,
+        variant,
+      },
+    } as TenantLandingConfig);
+
+    // Open form sheet
     setShowFormSheet(true);
-  }, []);
+  }, [activeSection, landingConfig, setLandingConfig]);
 
   // Close variant sidebar
   const handleVariantSidebarClose = useCallback(() => {
