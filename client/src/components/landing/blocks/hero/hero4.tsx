@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { Sparkles, Zap } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Badge } from '@/components/ui/badge';
+import { LightRays } from '@/components/ui/light-rays';
+import { DotPattern } from '@/components/ui/dot-pattern';
 import { cn } from '@/lib/utils';
 
 interface Hero4Props {
@@ -20,10 +23,11 @@ interface Hero4Props {
 
 /**
  * Hero Block: hero4
- * Design: Parallax
+ * Design: Parallax with Light Rays
  *
- * Parallax scrolling effect with layered content
- * Creates depth and modern feel with smooth animations
+ * Modern depth effect using LightRays and DotPattern - MOBILE FIRST!
+ * Creates magical atmosphere with animated light rays
+ * No custom scroll listeners - pure CSS and framer-motion
  */
 export function Hero4({
   title,
@@ -35,146 +39,164 @@ export function Hero4({
   logo,
   storeName,
 }: Hero4Props) {
-  const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (heroRef.current) {
-        const rect = heroRef.current.getBoundingClientRect();
-        const scrolled = Math.max(0, -rect.top);
-        setScrollY(scrolled);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
-    <section
-      ref={heroRef}
-      className="relative min-h-[700px] flex items-center justify-center overflow-hidden rounded-xl"
-    >
-      {/* Parallax Background Layers */}
-      <div
-        className="absolute inset-0"
-        style={{
-          transform: `translateY(${scrollY * 0.5}px)`,
-        }}
-      >
+    <section className="relative min-h-[600px] md:min-h-[700px] lg:min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image or Gradient */}
+      <div className="absolute inset-0">
         {backgroundImage ? (
           <OptimizedImage
             src={backgroundImage}
             alt={storeName || title}
             fill
-            crop="fill"
-            gravity="auto"
-            sizes="100vw"
             priority
-            loading="eager"
-            fetchPriority="high"
-            className="object-cover scale-110"
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/20 via-purple-500/10 to-background" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        {/* Overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
       </div>
 
-      {/* Floating geometric shapes for parallax effect */}
-      <div
-        className="absolute top-20 left-10 w-20 h-20 rounded-full bg-primary/10 blur-xl"
-        style={{
-          transform: `translateY(${scrollY * 0.3}px)`,
-        }}
-      />
-      <div
-        className="absolute top-40 right-20 w-32 h-32 rounded-full bg-purple-500/10 blur-xl"
-        style={{
-          transform: `translateY(${scrollY * 0.4}px)`,
-        }}
-      />
-      <div
-        className="absolute bottom-20 left-1/4 w-24 h-24 rounded-full bg-pink-500/10 blur-xl"
-        style={{
-          transform: `translateY(${scrollY * 0.2}px)`,
-        }}
+      {/* Light Rays Effect - Creates depth and parallax feel */}
+      <LightRays
+        count={8}
+        color="rgba(160, 210, 255, 0.15)"
+        blur={40}
+        speed={16}
+        length="80vh"
+        className="hidden md:block"
       />
 
-      {/* Content with parallax */}
-      <div
-        className="relative z-10 max-w-5xl px-6 py-16"
-        style={{
-          transform: `translateY(${scrollY * 0.1}px)`,
-          opacity: Math.max(0, 1 - scrollY / 400),
-        }}
-      >
-        <div className="text-center space-y-8">
+      {/* Dot Pattern Overlay - Subtle texture */}
+      <DotPattern
+        width={20}
+        height={20}
+        cx={1}
+        cy={1}
+        cr={1}
+        className="opacity-30 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]"
+      />
+
+      {/* Content - MOBILE FIRST */}
+      <div className="relative z-10 container px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-5xl mx-auto text-center space-y-6 md:space-y-8"
+        >
           {/* Logo */}
           {logo && (
-            <div className="relative h-24 w-24 mx-auto rounded-full overflow-hidden border-4 border-white shadow-2xl animate-float">
-              <OptimizedImage
-                src={logo}
-                alt={storeName || title}
-                fill
-                crop="fill"
-                gravity="auto"
-                className="object-cover"
-              />
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="flex justify-center mb-6 md:mb-8"
+            >
+              <motion.div
+                animate={{
+                  y: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="relative h-20 w-20 md:h-24 md:w-24 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl"
+              >
+                <OptimizedImage
+                  src={logo}
+                  alt={storeName || title}
+                  fill
+                  className="object-cover"
+                />
+              </motion.div>
+            </motion.div>
           )}
 
-          {/* Title */}
-          <h1
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="inline-block mb-4 md:mb-6"
+          >
+            <Badge variant="secondary" className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base backdrop-blur-sm">
+              <Zap className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+              {storeName || 'Premium Collection'}
+            </Badge>
+          </motion.div>
+
+          {/* Title - MOBILE OPTIMIZED */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
             className={cn(
-              'text-4xl md:text-6xl lg:text-7xl font-bold',
+              'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight',
               backgroundImage ? 'text-white drop-shadow-2xl' : 'text-foreground'
             )}
           >
             {title}
-          </h1>
+          </motion.h1>
 
+          {/* Subtitle */}
           {subtitle && (
-            <p
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
               className={cn(
-                'text-lg md:text-2xl max-w-3xl mx-auto',
+                'text-base sm:text-lg md:text-xl lg:text-2xl max-w-3xl mx-auto leading-relaxed px-4',
                 backgroundImage ? 'text-white/90 drop-shadow-lg' : 'text-muted-foreground'
               )}
             >
               {subtitle}
-            </p>
+            </motion.p>
           )}
 
+          {/* CTA - MOBILE FRIENDLY */}
           {showCta && (
-            <div className="pt-8">
-              <Link href={ctaLink}>
-                <Button
-                  size="lg"
-                  className="gap-2 text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
-                >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="pt-4 md:pt-8 flex justify-center"
+            >
+              <Link href={ctaLink} className="w-full sm:w-auto">
+                <InteractiveHoverButton className="w-full sm:w-auto min-w-[200px] text-base md:text-lg px-6 md:px-8 py-4 md:py-6 shadow-xl">
                   {ctaText}
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
+                </InteractiveHoverButton>
               </Link>
-            </div>
+            </motion.div>
           )}
-        </div>
-      </div>
 
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-        :global(.animate-float) {
-          animation: float 3s ease-in-out infinite;
-        }
-      `}</style>
+          {/* Floating Features - MOBILE STACKED */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="flex flex-wrap justify-center gap-4 pt-8"
+          >
+            {['Premium Quality', 'Fast Shipping', 'Secure Payment'].map((feature, index) => (
+              <motion.div
+                key={feature}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 + index * 0.1, duration: 0.5 }}
+                className={cn(
+                  'flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-sm text-xs md:text-sm',
+                  backgroundImage ? 'bg-white/10 text-white' : 'bg-muted text-foreground'
+                )}
+              >
+                <Sparkles className="h-3 w-3" />
+                <span>{feature}</span>
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.div>
+      </div>
     </section>
   );
 }

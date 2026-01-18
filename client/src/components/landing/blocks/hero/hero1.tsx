@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import type { TenantLandingConfig } from '@/types';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface Hero1Props {
   title: string;
@@ -22,14 +24,14 @@ interface Hero1Props {
  * Hero Block: hero1
  * Design: Centered
  *
- * Classic centered hero with optional background image
- * Content is centered with vertical alignment
+ * Classic centered hero - MOBILE FIRST!
+ * Proper spacing dan tidak gepeng di mobile
  */
 export function Hero1({
   title,
   subtitle,
-  ctaText = 'Lihat Produk',
-  ctaLink = '/products',
+  ctaText = 'Get Started',
+  ctaLink = '#',
   showCta = true,
   backgroundImage,
   overlayOpacity = 0.5,
@@ -37,71 +39,162 @@ export function Hero1({
   storeName,
 }: Hero1Props) {
   return (
-    <section className="relative min-h-[400px] flex items-center justify-center overflow-hidden rounded-xl">
-      {/* Background */}
+    <section className="relative min-h-[600px] md:min-h-[700px] lg:min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
       {backgroundImage && (
         <>
-          <div className="absolute inset-0">
-            <OptimizedImage
-              src={backgroundImage}
-              alt={storeName || title}
-              fill
-              crop="fill"
-              gravity="auto"
-              sizes="100vw"
-              priority
-              loading="eager"
-              fetchPriority="high"
-              className="object-cover"
-            />
-          </div>
-          <div className="absolute inset-0 bg-black" style={{ opacity: overlayOpacity }} />
+          <OptimizedImage
+            src={backgroundImage}
+            alt="Hero Background"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div
+            className="absolute inset-0 bg-black transition-opacity"
+            style={{ opacity: overlayOpacity }}
+          />
         </>
       )}
 
-      {/* Content */}
-      <div className="relative z-10 max-w-3xl px-6 py-12 flex flex-col gap-4 text-center items-center">
-        {/* Logo */}
-        {logo && (
-          <div className="relative h-20 w-20 rounded-full overflow-hidden border-4 border-white shadow-lg">
-            <OptimizedImage
-              src={logo}
-              alt={storeName || title}
-              fill
-              crop="fill"
-              gravity="auto"
-              className="object-cover"
-            />
-          </div>
-        )}
+      {/* Gradient Background (fallback) */}
+      {!backgroundImage && (
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-blue-500/10" />
+      )}
 
-        <h1
-          className={`text-3xl md:text-5xl font-bold ${backgroundImage ? 'text-white' : 'text-foreground'}`}
+      {/* Content Container - MOBILE FIRST! */}
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-4xl mx-auto text-center"
         >
-          {title}
-        </h1>
+          {/* Logo */}
+          {logo && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.5 }}
+              className="flex justify-center mb-6 md:mb-8"
+            >
+              <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
+                <OptimizedImage
+                  src={logo}
+                  alt={storeName || 'Logo'}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            </motion.div>
+          )}
 
-        {subtitle && (
-          <p
-            className={`text-lg md:text-xl max-w-2xl ${backgroundImage ? 'text-white/90' : 'text-muted-foreground'}`}
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="inline-block mb-6"
           >
-            {subtitle}
-          </p>
-        )}
+            <Badge variant="secondary" className="px-4 py-2 text-sm md:text-base shadow-lg">
+              <Sparkles className="h-4 w-4 mr-2" />
+              {storeName || 'Welcome'}
+            </Badge>
+          </motion.div>
 
-        {showCta && (
-          <Link href={ctaLink}>
-            <Button size="lg" className="mt-4 gap-2">
-              {ctaText}
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        )}
+          {/* Title - MOBILE OPTIMIZED dengan line breaks */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className={cn(
+              "text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8",
+              "leading-tight",
+              backgroundImage ? "text-white drop-shadow-lg" : "text-foreground"
+            )}
+          >
+            {title}
+          </motion.h1>
+
+          {/* Subtitle - MOBILE OPTIMIZED dengan proper padding */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className={cn(
+                "text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-12",
+                "max-w-2xl mx-auto leading-relaxed",
+                backgroundImage ? "text-white/90 drop-shadow" : "text-muted-foreground"
+              )}
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+          {/* CTA Button - MOBILE FRIENDLY width */}
+          {showCta && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="flex justify-center"
+            >
+              <Link href={ctaLink} className="w-full sm:w-auto">
+                <InteractiveHoverButton className="w-full sm:w-auto min-w-[200px] text-base md:text-lg px-6 md:px-8 py-4 md:py-6 shadow-xl">
+                  {ctaText}
+                </InteractiveHoverButton>
+              </Link>
+            </motion.div>
+          )}
+
+          {/* Trust Indicators - MOBILE STACKED */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="mt-10 md:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto text-xs md:text-sm"
+          >
+            <div className={cn(
+              "flex items-center justify-center gap-2 px-4 py-2 rounded-lg backdrop-blur-sm",
+              backgroundImage ? "bg-white/10 text-white" : "bg-muted text-foreground"
+            )}>
+              <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
+              <span>1000+ Customers</span>
+            </div>
+            <div className={cn(
+              "flex items-center justify-center gap-2 px-4 py-2 rounded-lg backdrop-blur-sm",
+              backgroundImage ? "bg-white/10 text-white" : "bg-muted text-foreground"
+            )}>
+              <span className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
+              <span>Fast Shipping</span>
+            </div>
+            <div className={cn(
+              "flex items-center justify-center gap-2 px-4 py-2 rounded-lg backdrop-blur-sm",
+              backgroundImage ? "bg-white/10 text-white" : "bg-muted text-foreground"
+            )}>
+              <span className="h-2 w-2 bg-purple-500 rounded-full animate-pulse" />
+              <span>Secure Payment</span>
+            </div>
+          </motion.div>
+        </motion.div>
       </div>
 
-      {!backgroundImage && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-background to-primary/10 -z-10" />
-      )}
+      {/* Scroll Indicator - Hidden on Mobile */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1, duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block"
+      >
+        <div className={cn(
+          "flex flex-col items-center gap-2",
+          backgroundImage ? "text-white/70" : "text-muted-foreground"
+        )}>
+          <span className="text-xs uppercase tracking-wider">Scroll</span>
+          <ArrowRight className="h-5 w-5 rotate-90" />
+        </div>
+      </motion.div>
     </section>
   );
 }
