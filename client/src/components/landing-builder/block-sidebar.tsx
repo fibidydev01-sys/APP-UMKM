@@ -83,58 +83,58 @@ interface BlockOption {
  * See MAPPING.md for design name references
  */
 const HERO_BLOCKS: BlockOption[] = [
-  { value: 'hero1', label: 'Centered', description: 'Classic centered hero with optional background image', icon: Minimize2 },
-  { value: 'hero2', label: 'Split Screen', description: 'Split layout with content on left, image on right', icon: SplitSquareHorizontal },
-  { value: 'hero3', label: 'Video Background', description: 'Hero with video dialog - click to play video', icon: Film },
-  { value: 'hero4', label: 'Parallax', description: 'Parallax scrolling effect with layered content', icon: Move },
-  { value: 'hero5', label: 'Animated Gradient', description: 'Dynamic animated gradient with light rays', icon: Sparkles },
-  { value: 'hero6', label: 'Glass Morphism', description: 'Modern glass-morphism design with blur effects', icon: GlassWater },
+  { value: 'hero1', label: 'hero1', description: 'Centered - Classic centered hero', icon: Minimize2 },
+  { value: 'hero2', label: 'hero2', description: 'Split Screen - Content left, image right', icon: SplitSquareHorizontal },
+  { value: 'hero3', label: 'hero3', description: 'Video Background - Click to play video', icon: Film },
+  { value: 'hero4', label: 'hero4', description: 'Parallax - Scrolling effect', icon: Move },
+  { value: 'hero5', label: 'hero5', description: 'Animated Gradient - Light rays effect', icon: Sparkles },
+  { value: 'hero6', label: 'hero6', description: 'Glass Morphism - Blur effects', icon: GlassWater },
 ];
 
 const ABOUT_BLOCKS: BlockOption[] = [
-  { value: 'about1', label: 'Grid', description: 'Grid layout with features showcase', icon: Grid3x3 },
-  { value: 'about2', label: 'Side by Side', description: 'Classic side-by-side layout with image and content', icon: SplitSquareHorizontal },
-  { value: 'about3', label: 'Centered', description: 'Centered content with clean typography', icon: Circle },
-  { value: 'about4', label: 'Timeline', description: 'Timeline-style story layout', icon: Clock },
-  { value: 'about5', label: 'Cards', description: 'Card-based feature highlights', icon: Grid3x3 },
-  { value: 'about6', label: 'Magazine', description: 'Magazine-style editorial layout', icon: BookOpen },
-  { value: 'about7', label: 'Storytelling', description: 'Story-focused narrative layout', icon: Type },
+  { value: 'about1', label: 'about1', description: 'Grid - Features showcase', icon: Grid3x3 },
+  { value: 'about2', label: 'about2', description: 'Side by Side - Image and content', icon: SplitSquareHorizontal },
+  { value: 'about3', label: 'about3', description: 'Centered - Clean typography', icon: Circle },
+  { value: 'about4', label: 'about4', description: 'Timeline - Story layout', icon: Clock },
+  { value: 'about5', label: 'about5', description: 'Cards - Feature highlights', icon: Grid3x3 },
+  { value: 'about6', label: 'about6', description: 'Magazine - Editorial layout', icon: BookOpen },
+  { value: 'about7', label: 'about7', description: 'Storytelling - Narrative layout', icon: Type },
 ];
 
 const PRODUCTS_BLOCKS: BlockOption[] = [
-  { value: 'products1', label: 'Grid', description: 'Clean product grid layout', icon: Grid3x3 },
-  { value: 'products2', label: 'Grid Hover', description: 'Grid with interactive hover effects', icon: Grid3x3 },
-  { value: 'products3', label: 'Masonry', description: 'Pinterest-style masonry grid', icon: LayoutGrid },
-  { value: 'products4', label: 'Carousel', description: 'Sliding carousel showcase', icon: ArrowDownUp },
-  { value: 'products5', label: 'Catalog', description: 'Catalog list view', icon: BookOpen },
-  { value: 'products6', label: 'Minimal List', description: 'Minimalist list layout', icon: List },
+  { value: 'products1', label: 'products1', description: 'Grid - Clean product grid', icon: Grid3x3 },
+  { value: 'products2', label: 'products2', description: 'Grid Hover - Interactive effects', icon: Grid3x3 },
+  { value: 'products3', label: 'products3', description: 'Masonry - Pinterest-style', icon: LayoutGrid },
+  { value: 'products4', label: 'products4', description: 'Carousel - Sliding showcase', icon: ArrowDownUp },
+  { value: 'products5', label: 'products5', description: 'Catalog - List view', icon: BookOpen },
+  { value: 'products6', label: 'products6', description: 'Minimal List - Minimalist', icon: List },
 ];
 
 const TESTIMONIALS_BLOCKS: BlockOption[] = [
-  { value: 'testimonials1', label: 'Grid Cards', description: 'Grid of testimonial cards', icon: Grid3x3 },
-  { value: 'testimonials2', label: 'Card Slider', description: 'Sliding testimonial cards', icon: ArrowDownUp },
-  { value: 'testimonials3', label: 'Quote Highlight', description: 'Highlighted quote focus', icon: Quote },
-  { value: 'testimonials4', label: 'Single Focus', description: 'One testimonial at a time', icon: Focus },
-  { value: 'testimonials5', label: 'Video', description: 'Video-based testimonials', icon: Video },
-  { value: 'testimonials6', label: 'Social Proof', description: 'Social proof style layout', icon: ThumbsUp },
+  { value: 'testimonials1', label: 'testimonials1', description: 'Grid Cards - Card grid', icon: Grid3x3 },
+  { value: 'testimonials2', label: 'testimonials2', description: 'Card Slider - Sliding cards', icon: ArrowDownUp },
+  { value: 'testimonials3', label: 'testimonials3', description: 'Quote Highlight - Featured quote', icon: Quote },
+  { value: 'testimonials4', label: 'testimonials4', description: 'Single Focus - One at a time', icon: Focus },
+  { value: 'testimonials5', label: 'testimonials5', description: 'Video - Video testimonials', icon: Video },
+  { value: 'testimonials6', label: 'testimonials6', description: 'Social Proof - Social style', icon: ThumbsUp },
 ];
 
 const CONTACT_BLOCKS: BlockOption[] = [
-  { value: 'contact1', label: 'Default', description: 'Standard contact layout', icon: Mail },
-  { value: 'contact2', label: 'Split Form', description: 'Form with info split layout', icon: SplitSquareHorizontal },
-  { value: 'contact3', label: 'Centered', description: 'Centered contact form', icon: Circle },
-  { value: 'contact4', label: 'Map Focus', description: 'Map-focused contact layout', icon: MapPin },
-  { value: 'contact5', label: 'Minimal', description: 'Minimalist contact design', icon: Minimize2 },
-  { value: 'contact6', label: 'Social Focused', description: 'Social media focused layout', icon: Hash },
+  { value: 'contact1', label: 'contact1', description: 'Default - Standard layout', icon: Mail },
+  { value: 'contact2', label: 'contact2', description: 'Split Form - Form with info', icon: SplitSquareHorizontal },
+  { value: 'contact3', label: 'contact3', description: 'Centered - Centered form', icon: Circle },
+  { value: 'contact4', label: 'contact4', description: 'Map Focus - Map layout', icon: MapPin },
+  { value: 'contact5', label: 'contact5', description: 'Minimal - Minimalist', icon: Minimize2 },
+  { value: 'contact6', label: 'contact6', description: 'Social Focused - Social media', icon: Hash },
 ];
 
 const CTA_BLOCKS: BlockOption[] = [
-  { value: 'cta1', label: 'Default', description: 'Standard call-to-action', icon: Megaphone },
-  { value: 'cta2', label: 'Bold Center', description: 'Bold centered CTA', icon: Megaphone },
-  { value: 'cta3', label: 'Gradient Banner', description: 'Gradient background banner', icon: Layers },
-  { value: 'cta4', label: 'Split Action', description: 'Split with multiple actions', icon: SplitSquareHorizontal },
-  { value: 'cta5', label: 'Floating', description: 'Floating CTA card', icon: Cloud },
-  { value: 'cta6', label: 'Minimal Line', description: 'Minimal single line CTA', icon: Minimize2 },
+  { value: 'cta1', label: 'cta1', description: 'Default - Standard CTA', icon: Megaphone },
+  { value: 'cta2', label: 'cta2', description: 'Bold Center - Bold centered', icon: Megaphone },
+  { value: 'cta3', label: 'cta3', description: 'Gradient Banner - Gradient bg', icon: Layers },
+  { value: 'cta4', label: 'cta4', description: 'Split Action - Multiple actions', icon: SplitSquareHorizontal },
+  { value: 'cta5', label: 'cta5', description: 'Floating - Floating card', icon: Cloud },
+  { value: 'cta6', label: 'cta6', description: 'Minimal Line - Single line', icon: Minimize2 },
 ];
 
 const BLOCK_OPTIONS_MAP = {
