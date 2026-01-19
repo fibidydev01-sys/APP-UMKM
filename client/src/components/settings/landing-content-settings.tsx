@@ -90,6 +90,7 @@ interface LandingContentSettingsProps {
   onSave?: () => void;
   hideHero?: boolean; // Option to hide Hero section (avoid duplication with basic store info)
   showSaveButton?: boolean; // Option to hide save button (when using unified save)
+  renderAsAccordionItems?: boolean; // NEW: Render only AccordionItems, no Card wrapper
 }
 
 // ============================================================================
@@ -158,13 +159,15 @@ export function LandingContentSettings({
   onSave,
   hideHero = false,
   showSaveButton = true,
+  renderAsAccordionItems = false,
 }: LandingContentSettingsProps) {
-  const [openSections, setOpenSections] = useState<string[]>(hideHero ? ['about'] : ['hero']);
-
   // -------------------------------------------------------------------------
   // Loading State
   // -------------------------------------------------------------------------
   if (isLoading || !data) {
+    // When rendering as accordion items, parent handles loading
+    if (renderAsAccordionItems) return null;
+
     return (
       <Card>
         <CardContent className="p-6 space-y-4">
@@ -232,30 +235,14 @@ export function LandingContentSettings({
   };
 
   // -------------------------------------------------------------------------
-  // Render
+  // Render - All AccordionItems
   // -------------------------------------------------------------------------
-  return (
-    <div className="space-y-6">
-      <Card>
-        <CardContent className="p-6">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Konten Landing Page</h3>
-            <p className="text-sm text-muted-foreground">
-              Kelola informasi yang akan ditampilkan di landing page toko Anda.
-              Data ini bersifat permanen dan tidak akan berubah saat Anda mengganti template.
-            </p>
-          </div>
-
-          <Accordion
-            type="multiple"
-            value={openSections}
-            onValueChange={setOpenSections}
-            className="w-full"
-          >
-            {/* =============================================================== */}
-            {/* HERO SECTION */}
-            {/* =============================================================== */}
-            {!hideHero && (
+  const accordionItems = (
+    <>
+      {/* =============================================================== */}
+      {/* HERO SECTION */}
+      {/* =============================================================== */}
+      {!hideHero && (
             <AccordionItem value="hero">
               <AccordionTrigger className="hover:no-underline">
                 <div className="flex items-center gap-2">
@@ -709,6 +696,37 @@ export function LandingContentSettings({
                 </div>
               </AccordionContent>
             </AccordionItem>
+    </>
+  );
+
+  // -------------------------------------------------------------------------
+  // Render Mode: AccordionItems Only (for unified card)
+  // -------------------------------------------------------------------------
+  if (renderAsAccordionItems) {
+    return accordionItems;
+  }
+
+  // -------------------------------------------------------------------------
+  // Render Mode: Full Card Wrapper (standalone)
+  // -------------------------------------------------------------------------
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardContent className="p-6">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Konten Landing Page</h3>
+            <p className="text-sm text-muted-foreground">
+              Kelola informasi yang akan ditampilkan di landing page toko Anda.
+              Data ini bersifat permanen dan tidak akan berubah saat Anda mengganti template.
+            </p>
+          </div>
+
+          <Accordion
+            type="multiple"
+            defaultValue={hideHero ? ['about'] : ['hero']}
+            className="w-full"
+          >
+            {accordionItems}
           </Accordion>
         </CardContent>
       </Card>

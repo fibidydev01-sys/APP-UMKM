@@ -13,6 +13,8 @@ import { useState, useCallback, useEffect } from 'react';
 import { Loader2, Save } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Accordion } from '@/components/ui/accordion';
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,
@@ -570,37 +572,52 @@ export default function SettingsPage() {
           onSheetOpenChange={setSheetOpen}
         />
 
-        {/* Tab: Store Info */}
+        {/* Tab: Store Info - UNIFIED CARD */}
         <TabsContent value="store" className="mt-6">
-          <div className="space-y-6">
-            <StoreInfoForm
-              formData={formData ? { name: formData.name, description: formData.description, phone: formData.phone, address: formData.address } : null}
-              tenantEmail={tenant?.email}
-              tenantSlug={tenant?.slug}
-              isLoading={tenantLoading}
-              isSaving={isSaving}
-              onFormChange={updateFormData}
-              showSaveButton={false}
-            />
+          <Card>
+            <CardHeader>
+              <CardTitle>Informasi Toko</CardTitle>
+              <CardDescription>
+                Kelola informasi toko dan konten landing page Anda. Data ini akan ditampilkan kepada pelanggan.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion
+                type="multiple"
+                defaultValue={['store-info']}
+                className="w-full"
+              >
+                {/* Store Info Section */}
+                <StoreInfoForm
+                  formData={formData ? { name: formData.name, description: formData.description, phone: formData.phone, address: formData.address } : null}
+                  tenantEmail={tenant?.email}
+                  tenantSlug={tenant?.slug}
+                  isLoading={tenantLoading}
+                  onFormChange={updateFormData}
+                />
 
-            <LandingContentSettings
-              data={landingContent}
-              isLoading={tenantLoading}
-              isSaving={isSaving}
-              onDataChange={setLandingContent}
-              hideHero={true}
-              showSaveButton={false}
-            />
+                {/* Landing Content Sections (About, Testimonials, Contact, CTA) */}
+                <LandingContentSettings
+                  data={landingContent}
+                  isLoading={tenantLoading}
+                  isSaving={isSaving}
+                  onDataChange={setLandingContent}
+                  hideHero={true}
+                  showSaveButton={false}
+                  renderAsAccordionItems={true}
+                />
+              </Accordion>
 
-            {/* UNIFIED SAVE BUTTON */}
-            <div className="flex justify-end pt-4 border-t">
-              <Button onClick={handleSaveStoreTab} disabled={isSaving} size="lg">
-                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <Save className="mr-2 h-4 w-4" />
-                Simpan Semua Perubahan
-              </Button>
-            </div>
-          </div>
+              {/* UNIFIED SAVE BUTTON */}
+              <div className="flex justify-end pt-6 mt-6 border-t">
+                <Button onClick={handleSaveStoreTab} disabled={isSaving} size="lg">
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <Save className="mr-2 h-4 w-4" />
+                  Simpan Semua Perubahan
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Tab: Payment */}
