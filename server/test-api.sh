@@ -52,8 +52,8 @@ echo -e "${GREEN}Response:${NC}"
 echo "$GET_RESPONSE" | jq '.' 2>/dev/null || echo "$GET_RESPONSE"
 echo ""
 
-# 3. PATCH TENANT (Pakai cookies)
-echo -e "${YELLOW}📍 Step 3: UPDATE TENANT (PATCH)${NC}"
+# 3. PATCH TENANT - TEST ALL UNIFIED STATE FIELDS (Pakai cookies)
+echo -e "${YELLOW}📍 Step 3: UPDATE TENANT - ALL FIELDS (PATCH)${NC}"
 echo -e "${YELLOW}PATCH ${BASE_URL}/api/tenants/me${NC}\n"
 
 PATCH_RESPONSE=$(curl -s -X PATCH "${BASE_URL}/api/tenants/me" \
@@ -64,33 +64,95 @@ PATCH_RESPONSE=$(curl -s -X PATCH "${BASE_URL}/api/tenants/me" \
     "description": "Test Description UPDATED",
     "phone": "+6281234567890",
     "address": "Test Address UPDATED",
+    "heroTitle": "TEST HERO TITLE UPDATED",
+    "heroSubtitle": "TEST HERO SUBTITLE UPDATED",
+    "heroCtaText": "TEST HERO CTA TEXT",
+    "heroCtaLink": "/products-test",
+    "heroBackgroundImage": "https://example.com/hero-updated.jpg",
+    "aboutTitle": "TEST ABOUT TITLE UPDATED",
+    "aboutSubtitle": "TEST ABOUT SUBTITLE UPDATED",
+    "aboutContent": "TEST ABOUT CONTENT UPDATED - This is a long description about our store.",
+    "aboutImage": "https://example.com/about-updated.jpg",
+    "aboutFeatures": [
+      {
+        "icon": "🔥",
+        "title": "Test Feature 1",
+        "description": "Feature 1 description"
+      },
+      {
+        "icon": "⭐",
+        "title": "Test Feature 2",
+        "description": "Feature 2 description"
+      }
+    ],
+    "testimonialsTitle": "TEST TESTIMONIALS TITLE UPDATED",
+    "testimonialsSubtitle": "TEST TESTIMONIALS SUBTITLE UPDATED",
+    "testimonials": [
+      {
+        "name": "Test User 1",
+        "role": "Test Role 1",
+        "content": "This is test testimonial 1",
+        "avatar": "https://example.com/avatar1.jpg"
+      },
+      {
+        "name": "Test User 2",
+        "role": "Test Role 2",
+        "content": "This is test testimonial 2",
+        "avatar": "https://example.com/avatar2.jpg"
+      }
+    ],
     "contactTitle": "TEST CONTACT TITLE UPDATED",
     "contactSubtitle": "TEST CONTACT SUBTITLE UPDATED",
+    "contactMapUrl": "https://maps.google.com/test",
+    "contactShowMap": true,
+    "contactShowForm": true,
     "ctaTitle": "TEST CTA TITLE UPDATED",
-    "ctaSubtitle": "TEST CTA SUBTITLE UPDATED"
+    "ctaSubtitle": "TEST CTA SUBTITLE UPDATED",
+    "ctaButtonText": "TEST CTA BUTTON",
+    "ctaButtonLink": "/test-cta-link",
+    "ctaButtonStyle": "primary"
   }')
 
 echo -e "${GREEN}Response:${NC}"
 echo "$PATCH_RESPONSE" | jq '.' 2>/dev/null || echo "$PATCH_RESPONSE"
 echo ""
 
-# 4. VERIFY UPDATE
-echo -e "${YELLOW}📍 Step 4: VERIFY UPDATE${NC}"
+# 4. VERIFY UPDATE - CHECK ALL FIELDS
+echo -e "${YELLOW}📍 Step 4: VERIFY UPDATE - ALL UNIFIED STATE FIELDS${NC}"
 echo -e "${YELLOW}GET ${BASE_URL}/api/tenants/me${NC}\n"
 
 VERIFY_RESPONSE=$(curl -s -X GET "${BASE_URL}/api/tenants/me" \
   -b "${COOKIE_FILE}")
 
-echo -e "${GREEN}Response (Fields yang diupdate):${NC}"
+echo -e "${GREEN}Response (All Updated Fields):${NC}"
 echo "$VERIFY_RESPONSE" | jq '{
   name,
   description,
   phone,
   address,
+  heroTitle,
+  heroSubtitle,
+  heroCtaText,
+  heroCtaLink,
+  heroBackgroundImage,
+  aboutTitle,
+  aboutSubtitle,
+  aboutContent,
+  aboutImage,
+  aboutFeatures,
+  testimonialsTitle,
+  testimonialsSubtitle,
+  testimonials,
   contactTitle,
   contactSubtitle,
+  contactMapUrl,
+  contactShowMap,
+  contactShowForm,
   ctaTitle,
-  ctaSubtitle
+  ctaSubtitle,
+  ctaButtonText,
+  ctaButtonLink,
+  ctaButtonStyle
 }' 2>/dev/null || echo "$VERIFY_RESPONSE"
 
 echo -e "\n${BLUE}================================${NC}"

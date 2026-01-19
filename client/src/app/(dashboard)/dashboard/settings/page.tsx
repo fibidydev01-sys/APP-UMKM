@@ -10,7 +10,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, MoveUp, MoveDown } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -20,6 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,
@@ -646,290 +647,569 @@ export default function SettingsPage() {
                 Kelola informasi toko dan konten landing page. Semua data disimpan ke database yang sama.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-8">
-              {/* ============================================ */}
-              {/* SECTION 1: Informasi Dasar - 🔥 UNIFIED STATE */}
-              {/* ============================================ */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold border-b pb-2">Informasi Dasar</h3>
-                {tenantLoading || !storeTabData ? (
-                  <div className="space-y-4">
-                    <Skeleton className="h-10 w-full" />
-                    <Skeleton className="h-10 w-full" />
+            <CardContent>
+              {tenantLoading || !storeTabData ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              ) : (
+                <>
+                  <Accordion type="multiple" defaultValue={['basic', 'hero', 'about', 'testimonials', 'contact', 'cta']} className="w-full">
+                    {/* ============================================ */}
+                    {/* SECTION 1: Informasi Dasar */}
+                    {/* ============================================ */}
+                    <AccordionItem value="basic">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        Informasi Dasar
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="store-name">Nama Toko</Label>
+                            <Input
+                              id="store-name"
+                              placeholder="Nama toko Anda"
+                              value={storeTabData.name}
+                              onChange={(e) => updateStoreTabData('name', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="store-email">Email Toko</Label>
+                            <Input
+                              id="store-email"
+                              value={tenant?.email || ''}
+                              disabled
+                            />
+                            <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="store-phone">Nomor Telepon</Label>
+                            <Input
+                              id="store-phone"
+                              placeholder="+62 xxx xxxx xxxx"
+                              value={storeTabData.phone}
+                              onChange={(e) => updateStoreTabData('phone', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="store-slug">URL Toko</Label>
+                            <Input
+                              id="store-slug"
+                              value={`fibidy.com/store/${tenant?.slug || ''}`}
+                              disabled
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="store-description">Deskripsi Toko</Label>
+                          <Textarea
+                            id="store-description"
+                            placeholder="Ceritakan tentang toko Anda..."
+                            rows={3}
+                            value={storeTabData.description}
+                            onChange={(e) => updateStoreTabData('description', e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="store-address">Alamat</Label>
+                          <Textarea
+                            id="store-address"
+                            placeholder="Alamat lengkap toko"
+                            rows={2}
+                            value={storeTabData.address}
+                            onChange={(e) => updateStoreTabData('address', e.target.value)}
+                          />
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    {/* ============================================ */}
+                    {/* SECTION 2: Hero Section - NEW! */}
+                    {/* ============================================ */}
+                    <AccordionItem value="hero">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        Hero Section - Banner Utama
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="heroTitle">Judul Hero</Label>
+                            <Input
+                              id="heroTitle"
+                              placeholder="Selamat Datang di Toko Kami"
+                              value={storeTabData.heroTitle}
+                              onChange={(e) => updateStoreTabData('heroTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="heroSubtitle">Subtitle Hero</Label>
+                            <Input
+                              id="heroSubtitle"
+                              placeholder="Temukan produk terbaik untuk Anda"
+                              value={storeTabData.heroSubtitle}
+                              onChange={(e) => updateStoreTabData('heroSubtitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="heroCtaText">Teks Tombol CTA</Label>
+                            <Input
+                              id="heroCtaText"
+                              placeholder="Belanja Sekarang"
+                              value={storeTabData.heroCtaText}
+                              onChange={(e) => updateStoreTabData('heroCtaText', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="heroCtaLink">Link Tombol CTA</Label>
+                            <Input
+                              id="heroCtaLink"
+                              placeholder="/products"
+                              value={storeTabData.heroCtaLink}
+                              onChange={(e) => updateStoreTabData('heroCtaLink', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="heroBackgroundImage">URL Background Image</Label>
+                          <Input
+                            id="heroBackgroundImage"
+                            placeholder="https://example.com/hero-bg.jpg"
+                            value={storeTabData.heroBackgroundImage}
+                            onChange={(e) => updateStoreTabData('heroBackgroundImage', e.target.value)}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Masukkan URL gambar background untuk hero section (Rekomendasi: 1920x800px)
+                          </p>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    {/* ============================================ */}
+                    {/* SECTION 3: About - Tentang Toko */}
+                    {/* ============================================ */}
+                    <AccordionItem value="about">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        About - Tentang Toko
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="aboutTitle">Judul</Label>
+                            <Input
+                              id="aboutTitle"
+                              placeholder="Tentang Kami"
+                              value={storeTabData.aboutTitle}
+                              onChange={(e) => updateStoreTabData('aboutTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="aboutSubtitle">Subtitle</Label>
+                            <Input
+                              id="aboutSubtitle"
+                              placeholder="Cerita di balik toko kami"
+                              value={storeTabData.aboutSubtitle}
+                              onChange={(e) => updateStoreTabData('aboutSubtitle', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="aboutContent">Deskripsi Lengkap</Label>
+                          <Textarea
+                            id="aboutContent"
+                            placeholder="Ceritakan tentang toko Anda..."
+                            rows={4}
+                            value={storeTabData.aboutContent}
+                            onChange={(e) => updateStoreTabData('aboutContent', e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="aboutImage">URL Gambar About</Label>
+                          <Input
+                            id="aboutImage"
+                            placeholder="https://example.com/image.jpg"
+                            value={storeTabData.aboutImage}
+                            onChange={(e) => updateStoreTabData('aboutImage', e.target.value)}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Masukkan URL gambar untuk section About
+                          </p>
+                        </div>
+
+                        {/* About Features Editor */}
+                        <div className="space-y-3 pt-2 border-t">
+                          <div className="flex items-center justify-between">
+                            <Label>Fitur-Fitur Unggulan (About Features)</Label>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const newFeature: FeatureItem = { icon: '', title: '', description: '' };
+                                updateStoreTabData('aboutFeatures', [...storeTabData.aboutFeatures, newFeature]);
+                              }}
+                            >
+                              <Plus className="h-4 w-4 mr-1" />
+                              Tambah Fitur
+                            </Button>
+                          </div>
+                          {storeTabData.aboutFeatures.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">Belum ada fitur. Klik "Tambah Fitur" untuk menambahkan.</p>
+                          ) : (
+                            <div className="space-y-3">
+                              {storeTabData.aboutFeatures.map((feature, index) => (
+                                <Card key={index} className="p-4">
+                                  <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-sm font-medium">Fitur #{index + 1}</span>
+                                      <Button
+                                        type="button"
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => {
+                                          const updated = storeTabData.aboutFeatures.filter((_, i) => i !== index);
+                                          updateStoreTabData('aboutFeatures', updated);
+                                        }}
+                                      >
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </div>
+                                    <div className="grid gap-3 md:grid-cols-3">
+                                      <div className="space-y-1">
+                                        <Label className="text-xs">Icon/Emoji</Label>
+                                        <Input
+                                          placeholder="🔥 atau 'star'"
+                                          value={feature.icon || ''}
+                                          onChange={(e) => {
+                                            const updated = [...storeTabData.aboutFeatures];
+                                            updated[index] = { ...updated[index], icon: e.target.value };
+                                            updateStoreTabData('aboutFeatures', updated);
+                                          }}
+                                        />
+                                      </div>
+                                      <div className="space-y-1">
+                                        <Label className="text-xs">Judul</Label>
+                                        <Input
+                                          placeholder="Kualitas Terjamin"
+                                          value={feature.title}
+                                          onChange={(e) => {
+                                            const updated = [...storeTabData.aboutFeatures];
+                                            updated[index] = { ...updated[index], title: e.target.value };
+                                            updateStoreTabData('aboutFeatures', updated);
+                                          }}
+                                        />
+                                      </div>
+                                      <div className="space-y-1">
+                                        <Label className="text-xs">Deskripsi</Label>
+                                        <Input
+                                          placeholder="Produk berkualitas tinggi"
+                                          value={feature.description}
+                                          onChange={(e) => {
+                                            const updated = [...storeTabData.aboutFeatures];
+                                            updated[index] = { ...updated[index], description: e.target.value };
+                                            updateStoreTabData('aboutFeatures', updated);
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    {/* ============================================ */}
+                    {/* SECTION 4: Testimonials - NEW! */}
+                    {/* ============================================ */}
+                    <AccordionItem value="testimonials">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        Testimonials - Testimoni Pelanggan
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="testimonialsTitle">Judul</Label>
+                            <Input
+                              id="testimonialsTitle"
+                              placeholder="Kata Mereka"
+                              value={storeTabData.testimonialsTitle}
+                              onChange={(e) => updateStoreTabData('testimonialsTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="testimonialsSubtitle">Subtitle</Label>
+                            <Input
+                              id="testimonialsSubtitle"
+                              placeholder="Apa kata pelanggan tentang kami"
+                              value={storeTabData.testimonialsSubtitle}
+                              onChange={(e) => updateStoreTabData('testimonialsSubtitle', e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Testimonials Editor */}
+                        <div className="space-y-3 pt-2 border-t">
+                          <div className="flex items-center justify-between">
+                            <Label>Daftar Testimonial</Label>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const newTestimonial: Testimonial = {
+                                  name: '',
+                                  role: '',
+                                  content: '',
+                                  avatar: '',
+                                };
+                                updateStoreTabData('testimonials', [...storeTabData.testimonials, newTestimonial]);
+                              }}
+                            >
+                              <Plus className="h-4 w-4 mr-1" />
+                              Tambah Testimonial
+                            </Button>
+                          </div>
+                          {storeTabData.testimonials.length === 0 ? (
+                            <p className="text-sm text-muted-foreground">
+                              Belum ada testimonial. Klik "Tambah Testimonial" untuk menambahkan.
+                            </p>
+                          ) : (
+                            <div className="space-y-3">
+                              {storeTabData.testimonials.map((testimonial, index) => (
+                                <Card key={index} className="p-4">
+                                  <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-sm font-medium">Testimonial #{index + 1}</span>
+                                      <Button
+                                        type="button"
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => {
+                                          const updated = storeTabData.testimonials.filter((_, i) => i !== index);
+                                          updateStoreTabData('testimonials', updated);
+                                        }}
+                                      >
+                                        <Trash2 className="h-4 w-4 text-destructive" />
+                                      </Button>
+                                    </div>
+                                    <div className="grid gap-3 md:grid-cols-2">
+                                      <div className="space-y-1">
+                                        <Label className="text-xs">Nama</Label>
+                                        <Input
+                                          placeholder="John Doe"
+                                          value={testimonial.name}
+                                          onChange={(e) => {
+                                            const updated = [...storeTabData.testimonials];
+                                            updated[index] = { ...updated[index], name: e.target.value };
+                                            updateStoreTabData('testimonials', updated);
+                                          }}
+                                        />
+                                      </div>
+                                      <div className="space-y-1">
+                                        <Label className="text-xs">Role/Pekerjaan</Label>
+                                        <Input
+                                          placeholder="Food Blogger"
+                                          value={testimonial.role}
+                                          onChange={(e) => {
+                                            const updated = [...storeTabData.testimonials];
+                                            updated[index] = { ...updated[index], role: e.target.value };
+                                            updateStoreTabData('testimonials', updated);
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">URL Avatar (Opsional)</Label>
+                                      <Input
+                                        placeholder="https://example.com/avatar.jpg"
+                                        value={testimonial.avatar || ''}
+                                        onChange={(e) => {
+                                          const updated = [...storeTabData.testimonials];
+                                          updated[index] = { ...updated[index], avatar: e.target.value };
+                                          updateStoreTabData('testimonials', updated);
+                                        }}
+                                      />
+                                    </div>
+                                    <div className="space-y-1">
+                                      <Label className="text-xs">Testimoni</Label>
+                                      <Textarea
+                                        placeholder="Produknya sangat berkualitas dan pelayanannya memuaskan!"
+                                        rows={3}
+                                        value={testimonial.content}
+                                        onChange={(e) => {
+                                          const updated = [...storeTabData.testimonials];
+                                          updated[index] = { ...updated[index], content: e.target.value };
+                                          updateStoreTabData('testimonials', updated);
+                                        }}
+                                      />
+                                    </div>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    {/* ============================================ */}
+                    {/* SECTION 5: Contact - Informasi Kontak */}
+                    {/* ============================================ */}
+                    <AccordionItem value="contact">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        Contact - Informasi Kontak
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="contactTitle">Judul</Label>
+                            <Input
+                              id="contactTitle"
+                              placeholder="Hubungi Kami"
+                              value={storeTabData.contactTitle}
+                              onChange={(e) => updateStoreTabData('contactTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="contactSubtitle">Subtitle</Label>
+                            <Input
+                              id="contactSubtitle"
+                              placeholder="Kami siap membantu Anda"
+                              value={storeTabData.contactSubtitle}
+                              onChange={(e) => updateStoreTabData('contactSubtitle', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="contactMapUrl">URL Google Maps</Label>
+                          <Input
+                            id="contactMapUrl"
+                            placeholder="https://www.google.com/maps/embed?pb=..."
+                            value={storeTabData.contactMapUrl}
+                            onChange={(e) => updateStoreTabData('contactMapUrl', e.target.value)}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Masukkan URL embed dari Google Maps untuk menampilkan lokasi toko
+                          </p>
+                        </div>
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="contactShowMap">Tampilkan Peta</Label>
+                              <p className="text-xs text-muted-foreground">
+                                Menampilkan Google Maps di halaman kontak
+                              </p>
+                            </div>
+                            <Switch
+                              id="contactShowMap"
+                              checked={storeTabData.contactShowMap}
+                              onCheckedChange={(checked) => updateStoreTabData('contactShowMap', checked)}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="space-y-0.5">
+                              <Label htmlFor="contactShowForm">Tampilkan Form</Label>
+                              <p className="text-xs text-muted-foreground">
+                                Menampilkan form kontak di halaman kontak
+                              </p>
+                            </div>
+                            <Switch
+                              id="contactShowForm"
+                              checked={storeTabData.contactShowForm}
+                              onCheckedChange={(checked) => updateStoreTabData('contactShowForm', checked)}
+                            />
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+
+                    {/* ============================================ */}
+                    {/* SECTION 6: CTA - Call to Action */}
+                    {/* ============================================ */}
+                    <AccordionItem value="cta">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        CTA - Call to Action
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        <div className="grid gap-4 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label htmlFor="ctaTitle">Judul CTA</Label>
+                            <Input
+                              id="ctaTitle"
+                              placeholder="Siap Memulai?"
+                              value={storeTabData.ctaTitle}
+                              onChange={(e) => updateStoreTabData('ctaTitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="ctaSubtitle">Subtitle CTA</Label>
+                            <Input
+                              id="ctaSubtitle"
+                              placeholder="Bergabunglah dengan kami"
+                              value={storeTabData.ctaSubtitle}
+                              onChange={(e) => updateStoreTabData('ctaSubtitle', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="ctaButtonText">Teks Tombol</Label>
+                            <Input
+                              id="ctaButtonText"
+                              placeholder="Mulai Sekarang"
+                              value={storeTabData.ctaButtonText}
+                              onChange={(e) => updateStoreTabData('ctaButtonText', e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="ctaButtonLink">Link Tombol</Label>
+                            <Input
+                              id="ctaButtonLink"
+                              placeholder="/products"
+                              value={storeTabData.ctaButtonLink}
+                              onChange={(e) => updateStoreTabData('ctaButtonLink', e.target.value)}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ctaButtonStyle">Gaya Tombol</Label>
+                          <Select
+                            value={storeTabData.ctaButtonStyle}
+                            onValueChange={(value: 'primary' | 'secondary' | 'outline') =>
+                              updateStoreTabData('ctaButtonStyle', value)
+                            }
+                          >
+                            <SelectTrigger id="ctaButtonStyle">
+                              <SelectValue placeholder="Pilih gaya tombol" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="primary">Primary (Biru)</SelectItem>
+                              <SelectItem value="secondary">Secondary (Abu-abu)</SelectItem>
+                              <SelectItem value="outline">Outline (Hanya Border)</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-muted-foreground">
+                            Pilih gaya visual untuk tombol CTA
+                          </p>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+
+                  {/* ============================================ */}
+                  {/* UNIFIED SAVE BUTTON */}
+                  {/* ============================================ */}
+                  <div className="flex justify-end pt-6 mt-6 border-t">
+                    <Button onClick={handleSaveStoreTab} disabled={isSaving} size="lg">
+                      {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      <Save className="mr-2 h-4 w-4" />
+                      Simpan Semua Perubahan
+                    </Button>
                   </div>
-                ) : (
-                  <>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="store-name">Nama Toko</Label>
-                        <Input
-                          id="store-name"
-                          placeholder="Nama toko Anda"
-                          value={storeTabData.name}
-                          onChange={(e) => updateStoreTabData('name', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="store-email">Email Toko</Label>
-                        <Input
-                          id="store-email"
-                          value={tenant?.email || ''}
-                          disabled
-                        />
-                        <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="store-phone">Nomor Telepon</Label>
-                        <Input
-                          id="store-phone"
-                          placeholder="+62 xxx xxxx xxxx"
-                          value={storeTabData.phone}
-                          onChange={(e) => updateStoreTabData('phone', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="store-slug">URL Toko</Label>
-                        <Input
-                          id="store-slug"
-                          value={`fibidy.com/store/${tenant?.slug || ''}`}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="store-description">Deskripsi Toko</Label>
-                      <Textarea
-                        id="store-description"
-                        placeholder="Ceritakan tentang toko Anda..."
-                        rows={3}
-                        value={storeTabData.description}
-                        onChange={(e) => updateStoreTabData('description', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="store-address">Alamat</Label>
-                      <Textarea
-                        id="store-address"
-                        placeholder="Alamat lengkap toko"
-                        rows={2}
-                        value={storeTabData.address}
-                        onChange={(e) => updateStoreTabData('address', e.target.value)}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* ============================================ */}
-              {/* SECTION 2: About - Tentang Toko - 🔥 UNIFIED STATE */}
-              {/* ============================================ */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold border-b pb-2">About - Tentang Toko</h3>
-                {tenantLoading || !storeTabData ? (
-                  <Skeleton className="h-24 w-full" />
-                ) : (
-                  <>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="aboutTitle">Judul</Label>
-                        <Input
-                          id="aboutTitle"
-                          placeholder="Tentang Kami"
-                          value={storeTabData.aboutTitle}
-                          onChange={(e) => updateStoreTabData('aboutTitle', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="aboutSubtitle">Subtitle</Label>
-                        <Input
-                          id="aboutSubtitle"
-                          placeholder="Cerita di balik toko kami"
-                          value={storeTabData.aboutSubtitle}
-                          onChange={(e) => updateStoreTabData('aboutSubtitle', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="aboutContent">Deskripsi Lengkap</Label>
-                      <Textarea
-                        id="aboutContent"
-                        placeholder="Ceritakan tentang toko Anda..."
-                        rows={4}
-                        value={storeTabData.aboutContent}
-                        onChange={(e) => updateStoreTabData('aboutContent', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="aboutImage">URL Gambar About</Label>
-                      <Input
-                        id="aboutImage"
-                        placeholder="https://example.com/image.jpg"
-                        value={storeTabData.aboutImage}
-                        onChange={(e) => updateStoreTabData('aboutImage', e.target.value)}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Masukkan URL gambar untuk section About
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* ============================================ */}
-              {/* SECTION 3: Contact - Informasi Kontak - 🔥 UNIFIED STATE */}
-              {/* ============================================ */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold border-b pb-2">Contact - Informasi Kontak</h3>
-                {tenantLoading || !storeTabData ? (
-                  <Skeleton className="h-24 w-full" />
-                ) : (
-                  <>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="contactTitle">Judul</Label>
-                        <Input
-                          id="contactTitle"
-                          placeholder="Hubungi Kami"
-                          value={storeTabData.contactTitle}
-                          onChange={(e) => updateStoreTabData('contactTitle', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="contactSubtitle">Subtitle</Label>
-                        <Input
-                          id="contactSubtitle"
-                          placeholder="Kami siap membantu Anda"
-                          value={storeTabData.contactSubtitle}
-                          onChange={(e) => updateStoreTabData('contactSubtitle', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="contactMapUrl">URL Google Maps</Label>
-                      <Input
-                        id="contactMapUrl"
-                        placeholder="https://www.google.com/maps/embed?pb=..."
-                        value={storeTabData.contactMapUrl}
-                        onChange={(e) => updateStoreTabData('contactMapUrl', e.target.value)}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Masukkan URL embed dari Google Maps untuk menampilkan lokasi toko
-                      </p>
-                    </div>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-0.5">
-                          <Label htmlFor="contactShowMap">Tampilkan Peta</Label>
-                          <p className="text-xs text-muted-foreground">
-                            Menampilkan Google Maps di halaman kontak
-                          </p>
-                        </div>
-                        <Switch
-                          id="contactShowMap"
-                          checked={storeTabData.contactShowMap}
-                          onCheckedChange={(checked) => updateStoreTabData('contactShowMap', checked)}
-                        />
-                      </div>
-                      <div className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="space-y-0.5">
-                          <Label htmlFor="contactShowForm">Tampilkan Form</Label>
-                          <p className="text-xs text-muted-foreground">
-                            Menampilkan form kontak di halaman kontak
-                          </p>
-                        </div>
-                        <Switch
-                          id="contactShowForm"
-                          checked={storeTabData.contactShowForm}
-                          onCheckedChange={(checked) => updateStoreTabData('contactShowForm', checked)}
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* ============================================ */}
-              {/* SECTION 4: CTA - Call to Action - 🔥 UNIFIED STATE */}
-              {/* ============================================ */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold border-b pb-2">CTA - Call to Action</h3>
-                {tenantLoading || !storeTabData ? (
-                  <Skeleton className="h-24 w-full" />
-                ) : (
-                  <>
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="ctaTitle">Judul CTA</Label>
-                        <Input
-                          id="ctaTitle"
-                          placeholder="Siap Memulai?"
-                          value={storeTabData.ctaTitle}
-                          onChange={(e) => updateStoreTabData('ctaTitle', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="ctaSubtitle">Subtitle CTA</Label>
-                        <Input
-                          id="ctaSubtitle"
-                          placeholder="Bergabunglah dengan kami"
-                          value={storeTabData.ctaSubtitle}
-                          onChange={(e) => updateStoreTabData('ctaSubtitle', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="ctaButtonText">Teks Tombol</Label>
-                        <Input
-                          id="ctaButtonText"
-                          placeholder="Mulai Sekarang"
-                          value={storeTabData.ctaButtonText}
-                          onChange={(e) => updateStoreTabData('ctaButtonText', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="ctaButtonLink">Link Tombol</Label>
-                        <Input
-                          id="ctaButtonLink"
-                          placeholder="/products"
-                          value={storeTabData.ctaButtonLink}
-                          onChange={(e) => updateStoreTabData('ctaButtonLink', e.target.value)}
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="ctaButtonStyle">Gaya Tombol</Label>
-                      <Select
-                        value={storeTabData.ctaButtonStyle}
-                        onValueChange={(value: 'primary' | 'secondary' | 'outline') =>
-                          updateStoreTabData('ctaButtonStyle', value)
-                        }
-                      >
-                        <SelectTrigger id="ctaButtonStyle">
-                          <SelectValue placeholder="Pilih gaya tombol" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="primary">Primary (Biru)</SelectItem>
-                          <SelectItem value="secondary">Secondary (Abu-abu)</SelectItem>
-                          <SelectItem value="outline">Outline (Hanya Border)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <p className="text-xs text-muted-foreground">
-                        Pilih gaya visual untuk tombol CTA
-                      </p>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              {/* ============================================ */}
-              {/* UNIFIED SAVE BUTTON */}
-              {/* ============================================ */}
-              <div className="flex justify-end pt-6 border-t">
-                <Button onClick={handleSaveStoreTab} disabled={isSaving} size="lg">
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Save className="mr-2 h-4 w-4" />
-                  Simpan Semua Perubahan
-                </Button>
-              </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
