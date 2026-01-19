@@ -88,6 +88,7 @@ interface LandingContentSettingsProps {
   isSaving: boolean;
   onDataChange: (data: LandingContentData) => void;
   onSave: () => void;
+  hideHero?: boolean; // NEW: Option to hide Hero section (avoid duplication with basic store info)
 }
 
 // ============================================================================
@@ -154,8 +155,9 @@ export function LandingContentSettings({
   isSaving,
   onDataChange,
   onSave,
+  hideHero = false,
 }: LandingContentSettingsProps) {
-  const [openSections, setOpenSections] = useState<string[]>(['hero']);
+  const [openSections, setOpenSections] = useState<string[]>(hideHero ? ['about'] : ['hero']);
 
   // -------------------------------------------------------------------------
   // Loading State
@@ -251,6 +253,7 @@ export function LandingContentSettings({
             {/* =============================================================== */}
             {/* HERO SECTION */}
             {/* =============================================================== */}
+            {!hideHero && (
             <AccordionItem value="hero">
               <AccordionTrigger className="hover:no-underline">
                 <div className="flex items-center gap-2">
@@ -323,6 +326,7 @@ export function LandingContentSettings({
                 </div>
               </AccordionContent>
             </AccordionItem>
+            )}
 
             {/* =============================================================== */}
             {/* ABOUT SECTION */}

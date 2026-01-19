@@ -19,9 +19,11 @@ import {
   PaymentSettings,
   ShippingSettings,
   SeoSettings,
+  LandingContentSettings,
   BankAccountDialog,
   EwalletDialog,
 } from '@/components/settings';
+import type { LandingContentData } from '@/components/settings';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -32,6 +34,8 @@ import type {
   ShippingMethods,
   SocialLinks,
   CourierName,
+  FeatureItem,
+  Testimonial,
 } from '@/types';
 
 // ============================================================================
@@ -100,6 +104,7 @@ export default function SettingsPage() {
   const [isSavingPayment, setIsSavingPayment] = useState(false);
   const [isSavingShipping, setIsSavingShipping] = useState(false);
   const [isSavingSeo, setIsSavingSeo] = useState(false);
+  const [isSavingLanding, setIsSavingLanding] = useState(false);
   const [isRemovingLogo, setIsRemovingLogo] = useState(false);
   const [isRemovingBanner, setIsRemovingBanner] = useState(false);
 
@@ -137,6 +142,8 @@ export default function SettingsPage() {
     metaDescription: string;
     socialLinks: SocialLinks;
   } | null>(null);
+
+  const [landingContent, setLandingContent] = useState<LandingContentData | null>(null);
 
   // ---------------------------------------------------------------------------
   // Initialize form data from tenant
@@ -185,6 +192,41 @@ export default function SettingsPage() {
       });
     }
   }, [tenant, seoSettings]);
+
+  useEffect(() => {
+    if (tenant && landingContent === null) {
+      setLandingContent({
+        // Hero (not used in form when hideHero=true, but needed for type)
+        heroTitle: tenant.heroTitle || '',
+        heroSubtitle: tenant.heroSubtitle || '',
+        heroCtaText: tenant.heroCtaText || '',
+        heroCtaLink: tenant.heroCtaLink || '',
+        heroBackgroundImage: tenant.heroBackgroundImage || '',
+        // About
+        aboutTitle: tenant.aboutTitle || '',
+        aboutSubtitle: tenant.aboutSubtitle || '',
+        aboutContent: tenant.aboutContent || '',
+        aboutImage: tenant.aboutImage || '',
+        aboutFeatures: (tenant.aboutFeatures as FeatureItem[]) || [],
+        // Testimonials
+        testimonialsTitle: tenant.testimonialsTitle || '',
+        testimonialsSubtitle: tenant.testimonialsSubtitle || '',
+        testimonials: (tenant.testimonials as Testimonial[]) || [],
+        // Contact
+        contactTitle: tenant.contactTitle || '',
+        contactSubtitle: tenant.contactSubtitle || '',
+        contactMapUrl: tenant.contactMapUrl || '',
+        contactShowMap: tenant.contactShowMap ?? false,
+        contactShowForm: tenant.contactShowForm ?? true,
+        // CTA
+        ctaTitle: tenant.ctaTitle || '',
+        ctaSubtitle: tenant.ctaSubtitle || '',
+        ctaButtonText: tenant.ctaButtonText || '',
+        ctaButtonLink: tenant.ctaButtonLink || '',
+        ctaButtonStyle: tenant.ctaButtonStyle || 'primary',
+      });
+    }
+  }, [tenant, landingContent]);
 
   const tenantLoading = tenant === null;
 
@@ -295,6 +337,51 @@ export default function SettingsPage() {
       toast.error('Gagal menyimpan pengaturan SEO');
     } finally {
       setIsSavingSeo(false);
+    }
+  };
+
+  const handleSaveLanding = async () => {
+    if (!tenant || !landingContent) return;
+    setIsSavingLanding(true);
+    try {
+      await tenantsApi.update({
+        // Hero - not saved when hideHero=true, but backend accepts them
+        heroTitle: landingContent.heroTitle || undefined,
+        heroSubtitle: landingContent.heroSubtitle || undefined,
+        heroCtaText: landingContent.heroCtaText || undefined,
+        heroCtaLink: landingContent.heroCtaLink || undefined,
+        heroBackgroundImage: landingContent.heroBackgroundImage || undefined,
+        // About
+        aboutTitle: landingContent.aboutTitle || undefined,
+        aboutSubtitle: landingContent.aboutSubtitle || undefined,
+        aboutContent: landingContent.aboutContent || undefined,
+        aboutImage: landingContent.aboutImage || undefined,
+        aboutFeatures: landingContent.aboutFeatures,
+        // Testimonials
+        testimonialsTitle: landingContent.testimonialsTitle || undefined,
+        testimonialsSubtitle: landingContent.testimonialsSubtitle || undefined,
+        testimonials: landingContent.testimonials,
+        // Contact
+        contactTitle: landingContent.contactTitle || undefined,
+        contactSubtitle: landingContent.contactSubtitle || undefined,
+        contactMapUrl: landingContent.contactMapUrl || undefined,
+        contactShowMap: landingContent.contactShowMap,
+        contactShowForm: landingContent.contactShowForm,
+        // CTA
+        ctaTitle: landingContent.ctaTitle || undefined,
+        ctaSubtitle: landingContent.ctaSubtitle || undefined,
+        ctaButtonText: landingContent.ctaButtonText || undefined,
+        ctaButtonLink: landingContent.ctaButtonLink || undefined,
+        ctaButtonStyle: landingContent.ctaButtonStyle,
+      });
+      await refresh();
+      setLandingContent(null); // Reset to trigger fresh load
+      toast.success('Konten landing page berhasil disimpan');
+    } catch (error) {
+      console.error('Failed to save landing content:', error);
+      toast.error('Gagal menyimpan konten landing page');
+    } finally {
+      setIsSavingLanding(false);
     }
   };
 
@@ -475,15 +562,26 @@ export default function SettingsPage() {
 
         {/* Tab: Store Info */}
         <TabsContent value="store" className="mt-6">
-          <StoreInfoForm
-            formData={formData ? { name: formData.name, description: formData.description, phone: formData.phone, address: formData.address } : null}
-            tenantEmail={tenant?.email}
-            tenantSlug={tenant?.slug}
-            isLoading={tenantLoading}
-            isSaving={isSaving}
-            onFormChange={updateFormData}
-            onSave={handleSaveStore}
-          />
+          <div className="space-y-6">
+            <StoreInfoForm
+              formData={formData ? { name: formData.name, description: formData.description, phone: formData.phone, address: formData.address } : null}
+              tenantEmail={tenant?.email}
+              tenantSlug={tenant?.slug}
+              isLoading={tenantLoading}
+              isSaving={isSaving}
+              onFormChange={updateFormData}
+              onSave={handleSaveStore}
+            />
+
+            <LandingContentSettings
+              data={landingContent}
+              isLoading={tenantLoading}
+              isSaving={isSavingLanding}
+              onDataChange={setLandingContent}
+              onSave={handleSaveLanding}
+              hideHero={true}
+            />
+          </div>
         </TabsContent>
 
         {/* Tab: Payment */}

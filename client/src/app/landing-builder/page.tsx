@@ -18,10 +18,8 @@ import {
   LivePreview,
   LandingErrorBoundary,
   BuilderSidebar,
-  LandingBuilderSimplified,
 } from '@/components/landing-builder';
 import type { SectionType } from '@/components/landing-builder';
-import { SectionSheet } from '@/components/landing-builder/section-sheet';
 import { BlockSidebar } from '@/components/landing-builder/block-sidebar';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
@@ -46,7 +44,6 @@ export default function LandingBuilderPage() {
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
   const [showBlockSidebar, setShowBlockSidebar] = useState(false);
-  const [showFormSheet, setShowFormSheet] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // ============================================================================
@@ -124,10 +121,9 @@ export default function LandingBuilderPage() {
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
     setShowBlockSidebar(true);
-    setShowFormSheet(false);
   }, []);
 
-  // Step 2: User clicks block → Update config and open form sheet/drawer
+  // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
   const handleBlockSelect = useCallback((block: string) => {
     if (!activeSection || !landingConfig) return;
 
@@ -141,20 +137,13 @@ export default function LandingBuilderPage() {
       },
     } as TenantLandingConfig);
 
-    // Open form sheet
-    setShowFormSheet(true);
+    // NO form sheet - just update config directly
   }, [activeSection, landingConfig, setLandingConfig]);
 
   // Close block sidebar
   const handleBlockSidebarClose = useCallback(() => {
     setShowBlockSidebar(false);
     setActiveSection(null);
-  }, []);
-
-  // Close form sheet
-  const handleFormSheetClose = useCallback(() => {
-    setShowFormSheet(false);
-    // Keep block sidebar open
   }, []);
 
   // ============================================================================
@@ -293,33 +282,6 @@ export default function LandingBuilderPage() {
           </LandingErrorBoundary>
         </div>
       </div>
-
-      {/* RIGHT: Form Sheet/Drawer (opens when variant is selected) */}
-      {showFormSheet && activeSection && (
-        <SectionSheet
-          section={activeSection}
-          isOpen={showFormSheet}
-          onClose={handleFormSheetClose}
-          title={`Edit ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} Section`}
-          description="Configure section settings"
-        >
-          <LandingErrorBoundary>
-            <LandingBuilderSimplified
-              config={landingConfig}
-              tenant={tenant}
-              onConfigChange={setLandingConfig}
-              hasUnsavedChanges={hasUnsavedChanges}
-              isSaving={isSaving}
-              validationErrors={validationErrors}
-              onPublish={handlePublish}
-              onDiscard={handleDiscard}
-              onReset={handleReset}
-              onClearErrors={clearErrors}
-              activeSection={activeSection}
-            />
-          </LandingErrorBoundary>
-        </SectionSheet>
-      )}
     </div>
   );
 }
