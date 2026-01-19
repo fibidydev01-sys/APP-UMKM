@@ -221,6 +221,48 @@ export class AuthService {
           logo: true,
           banner: true,
           theme: true,
+          landingConfig: true,
+          // SEO Fields
+          metaTitle: true,
+          metaDescription: true,
+          socialLinks: true,
+          // Payment & Shipping
+          currency: true,
+          taxRate: true,
+          paymentMethods: true,
+          freeShippingThreshold: true,
+          defaultShippingCost: true,
+          shippingMethods: true,
+          // 🔥 FIX: Add all landing content fields
+          // Hero
+          heroTitle: true,
+          heroSubtitle: true,
+          heroCtaText: true,
+          heroCtaLink: true,
+          heroBackgroundImage: true,
+          // About
+          aboutTitle: true,
+          aboutSubtitle: true,
+          aboutContent: true,
+          aboutImage: true,
+          aboutFeatures: true,
+          // Testimonials
+          testimonialsTitle: true,
+          testimonialsSubtitle: true,
+          testimonials: true,
+          // Contact
+          contactTitle: true,
+          contactSubtitle: true,
+          contactMapUrl: true,
+          contactShowMap: true,
+          contactShowForm: true,
+          // CTA
+          ctaTitle: true,
+          ctaSubtitle: true,
+          ctaButtonText: true,
+          ctaButtonLink: true,
+          ctaButtonStyle: true,
+          // Status & Timestamps
           status: true,
           createdAt: true,
           updatedAt: true,
