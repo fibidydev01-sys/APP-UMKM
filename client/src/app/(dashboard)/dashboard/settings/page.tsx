@@ -936,7 +936,7 @@ export default function SettingsPage() {
                               size="sm"
                               variant="outline"
                               onClick={() => {
-                                const newFeature: FeatureItem = { icon: '', title: '', description: '' };
+                                const newFeature: FeatureItem = { title: '', description: '' };
                                 updateStoreTabData('aboutFeatures', [...storeTabData.aboutFeatures, newFeature]);
                               }}
                             >
@@ -970,7 +970,7 @@ export default function SettingsPage() {
                                         <Label className="text-xs">Feature Icon</Label>
                                         <div className="max-w-[150px]">
                                           <ImageUpload
-                                            value={feature.icon || ''}
+                                            value={feature.icon}
                                             onChange={(url) => {
                                               const updated = [...storeTabData.aboutFeatures];
                                               updated[index] = { ...updated[index], icon: url };
@@ -1063,7 +1063,6 @@ export default function SettingsPage() {
                                   name: '',
                                   role: '',
                                   content: '',
-                                  avatar: '',
                                 };
                                 updateStoreTabData('testimonials', [...storeTabData.testimonials, newTestimonial]);
                               }}
@@ -1125,7 +1124,7 @@ export default function SettingsPage() {
                                       <Label className="text-xs">Avatar (Opsional)</Label>
                                       <div className="max-w-[150px]">
                                         <ImageUpload
-                                          value={testimonial.avatar || ''}
+                                          value={testimonial.avatar}
                                           onChange={(url) => {
                                             const updated = [...storeTabData.testimonials];
                                             updated[index] = { ...updated[index], avatar: url };
