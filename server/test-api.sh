@@ -60,7 +60,7 @@ PATCH_RESPONSE=$(curl -s -X PATCH "${BASE_URL}/api/tenants/me" \
   -H "Content-Type: application/json" \
   -b "${COOKIE_FILE}" \
   -d '{
-    "category": "RESTORAN",
+    "category": "CATERING",
     "name": "Test Store UPDATED",
     "description": "Test Description UPDATED",
     "phone": "+6281234567890",

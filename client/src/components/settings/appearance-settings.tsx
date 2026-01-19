@@ -6,7 +6,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImageUpload } from '@/components/upload';
+import { getCategoryOptions } from '@/config/categories';
 import { cn } from '@/lib/utils';
 
 // ============================================================================
@@ -66,16 +68,7 @@ export function AppearanceSettings({
   onRemoveBanner,
   onSave,
 }: AppearanceSettingsProps) {
-  const CATEGORY_OPTIONS = [
-    { value: 'RESTORAN', label: 'Restoran / Café' },
-    { value: 'FASHION', label: 'Fashion / Pakaian' },
-    { value: 'ELEKTRONIK', label: 'Elektronik' },
-    { value: 'MAKANAN', label: 'Makanan & Minuman' },
-    { value: 'KECANTIKAN', label: 'Kecantikan & Kosmetik' },
-    { value: 'KERAJINAN', label: 'Kerajinan Tangan' },
-    { value: 'JASA', label: 'Jasa / Layanan' },
-    { value: 'LAINNYA', label: 'Lainnya' },
-  ];
+  const categories = getCategoryOptions();
 
   return (
     <div className="space-y-6">
@@ -93,22 +86,24 @@ export function AppearanceSettings({
           ) : (
             <div className="space-y-2">
               <Label htmlFor="category">Kategori Toko *</Label>
-              <select
-                id="category"
+              <Select
                 value={formData.category}
-                onChange={(e) => onCategoryChange(e.target.value)}
+                onValueChange={onCategoryChange}
                 disabled={isSaving}
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <option value="">Pilih kategori...</option>
-                {CATEGORY_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger id="category">
+                  <SelectValue placeholder="Pilih kategori" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <p className="text-xs text-muted-foreground">
-                Pilih kategori yang paling sesuai dengan jenis bisnis Anda
+                Pilih kategori yang paling sesuai dengan jenis bisnis Anda (15 kategori tersedia)
               </p>
             </div>
           )}

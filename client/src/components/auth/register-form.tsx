@@ -196,7 +196,7 @@ export function RegisterForm() {
                   </FormControl>
                   <FormDescription className="flex items-center gap-1">
                     <Info className="h-3 w-3" />
-                    fibidy.com/store/{field.value || 'nama-toko'}
+                    {field.value || 'nama-toko'}.fibidy.com
                   </FormDescription>
                   {isAvailable === false && (
                     <p className="text-sm text-destructive">
