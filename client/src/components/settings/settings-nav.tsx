@@ -7,6 +7,7 @@ import {
   Palette,
   Search,
   Menu,
+  FileText,
   type LucideIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -43,6 +44,7 @@ interface SettingsNavProps {
 
 export const SETTINGS_MENU: SettingsMenuItem[] = [
   { key: 'store', label: 'Toko', icon: Store },
+  { key: 'landing', label: 'Landing', icon: FileText },
   { key: 'payment', label: 'Pembayaran', icon: CreditCard },
   { key: 'shipping', label: 'Pengiriman', icon: Truck },
   { key: 'appearance', label: 'Tampilan', icon: Palette },
@@ -113,7 +115,7 @@ export function SettingsNav({
       </div>
 
       {/* Desktop: Tabs */}
-      <TabsList className="hidden md:grid w-full grid-cols-5 lg:w-auto">
+      <TabsList className="hidden md:grid w-full grid-cols-6 lg:w-auto">
         {SETTINGS_MENU.map((item) => {
           const Icon = item.icon;
           return (
