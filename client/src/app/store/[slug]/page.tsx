@@ -1,6 +1,13 @@
 import { notFound } from 'next/navigation';
 import { tenantsApi, productsApi } from '@/lib/api';
-import { normalizeTestimonials } from '@/lib/landing';
+import {
+  normalizeTestimonials,
+  extractHeroData,
+  extractAboutData,
+  extractTestimonialsData,
+  extractContactData,
+  extractCtaData,
+} from '@/lib/landing';
 import {
   TenantHero,
   TenantAbout,
@@ -81,8 +88,18 @@ export default async function StorePage({ params }: StorePageProps) {
   const productLimit = (landingConfig?.products?.config?.limit as number) || 8;
   const products = await getProducts(slug, productLimit);
 
-  // Testimonials
-  const testimonialItems = normalizeTestimonials(landingConfig?.testimonials?.config?.items);
+  // ==========================================
+  // EXTRACT DATA FROM TENANT FIELDS (NEW)
+  // Priority: tenant fields > landingConfig > defaults
+  // ==========================================
+  const heroData = extractHeroData(tenant, landingConfig);
+  const aboutData = extractAboutData(tenant, landingConfig);
+  const testimonialsData = extractTestimonialsData(tenant, landingConfig);
+  const contactData = extractContactData(tenant, landingConfig);
+  const ctaData = extractCtaData(tenant, landingConfig);
+
+  // Testimonials - use extracted data
+  const testimonialItems = normalizeTestimonials(testimonialsData.items);
   const testimonialsEnabled = landingConfig?.testimonials?.enabled === true;
   const hasTestimonials = testimonialsEnabled && testimonialItems.length > 0;
 
@@ -118,9 +135,10 @@ export default async function StorePage({ params }: StorePageProps) {
           <TenantHero
             config={landingConfig.hero}
             fallbacks={{
-              title: tenant.name,
-              subtitle: tenant.description,
-              backgroundImage: tenant.banner || undefined,
+              // Use extracted data from tenant fields (priority: tenant > config > default)
+              title: heroData.title,
+              subtitle: heroData.subtitle,
+              backgroundImage: heroData.backgroundImage,
               logo: tenant.logo || undefined,
               storeName: tenant.name,
             }}
@@ -131,8 +149,10 @@ export default async function StorePage({ params }: StorePageProps) {
           <TenantAbout
             config={landingConfig.about}
             fallbacks={{
-              content: tenant.description || undefined,
-              image: tenant.banner || undefined,
+              title: aboutData.title,
+              subtitle: aboutData.subtitle,
+              content: aboutData.content,
+              image: aboutData.image,
             }}
           />
         )}
@@ -149,6 +169,8 @@ export default async function StorePage({ params }: StorePageProps) {
           <TenantTestimonials
             config={{
               ...landingConfig?.testimonials,
+              title: testimonialsData.title,
+              subtitle: testimonialsData.subtitle,
               config: {
                 items: testimonialItems,
               },
@@ -157,16 +179,27 @@ export default async function StorePage({ params }: StorePageProps) {
         )}
 
         {landingConfig?.cta?.enabled && (
-          <TenantCta config={landingConfig.cta} storeSlug={slug} />
+          <TenantCta
+            config={landingConfig.cta}
+            storeSlug={slug}
+            fallbacks={{
+              title: ctaData.title,
+              subtitle: ctaData.subtitle,
+              buttonText: ctaData.buttonText,
+              buttonLink: ctaData.buttonLink,
+            }}
+          />
         )}
 
         {landingConfig?.contact?.enabled && (
           <TenantContact
             config={landingConfig.contact}
             fallbacks={{
-              whatsapp: tenant.whatsapp || null,
-              phone: tenant.phone || null,
-              address: tenant.address || null,
+              title: contactData.title,
+              subtitle: contactData.subtitle,
+              whatsapp: contactData.whatsapp || null,
+              phone: contactData.phone || null,
+              address: contactData.address || null,
               storeName: tenant.name,
             }}
           />
