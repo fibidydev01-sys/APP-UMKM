@@ -94,7 +94,17 @@ export type ProductsBlock =
   | 'products4'  // Carousel
   | 'products5'  // Catalog
   | 'products6'  // Minimal List
-  | 'products7'; // Featured Hero
+  | 'products7'  // Featured Hero
+  | 'products8' | 'products9' | 'products10' | 'products11' | 'products12' | 'products13' | 'products14' | 'products15' | 'products16' | 'products17'
+  | 'products18' | 'products19' | 'products20' | 'products21' | 'products22' | 'products23' | 'products24' | 'products25' | 'products26' | 'products27'
+  | 'products28' | 'products29' | 'products30' | 'products31' | 'products32' | 'products33' | 'products34' | 'products35' | 'products36' | 'products37'
+  | 'products38' | 'products39' | 'products40' | 'products41' | 'products42' | 'products43' | 'products44' | 'products45' | 'products46' | 'products47'
+  | 'products48' | 'products49' | 'products50' | 'products51' | 'products52' | 'products53' | 'products54' | 'products55' | 'products56' | 'products57'
+  | 'products58' | 'products59' | 'products60' | 'products61' | 'products62' | 'products63' | 'products64' | 'products65' | 'products66' | 'products67'
+  | 'products68' | 'products69' | 'products70' | 'products71' | 'products72' | 'products73' | 'products74' | 'products75' | 'products76' | 'products77'
+  | 'products78' | 'products79' | 'products80' | 'products81' | 'products82' | 'products83' | 'products84' | 'products85' | 'products86' | 'products87'
+  | 'products88' | 'products89' | 'products90' | 'products91' | 'products92' | 'products93' | 'products94' | 'products95' | 'products96' | 'products97'
+  | 'products98' | 'products99' | 'products100';
 
 export type TestimonialsBlock =
   | 'testimonials1'  // Grid Cards (default)
@@ -103,7 +113,17 @@ export type TestimonialsBlock =
   | 'testimonials4'  // Single Focus
   | 'testimonials5'  // Video
   | 'testimonials6'  // Social Proof
-  | 'testimonials7'; // Marquee
+  | 'testimonials7'  // Marquee
+  | 'testimonials8' | 'testimonials9' | 'testimonials10' | 'testimonials11' | 'testimonials12' | 'testimonials13' | 'testimonials14' | 'testimonials15' | 'testimonials16' | 'testimonials17'
+  | 'testimonials18' | 'testimonials19' | 'testimonials20' | 'testimonials21' | 'testimonials22' | 'testimonials23' | 'testimonials24' | 'testimonials25' | 'testimonials26' | 'testimonials27'
+  | 'testimonials28' | 'testimonials29' | 'testimonials30' | 'testimonials31' | 'testimonials32' | 'testimonials33' | 'testimonials34' | 'testimonials35' | 'testimonials36' | 'testimonials37'
+  | 'testimonials38' | 'testimonials39' | 'testimonials40' | 'testimonials41' | 'testimonials42' | 'testimonials43' | 'testimonials44' | 'testimonials45' | 'testimonials46' | 'testimonials47'
+  | 'testimonials48' | 'testimonials49' | 'testimonials50' | 'testimonials51' | 'testimonials52' | 'testimonials53' | 'testimonials54' | 'testimonials55' | 'testimonials56' | 'testimonials57'
+  | 'testimonials58' | 'testimonials59' | 'testimonials60' | 'testimonials61' | 'testimonials62' | 'testimonials63' | 'testimonials64' | 'testimonials65' | 'testimonials66' | 'testimonials67'
+  | 'testimonials68' | 'testimonials69' | 'testimonials70' | 'testimonials71' | 'testimonials72' | 'testimonials73' | 'testimonials74' | 'testimonials75' | 'testimonials76' | 'testimonials77'
+  | 'testimonials78' | 'testimonials79' | 'testimonials80' | 'testimonials81' | 'testimonials82' | 'testimonials83' | 'testimonials84' | 'testimonials85' | 'testimonials86' | 'testimonials87'
+  | 'testimonials88' | 'testimonials89' | 'testimonials90' | 'testimonials91' | 'testimonials92' | 'testimonials93' | 'testimonials94' | 'testimonials95' | 'testimonials96' | 'testimonials97'
+  | 'testimonials98' | 'testimonials99' | 'testimonials100';
 
 export type ContactBlock =
   | 'contact1'  // Default
@@ -112,7 +132,17 @@ export type ContactBlock =
   | 'contact4'  // Map Focus
   | 'contact5'  // Minimal
   | 'contact6'  // Social Focused
-  | 'contact7'; // Card Grid
+  | 'contact7'  // Card Grid
+  | 'contact8' | 'contact9' | 'contact10' | 'contact11' | 'contact12' | 'contact13' | 'contact14' | 'contact15' | 'contact16' | 'contact17'
+  | 'contact18' | 'contact19' | 'contact20' | 'contact21' | 'contact22' | 'contact23' | 'contact24' | 'contact25' | 'contact26' | 'contact27'
+  | 'contact28' | 'contact29' | 'contact30' | 'contact31' | 'contact32' | 'contact33' | 'contact34' | 'contact35' | 'contact36' | 'contact37'
+  | 'contact38' | 'contact39' | 'contact40' | 'contact41' | 'contact42' | 'contact43' | 'contact44' | 'contact45' | 'contact46' | 'contact47'
+  | 'contact48' | 'contact49' | 'contact50' | 'contact51' | 'contact52' | 'contact53' | 'contact54' | 'contact55' | 'contact56' | 'contact57'
+  | 'contact58' | 'contact59' | 'contact60' | 'contact61' | 'contact62' | 'contact63' | 'contact64' | 'contact65' | 'contact66' | 'contact67'
+  | 'contact68' | 'contact69' | 'contact70' | 'contact71' | 'contact72' | 'contact73' | 'contact74' | 'contact75' | 'contact76' | 'contact77'
+  | 'contact78' | 'contact79' | 'contact80' | 'contact81' | 'contact82' | 'contact83' | 'contact84' | 'contact85' | 'contact86' | 'contact87'
+  | 'contact88' | 'contact89' | 'contact90' | 'contact91' | 'contact92' | 'contact93' | 'contact94' | 'contact95' | 'contact96' | 'contact97'
+  | 'contact98' | 'contact99' | 'contact100';
 
 export type CtaBlock =
   | 'cta1'  // Default
@@ -121,7 +151,17 @@ export type CtaBlock =
   | 'cta4'  // Split Action
   | 'cta5'  // Floating
   | 'cta6'  // Minimal Line
-  | 'cta7'; // Countdown
+  | 'cta7'  // Countdown
+  | 'cta8' | 'cta9' | 'cta10' | 'cta11' | 'cta12' | 'cta13' | 'cta14' | 'cta15' | 'cta16' | 'cta17'
+  | 'cta18' | 'cta19' | 'cta20' | 'cta21' | 'cta22' | 'cta23' | 'cta24' | 'cta25' | 'cta26' | 'cta27'
+  | 'cta28' | 'cta29' | 'cta30' | 'cta31' | 'cta32' | 'cta33' | 'cta34' | 'cta35' | 'cta36' | 'cta37'
+  | 'cta38' | 'cta39' | 'cta40' | 'cta41' | 'cta42' | 'cta43' | 'cta44' | 'cta45' | 'cta46' | 'cta47'
+  | 'cta48' | 'cta49' | 'cta50' | 'cta51' | 'cta52' | 'cta53' | 'cta54' | 'cta55' | 'cta56' | 'cta57'
+  | 'cta58' | 'cta59' | 'cta60' | 'cta61' | 'cta62' | 'cta63' | 'cta64' | 'cta65' | 'cta66' | 'cta67'
+  | 'cta68' | 'cta69' | 'cta70' | 'cta71' | 'cta72' | 'cta73' | 'cta74' | 'cta75' | 'cta76' | 'cta77'
+  | 'cta78' | 'cta79' | 'cta80' | 'cta81' | 'cta82' | 'cta83' | 'cta84' | 'cta85' | 'cta86' | 'cta87'
+  | 'cta88' | 'cta89' | 'cta90' | 'cta91' | 'cta92' | 'cta93' | 'cta94' | 'cta95' | 'cta96' | 'cta97'
+  | 'cta98' | 'cta99' | 'cta100';
 
 // ==========================================
 // CONFIG INTERFACES (Updated with block)
@@ -357,7 +397,19 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7'],
+          enum: [
+            'products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7',
+            'products8', 'products9', 'products10', 'products11', 'products12', 'products13', 'products14', 'products15', 'products16', 'products17',
+            'products18', 'products19', 'products20', 'products21', 'products22', 'products23', 'products24', 'products25', 'products26', 'products27',
+            'products28', 'products29', 'products30', 'products31', 'products32', 'products33', 'products34', 'products35', 'products36', 'products37',
+            'products38', 'products39', 'products40', 'products41', 'products42', 'products43', 'products44', 'products45', 'products46', 'products47',
+            'products48', 'products49', 'products50', 'products51', 'products52', 'products53', 'products54', 'products55', 'products56', 'products57',
+            'products58', 'products59', 'products60', 'products61', 'products62', 'products63', 'products64', 'products65', 'products66', 'products67',
+            'products68', 'products69', 'products70', 'products71', 'products72', 'products73', 'products74', 'products75', 'products76', 'products77',
+            'products78', 'products79', 'products80', 'products81', 'products82', 'products83', 'products84', 'products85', 'products86', 'products87',
+            'products88', 'products89', 'products90', 'products91', 'products92', 'products93', 'products94', 'products95', 'products96', 'products97',
+            'products98', 'products99', 'products100'
+          ],
         },
         config: {
           type: 'object' as const,
@@ -386,7 +438,19 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7'],
+          enum: [
+            'testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7',
+            'testimonials8', 'testimonials9', 'testimonials10', 'testimonials11', 'testimonials12', 'testimonials13', 'testimonials14', 'testimonials15', 'testimonials16', 'testimonials17',
+            'testimonials18', 'testimonials19', 'testimonials20', 'testimonials21', 'testimonials22', 'testimonials23', 'testimonials24', 'testimonials25', 'testimonials26', 'testimonials27',
+            'testimonials28', 'testimonials29', 'testimonials30', 'testimonials31', 'testimonials32', 'testimonials33', 'testimonials34', 'testimonials35', 'testimonials36', 'testimonials37',
+            'testimonials38', 'testimonials39', 'testimonials40', 'testimonials41', 'testimonials42', 'testimonials43', 'testimonials44', 'testimonials45', 'testimonials46', 'testimonials47',
+            'testimonials48', 'testimonials49', 'testimonials50', 'testimonials51', 'testimonials52', 'testimonials53', 'testimonials54', 'testimonials55', 'testimonials56', 'testimonials57',
+            'testimonials58', 'testimonials59', 'testimonials60', 'testimonials61', 'testimonials62', 'testimonials63', 'testimonials64', 'testimonials65', 'testimonials66', 'testimonials67',
+            'testimonials68', 'testimonials69', 'testimonials70', 'testimonials71', 'testimonials72', 'testimonials73', 'testimonials74', 'testimonials75', 'testimonials76', 'testimonials77',
+            'testimonials78', 'testimonials79', 'testimonials80', 'testimonials81', 'testimonials82', 'testimonials83', 'testimonials84', 'testimonials85', 'testimonials86', 'testimonials87',
+            'testimonials88', 'testimonials89', 'testimonials90', 'testimonials91', 'testimonials92', 'testimonials93', 'testimonials94', 'testimonials95', 'testimonials96', 'testimonials97',
+            'testimonials98', 'testimonials99', 'testimonials100'
+          ],
         },
         config: {
           type: 'object' as const,
@@ -414,7 +478,19 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7'],
+          enum: [
+            'contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7',
+            'contact8', 'contact9', 'contact10', 'contact11', 'contact12', 'contact13', 'contact14', 'contact15', 'contact16', 'contact17',
+            'contact18', 'contact19', 'contact20', 'contact21', 'contact22', 'contact23', 'contact24', 'contact25', 'contact26', 'contact27',
+            'contact28', 'contact29', 'contact30', 'contact31', 'contact32', 'contact33', 'contact34', 'contact35', 'contact36', 'contact37',
+            'contact38', 'contact39', 'contact40', 'contact41', 'contact42', 'contact43', 'contact44', 'contact45', 'contact46', 'contact47',
+            'contact48', 'contact49', 'contact50', 'contact51', 'contact52', 'contact53', 'contact54', 'contact55', 'contact56', 'contact57',
+            'contact58', 'contact59', 'contact60', 'contact61', 'contact62', 'contact63', 'contact64', 'contact65', 'contact66', 'contact67',
+            'contact68', 'contact69', 'contact70', 'contact71', 'contact72', 'contact73', 'contact74', 'contact75', 'contact76', 'contact77',
+            'contact78', 'contact79', 'contact80', 'contact81', 'contact82', 'contact83', 'contact84', 'contact85', 'contact86', 'contact87',
+            'contact88', 'contact89', 'contact90', 'contact91', 'contact92', 'contact93', 'contact94', 'contact95', 'contact96', 'contact97',
+            'contact98', 'contact99', 'contact100'
+          ],
         },
         config: {
           type: 'object' as const,
@@ -440,7 +516,19 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6', 'cta7'],
+          enum: [
+            'cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6', 'cta7',
+            'cta8', 'cta9', 'cta10', 'cta11', 'cta12', 'cta13', 'cta14', 'cta15', 'cta16', 'cta17',
+            'cta18', 'cta19', 'cta20', 'cta21', 'cta22', 'cta23', 'cta24', 'cta25', 'cta26', 'cta27',
+            'cta28', 'cta29', 'cta30', 'cta31', 'cta32', 'cta33', 'cta34', 'cta35', 'cta36', 'cta37',
+            'cta38', 'cta39', 'cta40', 'cta41', 'cta42', 'cta43', 'cta44', 'cta45', 'cta46', 'cta47',
+            'cta48', 'cta49', 'cta50', 'cta51', 'cta52', 'cta53', 'cta54', 'cta55', 'cta56', 'cta57',
+            'cta58', 'cta59', 'cta60', 'cta61', 'cta62', 'cta63', 'cta64', 'cta65', 'cta66', 'cta67',
+            'cta68', 'cta69', 'cta70', 'cta71', 'cta72', 'cta73', 'cta74', 'cta75', 'cta76', 'cta77',
+            'cta78', 'cta79', 'cta80', 'cta81', 'cta82', 'cta83', 'cta84', 'cta85', 'cta86', 'cta87',
+            'cta88', 'cta89', 'cta90', 'cta91', 'cta92', 'cta93', 'cta94', 'cta95', 'cta96', 'cta97',
+            'cta98', 'cta99', 'cta100'
+          ],
         },
         config: {
           type: 'object' as const,
@@ -853,8 +941,56 @@ export const AVAILABLE_BLOCKS = {
     'about88', 'about89', 'about90', 'about91', 'about92', 'about93', 'about94', 'about95', 'about96', 'about97',
     'about98', 'about99', 'about100'
   ] as AboutBlock[],
-  products: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7'] as ProductsBlock[],
-  testimonials: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7'] as TestimonialsBlock[],
-  contact: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7'] as ContactBlock[],
-  cta: ['cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6', 'cta7'] as CtaBlock[],
+  products: [
+    'products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7',
+    'products8', 'products9', 'products10', 'products11', 'products12', 'products13', 'products14', 'products15', 'products16', 'products17',
+    'products18', 'products19', 'products20', 'products21', 'products22', 'products23', 'products24', 'products25', 'products26', 'products27',
+    'products28', 'products29', 'products30', 'products31', 'products32', 'products33', 'products34', 'products35', 'products36', 'products37',
+    'products38', 'products39', 'products40', 'products41', 'products42', 'products43', 'products44', 'products45', 'products46', 'products47',
+    'products48', 'products49', 'products50', 'products51', 'products52', 'products53', 'products54', 'products55', 'products56', 'products57',
+    'products58', 'products59', 'products60', 'products61', 'products62', 'products63', 'products64', 'products65', 'products66', 'products67',
+    'products68', 'products69', 'products70', 'products71', 'products72', 'products73', 'products74', 'products75', 'products76', 'products77',
+    'products78', 'products79', 'products80', 'products81', 'products82', 'products83', 'products84', 'products85', 'products86', 'products87',
+    'products88', 'products89', 'products90', 'products91', 'products92', 'products93', 'products94', 'products95', 'products96', 'products97',
+    'products98', 'products99', 'products100'
+  ] as ProductsBlock[],
+  testimonials: [
+    'testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7',
+    'testimonials8', 'testimonials9', 'testimonials10', 'testimonials11', 'testimonials12', 'testimonials13', 'testimonials14', 'testimonials15', 'testimonials16', 'testimonials17',
+    'testimonials18', 'testimonials19', 'testimonials20', 'testimonials21', 'testimonials22', 'testimonials23', 'testimonials24', 'testimonials25', 'testimonials26', 'testimonials27',
+    'testimonials28', 'testimonials29', 'testimonials30', 'testimonials31', 'testimonials32', 'testimonials33', 'testimonials34', 'testimonials35', 'testimonials36', 'testimonials37',
+    'testimonials38', 'testimonials39', 'testimonials40', 'testimonials41', 'testimonials42', 'testimonials43', 'testimonials44', 'testimonials45', 'testimonials46', 'testimonials47',
+    'testimonials48', 'testimonials49', 'testimonials50', 'testimonials51', 'testimonials52', 'testimonials53', 'testimonials54', 'testimonials55', 'testimonials56', 'testimonials57',
+    'testimonials58', 'testimonials59', 'testimonials60', 'testimonials61', 'testimonials62', 'testimonials63', 'testimonials64', 'testimonials65', 'testimonials66', 'testimonials67',
+    'testimonials68', 'testimonials69', 'testimonials70', 'testimonials71', 'testimonials72', 'testimonials73', 'testimonials74', 'testimonials75', 'testimonials76', 'testimonials77',
+    'testimonials78', 'testimonials79', 'testimonials80', 'testimonials81', 'testimonials82', 'testimonials83', 'testimonials84', 'testimonials85', 'testimonials86', 'testimonials87',
+    'testimonials88', 'testimonials89', 'testimonials90', 'testimonials91', 'testimonials92', 'testimonials93', 'testimonials94', 'testimonials95', 'testimonials96', 'testimonials97',
+    'testimonials98', 'testimonials99', 'testimonials100'
+  ] as TestimonialsBlock[],
+  contact: [
+    'contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7',
+    'contact8', 'contact9', 'contact10', 'contact11', 'contact12', 'contact13', 'contact14', 'contact15', 'contact16', 'contact17',
+    'contact18', 'contact19', 'contact20', 'contact21', 'contact22', 'contact23', 'contact24', 'contact25', 'contact26', 'contact27',
+    'contact28', 'contact29', 'contact30', 'contact31', 'contact32', 'contact33', 'contact34', 'contact35', 'contact36', 'contact37',
+    'contact38', 'contact39', 'contact40', 'contact41', 'contact42', 'contact43', 'contact44', 'contact45', 'contact46', 'contact47',
+    'contact48', 'contact49', 'contact50', 'contact51', 'contact52', 'contact53', 'contact54', 'contact55', 'contact56', 'contact57',
+    'contact58', 'contact59', 'contact60', 'contact61', 'contact62', 'contact63', 'contact64', 'contact65', 'contact66', 'contact67',
+    'contact68', 'contact69', 'contact70', 'contact71', 'contact72', 'contact73', 'contact74', 'contact75', 'contact76', 'contact77',
+    'contact78', 'contact79', 'contact80', 'contact81', 'contact82', 'contact83', 'contact84', 'contact85', 'contact86', 'contact87',
+    'contact88', 'contact89', 'contact90', 'contact91', 'contact92', 'contact93', 'contact94', 'contact95', 'contact96', 'contact97',
+    'contact98', 'contact99', 'contact100'
+  ] as ContactBlock[],
+  cta: [
+    'cta1', 'cta2', 'cta3', 'cta4', 'cta5', 'cta6', 'cta7',
+    'cta8', 'cta9', 'cta10', 'cta11', 'cta12', 'cta13', 'cta14', 'cta15', 'cta16', 'cta17',
+    'cta18', 'cta19', 'cta20', 'cta21', 'cta22', 'cta23', 'cta24', 'cta25', 'cta26', 'cta27',
+    'cta28', 'cta29', 'cta30', 'cta31', 'cta32', 'cta33', 'cta34', 'cta35', 'cta36', 'cta37',
+    'cta38', 'cta39', 'cta40', 'cta41', 'cta42', 'cta43', 'cta44', 'cta45', 'cta46', 'cta47',
+    'cta48', 'cta49', 'cta50', 'cta51', 'cta52', 'cta53', 'cta54', 'cta55', 'cta56', 'cta57',
+    'cta58', 'cta59', 'cta60', 'cta61', 'cta62', 'cta63', 'cta64', 'cta65', 'cta66', 'cta67',
+    'cta68', 'cta69', 'cta70', 'cta71', 'cta72', 'cta73', 'cta74', 'cta75', 'cta76', 'cta77',
+    'cta78', 'cta79', 'cta80', 'cta81', 'cta82', 'cta83', 'cta84', 'cta85', 'cta86', 'cta87',
+    'cta88', 'cta89', 'cta90', 'cta91', 'cta92', 'cta93', 'cta94', 'cta95', 'cta96', 'cta97',
+    'cta98', 'cta99', 'cta100'
+  ] as CtaBlock[],
 };
