@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowRight } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Badge } from '@/components/ui/badge';
@@ -22,10 +22,7 @@ interface Hero2Props {
 /**
  * Hero Block: hero2
  * Design: Split Screen
- *
- * Split layout with content on left, image on right - MOBILE FIRST!
- * Stacks vertically on mobile → Side-by-side on desktop
- * Modern asymmetric design with smooth animations
+ * Mobile: Stacked (image first) → Desktop: Side-by-side (content first)
  */
 export function Hero2({
   title,
@@ -38,15 +35,15 @@ export function Hero2({
   storeName,
 }: Hero2Props) {
   return (
-    <section className="relative min-h-[600px] lg:min-h-screen overflow-hidden">
+    <section className="relative min-h-[600px] md:min-h-[700px] lg:min-h-screen overflow-hidden">
       <div className="container px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[600px] lg:min-h-screen py-12 md:py-16 lg:py-20">
-          {/* Left: Content - MOBILE OPTIMIZED */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center min-h-[600px] md:min-h-[700px] lg:min-h-screen py-8 sm:py-12 md:py-16 lg:py-20">
+          {/* Left: Content */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
-            className="space-y-6 md:space-y-8 order-2 lg:order-1"
+            className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1"
           >
             {/* Logo */}
             {logo && (
@@ -56,7 +53,7 @@ export function Hero2({
                 transition={{ delay: 0.2, duration: 0.5 }}
                 className="flex justify-center lg:justify-start"
               >
-                <div className="relative h-16 w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl">
+                <div className="relative h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl">
                   <OptimizedImage
                     src={logo}
                     alt={storeName || title}
@@ -74,18 +71,18 @@ export function Hero2({
               transition={{ delay: 0.3, duration: 0.5 }}
               className="flex justify-center lg:justify-start"
             >
-              <Badge variant="secondary" className="px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base">
-                <Sparkles className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+              <Badge variant="secondary" className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm md:text-base">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                 {storeName || 'Featured'}
               </Badge>
             </motion.div>
 
-            {/* Title - MOBILE OPTIMIZED */}
+            {/* Title & Subtitle */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.6 }}
-              className="space-y-4 text-center lg:text-left"
+              className="space-y-3 sm:space-y-4 text-center lg:text-left"
             >
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight">
                 {title}
@@ -98,50 +95,48 @@ export function Hero2({
               )}
             </motion.div>
 
-            {/* CTA - MOBILE FRIENDLY */}
+            {/* CTA */}
             {showCta && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.6 }}
-                className="flex justify-center lg:justify-start"
+                className="flex justify-center lg:justify-start pt-2"
               >
                 <Link href={ctaLink} className="w-full sm:w-auto">
-                  <InteractiveHoverButton className="w-full sm:w-auto min-w-[200px] text-base md:text-lg px-6 md:px-8 py-4 md:py-6">
+                  <InteractiveHoverButton className="w-full sm:w-auto min-w-[200px] text-base md:text-lg px-6 md:px-8 py-4 md:py-5">
                     {ctaText}
                   </InteractiveHoverButton>
                 </Link>
               </motion.div>
             )}
 
-            {/* Trust Indicators - MOBILE STACKED */}
+            {/* Trust Indicators */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.6 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-4 pt-4"
+              className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 pt-2 sm:pt-4"
             >
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse" />
-                <span>Trusted Brand</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
-                <span>Fast Delivery</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span className="h-2 w-2 bg-purple-500 rounded-full animate-pulse" />
-                <span>Quality Products</span>
-              </div>
+              {[
+                { color: 'bg-green-500', label: 'Trusted Brand' },
+                { color: 'bg-blue-500', label: 'Fast Delivery' },
+                { color: 'bg-purple-500', label: 'Quality Products' },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+                  <span className={cn('h-2 w-2 rounded-full animate-pulse', item.color)} />
+                  <span>{item.label}</span>
+                </div>
+              ))}
             </motion.div>
           </motion.div>
 
-          {/* Right: Image - MOBILE FIRST HEIGHT */}
+          {/* Right: Image */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] rounded-3xl overflow-hidden shadow-2xl order-1 lg:order-2"
+            className="relative h-[280px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[650px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl order-1 lg:order-2"
           >
             {backgroundImage ? (
               <OptimizedImage
@@ -153,20 +148,20 @@ export function Hero2({
               />
             ) : (
               <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background flex items-center justify-center">
-                <span className="text-9xl opacity-20">🎨</span>
+                <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl opacity-20">🎨</span>
               </div>
             )}
 
-            {/* Decorative Elements */}
-            <div className="absolute top-6 right-6">
-              <Badge className="bg-white/90 text-primary backdrop-blur-sm">
+            {/* Decorative Badge */}
+            <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
+              <Badge className="bg-white/90 text-primary backdrop-blur-sm text-xs sm:text-sm">
                 <Sparkles className="h-3 w-3 mr-1 fill-current" />
                 New
               </Badge>
             </div>
 
-            {/* Bottom Gradient Overlay */}
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/20 to-transparent" />
+            {/* Bottom Gradient */}
+            <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-black/20 to-transparent" />
           </motion.div>
         </div>
       </div>
