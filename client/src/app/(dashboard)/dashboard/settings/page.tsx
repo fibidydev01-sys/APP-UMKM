@@ -10,7 +10,9 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { Loader2, Save } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,
@@ -104,7 +106,7 @@ export default function SettingsPage() {
   const [isSavingPayment, setIsSavingPayment] = useState(false);
   const [isSavingShipping, setIsSavingShipping] = useState(false);
   const [isSavingSeo, setIsSavingSeo] = useState(false);
-  const [isSavingLanding, setIsSavingLanding] = useState(false);
+  // isSavingLanding removed - now using unified isSaving for store tab
   const [isRemovingLogo, setIsRemovingLogo] = useState(false);
   const [isRemovingBanner, setIsRemovingBanner] = useState(false);
 
@@ -340,48 +342,56 @@ export default function SettingsPage() {
     }
   };
 
-  const handleSaveLanding = async () => {
-    if (!tenant || !landingContent) return;
-    setIsSavingLanding(true);
+  // UNIFIED SAVE: Save both store info AND landing content together
+  const handleSaveStoreTab = async () => {
+    if (!tenant || !formData || !landingContent) return;
+    setIsSaving(true);
     try {
       await tenantsApi.update({
-        // Hero - not saved when hideHero=true, but backend accepts them
-        heroTitle: landingContent.heroTitle || undefined,
-        heroSubtitle: landingContent.heroSubtitle || undefined,
-        heroCtaText: landingContent.heroCtaText || undefined,
-        heroCtaLink: landingContent.heroCtaLink || undefined,
-        heroBackgroundImage: landingContent.heroBackgroundImage || undefined,
+        // Store Info
+        name: formData.name || undefined,
+        description: formData.description || undefined,
+        phone: formData.phone || undefined,
+        address: formData.address || undefined,
+        // Hero - use nullish coalescing to allow empty strings
+        heroTitle: landingContent.heroTitle,
+        heroSubtitle: landingContent.heroSubtitle,
+        heroCtaText: landingContent.heroCtaText,
+        heroCtaLink: landingContent.heroCtaLink,
+        heroBackgroundImage: landingContent.heroBackgroundImage,
         // About
-        aboutTitle: landingContent.aboutTitle || undefined,
-        aboutSubtitle: landingContent.aboutSubtitle || undefined,
-        aboutContent: landingContent.aboutContent || undefined,
-        aboutImage: landingContent.aboutImage || undefined,
+        aboutTitle: landingContent.aboutTitle,
+        aboutSubtitle: landingContent.aboutSubtitle,
+        aboutContent: landingContent.aboutContent,
+        aboutImage: landingContent.aboutImage,
         aboutFeatures: landingContent.aboutFeatures,
         // Testimonials
-        testimonialsTitle: landingContent.testimonialsTitle || undefined,
-        testimonialsSubtitle: landingContent.testimonialsSubtitle || undefined,
+        testimonialsTitle: landingContent.testimonialsTitle,
+        testimonialsSubtitle: landingContent.testimonialsSubtitle,
         testimonials: landingContent.testimonials,
         // Contact
-        contactTitle: landingContent.contactTitle || undefined,
-        contactSubtitle: landingContent.contactSubtitle || undefined,
-        contactMapUrl: landingContent.contactMapUrl || undefined,
+        contactTitle: landingContent.contactTitle,
+        contactSubtitle: landingContent.contactSubtitle,
+        contactMapUrl: landingContent.contactMapUrl,
         contactShowMap: landingContent.contactShowMap,
         contactShowForm: landingContent.contactShowForm,
         // CTA
-        ctaTitle: landingContent.ctaTitle || undefined,
-        ctaSubtitle: landingContent.ctaSubtitle || undefined,
-        ctaButtonText: landingContent.ctaButtonText || undefined,
-        ctaButtonLink: landingContent.ctaButtonLink || undefined,
+        ctaTitle: landingContent.ctaTitle,
+        ctaSubtitle: landingContent.ctaSubtitle,
+        ctaButtonText: landingContent.ctaButtonText,
+        ctaButtonLink: landingContent.ctaButtonLink,
         ctaButtonStyle: landingContent.ctaButtonStyle,
       });
       await refresh();
-      setLandingContent(null); // Reset to trigger fresh load
-      toast.success('Konten landing page berhasil disimpan');
+      // Reset both to trigger fresh load
+      setFormData(null);
+      setLandingContent(null);
+      toast.success('Semua perubahan berhasil disimpan');
     } catch (error) {
-      console.error('Failed to save landing content:', error);
-      toast.error('Gagal menyimpan konten landing page');
+      console.error('Failed to save store tab:', error);
+      toast.error('Gagal menyimpan perubahan');
     } finally {
-      setIsSavingLanding(false);
+      setIsSaving(false);
     }
   };
 
@@ -570,17 +580,26 @@ export default function SettingsPage() {
               isLoading={tenantLoading}
               isSaving={isSaving}
               onFormChange={updateFormData}
-              onSave={handleSaveStore}
+              showSaveButton={false}
             />
 
             <LandingContentSettings
               data={landingContent}
               isLoading={tenantLoading}
-              isSaving={isSavingLanding}
+              isSaving={isSaving}
               onDataChange={setLandingContent}
-              onSave={handleSaveLanding}
               hideHero={true}
+              showSaveButton={false}
             />
+
+            {/* UNIFIED SAVE BUTTON */}
+            <div className="flex justify-end pt-4 border-t">
+              <Button onClick={handleSaveStoreTab} disabled={isSaving} size="lg">
+                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Save className="mr-2 h-4 w-4" />
+                Simpan Semua Perubahan
+              </Button>
+            </div>
           </div>
         </TabsContent>
 

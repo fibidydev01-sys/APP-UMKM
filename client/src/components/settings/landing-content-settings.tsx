@@ -87,8 +87,9 @@ interface LandingContentSettingsProps {
   isLoading: boolean;
   isSaving: boolean;
   onDataChange: (data: LandingContentData) => void;
-  onSave: () => void;
-  hideHero?: boolean; // NEW: Option to hide Hero section (avoid duplication with basic store info)
+  onSave?: () => void;
+  hideHero?: boolean; // Option to hide Hero section (avoid duplication with basic store info)
+  showSaveButton?: boolean; // Option to hide save button (when using unified save)
 }
 
 // ============================================================================
@@ -156,6 +157,7 @@ export function LandingContentSettings({
   onDataChange,
   onSave,
   hideHero = false,
+  showSaveButton = true,
 }: LandingContentSettingsProps) {
   const [openSections, setOpenSections] = useState<string[]>(hideHero ? ['about'] : ['hero']);
 
@@ -712,12 +714,14 @@ export function LandingContentSettings({
       </Card>
 
       {/* Save Button */}
-      <div className="flex justify-end">
-        <Button onClick={onSave} disabled={isSaving}>
-          {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-          Simpan Perubahan
-        </Button>
-      </div>
+      {showSaveButton && onSave && (
+        <div className="flex justify-end">
+          <Button onClick={onSave} disabled={isSaving}>
+            {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            Simpan Perubahan
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

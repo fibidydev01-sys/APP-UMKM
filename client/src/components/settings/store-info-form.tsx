@@ -26,7 +26,8 @@ interface StoreInfoFormProps {
   isLoading: boolean;
   isSaving: boolean;
   onFormChange: (key: keyof StoreFormData, value: string) => void;
-  onSave: () => Promise<void>;
+  onSave?: () => Promise<void>;
+  showSaveButton?: boolean; // NEW: Option to hide save button (when using unified save)
 }
 
 // ============================================================================
@@ -41,6 +42,7 @@ export function StoreInfoForm({
   isSaving,
   onFormChange,
   onSave,
+  showSaveButton = true,
 }: StoreInfoFormProps) {
   return (
     <Card>
@@ -122,13 +124,15 @@ export function StoreInfoForm({
               />
             </div>
 
-            <div className="flex justify-end">
-              <Button onClick={onSave} disabled={isSaving}>
-                {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                <Save className="mr-2 h-4 w-4" />
-                Simpan Informasi Toko
-              </Button>
-            </div>
+            {showSaveButton && onSave && (
+              <div className="flex justify-end">
+                <Button onClick={onSave} disabled={isSaving}>
+                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <Save className="mr-2 h-4 w-4" />
+                  Simpan Informasi Toko
+                </Button>
+              </div>
+            )}
           </>
         )}
       </CardContent>
