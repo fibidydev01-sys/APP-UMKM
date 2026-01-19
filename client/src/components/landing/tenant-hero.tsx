@@ -1,7 +1,6 @@
 'use client';
 
-import { extractSectionText, getHeroConfig, extractBackgroundImage } from '@/lib/landing';
-import { LANDING_CONSTANTS, useHeroBlock } from '@/lib/landing';
+import { extractHeroData, useHeroBlock } from '@/lib/landing';
 import {
   Hero1,
   Hero2,
@@ -11,17 +10,11 @@ import {
   Hero6,
   Hero7,
 } from './blocks';
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantHeroProps {
   config?: TenantLandingConfig['hero'];
-  fallbacks?: {
-    title?: string;
-    subtitle?: string;
-    backgroundImage?: string;
-    logo?: string;
-    storeName?: string;
-  };
+  tenant: Tenant | PublicTenant;
 }
 
 /**
@@ -30,7 +23,16 @@ interface TenantHeroProps {
  * Wrapper that selects and renders the appropriate hero block
  * based on the current template context
  *
- * 🚀 v3.0 NUMBERING SYSTEM:
+ * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
+ * - title → tenant.heroTitle (fallback: tenant.name)
+ * - subtitle → tenant.heroSubtitle (fallback: tenant.description)
+ * - ctaText → tenant.heroCtaText
+ * - ctaLink → tenant.heroCtaLink
+ * - backgroundImage → tenant.heroBackgroundImage (fallback: tenant.banner)
+ * - logo → tenant.logo
+ * - storeName → tenant.name
+ *
+ * 🚀 BLOCK VARIANTS:
  * - hero1 → Centered (default)
  * - hero2 → Split Screen
  * - hero3 → Video Background
@@ -38,39 +40,26 @@ interface TenantHeroProps {
  * - hero5 → Animated Gradient
  * - hero6 → Glass Morphism
  * - hero7 → Bento Grid
- *
- * 🎯 BLOCK PRIORITY:
- * 1. config.block (user override)
- * 2. template block (from TemplateProvider)
  */
-export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
+export function TenantHero({ config, tenant }: TenantHeroProps) {
   const templateBlock = useHeroBlock();
   const block = config?.block || templateBlock;
 
-  const { title, subtitle } = extractSectionText(config, {
-    title: fallbacks.title || fallbacks.storeName,
-    subtitle: fallbacks.subtitle,
-  });
-
-  const heroConfig = getHeroConfig(config);
-  const showCta = heroConfig?.showCta ?? true;
-  const ctaText = heroConfig?.ctaText || LANDING_CONSTANTS.CTA_TEXT_DEFAULT;
-  const ctaLink = heroConfig?.ctaLink || '/products';
-  const backgroundImage = extractBackgroundImage(heroConfig, fallbacks.backgroundImage);
-  const overlayOpacity = heroConfig?.overlayOpacity ?? LANDING_CONSTANTS.OVERLAY_OPACITY_DEFAULT;
+  // Extract hero data directly from tenant (Data Contract fields)
+  const heroData = extractHeroData(tenant, config ? { hero: config } : undefined);
 
   const commonProps = {
-    title,
-    subtitle,
-    ctaText,
-    ctaLink,
-    showCta,
-    backgroundImage,
-    logo: fallbacks.logo,
-    storeName: fallbacks.storeName,
+    title: heroData.title,
+    subtitle: heroData.subtitle,
+    ctaText: heroData.ctaText,
+    ctaLink: heroData.ctaLink,
+    showCta: true,
+    backgroundImage: heroData.backgroundImage,
+    logo: tenant.logo || undefined,
+    storeName: tenant.name,
   };
 
-  // 🚀 Render appropriate block based on template
+  // Render appropriate block based on template
   switch (block) {
     case 'hero2':
       return <Hero2 {...commonProps} />;
@@ -93,6 +82,6 @@ export function TenantHero({ config, fallbacks = {} }: TenantHeroProps) {
     // Default: hero1 (Centered)
     case 'hero1':
     default:
-      return <Hero1 {...commonProps} overlayOpacity={overlayOpacity} />;
+      return <Hero1 {...commonProps} />;
   }
 }

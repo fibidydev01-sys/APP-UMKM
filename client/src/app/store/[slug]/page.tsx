@@ -134,14 +134,7 @@ export default async function StorePage({ params }: StorePageProps) {
         {landingConfig?.hero?.enabled && (
           <TenantHero
             config={landingConfig.hero}
-            fallbacks={{
-              // Use extracted data from tenant fields (priority: tenant > config > default)
-              title: heroData.title,
-              subtitle: heroData.subtitle,
-              backgroundImage: heroData.backgroundImage,
-              logo: tenant.logo || undefined,
-              storeName: tenant.name,
-            }}
+            tenant={tenant}
           />
         )}
 

@@ -133,13 +133,7 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
               {heroEnabled && (
                 <TenantHero
                   config={config.hero}
-                  fallbacks={{
-                    title: tenant.name,
-                    subtitle: tenant.description,
-                    backgroundImage: tenant.banner || undefined,
-                    logo: tenant.logo || undefined,
-                    storeName: tenant.name,
-                  }}
+                  tenant={tenant}
                 />
               )}
 
