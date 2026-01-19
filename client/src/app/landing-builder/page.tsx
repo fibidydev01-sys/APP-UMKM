@@ -140,6 +140,20 @@ export default function LandingBuilderPage() {
     // NO form sheet - just update config directly
   }, [activeSection, landingConfig, setLandingConfig]);
 
+  // Toggle section enabled/disabled
+  const handleToggleSection = useCallback((enabled: boolean) => {
+    if (!activeSection || !landingConfig) return;
+
+    const currentSection = landingConfig[activeSection] || {};
+    setLandingConfig({
+      ...landingConfig,
+      [activeSection]: {
+        ...currentSection,
+        enabled,
+      },
+    } as TenantLandingConfig);
+  }, [activeSection, landingConfig, setLandingConfig]);
+
   // Close block sidebar
   const handleBlockSidebarClose = useCallback(() => {
     setShowBlockSidebar(false);
@@ -265,7 +279,9 @@ export default function LandingBuilderPage() {
           <BlockSidebar
             section={activeSection}
             currentBlock={landingConfig?.[activeSection]?.block}
+            sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
             onBlockSelect={handleBlockSelect}
+            onToggleSection={handleToggleSection}
             onBack={handleBlockSidebarClose}
           />
         )}

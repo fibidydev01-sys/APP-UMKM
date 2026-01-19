@@ -9,6 +9,8 @@
 
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import {
   Check,
@@ -127,7 +129,9 @@ const BLOCK_OPTIONS_MAP = {
 interface BlockSidebarProps {
   section: SectionType;
   currentBlock?: string;
+  sectionEnabled?: boolean;
   onBlockSelect: (block: string) => void;
+  onToggleSection?: (enabled: boolean) => void;
   onBack: () => void;
   className?: string;
 }
@@ -139,7 +143,9 @@ interface BlockSidebarProps {
 export function BlockSidebar({
   section,
   currentBlock,
+  sectionEnabled = true,
   onBlockSelect,
+  onToggleSection,
   onBack,
   className,
 }: BlockSidebarProps) {
@@ -162,6 +168,29 @@ export function BlockSidebar({
           <X className="h-4 w-4" />
         </Button>
       </div>
+
+      {/* Section Enable/Disable Toggle */}
+      {onToggleSection && (
+        <div className="p-3 border-b bg-muted/30">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="section-toggle" className="text-sm font-medium">
+                {sectionEnabled ? 'Section Aktif' : 'Section Nonaktif'}
+              </Label>
+            </div>
+            <Switch
+              id="section-toggle"
+              checked={sectionEnabled}
+              onCheckedChange={onToggleSection}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {sectionEnabled
+              ? 'Section akan ditampilkan di landing page'
+              : 'Section tidak akan ditampilkan'}
+          </p>
+        </div>
+      )}
 
       {/* Block Grid */}
       <ScrollArea className="flex-1">
