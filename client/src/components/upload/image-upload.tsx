@@ -162,7 +162,7 @@ export function ImageUpload({
         }
 
         if (result.event === "success" && result.info?.secure_url) {
-          onChange(result.info.secure_url);
+          onChange(result.info.secure_url.trim()); // Clean URL before saving
           setIsLoading(false);
           // FIX: Reset body overflow on success
           document.body.style.overflow = "";
@@ -215,7 +215,7 @@ export function ImageUpload({
             style={{ aspectRatio }}
           >
             <Image
-              src={value}
+              src={value.trim()}
               alt="Uploaded image"
               fill
               className="object-cover"
