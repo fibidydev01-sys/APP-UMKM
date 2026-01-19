@@ -384,10 +384,51 @@ export default function SettingsPage() {
         ctaButtonLink: landingContent.ctaButtonLink,
         ctaButtonStyle: landingContent.ctaButtonStyle,
       });
-      await refresh();
-      // Reset both to trigger fresh load
-      setFormData(null);
-      setLandingContent(null);
+
+      // 🔥 FIX: Get fresh data and immediately update state
+      // Don't rely on useEffect race condition
+      const freshTenant = await refresh();
+      if (freshTenant) {
+        // Update formData with fresh tenant data
+        const themeData = freshTenant.theme as { primaryColor?: string } | null;
+        setFormData({
+          name: freshTenant.name || '',
+          description: freshTenant.description || '',
+          phone: freshTenant.phone || '',
+          address: freshTenant.address || '',
+          logo: freshTenant.logo || undefined,
+          banner: freshTenant.banner || undefined,
+          primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
+        });
+
+        // Update landingContent with fresh tenant data
+        setLandingContent({
+          heroTitle: freshTenant.heroTitle || '',
+          heroSubtitle: freshTenant.heroSubtitle || '',
+          heroCtaText: freshTenant.heroCtaText || '',
+          heroCtaLink: freshTenant.heroCtaLink || '',
+          heroBackgroundImage: freshTenant.heroBackgroundImage || '',
+          aboutTitle: freshTenant.aboutTitle || '',
+          aboutSubtitle: freshTenant.aboutSubtitle || '',
+          aboutContent: freshTenant.aboutContent || '',
+          aboutImage: freshTenant.aboutImage || '',
+          aboutFeatures: (freshTenant.aboutFeatures as FeatureItem[]) || [],
+          testimonialsTitle: freshTenant.testimonialsTitle || '',
+          testimonialsSubtitle: freshTenant.testimonialsSubtitle || '',
+          testimonials: (freshTenant.testimonials as Testimonial[]) || [],
+          contactTitle: freshTenant.contactTitle || '',
+          contactSubtitle: freshTenant.contactSubtitle || '',
+          contactMapUrl: freshTenant.contactMapUrl || '',
+          contactShowMap: freshTenant.contactShowMap ?? false,
+          contactShowForm: freshTenant.contactShowForm ?? true,
+          ctaTitle: freshTenant.ctaTitle || '',
+          ctaSubtitle: freshTenant.ctaSubtitle || '',
+          ctaButtonText: freshTenant.ctaButtonText || '',
+          ctaButtonLink: freshTenant.ctaButtonLink || '',
+          ctaButtonStyle: freshTenant.ctaButtonStyle || 'primary',
+        });
+      }
+
       toast.success('Semua perubahan berhasil disimpan');
     } catch (error) {
       console.error('Failed to save store tab:', error);
