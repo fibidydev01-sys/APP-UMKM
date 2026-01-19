@@ -375,6 +375,8 @@ export default function SettingsPage() {
         ctaButtonStyle: landingContent.ctaButtonStyle,
       });
       await refresh();
+      // Reset state to null to trigger fresh load from tenant
+      setLandingContent(null);
       toast.success('Konten landing page berhasil disimpan');
     } catch (error) {
       console.error('Failed to save landing content:', error);
