@@ -1,8 +1,6 @@
 'use client';
 
-import { useStoreUrls } from '@/lib/store-url';
-import { extractSectionText, getCtaConfig, extractCtaLink, extractCtaButtonText, useCtaBlock } from '@/lib/landing';
-import { LANDING_CONSTANTS } from '@/lib/landing';
+import { extractCtaData, useCtaBlock } from '@/lib/landing';
 import {
   Cta1,
   Cta2,
@@ -12,25 +10,24 @@ import {
   Cta6,
   Cta7,
 } from './blocks';
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantCtaProps {
   config?: TenantLandingConfig['cta'];
-  storeSlug?: string;
-  fallbacks?: {
-    title?: string;
-    subtitle?: string;
-    buttonLink?: string;
-  };
+  tenant: Tenant | PublicTenant;
 }
 
 /**
  * Tenant CTA Component
  *
- * Wrapper that selects and renders the appropriate block
- * based on the current template context
+ * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
+ * - title → tenant.ctaTitle
+ * - subtitle → tenant.ctaSubtitle
+ * - buttonText → tenant.ctaButtonText
+ * - buttonLink → tenant.ctaButtonLink
+ * - buttonStyle → tenant.ctaButtonStyle
  *
- * 🚀 v3.0 NUMBERING SYSTEM:
+ * 🚀 BLOCK VARIANTS:
  * - cta1 → Default
  * - cta2 → Bold Center
  * - cta3 → Gradient Banner
@@ -38,37 +35,23 @@ interface TenantCtaProps {
  * - cta5 → Floating
  * - cta6 → Minimal Line
  * - cta7 → Countdown
- *
- * 🎯 BLOCK PRIORITY:
- * 1. config.block (user override)
- * 2. template variant (from TemplateProvider)
  */
-export function TenantCta({ config, storeSlug, fallbacks = {} }: TenantCtaProps) {
+export function TenantCta({ config, tenant }: TenantCtaProps) {
   const templateBlock = useCtaBlock();
   const block = config?.block || templateBlock;
 
-  const { title, subtitle } = extractSectionText(config, {
-    title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.CTA,
-    subtitle: fallbacks.subtitle,
-  });
-
-  const ctaConfig = getCtaConfig(config);
-  const buttonText = extractCtaButtonText(ctaConfig, LANDING_CONSTANTS.CTA_BUTTON_DEFAULT);
-  const style = ctaConfig?.style || 'primary';
-
-  // Smart URL routing
-  const urls = storeSlug ? useStoreUrls(storeSlug) : null;
-  const defaultLink = urls?.products() || fallbacks.buttonLink || '/products';
-  const buttonLink = extractCtaLink(ctaConfig, defaultLink);
+  // Extract CTA data directly from tenant (Data Contract fields)
+  const ctaData = extractCtaData(tenant, config ? { cta: config } : undefined);
 
   const buttonVariant: 'default' | 'secondary' | 'outline' =
-    style === 'outline' ? 'outline' : style === 'secondary' ? 'secondary' : 'default';
+    ctaData.buttonStyle === 'outline' ? 'outline' :
+    ctaData.buttonStyle === 'secondary' ? 'secondary' : 'default';
 
   const commonProps = {
-    title,
-    subtitle,
-    buttonText,
-    buttonLink,
+    title: ctaData.title,
+    subtitle: ctaData.subtitle,
+    buttonText: ctaData.buttonText,
+    buttonLink: ctaData.buttonLink,
     buttonVariant,
   };
 

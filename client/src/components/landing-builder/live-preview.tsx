@@ -141,10 +141,7 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
               {aboutEnabled && (
                 <TenantAbout
                   config={config.about}
-                  fallbacks={{
-                    content: tenant.description || undefined,
-                    image: tenant.banner || undefined,
-                  }}
+                  tenant={tenant}
                 />
               )}
 
@@ -159,24 +156,25 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
 
               {/* Testimonials Section */}
               {testimonialsEnabled && (
-                <TenantTestimonials config={config.testimonials} />
+                <TenantTestimonials
+                  config={config.testimonials}
+                  tenant={tenant}
+                />
               )}
 
               {/* CTA Section */}
               {ctaEnabled && (
-                <TenantCta config={config.cta} storeSlug={tenant.slug} />
+                <TenantCta
+                  config={config.cta}
+                  tenant={tenant}
+                />
               )}
 
               {/* Contact Section */}
               {contactEnabled && (
                 <TenantContact
                   config={config.contact}
-                  fallbacks={{
-                    whatsapp: tenant.whatsapp || null,
-                    phone: tenant.phone || null,
-                    address: tenant.address || null,
-                    storeName: tenant.name,
-                  }}
+                  tenant={tenant}
                 />
               )}
 

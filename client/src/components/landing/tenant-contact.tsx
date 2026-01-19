@@ -1,7 +1,6 @@
 'use client';
 
-import { extractSectionText, useContactBlock } from '@/lib/landing';
-import { LANDING_CONSTANTS } from '@/lib/landing';
+import { extractContactData, useContactBlock } from '@/lib/landing';
 import {
   Contact1,
   Contact2,
@@ -11,55 +10,49 @@ import {
   Contact6,
   Contact7,
 } from './blocks';
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantContactProps {
   config?: TenantLandingConfig['contact'];
-  fallbacks?: {
-    title?: string;
-    subtitle?: string;
-    whatsapp?: string | null;
-    phone?: string | null;
-    address?: string | null;
-    storeName?: string;
-  };
+  tenant: Tenant | PublicTenant;
 }
 
 /**
  * Tenant Contact Component
  *
- * Wrapper that selects and renders the appropriate block
- * based on the current template context
+ * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
+ * - title → tenant.contactTitle
+ * - subtitle → tenant.contactSubtitle
+ * - whatsapp → tenant.whatsapp
+ * - phone → tenant.phone
+ * - email → tenant.email
+ * - address → tenant.address
+ * - storeName → tenant.name
  *
- * 🚀 v3.0 NUMBERING SYSTEM:
+ * 🚀 BLOCK VARIANTS:
  * - contact1 → Default
- * - contact2 → Split Form
+ * - contact2 → Split Layout
  * - contact3 → Centered
  * - contact4 → Map Focus
  * - contact5 → Minimal
  * - contact6 → Social Focused
  * - contact7 → Card Grid
- *
- * 🎯 BLOCK PRIORITY:
- * 1. config.block (user override)
- * 2. template variant (from TemplateProvider)
  */
-export function TenantContact({ config, fallbacks = {} }: TenantContactProps) {
+export function TenantContact({ config, tenant }: TenantContactProps) {
   const templateBlock = useContactBlock();
   const block = config?.block || templateBlock;
 
-  const { title, subtitle } = extractSectionText(config, {
-    title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.CONTACT,
-    subtitle: fallbacks.subtitle,
-  });
+  // Extract contact data directly from tenant (Data Contract fields)
+  const contactData = extractContactData(tenant, config ? { contact: config } : undefined);
 
   const commonProps = {
-    title,
-    subtitle,
-    whatsapp: fallbacks.whatsapp,
-    phone: fallbacks.phone,
-    address: fallbacks.address,
-    storeName: fallbacks.storeName,
+    title: contactData.title,
+    subtitle: contactData.subtitle,
+    whatsapp: contactData.whatsapp,
+    phone: contactData.phone,
+    email: contactData.email,
+    address: contactData.address,
+    storeName: tenant.name,
   };
 
   // Render appropriate block based on template

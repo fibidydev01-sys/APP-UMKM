@@ -1,13 +1,6 @@
 import { notFound } from 'next/navigation';
 import { tenantsApi, productsApi } from '@/lib/api';
-import {
-  normalizeTestimonials,
-  extractHeroData,
-  extractAboutData,
-  extractTestimonialsData,
-  extractContactData,
-  extractCtaData,
-} from '@/lib/landing';
+import { normalizeTestimonials } from '@/lib/landing';
 import {
   TenantHero,
   TenantAbout,
@@ -21,7 +14,7 @@ import {
   ProductListSchema,
   generateTenantBreadcrumbs,
 } from '@/components/seo';
-import type { PublicTenant, Product } from '@/types';
+import type { PublicTenant, Product, Testimonial } from '@/types';
 
 // ==========================================
 // STORE HOMEPAGE - CUSTOM LANDING ONLY
@@ -88,18 +81,8 @@ export default async function StorePage({ params }: StorePageProps) {
   const productLimit = (landingConfig?.products?.config?.limit as number) || 8;
   const products = await getProducts(slug, productLimit);
 
-  // ==========================================
-  // EXTRACT DATA FROM TENANT FIELDS (NEW)
-  // Priority: tenant fields > landingConfig > defaults
-  // ==========================================
-  const heroData = extractHeroData(tenant, landingConfig);
-  const aboutData = extractAboutData(tenant, landingConfig);
-  const testimonialsData = extractTestimonialsData(tenant, landingConfig);
-  const contactData = extractContactData(tenant, landingConfig);
-  const ctaData = extractCtaData(tenant, landingConfig);
-
-  // Testimonials - use extracted data
-  const testimonialItems = normalizeTestimonials(testimonialsData.items);
+  // Check if testimonials has items (for conditional rendering)
+  const testimonialItems = normalizeTestimonials(tenant.testimonials as Testimonial[] | undefined);
   const testimonialsEnabled = landingConfig?.testimonials?.enabled === true;
   const hasTestimonials = testimonialsEnabled && testimonialItems.length > 0;
 
@@ -141,12 +124,7 @@ export default async function StorePage({ params }: StorePageProps) {
         {landingConfig?.about?.enabled && (
           <TenantAbout
             config={landingConfig.about}
-            fallbacks={{
-              title: aboutData.title,
-              subtitle: aboutData.subtitle,
-              content: aboutData.content,
-              image: aboutData.image,
-            }}
+            tenant={tenant}
           />
         )}
 
@@ -160,41 +138,22 @@ export default async function StorePage({ params }: StorePageProps) {
 
         {hasTestimonials && (
           <TenantTestimonials
-            config={{
-              ...landingConfig?.testimonials,
-              title: testimonialsData.title,
-              subtitle: testimonialsData.subtitle,
-              config: {
-                items: testimonialItems,
-              },
-            }}
+            config={landingConfig?.testimonials}
+            tenant={tenant}
           />
         )}
 
         {landingConfig?.cta?.enabled && (
           <TenantCta
             config={landingConfig.cta}
-            storeSlug={slug}
-            fallbacks={{
-              title: ctaData.title,
-              subtitle: ctaData.subtitle,
-              buttonText: ctaData.buttonText,
-              buttonLink: ctaData.buttonLink,
-            }}
+            tenant={tenant}
           />
         )}
 
         {landingConfig?.contact?.enabled && (
           <TenantContact
             config={landingConfig.contact}
-            fallbacks={{
-              title: contactData.title,
-              subtitle: contactData.subtitle,
-              whatsapp: contactData.whatsapp || null,
-              phone: contactData.phone || null,
-              address: contactData.address || null,
-              storeName: tenant.name,
-            }}
+            tenant={tenant}
           />
         )}
 

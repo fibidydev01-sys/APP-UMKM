@@ -1,7 +1,6 @@
 'use client';
 
-import { extractSectionText, getAboutConfig, extractAboutImage } from '@/lib/landing';
-import { LANDING_CONSTANTS, useAboutBlock } from '@/lib/landing';
+import { extractAboutData, useAboutBlock } from '@/lib/landing';
 import {
   About1,
   About2,
@@ -11,25 +10,24 @@ import {
   About6,
   About7,
 } from './blocks';
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantAboutProps {
   config?: TenantLandingConfig['about'];
-  fallbacks?: {
-    title?: string;
-    subtitle?: string;
-    content?: string;
-    image?: string;
-  };
+  tenant: Tenant | PublicTenant;
 }
 
 /**
  * Tenant About Component
  *
- * Wrapper that selects and renders the appropriate block
- * based on the current template context
+ * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
+ * - title → tenant.aboutTitle
+ * - subtitle → tenant.aboutSubtitle
+ * - content → tenant.aboutContent
+ * - image → tenant.aboutImage
+ * - features → tenant.aboutFeatures
  *
- * 🚀 v3.0 NUMBERING SYSTEM:
+ * 🚀 BLOCK VARIANTS:
  * - about1 → Grid (default)
  * - about2 → Side by Side
  * - about3 → Centered
@@ -37,31 +35,20 @@ interface TenantAboutProps {
  * - about5 → Cards
  * - about6 → Magazine
  * - about7 → Storytelling
- *
- * 🎯 BLOCK PRIORITY:
- * 1. config.block (user override)
- * 2. template variant (from TemplateProvider)
  */
-export function TenantAbout({ config, fallbacks = {} }: TenantAboutProps) {
+export function TenantAbout({ config, tenant }: TenantAboutProps) {
   const templateBlock = useAboutBlock();
   const block = config?.block || templateBlock;
 
-  const { title, subtitle } = extractSectionText(config, {
-    title: fallbacks.title || LANDING_CONSTANTS.SECTION_TITLES.ABOUT,
-    subtitle: fallbacks.subtitle,
-  });
-
-  const aboutConfig = getAboutConfig(config);
-  const content = aboutConfig?.content || fallbacks.content || '';
-  const image = extractAboutImage(aboutConfig, fallbacks.image);
-  const features = aboutConfig?.features || [];
+  // Extract about data directly from tenant (Data Contract fields)
+  const aboutData = extractAboutData(tenant, config ? { about: config } : undefined);
 
   const commonProps = {
-    title,
-    subtitle,
-    content,
-    image,
-    features,
+    title: aboutData.title,
+    subtitle: aboutData.subtitle,
+    content: aboutData.content,
+    image: aboutData.image,
+    features: aboutData.features,
   };
 
   // 🚀 Render appropriate block based on template
