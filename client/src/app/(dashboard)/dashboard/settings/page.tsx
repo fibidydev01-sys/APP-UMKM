@@ -937,6 +937,11 @@ export default function SettingsPage() {
                                               updated[index] = { ...updated[index], icon: url };
                                               updateStoreTabData('aboutFeatures', updated);
                                             }}
+                                            onRemove={() => {
+                                              const updated = [...storeTabData.aboutFeatures];
+                                              updated[index] = { ...updated[index], icon: '' };
+                                              updateStoreTabData('aboutFeatures', updated);
+                                            }}
                                             folder="fibidy/feature-icons"
                                             aspectRatio={1}
                                             placeholder="Upload icon"
@@ -1089,6 +1094,11 @@ export default function SettingsPage() {
                                           onChange={(url) => {
                                             const updated = [...storeTabData.testimonials];
                                             updated[index] = { ...updated[index], avatar: url };
+                                            updateStoreTabData('testimonials', updated);
+                                          }}
+                                          onRemove={() => {
+                                            const updated = [...storeTabData.testimonials];
+                                            updated[index] = { ...updated[index], avatar: '' };
                                             updateStoreTabData('testimonials', updated);
                                           }}
                                           folder="fibidy/testimonial-avatars"
