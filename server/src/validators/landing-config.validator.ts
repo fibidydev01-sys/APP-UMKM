@@ -75,7 +75,17 @@ export type AboutBlock =
   | 'about4'  // Timeline
   | 'about5'  // Cards
   | 'about6'  // Magazine
-  | 'about7'; // Storytelling
+  | 'about7'  // Storytelling
+  | 'about8' | 'about9' | 'about10' | 'about11' | 'about12' | 'about13' | 'about14' | 'about15' | 'about16' | 'about17'
+  | 'about18' | 'about19' | 'about20' | 'about21' | 'about22' | 'about23' | 'about24' | 'about25' | 'about26' | 'about27'
+  | 'about28' | 'about29' | 'about30' | 'about31' | 'about32' | 'about33' | 'about34' | 'about35' | 'about36' | 'about37'
+  | 'about38' | 'about39' | 'about40' | 'about41' | 'about42' | 'about43' | 'about44' | 'about45' | 'about46' | 'about47'
+  | 'about48' | 'about49' | 'about50' | 'about51' | 'about52' | 'about53' | 'about54' | 'about55' | 'about56' | 'about57'
+  | 'about58' | 'about59' | 'about60' | 'about61' | 'about62' | 'about63' | 'about64' | 'about65' | 'about66' | 'about67'
+  | 'about68' | 'about69' | 'about70' | 'about71' | 'about72' | 'about73' | 'about74' | 'about75' | 'about76' | 'about77'
+  | 'about78' | 'about79' | 'about80' | 'about81' | 'about82' | 'about83' | 'about84' | 'about85' | 'about86' | 'about87'
+  | 'about88' | 'about89' | 'about90' | 'about91' | 'about92' | 'about93' | 'about94' | 'about95' | 'about96' | 'about97'
+  | 'about98' | 'about99' | 'about100';
 
 export type ProductsBlock =
   | 'products1'  // Grid (default)
@@ -304,7 +314,19 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7'],
+          enum: [
+            'about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7',
+            'about8', 'about9', 'about10', 'about11', 'about12', 'about13', 'about14', 'about15', 'about16', 'about17',
+            'about18', 'about19', 'about20', 'about21', 'about22', 'about23', 'about24', 'about25', 'about26', 'about27',
+            'about28', 'about29', 'about30', 'about31', 'about32', 'about33', 'about34', 'about35', 'about36', 'about37',
+            'about38', 'about39', 'about40', 'about41', 'about42', 'about43', 'about44', 'about45', 'about46', 'about47',
+            'about48', 'about49', 'about50', 'about51', 'about52', 'about53', 'about54', 'about55', 'about56', 'about57',
+            'about58', 'about59', 'about60', 'about61', 'about62', 'about63', 'about64', 'about65', 'about66', 'about67',
+            'about68', 'about69', 'about70', 'about71', 'about72', 'about73', 'about74', 'about75', 'about76', 'about77',
+            'about78', 'about79', 'about80', 'about81', 'about82', 'about83', 'about84', 'about85', 'about86', 'about87',
+            'about88', 'about89', 'about90', 'about91', 'about92', 'about93', 'about94', 'about95', 'about96', 'about97',
+            'about98', 'about99', 'about100'
+          ],
         },
         config: {
           type: 'object' as const,
@@ -818,7 +840,19 @@ export const AVAILABLE_BLOCKS = {
     'hero88', 'hero89', 'hero90', 'hero91', 'hero92', 'hero93', 'hero94', 'hero95', 'hero96', 'hero97',
     'hero98', 'hero99', 'hero100'
   ] as HeroBlock[],
-  about: ['about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7'] as AboutBlock[],
+  about: [
+    'about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7',
+    'about8', 'about9', 'about10', 'about11', 'about12', 'about13', 'about14', 'about15', 'about16', 'about17',
+    'about18', 'about19', 'about20', 'about21', 'about22', 'about23', 'about24', 'about25', 'about26', 'about27',
+    'about28', 'about29', 'about30', 'about31', 'about32', 'about33', 'about34', 'about35', 'about36', 'about37',
+    'about38', 'about39', 'about40', 'about41', 'about42', 'about43', 'about44', 'about45', 'about46', 'about47',
+    'about48', 'about49', 'about50', 'about51', 'about52', 'about53', 'about54', 'about55', 'about56', 'about57',
+    'about58', 'about59', 'about60', 'about61', 'about62', 'about63', 'about64', 'about65', 'about66', 'about67',
+    'about68', 'about69', 'about70', 'about71', 'about72', 'about73', 'about74', 'about75', 'about76', 'about77',
+    'about78', 'about79', 'about80', 'about81', 'about82', 'about83', 'about84', 'about85', 'about86', 'about87',
+    'about88', 'about89', 'about90', 'about91', 'about92', 'about93', 'about94', 'about95', 'about96', 'about97',
+    'about98', 'about99', 'about100'
+  ] as AboutBlock[],
   products: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7'] as ProductsBlock[],
   testimonials: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7'] as TestimonialsBlock[],
   contact: ['contact1', 'contact2', 'contact3', 'contact4', 'contact5', 'contact6', 'contact7'] as ContactBlock[],
