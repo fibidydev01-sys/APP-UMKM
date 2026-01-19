@@ -14,16 +14,17 @@ import { Loader2, Save } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Accordion } from '@/components/ui/accordion';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,
-  StoreInfoForm,
   AppearanceSettings,
   PaymentSettings,
   ShippingSettings,
   SeoSettings,
-  LandingContentSettings,
   BankAccountDialog,
   EwalletDialog,
 } from '@/components/settings';
@@ -613,44 +614,220 @@ export default function SettingsPage() {
           onSheetOpenChange={setSheetOpen}
         />
 
-        {/* Tab: Store Info - UNIFIED CARD */}
+        {/* Tab: Store Info - FLAT LAYOUT (NO ACCORDION) */}
         <TabsContent value="store" className="mt-6">
           <Card>
             <CardHeader>
               <CardTitle>Informasi Toko</CardTitle>
               <CardDescription>
-                Kelola informasi toko dan konten landing page Anda. Data ini akan ditampilkan kepada pelanggan.
+                Kelola informasi toko dan konten landing page. Semua data disimpan ke database yang sama.
               </CardDescription>
             </CardHeader>
-            <CardContent>
-              <Accordion
-                type="multiple"
-                defaultValue={['store-info']}
-                className="w-full"
-              >
-                {/* Store Info Section */}
-                <StoreInfoForm
-                  formData={formData ? { name: formData.name, description: formData.description, phone: formData.phone, address: formData.address } : null}
-                  tenantEmail={tenant?.email}
-                  tenantSlug={tenant?.slug}
-                  isLoading={tenantLoading}
-                  onFormChange={updateFormData}
-                />
+            <CardContent className="space-y-8">
+              {/* ============================================ */}
+              {/* SECTION 1: Informasi Dasar */}
+              {/* ============================================ */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">Informasi Dasar</h3>
+                {tenantLoading || !formData ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-10 w-full" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="store-name">Nama Toko</Label>
+                        <Input
+                          id="store-name"
+                          placeholder="Nama toko Anda"
+                          value={formData.name}
+                          onChange={(e) => updateFormData('name', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="store-email">Email Toko</Label>
+                        <Input
+                          id="store-email"
+                          value={tenant?.email || ''}
+                          disabled
+                        />
+                        <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="store-phone">Nomor Telepon</Label>
+                        <Input
+                          id="store-phone"
+                          placeholder="+62 xxx xxxx xxxx"
+                          value={formData.phone}
+                          onChange={(e) => updateFormData('phone', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="store-slug">URL Toko</Label>
+                        <Input
+                          id="store-slug"
+                          value={`fibidy.com/store/${tenant?.slug || ''}`}
+                          disabled
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="store-description">Deskripsi Toko</Label>
+                      <Textarea
+                        id="store-description"
+                        placeholder="Ceritakan tentang toko Anda..."
+                        rows={3}
+                        value={formData.description}
+                        onChange={(e) => updateFormData('description', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="store-address">Alamat</Label>
+                      <Textarea
+                        id="store-address"
+                        placeholder="Alamat lengkap toko"
+                        rows={2}
+                        value={formData.address}
+                        onChange={(e) => updateFormData('address', e.target.value)}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
 
-                {/* Landing Content Sections (About, Testimonials, Contact, CTA) */}
-                <LandingContentSettings
-                  data={landingContent}
-                  isLoading={tenantLoading}
-                  isSaving={isSaving}
-                  onDataChange={setLandingContent}
-                  hideHero={true}
-                  showSaveButton={false}
-                  renderAsAccordionItems={true}
-                />
-              </Accordion>
+              {/* ============================================ */}
+              {/* SECTION 2: About - Tentang Toko */}
+              {/* ============================================ */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">About - Tentang Toko</h3>
+                {tenantLoading || !landingContent ? (
+                  <Skeleton className="h-24 w-full" />
+                ) : (
+                  <>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="aboutTitle">Judul</Label>
+                        <Input
+                          id="aboutTitle"
+                          placeholder="Tentang Kami"
+                          value={landingContent.aboutTitle}
+                          onChange={(e) => setLandingContent({ ...landingContent, aboutTitle: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="aboutSubtitle">Subtitle</Label>
+                        <Input
+                          id="aboutSubtitle"
+                          placeholder="Cerita di balik toko kami"
+                          value={landingContent.aboutSubtitle}
+                          onChange={(e) => setLandingContent({ ...landingContent, aboutSubtitle: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="aboutContent">Deskripsi Lengkap</Label>
+                      <Textarea
+                        id="aboutContent"
+                        placeholder="Ceritakan tentang toko Anda..."
+                        rows={4}
+                        value={landingContent.aboutContent}
+                        onChange={(e) => setLandingContent({ ...landingContent, aboutContent: e.target.value })}
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
 
+              {/* ============================================ */}
+              {/* SECTION 3: Contact - Informasi Kontak */}
+              {/* ============================================ */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">Contact - Informasi Kontak</h3>
+                {tenantLoading || !landingContent ? (
+                  <Skeleton className="h-24 w-full" />
+                ) : (
+                  <>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="contactTitle">Judul</Label>
+                        <Input
+                          id="contactTitle"
+                          placeholder="Hubungi Kami"
+                          value={landingContent.contactTitle}
+                          onChange={(e) => setLandingContent({ ...landingContent, contactTitle: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contactSubtitle">Subtitle</Label>
+                        <Input
+                          id="contactSubtitle"
+                          placeholder="Kami siap membantu Anda"
+                          value={landingContent.contactSubtitle}
+                          onChange={(e) => setLandingContent({ ...landingContent, contactSubtitle: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* ============================================ */}
+              {/* SECTION 4: CTA - Call to Action */}
+              {/* ============================================ */}
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold border-b pb-2">CTA - Call to Action</h3>
+                {tenantLoading || !landingContent ? (
+                  <Skeleton className="h-24 w-full" />
+                ) : (
+                  <>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="ctaTitle">Judul CTA</Label>
+                        <Input
+                          id="ctaTitle"
+                          placeholder="Siap Memulai?"
+                          value={landingContent.ctaTitle}
+                          onChange={(e) => setLandingContent({ ...landingContent, ctaTitle: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ctaSubtitle">Subtitle CTA</Label>
+                        <Input
+                          id="ctaSubtitle"
+                          placeholder="Bergabunglah dengan kami"
+                          value={landingContent.ctaSubtitle}
+                          onChange={(e) => setLandingContent({ ...landingContent, ctaSubtitle: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ctaButtonText">Teks Tombol</Label>
+                        <Input
+                          id="ctaButtonText"
+                          placeholder="Mulai Sekarang"
+                          value={landingContent.ctaButtonText}
+                          onChange={(e) => setLandingContent({ ...landingContent, ctaButtonText: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ctaButtonLink">Link Tombol</Label>
+                        <Input
+                          id="ctaButtonLink"
+                          placeholder="/products"
+                          value={landingContent.ctaButtonLink}
+                          onChange={(e) => setLandingContent({ ...landingContent, ctaButtonLink: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* ============================================ */}
               {/* UNIFIED SAVE BUTTON */}
-              <div className="flex justify-end pt-6 mt-6 border-t">
+              {/* ============================================ */}
+              <div className="flex justify-end pt-6 border-t">
                 <Button onClick={handleSaveStoreTab} disabled={isSaving} size="lg">
                   {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   <Save className="mr-2 h-4 w-4" />
