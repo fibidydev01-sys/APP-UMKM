@@ -737,6 +737,100 @@ export default function SettingsPage() {
                             Masukkan URL gambar background untuk hero section (Rekomendasi: 1920x800px)
                           </p>
                         </div>
+
+                        {/* ======================================== */}
+                        {/* Kategori & Branding - MOVED HERE! */}
+                        {/* ======================================== */}
+                        <div className="space-y-4 pt-4 border-t">
+                          <h3 className="text-base font-semibold">Kategori & Branding</h3>
+
+                          {/* Category - Readonly Display */}
+                          <div className="space-y-2">
+                            <Label htmlFor="store-category">Kategori Toko</Label>
+                            <Input
+                              id="store-category"
+                              value={storeTabData.category || 'Belum dipilih'}
+                              disabled
+                              className="bg-muted"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Kategori hanya dapat dipilih saat pendaftaran dan tidak dapat diubah
+                            </p>
+                          </div>
+
+                          {/* Logo Upload */}
+                          <div className="space-y-2 pt-2 border-t">
+                            <Label>Logo Toko</Label>
+                            <div className="max-w-[200px]">
+                              <ImageUpload
+                                value={storeTabData.logo}
+                                onChange={(url) => updateStoreTabData('logo', url)}
+                                onRemove={handleRemoveLogo}
+                                disabled={isRemovingLogo}
+                                folder="fibidy/logos"
+                                aspectRatio={1}
+                                placeholder="Upload logo toko"
+                              />
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Rekomendasi: 200x200px, format PNG atau JPG
+                            </p>
+                          </div>
+
+                          {/* Banner Upload */}
+                          <div className="space-y-2 pt-2 border-t">
+                            <Label>Banner Toko</Label>
+                            <ImageUpload
+                              value={storeTabData.banner}
+                              onChange={(url) => updateStoreTabData('banner', url)}
+                              onRemove={handleRemoveBanner}
+                              disabled={isRemovingBanner}
+                              folder="fibidy/banners"
+                              aspectRatio={3}
+                              placeholder="Upload banner toko"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Rekomendasi: 1200x400px, format PNG atau JPG
+                            </p>
+                          </div>
+
+                          {/* Primary Color */}
+                          <div className="space-y-3 pt-2 border-t">
+                            <Label>Warna Tema</Label>
+                            <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                              {THEME_COLORS.map((color) => (
+                                <button
+                                  key={color.value}
+                                  type="button"
+                                  onClick={() => updateStoreTabData('primaryColor', color.value)}
+                                  disabled={isSaving}
+                                  className={cn(
+                                    'relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all',
+                                    storeTabData.primaryColor === color.value
+                                      ? 'border-primary bg-primary/5'
+                                      : 'border-transparent hover:border-muted-foreground/20',
+                                    isSaving && 'opacity-50 cursor-not-allowed'
+                                  )}
+                                >
+                                  <div
+                                    className={cn(
+                                      'w-10 h-10 rounded-full flex items-center justify-center',
+                                      color.class
+                                    )}
+                                  >
+                                    {storeTabData.primaryColor === color.value && (
+                                      <Check className="h-5 w-5 text-white" />
+                                    )}
+                                  </div>
+                                  <span className="text-xs font-medium">{color.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Pilih warna utama untuk toko online Anda
+                            </p>
+                          </div>
+                        </div>
                       </AccordionContent>
                     </AccordionItem>
 
@@ -1217,103 +1311,6 @@ export default function SettingsPage() {
                           </Select>
                           <p className="text-xs text-muted-foreground">
                             Pilih gaya visual untuk tombol CTA
-                          </p>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    {/* ============================================ */}
-                    {/* SECTION 7: Kategori & Branding */}
-                    {/* ============================================ */}
-                    <AccordionItem value="branding">
-                      <AccordionTrigger className="text-lg font-semibold">
-                        Kategori & Branding
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-4 pt-4">
-                        {/* Category - Readonly Display */}
-                        <div className="space-y-2">
-                          <Label htmlFor="store-category">Kategori Toko</Label>
-                          <Input
-                            id="store-category"
-                            value={storeTabData.category || 'Belum dipilih'}
-                            disabled
-                            className="bg-muted"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Kategori hanya dapat dipilih saat pendaftaran dan tidak dapat diubah
-                          </p>
-                        </div>
-
-                        {/* Logo Upload */}
-                        <div className="space-y-2 pt-2 border-t">
-                          <Label>Logo Toko</Label>
-                          <div className="max-w-[200px]">
-                            <ImageUpload
-                              value={storeTabData.logo}
-                              onChange={(url) => updateStoreTabData('logo', url)}
-                              onRemove={handleRemoveLogo}
-                              disabled={isRemovingLogo}
-                              folder="fibidy/logos"
-                              aspectRatio={1}
-                              placeholder="Upload logo toko"
-                            />
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            Rekomendasi: 200x200px, format PNG atau JPG
-                          </p>
-                        </div>
-
-                        {/* Banner Upload */}
-                        <div className="space-y-2 pt-2 border-t">
-                          <Label>Banner Toko</Label>
-                          <ImageUpload
-                            value={storeTabData.banner}
-                            onChange={(url) => updateStoreTabData('banner', url)}
-                            onRemove={handleRemoveBanner}
-                            disabled={isRemovingBanner}
-                            folder="fibidy/banners"
-                            aspectRatio={3}
-                            placeholder="Upload banner toko"
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Rekomendasi: 1200x400px, format PNG atau JPG
-                          </p>
-                        </div>
-
-                        {/* Primary Color */}
-                        <div className="space-y-3 pt-2 border-t">
-                          <Label>Warna Tema</Label>
-                          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
-                            {THEME_COLORS.map((color) => (
-                              <button
-                                key={color.value}
-                                type="button"
-                                onClick={() => updateStoreTabData('primaryColor', color.value)}
-                                disabled={isSaving}
-                                className={cn(
-                                  'relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all',
-                                  storeTabData.primaryColor === color.value
-                                    ? 'border-primary bg-primary/5'
-                                    : 'border-transparent hover:border-muted-foreground/20',
-                                  isSaving && 'opacity-50 cursor-not-allowed'
-                                )}
-                              >
-                                <div
-                                  className={cn(
-                                    'w-10 h-10 rounded-full flex items-center justify-center',
-                                    color.class
-                                  )}
-                                >
-                                  {storeTabData.primaryColor === color.value && (
-                                    <Check className="h-5 w-5 text-white" />
-                                  )}
-                                </div>
-                                <span className="text-xs font-medium">{color.name}</span>
-                              </button>
-                            ))}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            Pilih warna utama untuk toko online Anda
                           </p>
                         </div>
                       </AccordionContent>
