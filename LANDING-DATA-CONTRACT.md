@@ -1,6 +1,6 @@
 # 📋 Landing Page Data Contract
 
-**Version:** 2.0
+**Version:** 2.1
 **Last Updated:** January 2026
 **Purpose:** Single source of truth for landing page data structure between Settings Form, Backend API, and Landing Builder
 
@@ -45,7 +45,7 @@ interface TenantLandingData {
   heroSubtitle: string;          // Value proposition
   heroCtaText: string;           // CTA button text (e.g., "Pesan Sekarang")
   heroCtaLink: string;           // CTA button link (e.g., "/products")
-  heroBackgroundImage: string;   // Background image URL (1920x800px recommended)
+  heroBackgroundImage: string;   // Cloudinary URL (1920x800px, uploaded via settings)
 
   // ============================================
   // ABOUT SECTION - Tentang Toko
@@ -53,7 +53,7 @@ interface TenantLandingData {
   aboutTitle: string;            // Section title (e.g., "Tentang Kami")
   aboutSubtitle: string;         // Section subtitle
   aboutContent: string;          // Long-form description (paragraphs)
-  aboutImage: string;            // About section image URL
+  aboutImage: string;            // Cloudinary URL (800x533px or 1200x800px)
   aboutFeatures: FeatureItem[];  // Array of features/highlights
 
   // ============================================
@@ -92,7 +92,7 @@ interface TenantLandingData {
 
 ```typescript
 interface FeatureItem {
-  icon: string;        // Emoji or icon name (e.g., "🔥" or "star")
+  icon: string;        // Cloudinary image URL (200x200px square icon)
   title: string;       // Feature title
   description: string; // Feature description
 }
@@ -101,7 +101,7 @@ interface Testimonial {
   name: string;        // Customer name
   role: string;        // Customer role/occupation
   content: string;     // Testimonial text
-  avatar?: string;     // Avatar image URL (optional)
+  avatar?: string;     // Cloudinary URL (200x200px square, optional)
 }
 ```
 
@@ -141,14 +141,14 @@ Cookie: tenant_auth=<session_token>
   "heroSubtitle": "Rasakan sensasi burger berkualitas dengan bumbu rahasia khas Asia",
   "heroCtaText": "Pesan Sekarang",
   "heroCtaLink": "/products",
-  "heroBackgroundImage": "https://example.com/hero-bg.jpg",
+  "heroBackgroundImage": "https://res.cloudinary.com/fibidy/image/upload/v1234567890/fibidy/hero-backgrounds/xxx.jpg",
   "aboutTitle": "Tentang Kami",
   "aboutSubtitle": "Cerita di balik toko kami",
   "aboutContent": "Lorem ipsum dolor sit amet...",
-  "aboutImage": "https://example.com/about.jpg",
+  "aboutImage": "https://res.cloudinary.com/fibidy/image/upload/v1234567890/fibidy/about-images/xxx.jpg",
   "aboutFeatures": [
     {
-      "icon": "🔥",
+      "icon": "https://res.cloudinary.com/fibidy/image/upload/v1234567890/fibidy/feature-icons/xxx.png",
       "title": "Kualitas Terjamin",
       "description": "Bahan-bahan pilihan berkualitas tinggi"
     }
@@ -160,7 +160,7 @@ Cookie: tenant_auth=<session_token>
       "name": "John Doe",
       "role": "Food Blogger",
       "content": "Burger terbaik yang pernah saya coba!",
-      "avatar": "https://example.com/avatar.jpg"
+      "avatar": "https://res.cloudinary.com/fibidy/image/upload/v1234567890/fibidy/testimonial-avatars/xxx.jpg"
     }
   ],
   "contactTitle": "Hubungi Kami",
@@ -254,6 +254,8 @@ Returns updated tenant object (same format as GET)
 
 ## 📐 Image Specifications
 
+All images are uploaded via Cloudinary through the Settings page.
+
 ### Logo
 - **Recommended Size:** 200x200px
 - **Aspect Ratio:** 1:1 (square)
@@ -268,9 +270,27 @@ Returns updated tenant object (same format as GET)
 
 ### Hero Background
 - **Recommended Size:** 1920x800px
-- **Aspect Ratio:** ~2.4:1
-- **Format:** JPG (optimized for web)
-- **Note:** Can be external URL or Cloudinary
+- **Aspect Ratio:** ~2.4:1 (wide)
+- **Format:** JPG or PNG
+- **Cloudinary Folder:** `fibidy/hero-backgrounds`
+
+### About Image
+- **Recommended Size:** 800x533px or 1200x800px
+- **Aspect Ratio:** 1.5:1 (horizontal)
+- **Format:** JPG or PNG
+- **Cloudinary Folder:** `fibidy/about-images`
+
+### Feature Icons
+- **Recommended Size:** 200x200px
+- **Aspect Ratio:** 1:1 (square)
+- **Format:** PNG (with transparency recommended)
+- **Cloudinary Folder:** `fibidy/feature-icons`
+
+### Testimonial Avatars
+- **Recommended Size:** 200x200px
+- **Aspect Ratio:** 1:1 (square)
+- **Format:** JPG or PNG
+- **Cloudinary Folder:** `fibidy/testimonial-avatars`
 
 ---
 
@@ -382,26 +402,26 @@ const [storeTabData, setStoreTabData] = useState<{
    - Nama Toko, Deskripsi Singkat
    - Hero Title, Hero Subtitle
    - CTA Text, CTA Link
-   - Background Image URL
+   - **Hero Background Image Upload** (Cloudinary)
    - **Kategori & Branding:**
      - Kategori Toko (readonly)
-     - Logo Upload
-     - Banner Upload
+     - Logo Upload (Cloudinary)
+     - Banner Upload (Cloudinary)
      - Warna Tema (color picker)
 
 2. **About - Tentang Toko**
    - Judul, Subtitle
    - Deskripsi Lengkap (textarea)
-   - URL Gambar About
+   - **About Image Upload** (Cloudinary)
    - **Fitur-Fitur Unggulan (array editor):**
      - Add/Delete features
-     - Each: Icon, Title, Description
+     - Each: Icon Upload (Cloudinary), Title, Description
 
 3. **Testimonials - Testimoni Pelanggan**
    - Judul, Subtitle
    - **Daftar Testimonial (array editor):**
      - Add/Delete testimonials
-     - Each: Name, Role, Content, Avatar URL
+     - Each: Name, Role, Content, Avatar Upload (Cloudinary)
 
 4. **Contact - Informasi Kontak**
    - Judul, Subtitle
@@ -485,7 +505,48 @@ This script tests:
 
 ---
 
+## 📤 Cloudinary Upload Pattern
+
+All image uploads in the Settings page use the unified `ImageUpload` component with Cloudinary:
+
+```tsx
+<ImageUpload
+  value={imageUrl}
+  onChange={(url) => updateField(url)}
+  onRemove={handleRemove}  // Optional
+  disabled={isRemoving}     // Optional
+  folder="fibidy/folder-name"
+  aspectRatio={1.5}         // Aspect ratio for cropping
+  placeholder="Upload image"
+/>
+```
+
+### Upload Flow:
+1. **User clicks upload** → Cloudinary widget opens
+2. **User selects image** → Auto-cropped to aspect ratio
+3. **Upload completes** → Cloudinary URL returned
+4. **URL saved to state** → Visible in form immediately
+5. **User clicks "Save"** → All changes persisted to database
+
+### Important Notes:
+- All images are uploaded to Cloudinary before saving to database
+- Images are cropped automatically using widget settings
+- No URL input fields - only Cloudinary uploads
+- Max file size: 5MB per image
+- Allowed formats: PNG, JPG, JPEG, WebP, GIF
+
+---
+
 ## 📅 Version History
+
+### v2.1 (January 2026)
+- ✅ **All images now use Cloudinary uploads** (no more URL inputs)
+- ✅ Hero Background Image → Cloudinary upload
+- ✅ About Image → Cloudinary upload
+- ✅ Feature Icons → Cloudinary upload (replaced emoji input)
+- ✅ Testimonial Avatars → Cloudinary upload
+- ✅ Added 4 new Cloudinary folders for organized storage
+- ✅ Consistent upload experience across all image fields
 
 ### v2.0 (January 2026)
 - ✅ Unified state structure implementation

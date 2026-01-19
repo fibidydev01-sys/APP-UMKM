@@ -115,6 +115,8 @@ export default function SettingsPage() {
   // isSavingLanding removed - now using unified isSaving for store tab
   const [isRemovingLogo, setIsRemovingLogo] = useState(false);
   const [isRemovingBanner, setIsRemovingBanner] = useState(false);
+  const [isRemovingHeroBackground, setIsRemovingHeroBackground] = useState(false);
+  const [isRemovingAboutImage, setIsRemovingAboutImage] = useState(false);
 
   // Dialog states
   const [bankDialogOpen, setBankDialogOpen] = useState(false);
@@ -489,6 +491,40 @@ export default function SettingsPage() {
     }
   };
 
+  const handleRemoveHeroBackground = async () => {
+    if (!tenant || !storeTabData) return;
+    setIsRemovingHeroBackground(true);
+    try {
+      setStoreTabData({ ...storeTabData, heroBackgroundImage: '' });
+      await tenantsApi.update({ heroBackgroundImage: '' });
+      await refresh();
+      toast.success('Hero background berhasil dihapus');
+    } catch (error) {
+      console.error('Failed to remove hero background:', error);
+      toast.error('Gagal menghapus hero background');
+      setStoreTabData({ ...storeTabData, heroBackgroundImage: tenant.heroBackgroundImage || '' });
+    } finally {
+      setIsRemovingHeroBackground(false);
+    }
+  };
+
+  const handleRemoveAboutImage = async () => {
+    if (!tenant || !storeTabData) return;
+    setIsRemovingAboutImage(true);
+    try {
+      setStoreTabData({ ...storeTabData, aboutImage: '' });
+      await tenantsApi.update({ aboutImage: '' });
+      await refresh();
+      toast.success('About image berhasil dihapus');
+    } catch (error) {
+      console.error('Failed to remove about image:', error);
+      toast.error('Gagal menghapus about image');
+      setStoreTabData({ ...storeTabData, aboutImage: tenant.aboutImage || '' });
+    } finally {
+      setIsRemovingAboutImage(false);
+    }
+  };
+
   // ---------------------------------------------------------------------------
   // Payment Methods Handlers
   // ---------------------------------------------------------------------------
@@ -726,15 +762,18 @@ export default function SettingsPage() {
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="heroBackgroundImage">URL Background Image</Label>
-                          <Input
-                            id="heroBackgroundImage"
-                            placeholder="https://example.com/hero-bg.jpg"
+                          <Label>Hero Background Image</Label>
+                          <ImageUpload
                             value={storeTabData.heroBackgroundImage}
-                            onChange={(e) => updateStoreTabData('heroBackgroundImage', e.target.value)}
+                            onChange={(url) => updateStoreTabData('heroBackgroundImage', url)}
+                            onRemove={handleRemoveHeroBackground}
+                            disabled={isRemovingHeroBackground}
+                            folder="fibidy/hero-backgrounds"
+                            aspectRatio={2.4}
+                            placeholder="Upload hero background"
                           />
                           <p className="text-xs text-muted-foreground">
-                            Masukkan URL gambar background untuk hero section (Rekomendasi: 1920x800px)
+                            Rekomendasi: 1920x800px, format JPG atau PNG
                           </p>
                         </div>
 
@@ -873,15 +912,18 @@ export default function SettingsPage() {
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="aboutImage">URL Gambar About</Label>
-                          <Input
-                            id="aboutImage"
-                            placeholder="https://example.com/image.jpg"
+                          <Label>About Section Image</Label>
+                          <ImageUpload
                             value={storeTabData.aboutImage}
-                            onChange={(e) => updateStoreTabData('aboutImage', e.target.value)}
+                            onChange={(url) => updateStoreTabData('aboutImage', url)}
+                            onRemove={handleRemoveAboutImage}
+                            disabled={isRemovingAboutImage}
+                            folder="fibidy/about-images"
+                            aspectRatio={1.5}
+                            placeholder="Upload about image"
                           />
                           <p className="text-xs text-muted-foreground">
-                            Masukkan URL gambar untuk section About
+                            Rekomendasi: 800x533px atau 1200x800px, format JPG atau PNG
                           </p>
                         </div>
 
@@ -923,42 +965,51 @@ export default function SettingsPage() {
                                         <Trash2 className="h-4 w-4 text-destructive" />
                                       </Button>
                                     </div>
-                                    <div className="grid gap-3 md:grid-cols-3">
+                                    <div className="grid gap-3">
                                       <div className="space-y-1">
-                                        <Label className="text-xs">Icon/Emoji</Label>
-                                        <Input
-                                          placeholder="🔥 atau 'star'"
-                                          value={feature.icon || ''}
-                                          onChange={(e) => {
-                                            const updated = [...storeTabData.aboutFeatures];
-                                            updated[index] = { ...updated[index], icon: e.target.value };
-                                            updateStoreTabData('aboutFeatures', updated);
-                                          }}
-                                        />
+                                        <Label className="text-xs">Feature Icon</Label>
+                                        <div className="max-w-[150px]">
+                                          <ImageUpload
+                                            value={feature.icon || ''}
+                                            onChange={(url) => {
+                                              const updated = [...storeTabData.aboutFeatures];
+                                              updated[index] = { ...updated[index], icon: url };
+                                              updateStoreTabData('aboutFeatures', updated);
+                                            }}
+                                            folder="fibidy/feature-icons"
+                                            aspectRatio={1}
+                                            placeholder="Upload icon"
+                                          />
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">
+                                          Upload icon untuk fitur ini (square, 200x200px)
+                                        </p>
                                       </div>
-                                      <div className="space-y-1">
-                                        <Label className="text-xs">Judul</Label>
-                                        <Input
-                                          placeholder="Kualitas Terjamin"
-                                          value={feature.title}
-                                          onChange={(e) => {
-                                            const updated = [...storeTabData.aboutFeatures];
-                                            updated[index] = { ...updated[index], title: e.target.value };
-                                            updateStoreTabData('aboutFeatures', updated);
-                                          }}
-                                        />
-                                      </div>
-                                      <div className="space-y-1">
-                                        <Label className="text-xs">Deskripsi</Label>
-                                        <Input
-                                          placeholder="Produk berkualitas tinggi"
-                                          value={feature.description}
-                                          onChange={(e) => {
-                                            const updated = [...storeTabData.aboutFeatures];
-                                            updated[index] = { ...updated[index], description: e.target.value };
-                                            updateStoreTabData('aboutFeatures', updated);
-                                          }}
-                                        />
+                                      <div className="grid gap-3 md:grid-cols-2">
+                                        <div className="space-y-1">
+                                          <Label className="text-xs">Judul</Label>
+                                          <Input
+                                            placeholder="Kualitas Terjamin"
+                                            value={feature.title}
+                                            onChange={(e) => {
+                                              const updated = [...storeTabData.aboutFeatures];
+                                              updated[index] = { ...updated[index], title: e.target.value };
+                                              updateStoreTabData('aboutFeatures', updated);
+                                            }}
+                                          />
+                                        </div>
+                                        <div className="space-y-1">
+                                          <Label className="text-xs">Deskripsi</Label>
+                                          <Input
+                                            placeholder="Produk berkualitas tinggi"
+                                            value={feature.description}
+                                            onChange={(e) => {
+                                              const updated = [...storeTabData.aboutFeatures];
+                                              updated[index] = { ...updated[index], description: e.target.value };
+                                              updateStoreTabData('aboutFeatures', updated);
+                                            }}
+                                          />
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -1071,16 +1122,23 @@ export default function SettingsPage() {
                                       </div>
                                     </div>
                                     <div className="space-y-1">
-                                      <Label className="text-xs">URL Avatar (Opsional)</Label>
-                                      <Input
-                                        placeholder="https://example.com/avatar.jpg"
-                                        value={testimonial.avatar || ''}
-                                        onChange={(e) => {
-                                          const updated = [...storeTabData.testimonials];
-                                          updated[index] = { ...updated[index], avatar: e.target.value };
-                                          updateStoreTabData('testimonials', updated);
-                                        }}
-                                      />
+                                      <Label className="text-xs">Avatar (Opsional)</Label>
+                                      <div className="max-w-[150px]">
+                                        <ImageUpload
+                                          value={testimonial.avatar || ''}
+                                          onChange={(url) => {
+                                            const updated = [...storeTabData.testimonials];
+                                            updated[index] = { ...updated[index], avatar: url };
+                                            updateStoreTabData('testimonials', updated);
+                                          }}
+                                          folder="fibidy/testimonial-avatars"
+                                          aspectRatio={1}
+                                          placeholder="Upload avatar"
+                                        />
+                                      </div>
+                                      <p className="text-xs text-muted-foreground">
+                                        Upload foto pelanggan (square, 200x200px)
+                                      </p>
                                     </div>
                                     <div className="space-y-1">
                                       <Label className="text-xs">Testimoni</Label>
