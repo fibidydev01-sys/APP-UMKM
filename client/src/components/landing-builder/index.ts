@@ -6,6 +6,7 @@
  */
 
 export { LandingBuilder } from './landing-builder';
+export { LandingBuilderSimplified } from './landing-builder-simplified';
 export { TestimonialEditor } from './testimonial-editor';
 export { LandingErrorBoundary } from './landing-error-boundary';
 export { TemplateSelector } from './template-selector';
