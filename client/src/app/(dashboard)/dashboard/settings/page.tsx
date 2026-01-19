@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,
@@ -757,6 +759,18 @@ export default function SettingsPage() {
                         onChange={(e) => updateStoreTabData('aboutContent', e.target.value)}
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="aboutImage">URL Gambar About</Label>
+                      <Input
+                        id="aboutImage"
+                        placeholder="https://example.com/image.jpg"
+                        value={storeTabData.aboutImage}
+                        onChange={(e) => updateStoreTabData('aboutImage', e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Masukkan URL gambar untuk section About
+                      </p>
+                    </div>
                   </>
                 )}
               </div>
@@ -787,6 +801,46 @@ export default function SettingsPage() {
                           placeholder="Kami siap membantu Anda"
                           value={storeTabData.contactSubtitle}
                           onChange={(e) => updateStoreTabData('contactSubtitle', e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contactMapUrl">URL Google Maps</Label>
+                      <Input
+                        id="contactMapUrl"
+                        placeholder="https://www.google.com/maps/embed?pb=..."
+                        value={storeTabData.contactMapUrl}
+                        onChange={(e) => updateStoreTabData('contactMapUrl', e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Masukkan URL embed dari Google Maps untuk menampilkan lokasi toko
+                      </p>
+                    </div>
+                    <div className="grid gap-4 md:grid-cols-2">
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="contactShowMap">Tampilkan Peta</Label>
+                          <p className="text-xs text-muted-foreground">
+                            Menampilkan Google Maps di halaman kontak
+                          </p>
+                        </div>
+                        <Switch
+                          id="contactShowMap"
+                          checked={storeTabData.contactShowMap}
+                          onCheckedChange={(checked) => updateStoreTabData('contactShowMap', checked)}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="space-y-0.5">
+                          <Label htmlFor="contactShowForm">Tampilkan Form</Label>
+                          <p className="text-xs text-muted-foreground">
+                            Menampilkan form kontak di halaman kontak
+                          </p>
+                        </div>
+                        <Switch
+                          id="contactShowForm"
+                          checked={storeTabData.contactShowForm}
+                          onCheckedChange={(checked) => updateStoreTabData('contactShowForm', checked)}
                         />
                       </div>
                     </div>
@@ -840,6 +894,27 @@ export default function SettingsPage() {
                           onChange={(e) => updateStoreTabData('ctaButtonLink', e.target.value)}
                         />
                       </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="ctaButtonStyle">Gaya Tombol</Label>
+                      <Select
+                        value={storeTabData.ctaButtonStyle}
+                        onValueChange={(value: 'primary' | 'secondary' | 'outline') =>
+                          updateStoreTabData('ctaButtonStyle', value)
+                        }
+                      >
+                        <SelectTrigger id="ctaButtonStyle">
+                          <SelectValue placeholder="Pilih gaya tombol" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="primary">Primary (Biru)</SelectItem>
+                          <SelectItem value="secondary">Secondary (Abu-abu)</SelectItem>
+                          <SelectItem value="outline">Outline (Hanya Border)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">
+                        Pilih gaya visual untuk tombol CTA
+                      </p>
                     </div>
                   </>
                 )}
