@@ -60,9 +60,11 @@ PATCH_RESPONSE=$(curl -s -X PATCH "${BASE_URL}/api/tenants/me" \
   -H "Content-Type: application/json" \
   -b "${COOKIE_FILE}" \
   -d '{
+    "category": "RESTORAN",
     "name": "Test Store UPDATED",
     "description": "Test Description UPDATED",
     "phone": "+6281234567890",
+    "whatsapp": "6281234567890",
     "address": "Test Address UPDATED",
     "heroTitle": "TEST HERO TITLE UPDATED",
     "heroSubtitle": "TEST HERO SUBTITLE UPDATED",
@@ -126,9 +128,11 @@ VERIFY_RESPONSE=$(curl -s -X GET "${BASE_URL}/api/tenants/me" \
 
 echo -e "${GREEN}Response (All Updated Fields):${NC}"
 echo "$VERIFY_RESPONSE" | jq '{
+  category,
   name,
   description,
   phone,
+  whatsapp,
   address,
   heroTitle,
   heroSubtitle,

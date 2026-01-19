@@ -124,15 +124,17 @@ export default function SettingsPage() {
 
   // 🔥 UNIFIED STATE: Merge formData + landingContent into one!
   const [storeTabData, setStoreTabData] = useState<{
-    // Informasi Dasar (was formData)
+    // Basic Store Info (used across sections)
     name: string;
     description: string;
     phone: string;
+    whatsapp: string; // NEW: WhatsApp number (REQUIRED)
     address: string;
     logo: string | undefined;
     banner: string | undefined;
     primaryColor: string;
-    // Landing Content (was landingContent) - Hero
+    category: string; // NEW: Store category (REQUIRED)
+    // Landing Content - Hero
     heroTitle: string;
     heroSubtitle: string;
     heroCtaText: string;
@@ -193,14 +195,16 @@ export default function SettingsPage() {
       });
       const themeData = tenant.theme as { primaryColor?: string } | null;
       setStoreTabData({
-        // Informasi Dasar
+        // Basic Store Info
         name: tenant.name || '',
         description: tenant.description || '',
         phone: tenant.phone || '',
+        whatsapp: tenant.whatsapp || '',
         address: tenant.address || '',
         logo: tenant.logo || undefined,
         banner: tenant.banner || undefined,
         primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
+        category: tenant.category || '',
         // Hero
         heroTitle: tenant.heroTitle || '',
         heroSubtitle: tenant.heroSubtitle || '',
@@ -297,6 +301,7 @@ export default function SettingsPage() {
     setIsSavingAppearance(true);
     try {
       await tenantsApi.update({
+        category: storeTabData.category || undefined,
         logo: storeTabData.logo || undefined,
         banner: storeTabData.banner || undefined,
         theme: { primaryColor: storeTabData.primaryColor },
@@ -378,6 +383,7 @@ export default function SettingsPage() {
         name: storeTabData.name || undefined,
         description: storeTabData.description || undefined,
         phone: storeTabData.phone || undefined,
+        whatsapp: storeTabData.whatsapp || undefined,
         address: storeTabData.address || undefined,
         // Hero
         heroTitle: storeTabData.heroTitle,
@@ -415,14 +421,16 @@ export default function SettingsPage() {
       if (freshTenant) {
         const themeData = freshTenant.theme as { primaryColor?: string } | null;
         setStoreTabData({
-          // Informasi Dasar
+          // Basic Store Info
           name: freshTenant.name || '',
           description: freshTenant.description || '',
           phone: freshTenant.phone || '',
+          whatsapp: freshTenant.whatsapp || '',
           address: freshTenant.address || '',
           logo: freshTenant.logo || undefined,
           banner: freshTenant.banner || undefined,
           primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
+          category: freshTenant.category || '',
           // Hero
           heroTitle: freshTenant.heroTitle || '',
           heroSubtitle: freshTenant.heroSubtitle || '',
@@ -656,77 +664,9 @@ export default function SettingsPage() {
                 </div>
               ) : (
                 <>
-                  <Accordion type="multiple" defaultValue={['basic', 'hero', 'about', 'testimonials', 'contact', 'cta']} className="w-full">
+                  <Accordion type="multiple" defaultValue={['hero', 'about', 'testimonials', 'contact', 'cta']} className="w-full">
                     {/* ============================================ */}
-                    {/* SECTION 1: Informasi Dasar */}
-                    {/* ============================================ */}
-                    <AccordionItem value="basic">
-                      <AccordionTrigger className="text-lg font-semibold">
-                        Informasi Dasar
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-4 pt-4">
-                        <div className="grid gap-4 md:grid-cols-2">
-                          <div className="space-y-2">
-                            <Label htmlFor="store-name">Nama Toko</Label>
-                            <Input
-                              id="store-name"
-                              placeholder="Nama toko Anda"
-                              value={storeTabData.name}
-                              onChange={(e) => updateStoreTabData('name', e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="store-email">Email Toko</Label>
-                            <Input
-                              id="store-email"
-                              value={tenant?.email || ''}
-                              disabled
-                            />
-                            <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="store-phone">Nomor Telepon</Label>
-                            <Input
-                              id="store-phone"
-                              placeholder="+62 xxx xxxx xxxx"
-                              value={storeTabData.phone}
-                              onChange={(e) => updateStoreTabData('phone', e.target.value)}
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="store-slug">URL Toko</Label>
-                            <Input
-                              id="store-slug"
-                              value={`fibidy.com/store/${tenant?.slug || ''}`}
-                              disabled
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="store-description">Deskripsi Toko</Label>
-                          <Textarea
-                            id="store-description"
-                            placeholder="Ceritakan tentang toko Anda..."
-                            rows={3}
-                            value={storeTabData.description}
-                            onChange={(e) => updateStoreTabData('description', e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="store-address">Alamat</Label>
-                          <Textarea
-                            id="store-address"
-                            placeholder="Alamat lengkap toko"
-                            rows={2}
-                            value={storeTabData.address}
-                            onChange={(e) => updateStoreTabData('address', e.target.value)}
-                          />
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-
-                    {/* ============================================ */}
-                    {/* SECTION 2: Hero Section - NEW! */}
+                    {/* SECTION 1: Hero Section - Landing Page Banner */}
                     {/* ============================================ */}
                     <AccordionItem value="hero">
                       <AccordionTrigger className="text-lg font-semibold">
@@ -735,28 +675,58 @@ export default function SettingsPage() {
                       <AccordionContent className="space-y-4 pt-4">
                         <div className="grid gap-4 md:grid-cols-2">
                           <div className="space-y-2">
-                            <Label htmlFor="heroTitle">Judul Hero</Label>
+                            <Label htmlFor="store-name">Nama Toko *</Label>
+                            <Input
+                              id="store-name"
+                              placeholder="Burger China"
+                              value={storeTabData.name}
+                              onChange={(e) => updateStoreTabData('name', e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Nama resmi toko Anda (digunakan di hero banner & branding)
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="store-description">Deskripsi Singkat</Label>
+                            <Input
+                              id="store-description"
+                              placeholder="Burger premium dengan cita rasa Asia fusion"
+                              value={storeTabData.description}
+                              onChange={(e) => updateStoreTabData('description', e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Tagline atau deskripsi singkat (1 kalimat)
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="heroTitle">Judul Marketing (Hero Title)</Label>
                             <Input
                               id="heroTitle"
-                              placeholder="Selamat Datang di Toko Kami"
+                              placeholder="Burger Premium dengan Cita Rasa Asia Fusion"
                               value={storeTabData.heroTitle}
                               onChange={(e) => updateStoreTabData('heroTitle', e.target.value)}
                             />
+                            <p className="text-xs text-muted-foreground">
+                              Headline marketing yang eye-catching
+                            </p>
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor="heroSubtitle">Subtitle Hero</Label>
+                            <Label htmlFor="heroSubtitle">Subtitle (Value Proposition)</Label>
                             <Input
                               id="heroSubtitle"
-                              placeholder="Temukan produk terbaik untuk Anda"
+                              placeholder="Rasakan sensasi burger berkualitas dengan bumbu rahasia khas Asia"
                               value={storeTabData.heroSubtitle}
                               onChange={(e) => updateStoreTabData('heroSubtitle', e.target.value)}
                             />
+                            <p className="text-xs text-muted-foreground">
+                              Value proposition atau penjelasan singkat
+                            </p>
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="heroCtaText">Teks Tombol CTA</Label>
                             <Input
                               id="heroCtaText"
-                              placeholder="Belanja Sekarang"
+                              placeholder="Pesan Sekarang"
                               value={storeTabData.heroCtaText}
                               onChange={(e) => updateStoreTabData('heroCtaText', e.target.value)}
                             />
@@ -1064,6 +1034,7 @@ export default function SettingsPage() {
                         Contact - Informasi Kontak
                       </AccordionTrigger>
                       <AccordionContent className="space-y-4 pt-4">
+                        {/* Section Header & Subtitle */}
                         <div className="grid gap-4 md:grid-cols-2">
                           <div className="space-y-2">
                             <Label htmlFor="contactTitle">Judul</Label>
@@ -1084,8 +1055,76 @@ export default function SettingsPage() {
                             />
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="contactMapUrl">URL Google Maps</Label>
+
+                        {/* Contact Information - NEW! */}
+                        <div className="space-y-3 pt-2 border-t">
+                          <h4 className="text-sm font-medium">Informasi Kontak</h4>
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <div className="space-y-2">
+                              <Label htmlFor="store-phone">Nomor Telepon</Label>
+                              <Input
+                                id="store-phone"
+                                placeholder="+62 812-3456-7890"
+                                value={storeTabData.phone}
+                                onChange={(e) => updateStoreTabData('phone', e.target.value)}
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                Nomor telepon toko (ditampilkan di halaman kontak)
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="store-whatsapp">WhatsApp *</Label>
+                              <Input
+                                id="store-whatsapp"
+                                placeholder="6281234567890"
+                                value={storeTabData.whatsapp}
+                                onChange={(e) => updateStoreTabData('whatsapp', e.target.value)}
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                Nomor WhatsApp (tanpa +, contoh: 6281234567890)
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="store-email">Email</Label>
+                              <Input
+                                id="store-email"
+                                value={tenant?.email || ''}
+                                disabled
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                Email tidak dapat diubah
+                              </p>
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="store-domain">Domain Toko</Label>
+                              <Input
+                                id="store-domain"
+                                value={`${tenant?.slug || ''}.fibidy.com`}
+                                disabled
+                              />
+                              <p className="text-xs text-muted-foreground">
+                                URL toko Anda (otomatis dari slug)
+                              </p>
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="store-address">Alamat Lengkap</Label>
+                            <Textarea
+                              id="store-address"
+                              placeholder="Jl. Contoh No. 123, Kelurahan, Kecamatan, Kota, Provinsi 12345"
+                              rows={2}
+                              value={storeTabData.address}
+                              onChange={(e) => updateStoreTabData('address', e.target.value)}
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Alamat lengkap toko (ditampilkan di halaman kontak)
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Google Maps */}
+                        <div className="space-y-2 pt-2 border-t">
+                          <Label htmlFor="contactMapUrl">URL Google Maps Embed</Label>
                           <Input
                             id="contactMapUrl"
                             placeholder="https://www.google.com/maps/embed?pb=..."
@@ -1096,6 +1135,8 @@ export default function SettingsPage() {
                             Masukkan URL embed dari Google Maps untuk menampilkan lokasi toko
                           </p>
                         </div>
+
+                        {/* Display Options */}
                         <div className="grid gap-4 md:grid-cols-2">
                           <div className="flex items-center justify-between p-4 border rounded-lg">
                             <div className="space-y-0.5">
@@ -1259,7 +1300,7 @@ export default function SettingsPage() {
         {/* Tab: Appearance - 🔥 UNIFIED STATE */}
         <TabsContent value="appearance" className="mt-6">
           <AppearanceSettings
-            formData={storeTabData ? { logo: storeTabData.logo, banner: storeTabData.banner, primaryColor: storeTabData.primaryColor } : null}
+            formData={storeTabData ? { logo: storeTabData.logo, banner: storeTabData.banner, primaryColor: storeTabData.primaryColor, category: storeTabData.category } : null}
             isLoading={tenantLoading}
             isSaving={isSavingAppearance}
             isRemovingLogo={isRemovingLogo}
@@ -1267,6 +1308,7 @@ export default function SettingsPage() {
             onLogoChange={(url) => storeTabData && setStoreTabData({ ...storeTabData, logo: url })}
             onBannerChange={(url) => storeTabData && setStoreTabData({ ...storeTabData, banner: url })}
             onColorChange={(color) => storeTabData && setStoreTabData({ ...storeTabData, primaryColor: color })}
+            onCategoryChange={(category) => storeTabData && setStoreTabData({ ...storeTabData, category })}
             onRemoveLogo={handleRemoveLogo}
             onRemoveBanner={handleRemoveBanner}
             onSave={handleSaveAppearance}

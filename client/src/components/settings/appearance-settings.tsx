@@ -17,6 +17,7 @@ interface AppearanceFormData {
   logo: string | undefined;
   banner: string | undefined;
   primaryColor: string;
+  category: string;
 }
 
 interface AppearanceSettingsProps {
@@ -28,6 +29,7 @@ interface AppearanceSettingsProps {
   onLogoChange: (url: string) => void;
   onBannerChange: (url: string) => void;
   onColorChange: (color: string) => void;
+  onCategoryChange: (category: string) => void;
   onRemoveLogo: () => Promise<void>;
   onRemoveBanner: () => Promise<void>;
   onSave: () => Promise<void>;
@@ -59,12 +61,60 @@ export function AppearanceSettings({
   onLogoChange,
   onBannerChange,
   onColorChange,
+  onCategoryChange,
   onRemoveLogo,
   onRemoveBanner,
   onSave,
 }: AppearanceSettingsProps) {
+  const CATEGORY_OPTIONS = [
+    { value: 'RESTORAN', label: 'Restoran / Café' },
+    { value: 'FASHION', label: 'Fashion / Pakaian' },
+    { value: 'ELEKTRONIK', label: 'Elektronik' },
+    { value: 'MAKANAN', label: 'Makanan & Minuman' },
+    { value: 'KECANTIKAN', label: 'Kecantikan & Kosmetik' },
+    { value: 'KERAJINAN', label: 'Kerajinan Tangan' },
+    { value: 'JASA', label: 'Jasa / Layanan' },
+    { value: 'LAINNYA', label: 'Lainnya' },
+  ];
+
   return (
     <div className="space-y-6">
+      {/* Business Identity Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Identitas Bisnis</CardTitle>
+          <CardDescription>
+            Kategori toko Anda yang menentukan fitur dan template yang tersedia.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {isLoading || !formData ? (
+            <Skeleton className="h-10 w-full" />
+          ) : (
+            <div className="space-y-2">
+              <Label htmlFor="category">Kategori Toko *</Label>
+              <select
+                id="category"
+                value={formData.category}
+                onChange={(e) => onCategoryChange(e.target.value)}
+                disabled={isSaving}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <option value="">Pilih kategori...</option>
+                {CATEGORY_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+              <p className="text-xs text-muted-foreground">
+                Pilih kategori yang paling sesuai dengan jenis bisnis Anda
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Logo & Banner Card */}
       <Card>
         <CardHeader>
