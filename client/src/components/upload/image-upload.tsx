@@ -220,6 +220,7 @@ export function ImageUpload({
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
+              unoptimized
             />
             {!disabled && (
               <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">

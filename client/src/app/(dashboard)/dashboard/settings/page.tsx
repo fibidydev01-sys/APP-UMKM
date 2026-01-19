@@ -131,7 +131,7 @@ export default function SettingsPage() {
     phone: string;
     whatsapp: string; // NEW: WhatsApp number (REQUIRED)
     address: string;
-    logo: string | undefined;
+    logo: string;
     primaryColor: string;
     category: string; // NEW: Store category (REQUIRED)
     // Landing Content - Hero
