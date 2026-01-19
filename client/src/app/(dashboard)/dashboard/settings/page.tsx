@@ -10,7 +10,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Loader2, Save, Plus, Trash2, MoveUp, MoveDown } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, MoveUp, MoveDown, Check } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -24,7 +24,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,
-  AppearanceSettings,
   PaymentSettings,
   ShippingSettings,
   SeoSettings,
@@ -32,9 +31,11 @@ import {
   EwalletDialog,
 } from '@/components/settings';
 import type { LandingContentData } from '@/components/settings';
+import { ImageUpload } from '@/components/upload';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import type {
   BankAccount,
   EWallet,
@@ -108,7 +109,6 @@ export default function SettingsPage() {
 
   // Saving states
   const [isSaving, setIsSaving] = useState(false);
-  const [isSavingAppearance, setIsSavingAppearance] = useState(false);
   const [isSavingPayment, setIsSavingPayment] = useState(false);
   const [isSavingShipping, setIsSavingShipping] = useState(false);
   const [isSavingSeo, setIsSavingSeo] = useState(false);
@@ -296,26 +296,6 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   // Save Handlers - 🔥 UNIFIED STATE
   // ---------------------------------------------------------------------------
-  const handleSaveAppearance = async () => {
-    if (!tenant || !storeTabData) return;
-    setIsSavingAppearance(true);
-    try {
-      await tenantsApi.update({
-        category: storeTabData.category || undefined,
-        logo: storeTabData.logo || undefined,
-        banner: storeTabData.banner || undefined,
-        theme: { primaryColor: storeTabData.primaryColor },
-      });
-      await refresh();
-      toast.success('Tampilan toko berhasil disimpan');
-    } catch (error) {
-      console.error('Failed to save appearance:', error);
-      toast.error('Gagal menyimpan tampilan toko');
-    } finally {
-      setIsSavingAppearance(false);
-    }
-  };
-
   const handleSavePayment = async () => {
     if (!tenant || !paymentSettings) return;
     setIsSavingPayment(true);
@@ -385,6 +365,10 @@ export default function SettingsPage() {
         phone: storeTabData.phone || undefined,
         whatsapp: storeTabData.whatsapp || undefined,
         address: storeTabData.address || undefined,
+        // Branding
+        logo: storeTabData.logo || undefined,
+        banner: storeTabData.banner || undefined,
+        theme: { primaryColor: storeTabData.primaryColor },
         // Hero
         heroTitle: storeTabData.heroTitle,
         heroSubtitle: storeTabData.heroSubtitle,
@@ -664,7 +648,7 @@ export default function SettingsPage() {
                 </div>
               ) : (
                 <>
-                  <Accordion type="multiple" defaultValue={['hero', 'about', 'testimonials', 'contact', 'cta']} className="w-full">
+                  <Accordion type="multiple" defaultValue={['hero', 'about', 'testimonials', 'contact', 'cta', 'branding']} className="w-full">
                     {/* ============================================ */}
                     {/* SECTION 1: Hero Section - Landing Page Banner */}
                     {/* ============================================ */}
@@ -1237,6 +1221,103 @@ export default function SettingsPage() {
                         </div>
                       </AccordionContent>
                     </AccordionItem>
+
+                    {/* ============================================ */}
+                    {/* SECTION 7: Kategori & Branding */}
+                    {/* ============================================ */}
+                    <AccordionItem value="branding">
+                      <AccordionTrigger className="text-lg font-semibold">
+                        Kategori & Branding
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-4 pt-4">
+                        {/* Category - Readonly Display */}
+                        <div className="space-y-2">
+                          <Label htmlFor="store-category">Kategori Toko</Label>
+                          <Input
+                            id="store-category"
+                            value={storeTabData.category || 'Belum dipilih'}
+                            disabled
+                            className="bg-muted"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Kategori hanya dapat dipilih saat pendaftaran dan tidak dapat diubah
+                          </p>
+                        </div>
+
+                        {/* Logo Upload */}
+                        <div className="space-y-2 pt-2 border-t">
+                          <Label>Logo Toko</Label>
+                          <div className="max-w-[200px]">
+                            <ImageUpload
+                              value={storeTabData.logo}
+                              onChange={(url) => updateStoreTabData('logo', url)}
+                              onRemove={handleRemoveLogo}
+                              disabled={isRemovingLogo}
+                              folder="fibidy/logos"
+                              aspectRatio={1}
+                              placeholder="Upload logo toko"
+                            />
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Rekomendasi: 200x200px, format PNG atau JPG
+                          </p>
+                        </div>
+
+                        {/* Banner Upload */}
+                        <div className="space-y-2 pt-2 border-t">
+                          <Label>Banner Toko</Label>
+                          <ImageUpload
+                            value={storeTabData.banner}
+                            onChange={(url) => updateStoreTabData('banner', url)}
+                            onRemove={handleRemoveBanner}
+                            disabled={isRemovingBanner}
+                            folder="fibidy/banners"
+                            aspectRatio={3}
+                            placeholder="Upload banner toko"
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            Rekomendasi: 1200x400px, format PNG atau JPG
+                          </p>
+                        </div>
+
+                        {/* Primary Color */}
+                        <div className="space-y-3 pt-2 border-t">
+                          <Label>Warna Tema</Label>
+                          <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                            {THEME_COLORS.map((color) => (
+                              <button
+                                key={color.value}
+                                type="button"
+                                onClick={() => updateStoreTabData('primaryColor', color.value)}
+                                disabled={isSaving}
+                                className={cn(
+                                  'relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all',
+                                  storeTabData.primaryColor === color.value
+                                    ? 'border-primary bg-primary/5'
+                                    : 'border-transparent hover:border-muted-foreground/20',
+                                  isSaving && 'opacity-50 cursor-not-allowed'
+                                )}
+                              >
+                                <div
+                                  className={cn(
+                                    'w-10 h-10 rounded-full flex items-center justify-center',
+                                    color.class
+                                  )}
+                                >
+                                  {storeTabData.primaryColor === color.value && (
+                                    <Check className="h-5 w-5 text-white" />
+                                  )}
+                                </div>
+                                <span className="text-xs font-medium">{color.name}</span>
+                              </button>
+                            ))}
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Pilih warna utama untuk toko online Anda
+                          </p>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
                   </Accordion>
 
                   {/* ============================================ */}
@@ -1294,24 +1375,6 @@ export default function SettingsPage() {
             isSaving={isSavingShipping}
             onSettingsChange={setShippingSettings}
             onSave={handleSaveShipping}
-          />
-        </TabsContent>
-
-        {/* Tab: Appearance - 🔥 UNIFIED STATE */}
-        <TabsContent value="appearance" className="mt-6">
-          <AppearanceSettings
-            formData={storeTabData ? { logo: storeTabData.logo, banner: storeTabData.banner, primaryColor: storeTabData.primaryColor, category: storeTabData.category } : null}
-            isLoading={tenantLoading}
-            isSaving={isSavingAppearance}
-            isRemovingLogo={isRemovingLogo}
-            isRemovingBanner={isRemovingBanner}
-            onLogoChange={(url) => storeTabData && setStoreTabData({ ...storeTabData, logo: url })}
-            onBannerChange={(url) => storeTabData && setStoreTabData({ ...storeTabData, banner: url })}
-            onColorChange={(color) => storeTabData && setStoreTabData({ ...storeTabData, primaryColor: color })}
-            onCategoryChange={(category) => storeTabData && setStoreTabData({ ...storeTabData, category })}
-            onRemoveLogo={handleRemoveLogo}
-            onRemoveBanner={handleRemoveBanner}
-            onSave={handleSaveAppearance}
           />
         </TabsContent>
 
