@@ -119,8 +119,9 @@ export default function SettingsPage() {
   const [editingBank, setEditingBank] = useState<BankAccount | null>(null);
   const [editingEwallet, setEditingEwallet] = useState<EWallet | null>(null);
 
-  // Form states
-  const [formData, setFormData] = useState<{
+  // 🔥 UNIFIED STATE: Merge formData + landingContent into one!
+  const [storeTabData, setStoreTabData] = useState<{
+    // Informasi Dasar (was formData)
     name: string;
     description: string;
     phone: string;
@@ -128,6 +129,34 @@ export default function SettingsPage() {
     logo: string | undefined;
     banner: string | undefined;
     primaryColor: string;
+    // Landing Content (was landingContent) - Hero
+    heroTitle: string;
+    heroSubtitle: string;
+    heroCtaText: string;
+    heroCtaLink: string;
+    heroBackgroundImage: string;
+    // About
+    aboutTitle: string;
+    aboutSubtitle: string;
+    aboutContent: string;
+    aboutImage: string;
+    aboutFeatures: FeatureItem[];
+    // Testimonials
+    testimonialsTitle: string;
+    testimonialsSubtitle: string;
+    testimonials: Testimonial[];
+    // Contact
+    contactTitle: string;
+    contactSubtitle: string;
+    contactMapUrl: string;
+    contactShowMap: boolean;
+    contactShowForm: boolean;
+    // CTA
+    ctaTitle: string;
+    ctaSubtitle: string;
+    ctaButtonText: string;
+    ctaButtonLink: string;
+    ctaButtonStyle: 'primary' | 'secondary' | 'outline';
   } | null>(null);
 
   const [paymentSettings, setPaymentSettings] = useState<{
@@ -148,15 +177,14 @@ export default function SettingsPage() {
     socialLinks: SocialLinks;
   } | null>(null);
 
-  const [landingContent, setLandingContent] = useState<LandingContentData | null>(null);
-
   // ---------------------------------------------------------------------------
-  // Initialize form data from tenant
+  // Initialize form data from tenant - 🔥 UNIFIED: One useEffect for all store tab data!
   // ---------------------------------------------------------------------------
   useEffect(() => {
-    if (tenant && formData === null) {
+    if (tenant && storeTabData === null) {
       const themeData = tenant.theme as { primaryColor?: string } | null;
-      setFormData({
+      setStoreTabData({
+        // Informasi Dasar
         name: tenant.name || '',
         description: tenant.description || '',
         phone: tenant.phone || '',
@@ -164,9 +192,37 @@ export default function SettingsPage() {
         logo: tenant.logo || undefined,
         banner: tenant.banner || undefined,
         primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
+        // Hero
+        heroTitle: tenant.heroTitle || '',
+        heroSubtitle: tenant.heroSubtitle || '',
+        heroCtaText: tenant.heroCtaText || '',
+        heroCtaLink: tenant.heroCtaLink || '',
+        heroBackgroundImage: tenant.heroBackgroundImage || '',
+        // About
+        aboutTitle: tenant.aboutTitle || '',
+        aboutSubtitle: tenant.aboutSubtitle || '',
+        aboutContent: tenant.aboutContent || '',
+        aboutImage: tenant.aboutImage || '',
+        aboutFeatures: (tenant.aboutFeatures as FeatureItem[]) || [],
+        // Testimonials
+        testimonialsTitle: tenant.testimonialsTitle || '',
+        testimonialsSubtitle: tenant.testimonialsSubtitle || '',
+        testimonials: (tenant.testimonials as Testimonial[]) || [],
+        // Contact
+        contactTitle: tenant.contactTitle || '',
+        contactSubtitle: tenant.contactSubtitle || '',
+        contactMapUrl: tenant.contactMapUrl || '',
+        contactShowMap: tenant.contactShowMap ?? false,
+        contactShowForm: tenant.contactShowForm ?? true,
+        // CTA
+        ctaTitle: tenant.ctaTitle || '',
+        ctaSubtitle: tenant.ctaSubtitle || '',
+        ctaButtonText: tenant.ctaButtonText || '',
+        ctaButtonLink: tenant.ctaButtonLink || '',
+        ctaButtonStyle: tenant.ctaButtonStyle || 'primary',
       });
     }
-  }, [tenant, formData]);
+  }, [tenant, storeTabData]);
 
   useEffect(() => {
     if (tenant && paymentSettings === null) {
@@ -198,41 +254,6 @@ export default function SettingsPage() {
     }
   }, [tenant, seoSettings]);
 
-  useEffect(() => {
-    if (tenant && landingContent === null) {
-      setLandingContent({
-        // Hero (not used in form when hideHero=true, but needed for type)
-        heroTitle: tenant.heroTitle || '',
-        heroSubtitle: tenant.heroSubtitle || '',
-        heroCtaText: tenant.heroCtaText || '',
-        heroCtaLink: tenant.heroCtaLink || '',
-        heroBackgroundImage: tenant.heroBackgroundImage || '',
-        // About
-        aboutTitle: tenant.aboutTitle || '',
-        aboutSubtitle: tenant.aboutSubtitle || '',
-        aboutContent: tenant.aboutContent || '',
-        aboutImage: tenant.aboutImage || '',
-        aboutFeatures: (tenant.aboutFeatures as FeatureItem[]) || [],
-        // Testimonials
-        testimonialsTitle: tenant.testimonialsTitle || '',
-        testimonialsSubtitle: tenant.testimonialsSubtitle || '',
-        testimonials: (tenant.testimonials as Testimonial[]) || [],
-        // Contact
-        contactTitle: tenant.contactTitle || '',
-        contactSubtitle: tenant.contactSubtitle || '',
-        contactMapUrl: tenant.contactMapUrl || '',
-        contactShowMap: tenant.contactShowMap ?? false,
-        contactShowForm: tenant.contactShowForm ?? true,
-        // CTA
-        ctaTitle: tenant.ctaTitle || '',
-        ctaSubtitle: tenant.ctaSubtitle || '',
-        ctaButtonText: tenant.ctaButtonText || '',
-        ctaButtonLink: tenant.ctaButtonLink || '',
-        ctaButtonStyle: tenant.ctaButtonStyle || 'primary',
-      });
-    }
-  }, [tenant, landingContent]);
-
   const tenantLoading = tenant === null;
 
   // ---------------------------------------------------------------------------
@@ -247,36 +268,16 @@ export default function SettingsPage() {
   );
 
   // ---------------------------------------------------------------------------
-  // Save Handlers
+  // Save Handlers - 🔥 UNIFIED STATE
   // ---------------------------------------------------------------------------
-  const handleSaveStore = async () => {
-    if (!tenant || !formData) return;
-    setIsSaving(true);
-    try {
-      await tenantsApi.update({
-        name: formData.name || undefined,
-        description: formData.description || undefined,
-        phone: formData.phone || undefined,
-        address: formData.address || undefined,
-      });
-      await refresh();
-      toast.success('Informasi toko berhasil disimpan');
-    } catch (error) {
-      console.error('Failed to save store settings:', error);
-      toast.error('Gagal menyimpan informasi toko');
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
   const handleSaveAppearance = async () => {
-    if (!tenant || !formData) return;
+    if (!tenant || !storeTabData) return;
     setIsSavingAppearance(true);
     try {
       await tenantsApi.update({
-        logo: formData.logo || undefined,
-        banner: formData.banner || undefined,
-        theme: { primaryColor: formData.primaryColor },
+        logo: storeTabData.logo || undefined,
+        banner: storeTabData.banner || undefined,
+        theme: { primaryColor: storeTabData.primaryColor },
       });
       await refresh();
       toast.success('Tampilan toko berhasil disimpan');
@@ -345,54 +346,54 @@ export default function SettingsPage() {
     }
   };
 
-  // UNIFIED SAVE: Save both store info AND landing content together
+  // 🔥 UNIFIED SAVE: Save all store tab data at once (no race condition!)
   const handleSaveStoreTab = async () => {
-    if (!tenant || !formData || !landingContent) return;
+    if (!tenant || !storeTabData) return;
     setIsSaving(true);
     try {
       await tenantsApi.update({
         // Store Info
-        name: formData.name || undefined,
-        description: formData.description || undefined,
-        phone: formData.phone || undefined,
-        address: formData.address || undefined,
-        // Hero - use nullish coalescing to allow empty strings
-        heroTitle: landingContent.heroTitle,
-        heroSubtitle: landingContent.heroSubtitle,
-        heroCtaText: landingContent.heroCtaText,
-        heroCtaLink: landingContent.heroCtaLink,
-        heroBackgroundImage: landingContent.heroBackgroundImage,
+        name: storeTabData.name || undefined,
+        description: storeTabData.description || undefined,
+        phone: storeTabData.phone || undefined,
+        address: storeTabData.address || undefined,
+        // Hero
+        heroTitle: storeTabData.heroTitle,
+        heroSubtitle: storeTabData.heroSubtitle,
+        heroCtaText: storeTabData.heroCtaText,
+        heroCtaLink: storeTabData.heroCtaLink,
+        heroBackgroundImage: storeTabData.heroBackgroundImage,
         // About
-        aboutTitle: landingContent.aboutTitle,
-        aboutSubtitle: landingContent.aboutSubtitle,
-        aboutContent: landingContent.aboutContent,
-        aboutImage: landingContent.aboutImage,
-        aboutFeatures: landingContent.aboutFeatures,
+        aboutTitle: storeTabData.aboutTitle,
+        aboutSubtitle: storeTabData.aboutSubtitle,
+        aboutContent: storeTabData.aboutContent,
+        aboutImage: storeTabData.aboutImage,
+        aboutFeatures: storeTabData.aboutFeatures,
         // Testimonials
-        testimonialsTitle: landingContent.testimonialsTitle,
-        testimonialsSubtitle: landingContent.testimonialsSubtitle,
-        testimonials: landingContent.testimonials,
+        testimonialsTitle: storeTabData.testimonialsTitle,
+        testimonialsSubtitle: storeTabData.testimonialsSubtitle,
+        testimonials: storeTabData.testimonials,
         // Contact
-        contactTitle: landingContent.contactTitle,
-        contactSubtitle: landingContent.contactSubtitle,
-        contactMapUrl: landingContent.contactMapUrl,
-        contactShowMap: landingContent.contactShowMap,
-        contactShowForm: landingContent.contactShowForm,
+        contactTitle: storeTabData.contactTitle,
+        contactSubtitle: storeTabData.contactSubtitle,
+        contactMapUrl: storeTabData.contactMapUrl,
+        contactShowMap: storeTabData.contactShowMap,
+        contactShowForm: storeTabData.contactShowForm,
         // CTA
-        ctaTitle: landingContent.ctaTitle,
-        ctaSubtitle: landingContent.ctaSubtitle,
-        ctaButtonText: landingContent.ctaButtonText,
-        ctaButtonLink: landingContent.ctaButtonLink,
-        ctaButtonStyle: landingContent.ctaButtonStyle,
+        ctaTitle: storeTabData.ctaTitle,
+        ctaSubtitle: storeTabData.ctaSubtitle,
+        ctaButtonText: storeTabData.ctaButtonText,
+        ctaButtonLink: storeTabData.ctaButtonLink,
+        ctaButtonStyle: storeTabData.ctaButtonStyle,
       });
 
-      // 🔥 FIX: Get fresh data and immediately update state
-      // Don't rely on useEffect race condition
+      // 🔥 FIX: Get fresh data and immediately update unified state
+      // No race condition because there's only ONE state now!
       const freshTenant = await refresh();
       if (freshTenant) {
-        // Update formData with fresh tenant data
         const themeData = freshTenant.theme as { primaryColor?: string } | null;
-        setFormData({
+        setStoreTabData({
+          // Informasi Dasar
           name: freshTenant.name || '',
           description: freshTenant.description || '',
           phone: freshTenant.phone || '',
@@ -400,28 +401,29 @@ export default function SettingsPage() {
           logo: freshTenant.logo || undefined,
           banner: freshTenant.banner || undefined,
           primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
-        });
-
-        // Update landingContent with fresh tenant data
-        setLandingContent({
+          // Hero
           heroTitle: freshTenant.heroTitle || '',
           heroSubtitle: freshTenant.heroSubtitle || '',
           heroCtaText: freshTenant.heroCtaText || '',
           heroCtaLink: freshTenant.heroCtaLink || '',
           heroBackgroundImage: freshTenant.heroBackgroundImage || '',
+          // About
           aboutTitle: freshTenant.aboutTitle || '',
           aboutSubtitle: freshTenant.aboutSubtitle || '',
           aboutContent: freshTenant.aboutContent || '',
           aboutImage: freshTenant.aboutImage || '',
           aboutFeatures: (freshTenant.aboutFeatures as FeatureItem[]) || [],
+          // Testimonials
           testimonialsTitle: freshTenant.testimonialsTitle || '',
           testimonialsSubtitle: freshTenant.testimonialsSubtitle || '',
           testimonials: (freshTenant.testimonials as Testimonial[]) || [],
+          // Contact
           contactTitle: freshTenant.contactTitle || '',
           contactSubtitle: freshTenant.contactSubtitle || '',
           contactMapUrl: freshTenant.contactMapUrl || '',
           contactShowMap: freshTenant.contactShowMap ?? false,
           contactShowForm: freshTenant.contactShowForm ?? true,
+          // CTA
           ctaTitle: freshTenant.ctaTitle || '',
           ctaSubtitle: freshTenant.ctaSubtitle || '',
           ctaButtonText: freshTenant.ctaButtonText || '',
@@ -440,34 +442,34 @@ export default function SettingsPage() {
   };
 
   const handleRemoveLogo = async () => {
-    if (!tenant || !formData) return;
+    if (!tenant || !storeTabData) return;
     setIsRemovingLogo(true);
     try {
-      setFormData({ ...formData, logo: undefined });
+      setStoreTabData({ ...storeTabData, logo: undefined });
       await tenantsApi.update({ logo: '' });
       await refresh();
       toast.success('Logo berhasil dihapus');
     } catch (error) {
       console.error('Failed to remove logo:', error);
       toast.error('Gagal menghapus logo');
-      setFormData({ ...formData, logo: tenant.logo || undefined });
+      setStoreTabData({ ...storeTabData, logo: tenant.logo || undefined });
     } finally {
       setIsRemovingLogo(false);
     }
   };
 
   const handleRemoveBanner = async () => {
-    if (!tenant || !formData) return;
+    if (!tenant || !storeTabData) return;
     setIsRemovingBanner(true);
     try {
-      setFormData({ ...formData, banner: undefined });
+      setStoreTabData({ ...storeTabData, banner: undefined });
       await tenantsApi.update({ banner: '' });
       await refresh();
       toast.success('Banner berhasil dihapus');
     } catch (error) {
       console.error('Failed to remove banner:', error);
       toast.error('Gagal menghapus banner');
-      setFormData({ ...formData, banner: tenant.banner || undefined });
+      setStoreTabData({ ...storeTabData, banner: tenant.banner || undefined });
     } finally {
       setIsRemovingBanner(false);
     }
@@ -570,14 +572,14 @@ export default function SettingsPage() {
   };
 
   // ---------------------------------------------------------------------------
-  // Form Data Helpers
+  // Form Data Helpers - 🔥 UNIFIED STATE
   // ---------------------------------------------------------------------------
-  const updateFormData = (
-    key: 'name' | 'description' | 'phone' | 'address',
-    value: string
+  const updateStoreTabData = <K extends keyof typeof storeTabData>(
+    key: K,
+    value: any
   ) => {
-    if (formData) {
-      setFormData({ ...formData, [key]: value });
+    if (storeTabData) {
+      setStoreTabData({ ...storeTabData, [key]: value });
     }
   };
 
@@ -625,11 +627,11 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent className="space-y-8">
               {/* ============================================ */}
-              {/* SECTION 1: Informasi Dasar */}
+              {/* SECTION 1: Informasi Dasar - 🔥 UNIFIED STATE */}
               {/* ============================================ */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">Informasi Dasar</h3>
-                {tenantLoading || !formData ? (
+                {tenantLoading || !storeTabData ? (
                   <div className="space-y-4">
                     <Skeleton className="h-10 w-full" />
                     <Skeleton className="h-10 w-full" />
@@ -642,8 +644,8 @@ export default function SettingsPage() {
                         <Input
                           id="store-name"
                           placeholder="Nama toko Anda"
-                          value={formData.name}
-                          onChange={(e) => updateFormData('name', e.target.value)}
+                          value={storeTabData.name}
+                          onChange={(e) => updateStoreTabData('name', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -660,8 +662,8 @@ export default function SettingsPage() {
                         <Input
                           id="store-phone"
                           placeholder="+62 xxx xxxx xxxx"
-                          value={formData.phone}
-                          onChange={(e) => updateFormData('phone', e.target.value)}
+                          value={storeTabData.phone}
+                          onChange={(e) => updateStoreTabData('phone', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -679,8 +681,8 @@ export default function SettingsPage() {
                         id="store-description"
                         placeholder="Ceritakan tentang toko Anda..."
                         rows={3}
-                        value={formData.description}
-                        onChange={(e) => updateFormData('description', e.target.value)}
+                        value={storeTabData.description}
+                        onChange={(e) => updateStoreTabData('description', e.target.value)}
                       />
                     </div>
                     <div className="space-y-2">
@@ -689,8 +691,8 @@ export default function SettingsPage() {
                         id="store-address"
                         placeholder="Alamat lengkap toko"
                         rows={2}
-                        value={formData.address}
-                        onChange={(e) => updateFormData('address', e.target.value)}
+                        value={storeTabData.address}
+                        onChange={(e) => updateStoreTabData('address', e.target.value)}
                       />
                     </div>
                   </>
@@ -698,11 +700,11 @@ export default function SettingsPage() {
               </div>
 
               {/* ============================================ */}
-              {/* SECTION 2: About - Tentang Toko */}
+              {/* SECTION 2: About - Tentang Toko - 🔥 UNIFIED STATE */}
               {/* ============================================ */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">About - Tentang Toko</h3>
-                {tenantLoading || !landingContent ? (
+                {tenantLoading || !storeTabData ? (
                   <Skeleton className="h-24 w-full" />
                 ) : (
                   <>
@@ -712,8 +714,8 @@ export default function SettingsPage() {
                         <Input
                           id="aboutTitle"
                           placeholder="Tentang Kami"
-                          value={landingContent.aboutTitle}
-                          onChange={(e) => setLandingContent({ ...landingContent, aboutTitle: e.target.value })}
+                          value={storeTabData.aboutTitle}
+                          onChange={(e) => updateStoreTabData('aboutTitle', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -721,8 +723,8 @@ export default function SettingsPage() {
                         <Input
                           id="aboutSubtitle"
                           placeholder="Cerita di balik toko kami"
-                          value={landingContent.aboutSubtitle}
-                          onChange={(e) => setLandingContent({ ...landingContent, aboutSubtitle: e.target.value })}
+                          value={storeTabData.aboutSubtitle}
+                          onChange={(e) => updateStoreTabData('aboutSubtitle', e.target.value)}
                         />
                       </div>
                     </div>
@@ -732,8 +734,8 @@ export default function SettingsPage() {
                         id="aboutContent"
                         placeholder="Ceritakan tentang toko Anda..."
                         rows={4}
-                        value={landingContent.aboutContent}
-                        onChange={(e) => setLandingContent({ ...landingContent, aboutContent: e.target.value })}
+                        value={storeTabData.aboutContent}
+                        onChange={(e) => updateStoreTabData('aboutContent', e.target.value)}
                       />
                     </div>
                   </>
@@ -741,11 +743,11 @@ export default function SettingsPage() {
               </div>
 
               {/* ============================================ */}
-              {/* SECTION 3: Contact - Informasi Kontak */}
+              {/* SECTION 3: Contact - Informasi Kontak - 🔥 UNIFIED STATE */}
               {/* ============================================ */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">Contact - Informasi Kontak</h3>
-                {tenantLoading || !landingContent ? (
+                {tenantLoading || !storeTabData ? (
                   <Skeleton className="h-24 w-full" />
                 ) : (
                   <>
@@ -755,8 +757,8 @@ export default function SettingsPage() {
                         <Input
                           id="contactTitle"
                           placeholder="Hubungi Kami"
-                          value={landingContent.contactTitle}
-                          onChange={(e) => setLandingContent({ ...landingContent, contactTitle: e.target.value })}
+                          value={storeTabData.contactTitle}
+                          onChange={(e) => updateStoreTabData('contactTitle', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -764,8 +766,8 @@ export default function SettingsPage() {
                         <Input
                           id="contactSubtitle"
                           placeholder="Kami siap membantu Anda"
-                          value={landingContent.contactSubtitle}
-                          onChange={(e) => setLandingContent({ ...landingContent, contactSubtitle: e.target.value })}
+                          value={storeTabData.contactSubtitle}
+                          onChange={(e) => updateStoreTabData('contactSubtitle', e.target.value)}
                         />
                       </div>
                     </div>
@@ -774,11 +776,11 @@ export default function SettingsPage() {
               </div>
 
               {/* ============================================ */}
-              {/* SECTION 4: CTA - Call to Action */}
+              {/* SECTION 4: CTA - Call to Action - 🔥 UNIFIED STATE */}
               {/* ============================================ */}
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold border-b pb-2">CTA - Call to Action</h3>
-                {tenantLoading || !landingContent ? (
+                {tenantLoading || !storeTabData ? (
                   <Skeleton className="h-24 w-full" />
                 ) : (
                   <>
@@ -788,8 +790,8 @@ export default function SettingsPage() {
                         <Input
                           id="ctaTitle"
                           placeholder="Siap Memulai?"
-                          value={landingContent.ctaTitle}
-                          onChange={(e) => setLandingContent({ ...landingContent, ctaTitle: e.target.value })}
+                          value={storeTabData.ctaTitle}
+                          onChange={(e) => updateStoreTabData('ctaTitle', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -797,8 +799,8 @@ export default function SettingsPage() {
                         <Input
                           id="ctaSubtitle"
                           placeholder="Bergabunglah dengan kami"
-                          value={landingContent.ctaSubtitle}
-                          onChange={(e) => setLandingContent({ ...landingContent, ctaSubtitle: e.target.value })}
+                          value={storeTabData.ctaSubtitle}
+                          onChange={(e) => updateStoreTabData('ctaSubtitle', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -806,8 +808,8 @@ export default function SettingsPage() {
                         <Input
                           id="ctaButtonText"
                           placeholder="Mulai Sekarang"
-                          value={landingContent.ctaButtonText}
-                          onChange={(e) => setLandingContent({ ...landingContent, ctaButtonText: e.target.value })}
+                          value={storeTabData.ctaButtonText}
+                          onChange={(e) => updateStoreTabData('ctaButtonText', e.target.value)}
                         />
                       </div>
                       <div className="space-y-2">
@@ -815,8 +817,8 @@ export default function SettingsPage() {
                         <Input
                           id="ctaButtonLink"
                           placeholder="/products"
-                          value={landingContent.ctaButtonLink}
-                          onChange={(e) => setLandingContent({ ...landingContent, ctaButtonLink: e.target.value })}
+                          value={storeTabData.ctaButtonLink}
+                          onChange={(e) => updateStoreTabData('ctaButtonLink', e.target.value)}
                         />
                       </div>
                     </div>
@@ -880,17 +882,17 @@ export default function SettingsPage() {
           />
         </TabsContent>
 
-        {/* Tab: Appearance */}
+        {/* Tab: Appearance - 🔥 UNIFIED STATE */}
         <TabsContent value="appearance" className="mt-6">
           <AppearanceSettings
-            formData={formData ? { logo: formData.logo, banner: formData.banner, primaryColor: formData.primaryColor } : null}
+            formData={storeTabData ? { logo: storeTabData.logo, banner: storeTabData.banner, primaryColor: storeTabData.primaryColor } : null}
             isLoading={tenantLoading}
             isSaving={isSavingAppearance}
             isRemovingLogo={isRemovingLogo}
             isRemovingBanner={isRemovingBanner}
-            onLogoChange={(url) => formData && setFormData({ ...formData, logo: url })}
-            onBannerChange={(url) => formData && setFormData({ ...formData, banner: url })}
-            onColorChange={(color) => formData && setFormData({ ...formData, primaryColor: color })}
+            onLogoChange={(url) => storeTabData && setStoreTabData({ ...storeTabData, logo: url })}
+            onBannerChange={(url) => storeTabData && setStoreTabData({ ...storeTabData, banner: url })}
+            onColorChange={(color) => storeTabData && setStoreTabData({ ...storeTabData, primaryColor: color })}
             onRemoveLogo={handleRemoveLogo}
             onRemoveBanner={handleRemoveBanner}
             onSave={handleSaveAppearance}
