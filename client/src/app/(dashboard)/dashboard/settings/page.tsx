@@ -114,7 +114,6 @@ export default function SettingsPage() {
   const [isSavingSeo, setIsSavingSeo] = useState(false);
   // isSavingLanding removed - now using unified isSaving for store tab
   const [isRemovingLogo, setIsRemovingLogo] = useState(false);
-  const [isRemovingBanner, setIsRemovingBanner] = useState(false);
   const [isRemovingHeroBackground, setIsRemovingHeroBackground] = useState(false);
   const [isRemovingAboutImage, setIsRemovingAboutImage] = useState(false);
 
@@ -133,7 +132,6 @@ export default function SettingsPage() {
     whatsapp: string; // NEW: WhatsApp number (REQUIRED)
     address: string;
     logo: string | undefined;
-    banner: string | undefined;
     primaryColor: string;
     category: string; // NEW: Store category (REQUIRED)
     // Landing Content - Hero
@@ -204,7 +202,6 @@ export default function SettingsPage() {
         whatsapp: tenant.whatsapp || '',
         address: tenant.address || '',
         logo: tenant.logo || '',
-        banner: tenant.banner || '',
         primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
         category: tenant.category || '',
         // Hero
@@ -369,7 +366,6 @@ export default function SettingsPage() {
         address: storeTabData.address || undefined,
         // Branding
         logo: storeTabData.logo || undefined,
-        banner: storeTabData.banner || undefined,
         theme: { primaryColor: storeTabData.primaryColor },
         // Hero
         heroTitle: storeTabData.heroTitle,
@@ -414,7 +410,6 @@ export default function SettingsPage() {
           whatsapp: freshTenant.whatsapp || '',
           address: freshTenant.address || '',
           logo: freshTenant.logo || '',
-          banner: freshTenant.banner || '',
           primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
           category: freshTenant.category || '',
           // Hero
@@ -471,23 +466,6 @@ export default function SettingsPage() {
       setStoreTabData({ ...storeTabData, logo: tenant.logo || '' });
     } finally {
       setIsRemovingLogo(false);
-    }
-  };
-
-  const handleRemoveBanner = async () => {
-    if (!tenant || !storeTabData) return;
-    setIsRemovingBanner(true);
-    try {
-      setStoreTabData({ ...storeTabData, banner: '' });
-      await tenantsApi.update({ banner: '' });
-      await refresh();
-      toast.success('Banner berhasil dihapus');
-    } catch (error) {
-      console.error('Failed to remove banner:', error);
-      toast.error('Gagal menghapus banner');
-      setStoreTabData({ ...storeTabData, banner: tenant.banner || '' });
-    } finally {
-      setIsRemovingBanner(false);
     }
   };
 
@@ -813,23 +791,6 @@ export default function SettingsPage() {
                             </div>
                             <p className="text-xs text-muted-foreground">
                               Rekomendasi: 200x200px, format PNG atau JPG
-                            </p>
-                          </div>
-
-                          {/* Banner Upload */}
-                          <div className="space-y-2 pt-2 border-t">
-                            <Label>Banner Toko</Label>
-                            <ImageUpload
-                              value={storeTabData.banner}
-                              onChange={(url) => updateStoreTabData('banner', url)}
-                              onRemove={handleRemoveBanner}
-                              disabled={isRemovingBanner}
-                              folder="fibidy/banners"
-                              aspectRatio={3}
-                              placeholder="Upload banner toko"
-                            />
-                            <p className="text-xs text-muted-foreground">
-                              Rekomendasi: 1200x400px, format PNG atau JPG
                             </p>
                           </div>
 
