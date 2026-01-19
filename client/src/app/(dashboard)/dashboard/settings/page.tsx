@@ -203,8 +203,8 @@ export default function SettingsPage() {
         phone: tenant.phone || '',
         whatsapp: tenant.whatsapp || '',
         address: tenant.address || '',
-        logo: tenant.logo || undefined,
-        banner: tenant.banner || undefined,
+        logo: tenant.logo || '',
+        banner: tenant.banner || '',
         primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
         category: tenant.category || '',
         // Hero
@@ -413,8 +413,8 @@ export default function SettingsPage() {
           phone: freshTenant.phone || '',
           whatsapp: freshTenant.whatsapp || '',
           address: freshTenant.address || '',
-          logo: freshTenant.logo || undefined,
-          banner: freshTenant.banner || undefined,
+          logo: freshTenant.logo || '',
+          banner: freshTenant.banner || '',
           primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
           category: freshTenant.category || '',
           // Hero
@@ -461,14 +461,14 @@ export default function SettingsPage() {
     if (!tenant || !storeTabData) return;
     setIsRemovingLogo(true);
     try {
-      setStoreTabData({ ...storeTabData, logo: undefined });
+      setStoreTabData({ ...storeTabData, logo: '' });
       await tenantsApi.update({ logo: '' });
       await refresh();
       toast.success('Logo berhasil dihapus');
     } catch (error) {
       console.error('Failed to remove logo:', error);
       toast.error('Gagal menghapus logo');
-      setStoreTabData({ ...storeTabData, logo: tenant.logo || undefined });
+      setStoreTabData({ ...storeTabData, logo: tenant.logo || '' });
     } finally {
       setIsRemovingLogo(false);
     }
@@ -478,14 +478,14 @@ export default function SettingsPage() {
     if (!tenant || !storeTabData) return;
     setIsRemovingBanner(true);
     try {
-      setStoreTabData({ ...storeTabData, banner: undefined });
+      setStoreTabData({ ...storeTabData, banner: '' });
       await tenantsApi.update({ banner: '' });
       await refresh();
       toast.success('Banner berhasil dihapus');
     } catch (error) {
       console.error('Failed to remove banner:', error);
       toast.error('Gagal menghapus banner');
-      setStoreTabData({ ...storeTabData, banner: tenant.banner || undefined });
+      setStoreTabData({ ...storeTabData, banner: tenant.banner || '' });
     } finally {
       setIsRemovingBanner(false);
     }
