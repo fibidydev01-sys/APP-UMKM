@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /**
  * ============================================================================
  * FILE: components/settings/landing-content-settings.tsx
@@ -21,6 +22,8 @@ import {
   Plus,
   Trash2,
   GripVertical,
+  Upload,
+  X,
 } from 'lucide-react';
 import {
   Accordion,
@@ -42,7 +45,6 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ImageUpload } from '@/components/ui/image-upload';
 import type { FeatureItem, Testimonial } from '@/types';
 
 // ============================================================================
@@ -86,6 +88,55 @@ interface LandingContentSettingsProps {
   isSaving: boolean;
   onDataChange: (data: LandingContentData) => void;
   onSave: () => void;
+}
+
+// ============================================================================
+// SIMPLE IMAGE UPLOAD COMPONENT
+// ============================================================================
+interface SimpleImageUploadProps {
+  value: string;
+  onChange: (url: string) => void;
+  aspectRatio?: 'landscape' | 'square';
+}
+
+function SimpleImageUpload({ value, onChange, aspectRatio = 'landscape' }: SimpleImageUploadProps) {
+  const aspectClass = aspectRatio === 'square' ? 'aspect-square' : 'aspect-video';
+
+  return (
+    <div className="space-y-2">
+      {value ? (
+        <div className="relative">
+          <img
+            src={value}
+            alt="Preview"
+            className={`w-full ${aspectClass} object-cover rounded-lg border`}
+          />
+          <Button
+            type="button"
+            variant="destructive"
+            size="icon"
+            className="absolute top-2 right-2"
+            onClick={() => onChange('')}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <div className={`w-full ${aspectClass} border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/50`}>
+          <div className="text-center">
+            <Upload className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Upload gambar</p>
+          </div>
+        </div>
+      )}
+      <Input
+        type="text"
+        placeholder="Atau masukkan URL gambar"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
 }
 
 // ============================================================================
@@ -263,9 +314,9 @@ export function LandingContentSettings({
 
                   <div className="space-y-2">
                     <Label>Background Image</Label>
-                    <ImageUpload
+                    <SimpleImageUpload
                       value={data.heroBackgroundImage}
-                      onChange={(url) => updateField('heroBackgroundImage', url || '')}
+                      onChange={(url) => updateField('heroBackgroundImage', url)}
                       aspectRatio="landscape"
                     />
                   </div>
@@ -321,9 +372,9 @@ export function LandingContentSettings({
 
                   <div className="space-y-2">
                     <Label>Gambar About</Label>
-                    <ImageUpload
+                    <SimpleImageUpload
                       value={data.aboutImage}
-                      onChange={(url) => updateField('aboutImage', url || '')}
+                      onChange={(url) => updateField('aboutImage', url)}
                       aspectRatio="square"
                     />
                   </div>
