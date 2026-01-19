@@ -1,14 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ShoppingCart } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useStoreUrls } from '@/lib/store-url';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { getImageSource } from '@/lib/cloudinary';
-import { formatPrice } from '@/lib/utils';
+import { ProductCard } from '@/components/store/product-card';
 import type { Product } from '@/types';
 
+/**
+ * Products2 Props - Products from database catalog
+ * Note: Products section uses database products, not landing config fields
+ *
+ * @prop products - Product[] from database
+ * @prop title - Section title
+ * @prop subtitle - Section subtitle
+ * @prop storeSlug - Store slug for product links
+ * @prop limit - Max products to display
+ */
 interface Products6Props {
   products: Product[];
   title: string;
@@ -21,10 +28,7 @@ interface Products6Props {
 
 /**
  * Products Block: products6
- * Design: Minimal List
- *
- * Clean list view with minimal design
- * Great for showcasing product names and prices
+ * Design: Grid Hover
  */
 export function Products6({
   products,
@@ -36,7 +40,6 @@ export function Products6({
   limit = 8,
 }: Products6Props) {
   const displayProducts = products.slice(0, limit);
-  const urls = storeSlug ? useStoreUrls(storeSlug) : null;
 
   if (displayProducts.length === 0) return null;
 
@@ -57,61 +60,16 @@ export function Products6({
         )}
       </div>
 
-      {/* Minimal List */}
-      <div className="space-y-4">
-        {displayProducts.map((product) => {
-          const { type, src: url } = getImageSource(product.images?.[0]);
-          const productUrl = urls?.product(product.id) || `/store/${storeSlug}/products/${product.id}`;
-
-          return (
-            <Link
-              key={product.id}
-              href={productUrl}
-              className="flex items-center gap-4 p-4 rounded-lg border hover:border-primary transition-colors group"
-            >
-              {/* Product Image - Small */}
-              <div className="flex-shrink-0 w-16 h-16 rounded-md overflow-hidden bg-muted">
-                {type !== 'none' ? (
-                  <OptimizedImage
-                    src={url}
-                    alt={product.name}
-                    width={64}
-                    height={64}
-                    crop="fill"
-                    className="object-cover w-full h-full group-hover:scale-105 transition-transform"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <ShoppingCart className="h-6 w-6 text-muted-foreground" />
-                  </div>
-                )}
-              </div>
-
-              {/* Product Info */}
-              <div className="flex-grow min-w-0">
-                <h3 className="font-medium truncate group-hover:text-primary transition-colors">
-                  {product.name}
-                </h3>
-                {product.description && (
-                  <p className="text-sm text-muted-foreground truncate">{product.description}</p>
-                )}
-              </div>
-
-              {/* Price */}
-              <div className="flex-shrink-0 text-right">
-                <p className="font-bold text-lg">{formatPrice(product.price)}</p>
-                {product.stock !== undefined && product.stock !== null && (
-                  <p className="text-xs text-muted-foreground">
-                    {product.stock > 0 ? `${product.stock} tersedia` : 'Habis'}
-                  </p>
-                )}
-              </div>
-
-              {/* Arrow Icon */}
-              <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
-            </Link>
-          );
-        })}
+      {/* Products Grid with Enhanced Hover Effects */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {displayProducts.map((product) => (
+          <div
+            key={product.id}
+            className="group transition-all duration-300 hover:scale-105 hover:z-10"
+          >
+            <ProductCard product={product} storeSlug={storeSlug} />
+          </div>
+        ))}
       </div>
     </section>
   );

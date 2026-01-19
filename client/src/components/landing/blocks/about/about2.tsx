@@ -1,8 +1,17 @@
 'use client';
 
-import Image from 'next/image';
 import { CheckCircle } from 'lucide-react';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
+/**
+ * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - aboutTitle: Section heading
+ * @prop subtitle - aboutSubtitle: Section subheading
+ * @prop content - aboutContent: Main description text
+ * @prop image - aboutImage: Cloudinary URL (800x600px)
+ * @prop features - aboutFeatures: Array<{icon, title, description}>
+ */
 interface About2Props {
   title: string;
   subtitle?: string;
@@ -18,9 +27,6 @@ interface About2Props {
 /**
  * About Block: about2
  * Design: Side by Side
- *
- * Classic side-by-side layout with image and content
- * Clean and professional presentation
  */
 export function About2({ title, subtitle, content, image, features = [] }: About2Props) {
   return (
@@ -36,12 +42,11 @@ export function About2({ title, subtitle, content, image, features = [] }: About
         {image && (
           <div className="order-2 md:order-1">
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-              <Image
+              <OptimizedImage
                 src={image}
                 alt={title}
                 fill
                 className="object-cover"
-                unoptimized={image.startsWith('http')}
               />
             </div>
           </div>

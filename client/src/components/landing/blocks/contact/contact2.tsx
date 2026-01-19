@@ -1,29 +1,39 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Phone, MapPin, MessageCircle } from 'lucide-react';
-import type { TenantLandingConfig } from '@/types';
+import { Phone, MapPin, MessageCircle, Mail } from 'lucide-react';
 
+/**
+ * Contact2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - contactTitle: Section heading
+ * @prop subtitle - contactSubtitle: Section subheading
+ * @prop whatsapp - whatsapp: WhatsApp number
+ * @prop phone - phone: Phone number
+ * @prop email - email: Email address
+ * @prop address - address: Physical address
+ * @prop storeName - name: Store name (for WhatsApp message)
+ */
 interface Contact2Props {
   title: string;
   subtitle?: string;
   whatsapp?: string | null;
   phone?: string | null;
+  email?: string | null;
   address?: string | null;
   storeName?: string;
 }
 
 /**
  * Contact Block: contact2
- * Design: Split Form
- *
- * Split layout with contact info on left, form/CTA on right
+ * Design: Split Layout
  */
 export function Contact2({
   title,
   subtitle,
   whatsapp,
   phone,
+  email,
   address,
   storeName,
 }: Contact2Props) {
@@ -41,10 +51,13 @@ export function Contact2({
       <div className="grid md:grid-cols-2 gap-8">
         {/* Left: Contact Info */}
         <div className="space-y-6">
-          <h3 className="text-xl font-semibold mb-4">Informasi Kontak</h3>
-
           {whatsapp && (
-            <div className="flex items-start gap-4">
+            <a
+              href={whatsappLink!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-start gap-4 p-4 rounded-lg hover:bg-green-500/5 transition-colors"
+            >
               <div className="flex-shrink-0 p-3 bg-green-500/10 rounded-full">
                 <MessageCircle className="h-6 w-6 text-green-500" />
               </div>
@@ -52,11 +65,14 @@ export function Contact2({
                 <p className="font-medium">WhatsApp</p>
                 <p className="text-sm text-muted-foreground">+{whatsapp}</p>
               </div>
-            </div>
+            </a>
           )}
 
           {phone && (
-            <div className="flex items-start gap-4">
+            <a
+              href={`tel:${phone}`}
+              className="flex items-start gap-4 p-4 rounded-lg hover:bg-primary/5 transition-colors"
+            >
               <div className="flex-shrink-0 p-3 bg-primary/10 rounded-full">
                 <Phone className="h-6 w-6 text-primary" />
               </div>
@@ -64,11 +80,26 @@ export function Contact2({
                 <p className="font-medium">Telepon</p>
                 <p className="text-sm text-muted-foreground">{phone}</p>
               </div>
-            </div>
+            </a>
+          )}
+
+          {email && (
+            <a
+              href={`mailto:${email}`}
+              className="flex items-start gap-4 p-4 rounded-lg hover:bg-primary/5 transition-colors"
+            >
+              <div className="flex-shrink-0 p-3 bg-primary/10 rounded-full">
+                <Mail className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="font-medium">Email</p>
+                <p className="text-sm text-muted-foreground">{email}</p>
+              </div>
+            </a>
           )}
 
           {address && (
-            <div className="flex items-start gap-4">
+            <div className="flex items-start gap-4 p-4 rounded-lg">
               <div className="flex-shrink-0 p-3 bg-primary/10 rounded-full">
                 <MapPin className="h-6 w-6 text-primary" />
               </div>
@@ -80,21 +111,17 @@ export function Contact2({
           )}
         </div>
 
-        {/* Right: CTA Card */}
-        <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-8">
-          <h3 className="text-xl font-semibold mb-4">Hubungi Kami</h3>
-          <p className="text-muted-foreground mb-6">
-            Punya pertanyaan? Tim kami siap membantu Anda. Hubungi kami melalui WhatsApp untuk respons cepat!
-          </p>
-          {whatsappLink && (
+        {/* Right: WhatsApp CTA */}
+        {whatsappLink && (
+          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl p-8 flex flex-col justify-center">
             <Button asChild size="lg" className="w-full gap-2">
               <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
                 <MessageCircle className="h-5 w-5" />
                 Chat via WhatsApp
               </a>
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

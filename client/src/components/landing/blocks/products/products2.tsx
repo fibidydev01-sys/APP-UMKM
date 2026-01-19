@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/store/product-card';
 import type { Product } from '@/types';
 
+/**
+ * Products2 Props - Products from database catalog
+ * Note: Products section uses database products, not landing config fields
+ *
+ * @prop products - Product[] from database
+ * @prop title - Section title
+ * @prop subtitle - Section subtitle
+ * @prop storeSlug - Store slug for product links
+ * @prop limit - Max products to display
+ */
 interface Products2Props {
   products: Product[];
   title: string;
@@ -19,9 +29,6 @@ interface Products2Props {
 /**
  * Products Block: products2
  * Design: Grid Hover
- *
- * Enhanced grid with smooth hover animations and transitions
- * Features: Scale effect, shadow elevation, smooth transitions
  */
 export function Products2({
   products,

@@ -1,9 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, MessageCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Cta2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - ctaTitle: CTA heading
+ * @prop subtitle - ctaSubtitle: CTA description
+ * @prop buttonText - ctaButtonText: Button label
+ * @prop buttonLink - ctaButtonLink: Button destination URL
+ * @prop buttonVariant - ctaButtonStyle: 'default' | 'secondary' | 'outline'
+ */
 interface Cta4Props {
   title: string;
   subtitle?: string;
@@ -14,9 +23,7 @@ interface Cta4Props {
 
 /**
  * CTA Block: cta4
- * Design: Split Action
- *
- * Split layout with multiple action buttons
+ * Design: Bold Center
  */
 export function Cta4({
   title,
@@ -26,29 +33,22 @@ export function Cta4({
   buttonVariant,
 }: Cta4Props) {
   return (
-    <section className="py-16 my-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="grid md:grid-cols-2 gap-8 items-center">
-          {/* Left: Text */}
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">{title}</h2>
-            {subtitle && <p className="text-muted-foreground text-lg">{subtitle}</p>}
-          </div>
-
-          {/* Right: Actions */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={buttonLink} className="flex-1">
-              <Button size="lg" variant={buttonVariant} className="w-full gap-2">
-                {buttonText}
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="flex-1 gap-2">
-              <MessageCircle className="h-4 w-4" />
-              Hubungi Kami
-            </Button>
-          </div>
-        </div>
+    <section className="py-20 my-8">
+      <div className="text-center max-w-4xl mx-auto px-4">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            {subtitle}
+          </p>
+        )}
+        <Link href={buttonLink}>
+          <Button size="lg" variant={buttonVariant} className="gap-2 h-14 px-8 text-lg">
+            {buttonText}
+            <ArrowRight className="h-5 w-5" />
+          </Button>
+        </Link>
       </div>
     </section>
   );

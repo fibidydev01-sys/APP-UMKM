@@ -9,6 +9,13 @@ import { getImageSource } from '@/lib/cloudinary';
 import { useState } from 'react';
 import type { Testimonial } from '@/types';
 
+/**
+ * Testimonials2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - testimonialsTitle: Section heading
+ * @prop subtitle - testimonialsSubtitle: Section subheading
+ * @prop items - testimonials: Array<{name, role, content, avatar?, rating?}>
+ */
 interface Testimonials2Props {
   items: Testimonial[];
   title: string;
@@ -18,9 +25,6 @@ interface Testimonials2Props {
 /**
  * Testimonials Block: testimonials2
  * Design: Card Slider
- *
- * Carousel-style slider with navigation controls
- * Shows 1-3 testimonials at a time based on screen size
  */
 export function Testimonials2({
   items,

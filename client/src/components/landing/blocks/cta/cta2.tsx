@@ -4,6 +4,15 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Cta2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - ctaTitle: CTA heading
+ * @prop subtitle - ctaSubtitle: CTA description
+ * @prop buttonText - ctaButtonText: Button label
+ * @prop buttonLink - ctaButtonLink: Button destination URL
+ * @prop buttonVariant - ctaButtonStyle: 'default' | 'secondary' | 'outline'
+ */
 interface Cta2Props {
   title: string;
   subtitle?: string;
@@ -15,8 +24,6 @@ interface Cta2Props {
 /**
  * CTA Block: cta2
  * Design: Bold Center
- *
- * Large, bold centered CTA with prominent typography
  */
 export function Cta2({
   title,

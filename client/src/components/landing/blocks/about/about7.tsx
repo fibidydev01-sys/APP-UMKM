@@ -1,8 +1,17 @@
 'use client';
 
-import Image from 'next/image';
-import { Quote } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
+/**
+ * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - aboutTitle: Section heading
+ * @prop subtitle - aboutSubtitle: Section subheading
+ * @prop content - aboutContent: Main description text
+ * @prop image - aboutImage: Cloudinary URL (800x600px)
+ * @prop features - aboutFeatures: Array<{icon, title, description}>
+ */
 interface About7Props {
   title: string;
   subtitle?: string;
@@ -17,95 +26,58 @@ interface About7Props {
 
 /**
  * About Block: about7
- * Design: Storytelling
- *
- * Narrative-focused layout with emotional connection
- * Story-driven content with emphasis on journey
+ * Design: Side by Side
  */
 export function About7({ title, subtitle, content, image, features = [] }: About7Props) {
   return (
     <section id="about" className="py-12">
-      <div className="max-w-4xl mx-auto">
-        {/* Story Header */}
-        <div className="text-center mb-12">
-          {subtitle && (
-            <p className="text-primary font-medium mb-2 uppercase tracking-wide text-sm">
-              {subtitle}
+      {/* Section Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
+        {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-12 items-center">
+        {/* Left: Image */}
+        {image && (
+          <div className="order-2 md:order-1">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+              <OptimizedImage
+                src={image}
+                alt={title}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Right: Content */}
+        <div className="order-1 md:order-2 space-y-6">
+          {content && (
+            <p className="text-muted-foreground leading-relaxed text-lg">
+              {content}
             </p>
           )}
-          <h2 className="text-3xl md:text-5xl font-bold mb-6">{title}</h2>
-        </div>
 
-        {/* Hero Image */}
-        {image && (
-          <div className="relative aspect-video rounded-2xl overflow-hidden mb-12 shadow-xl">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              className="object-cover"
-              unoptimized={image.startsWith('http')}
-            />
-          </div>
-        )}
-
-        {/* Story Content */}
-        {content && (
-          <div className="mb-12">
-            <div className="relative">
-              {/* Quote Icon */}
-              <Quote className="absolute -top-4 -left-4 h-16 w-16 text-primary/10" />
-
-              <div className="prose prose-lg max-w-none pl-8">
-                <p className="text-lg md:text-xl leading-relaxed text-muted-foreground italic">
-                  &ldquo;{content}&rdquo;
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Story Chapters/Milestones */}
-        {features.length > 0 && (
-          <div className="space-y-8">
-            <div className="text-center mb-8">
-              <h3 className="text-2xl font-bold">Our Journey</h3>
-              <div className="w-20 h-1 bg-primary mx-auto mt-4" />
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-6">
+          {/* Features List */}
+          {features.length > 0 && (
+            <div className="space-y-4 pt-4">
               {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="relative group p-6 rounded-xl border bg-card hover:shadow-lg transition-all"
-                >
-                  {/* Chapter number */}
-                  <div className="absolute -top-4 -left-4 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg shadow-lg">
-                    {index + 1}
+                <div key={index} className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-primary" />
                   </div>
-
-                  <div className="space-y-3">
-                    <h4 className="text-xl font-bold pt-2">{feature.title}</h4>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg mb-1">{feature.title}</h3>
                     {feature.description && (
-                      <p className="text-muted-foreground leading-relaxed">
-                        {feature.description}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{feature.description}</p>
                     )}
                   </div>
-
-                  {/* Decorative element */}
-                  <div className="absolute bottom-0 right-0 w-20 h-20 bg-primary/5 rounded-tl-full -z-10 group-hover:bg-primary/10 transition-colors" />
                 </div>
               ))}
             </div>
-          </div>
-        )}
-
-        {/* Closing line */}
-        <div className="text-center mt-12 pt-8 border-t">
-          <p className="text-muted-foreground italic">
-            And the story continues...
-          </p>
+          )}
         </div>
       </div>
     </section>

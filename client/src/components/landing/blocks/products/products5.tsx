@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/store/product-card';
 import type { Product } from '@/types';
 
+/**
+ * Products2 Props - Products from database catalog
+ * Note: Products section uses database products, not landing config fields
+ *
+ * @prop products - Product[] from database
+ * @prop title - Section title
+ * @prop subtitle - Section subtitle
+ * @prop storeSlug - Store slug for product links
+ * @prop limit - Max products to display
+ */
 interface Products5Props {
   products: Product[];
   title: string;
@@ -18,10 +28,7 @@ interface Products5Props {
 
 /**
  * Products Block: products5
- * Design: Catalog
- *
- * Magazine/lookbook style layout with larger featured items
- * First item is featured, rest in smaller grid
+ * Design: Grid Hover
  */
 export function Products5({
   products,
@@ -30,13 +37,11 @@ export function Products5({
   showViewAll = true,
   productsLink = '/products',
   storeSlug = '',
-  limit = 9,
+  limit = 8,
 }: Products5Props) {
   const displayProducts = products.slice(0, limit);
 
   if (displayProducts.length === 0) return null;
-
-  const [featuredProduct, ...restProducts] = displayProducts;
 
   return (
     <section id="products" className="py-12">
@@ -55,23 +60,16 @@ export function Products5({
         )}
       </div>
 
-      {/* Catalog Layout */}
-      <div className="space-y-6">
-        {/* Featured Product - Large */}
-        {featuredProduct && (
-          <div className="w-full">
-            <ProductCard product={featuredProduct} storeSlug={storeSlug} />
+      {/* Products Grid with Enhanced Hover Effects */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {displayProducts.map((product) => (
+          <div
+            key={product.id}
+            className="group transition-all duration-300 hover:scale-105 hover:z-10"
+          >
+            <ProductCard product={product} storeSlug={storeSlug} />
           </div>
-        )}
-
-        {/* Rest Products - Smaller Grid */}
-        {restProducts.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {restProducts.map((product) => (
-              <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
-            ))}
-          </div>
-        )}
+        ))}
       </div>
     </section>
   );

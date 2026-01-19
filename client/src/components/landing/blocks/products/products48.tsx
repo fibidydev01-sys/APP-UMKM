@@ -6,6 +6,16 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/store/product-card';
 import type { Product } from '@/types';
 
+/**
+ * Products2 Props - Products from database catalog
+ * Note: Products section uses database products, not landing config fields
+ *
+ * @prop products - Product[] from database
+ * @prop title - Section title
+ * @prop subtitle - Section subtitle
+ * @prop storeSlug - Store slug for product links
+ * @prop limit - Max products to display
+ */
 interface Products48Props {
   products: Product[];
   title: string;
@@ -18,10 +28,7 @@ interface Products48Props {
 
 /**
  * Products Block: products48
- * Design: Grid
- *
- * Classic grid layout for products
- * Responsive columns: 2 (mobile) → 3 (tablet) → 4 (desktop)
+ * Design: Grid Hover
  */
 export function Products48({
   products,
@@ -53,10 +60,15 @@ export function Products48({
         )}
       </div>
 
-      {/* Products Grid */}
+      {/* Products Grid with Enhanced Hover Effects */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {displayProducts.map((product) => (
-          <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
+          <div
+            key={product.id}
+            className="group transition-all duration-300 hover:scale-105 hover:z-10"
+          >
+            <ProductCard product={product} storeSlug={storeSlug} />
+          </div>
         ))}
       </div>
     </section>

@@ -4,15 +4,18 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/store/product-card';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import type { Product } from '@/types';
 
+/**
+ * Products2 Props - Products from database catalog
+ * Note: Products section uses database products, not landing config fields
+ *
+ * @prop products - Product[] from database
+ * @prop title - Section title
+ * @prop subtitle - Section subtitle
+ * @prop storeSlug - Store slug for product links
+ * @prop limit - Max products to display
+ */
 interface Products4Props {
   products: Product[];
   title: string;
@@ -25,10 +28,7 @@ interface Products4Props {
 
 /**
  * Products Block: products4
- * Design: Carousel
- *
- * Carousel/slider layout for products
- * Allows horizontal scrolling through products
+ * Design: Grid Hover
  */
 export function Products4({
   products,
@@ -60,26 +60,17 @@ export function Products4({
         )}
       </div>
 
-      {/* Products Carousel */}
-      <Carousel
-        opts={{
-          align: 'start',
-          loop: true,
-        }}
-        className="w-full"
-      >
-        <CarouselContent className="-ml-2 md:-ml-4">
-          {displayProducts.map((product) => (
-            <CarouselItem key={product.id} className="pl-2 md:pl-4 basis-1/2 md:basis-1/3 lg:basis-1/4">
-              <ProductCard product={product} storeSlug={storeSlug} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <div className="hidden md:block">
-          <CarouselPrevious className="-left-4" />
-          <CarouselNext className="-right-4" />
-        </div>
-      </Carousel>
+      {/* Products Grid with Enhanced Hover Effects */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {displayProducts.map((product) => (
+          <div
+            key={product.id}
+            className="group transition-all duration-300 hover:scale-105 hover:z-10"
+          >
+            <ProductCard product={product} storeSlug={storeSlug} />
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

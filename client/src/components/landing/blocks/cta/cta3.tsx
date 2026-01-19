@@ -4,6 +4,15 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Cta2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - ctaTitle: CTA heading
+ * @prop subtitle - ctaSubtitle: CTA description
+ * @prop buttonText - ctaButtonText: Button label
+ * @prop buttonLink - ctaButtonLink: Button destination URL
+ * @prop buttonVariant - ctaButtonStyle: 'default' | 'secondary' | 'outline'
+ */
 interface Cta3Props {
   title: string;
   subtitle?: string;
@@ -14,9 +23,7 @@ interface Cta3Props {
 
 /**
  * CTA Block: cta3
- * Design: Gradient Banner
- *
- * Full-width animated gradient banner
+ * Design: Bold Center
  */
 export function Cta3({
   title,
@@ -26,25 +33,20 @@ export function Cta3({
   buttonVariant,
 }: Cta3Props) {
   return (
-    <section className="py-16 my-8 rounded-2xl bg-gradient-to-r from-primary via-primary/80 to-primary animate-gradient-x relative overflow-hidden">
-      {/* Animated Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.1),transparent_50%)]"></div>
-      </div>
-
-      <div className="text-center max-w-2xl mx-auto px-4 relative z-10">
-        <h2 className="text-2xl md:text-4xl font-bold text-primary-foreground mb-4">{title}</h2>
+    <section className="py-20 my-8">
+      <div className="text-center max-w-4xl mx-auto px-4">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          {title}
+        </h2>
         {subtitle && (
-          <p className="text-primary-foreground/90 mb-6 text-lg">{subtitle}</p>
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            {subtitle}
+          </p>
         )}
         <Link href={buttonLink}>
-          <Button
-            size="lg"
-            variant="secondary"
-            className="gap-2 shadow-lg hover:shadow-xl transition-shadow"
-          >
+          <Button size="lg" variant={buttonVariant} className="gap-2 h-14 px-8 text-lg">
             {buttonText}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-5 w-5" />
           </Button>
         </Link>
       </div>

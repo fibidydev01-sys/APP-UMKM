@@ -4,6 +4,15 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Cta2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - ctaTitle: CTA heading
+ * @prop subtitle - ctaSubtitle: CTA description
+ * @prop buttonText - ctaButtonText: Button label
+ * @prop buttonLink - ctaButtonLink: Button destination URL
+ * @prop buttonVariant - ctaButtonStyle: 'default' | 'secondary' | 'outline'
+ */
 interface Cta6Props {
   title: string;
   subtitle?: string;
@@ -14,9 +23,7 @@ interface Cta6Props {
 
 /**
  * CTA Block: cta6
- * Design: Minimal Line
- *
- * Ultra-minimal single-line CTA
+ * Design: Bold Center
  */
 export function Cta6({
   title,
@@ -26,16 +33,20 @@ export function Cta6({
   buttonVariant,
 }: Cta6Props) {
   return (
-    <section className="py-12 my-8 border-t border-b">
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 max-w-5xl mx-auto px-4">
-        <div>
-          <h2 className="text-xl md:text-2xl font-semibold">{title}</h2>
-          {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
-        </div>
+    <section className="py-20 my-8">
+      <div className="text-center max-w-4xl mx-auto px-4">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            {subtitle}
+          </p>
+        )}
         <Link href={buttonLink}>
-          <Button variant={buttonVariant} className="gap-2">
+          <Button size="lg" variant={buttonVariant} className="gap-2 h-14 px-8 text-lg">
             {buttonText}
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-5 w-5" />
           </Button>
         </Link>
       </div>

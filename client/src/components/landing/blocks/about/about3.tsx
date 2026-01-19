@@ -1,9 +1,17 @@
 'use client';
 
-import Image from 'next/image';
-import { Sparkles } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { CheckCircle } from 'lucide-react';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
+/**
+ * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - aboutTitle: Section heading
+ * @prop subtitle - aboutSubtitle: Section subheading
+ * @prop content - aboutContent: Main description text
+ * @prop image - aboutImage: Cloudinary URL (800x600px)
+ * @prop features - aboutFeatures: Array<{icon, title, description}>
+ */
 interface About3Props {
   title: string;
   subtitle?: string;
@@ -18,63 +26,59 @@ interface About3Props {
 
 /**
  * About Block: about3
- * Design: Centered
- *
- * Centered layout with focus on content
- * Minimal and elegant design
+ * Design: Side by Side
  */
 export function About3({ title, subtitle, content, image, features = [] }: About3Props) {
   return (
     <section id="about" className="py-12">
-      <div className="max-w-4xl mx-auto">
-        {/* Centered Header */}
-        <div className="text-center space-y-4 mb-12">
-          {subtitle && (
-            <p className="text-primary font-medium uppercase tracking-wider text-sm">
-              {subtitle}
-            </p>
-          )}
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold">{title}</h2>
+      {/* Section Header */}
+      <div className="text-center mb-12">
+        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
+        {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
+      </div>
 
+      <div className="grid md:grid-cols-2 gap-12 items-center">
+        {/* Left: Image */}
+        {image && (
+          <div className="order-2 md:order-1">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+              <OptimizedImage
+                src={image}
+                alt={title}
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Right: Content */}
+        <div className="order-1 md:order-2 space-y-6">
           {content && (
-            <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
+            <p className="text-muted-foreground leading-relaxed text-lg">
               {content}
             </p>
           )}
-        </div>
 
-        {/* Centered Image */}
-        {image && (
-          <div className="relative aspect-video max-w-2xl mx-auto mb-12 rounded-2xl overflow-hidden shadow-2xl">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              className="object-cover"
-              unoptimized={image.startsWith('http')}
-            />
-          </div>
-        )}
-
-        {/* Centered Features Grid */}
-        {features.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-            {features.map((feature, index) => (
-              <Card
-                key={index}
-                className="p-6 text-center hover:shadow-lg transition-shadow"
-              >
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="h-6 w-6 text-primary" />
+          {/* Features List */}
+          {features.length > 0 && (
+            <div className="space-y-4 pt-4">
+              {features.map((feature, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg mb-1">{feature.title}</h3>
+                    {feature.description && (
+                      <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    )}
+                  </div>
                 </div>
-                <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
-                {feature.description && (
-                  <p className="text-sm text-muted-foreground">{feature.description}</p>
-                )}
-              </Card>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
