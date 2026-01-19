@@ -18,7 +18,7 @@ import {
   LivePreview,
   LandingErrorBoundary,
   BuilderSidebar,
-  LandingBuilder,
+  LandingBuilderSimplified,
 } from '@/components/landing-builder';
 import type { SectionType } from '@/components/landing-builder';
 import { SectionSheet } from '@/components/landing-builder/section-sheet';
@@ -304,10 +304,10 @@ export default function LandingBuilderPage() {
           description="Configure section settings"
         >
           <LandingErrorBoundary>
-            <LandingBuilder
+            <LandingBuilderSimplified
               config={landingConfig}
+              tenant={tenant}
               onConfigChange={setLandingConfig}
-              tenantSlug={tenant.slug}
               hasUnsavedChanges={hasUnsavedChanges}
               isSaving={isSaving}
               validationErrors={validationErrors}
