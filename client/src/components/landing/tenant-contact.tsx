@@ -28,6 +28,9 @@ interface TenantContactProps {
  * - email → tenant.email
  * - address → tenant.address
  * - storeName → tenant.name
+ * - mapUrl → tenant.contactMapUrl
+ * - showMap → tenant.contactShowMap
+ * - showForm → tenant.contactShowForm
  *
  * 🚀 BLOCK VARIANTS:
  * - contact1 → Default
@@ -53,6 +56,9 @@ export function TenantContact({ config, tenant }: TenantContactProps) {
     email: contactData.email,
     address: contactData.address,
     storeName: tenant.name,
+    mapUrl: contactData.mapUrl,
+    showMap: contactData.showMap,
+    showForm: contactData.showForm,
   };
 
   // Render appropriate block based on template

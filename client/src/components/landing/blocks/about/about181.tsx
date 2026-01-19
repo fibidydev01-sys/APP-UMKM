@@ -1,6 +1,5 @@
 'use client';
 
-import { CheckCircle } from 'lucide-react';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 
 /**
@@ -10,7 +9,7 @@ import { OptimizedImage } from '@/components/ui/optimized-image';
  * @prop subtitle - aboutSubtitle: Section subheading
  * @prop content - aboutContent: Main description text
  * @prop image - aboutImage: Cloudinary URL (800x600px)
- * @prop features - aboutFeatures: Array<{icon, title, description}>
+ * @prop features - aboutFeatures: Array<{icon (Cloudinary URL), title, description}>
  */
 interface About181Props {
   title: string;
@@ -26,7 +25,7 @@ interface About181Props {
 
 /**
  * About Block: about181
- * Design: Side by Side
+ * Design: Side by Side with Feature Gallery
  */
 export function About181({ title, subtitle, content, image, features = [] }: About181Props) {
   return (
@@ -37,10 +36,10 @@ export function About181({ title, subtitle, content, image, features = [] }: Abo
         {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 items-center">
-        {/* Left: Image */}
+      <div className="grid md:grid-cols-2 gap-12 items-start">
+        {/* Left: Main Image */}
         {image && (
-          <div className="order-2 md:order-1">
+          <div>
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
               <OptimizedImage
                 src={image}
@@ -53,27 +52,38 @@ export function About181({ title, subtitle, content, image, features = [] }: Abo
         )}
 
         {/* Right: Content */}
-        <div className="order-1 md:order-2 space-y-6">
+        <div className="space-y-6">
           {content && (
             <p className="text-muted-foreground leading-relaxed text-lg">
               {content}
             </p>
           )}
 
-          {/* Features List */}
+          {/* Features Gallery - Display as image cards */}
           {features.length > 0 && (
-            <div className="space-y-4 pt-4">
+            <div className="grid grid-cols-2 gap-4 pt-4">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-1">{feature.title}</h3>
-                    {feature.description && (
-                      <p className="text-sm text-muted-foreground">{feature.description}</p>
-                    )}
-                  </div>
+                <div
+                  key={index}
+                  className="group rounded-xl border bg-card p-4 hover:shadow-lg transition-all"
+                >
+                  {/* Feature Image */}
+                  {feature.icon && (
+                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-muted">
+                      <OptimizedImage
+                        src={feature.icon}
+                        alt={feature.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform"
+                      />
+                    </div>
+                  )}
+                  <h3 className="font-semibold mb-1">{feature.title}</h3>
+                  {feature.description && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {feature.description}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
