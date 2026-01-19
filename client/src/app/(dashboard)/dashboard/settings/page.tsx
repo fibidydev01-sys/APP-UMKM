@@ -182,6 +182,12 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   useEffect(() => {
     if (tenant && storeTabData === null) {
+      console.log('🔥 Initializing storeTabData with tenant:', {
+        contactTitle: tenant.contactTitle,
+        contactSubtitle: tenant.contactSubtitle,
+        ctaTitle: tenant.ctaTitle,
+        ctaSubtitle: tenant.ctaSubtitle,
+      });
       const themeData = tenant.theme as { primaryColor?: string } | null;
       setStoreTabData({
         // Informasi Dasar
@@ -221,6 +227,7 @@ export default function SettingsPage() {
         ctaButtonLink: tenant.ctaButtonLink || '',
         ctaButtonStyle: tenant.ctaButtonStyle || 'primary',
       });
+      console.log('✅ storeTabData initialized!');
     }
   }, [tenant, storeTabData]);
 
@@ -255,6 +262,18 @@ export default function SettingsPage() {
   }, [tenant, seoSettings]);
 
   const tenantLoading = tenant === null;
+
+  // 🔥 DEBUG: Log storeTabData changes
+  useEffect(() => {
+    if (storeTabData) {
+      console.log('📋 storeTabData updated:', {
+        contactTitle: storeTabData.contactTitle,
+        contactSubtitle: storeTabData.contactSubtitle,
+        ctaTitle: storeTabData.ctaTitle,
+        ctaSubtitle: storeTabData.ctaSubtitle,
+      });
+    }
+  }, [storeTabData]);
 
   // ---------------------------------------------------------------------------
   // Tab Navigation Handlers
