@@ -2,12 +2,23 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
+/**
+ * Hero1 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - heroTitle: Marketing headline
+ * @prop subtitle - heroSubtitle: Value proposition
+ * @prop ctaText - heroCtaText: CTA button text
+ * @prop ctaLink - heroCtaLink: CTA button link
+ * @prop backgroundImage - heroBackgroundImage: Cloudinary URL (1920x800px)
+ * @prop logo - logo: Cloudinary URL (200x200px)
+ * @prop storeName - name: Store name
+ */
 interface Hero1Props {
   title: string;
   subtitle?: string;
@@ -28,8 +39,8 @@ interface Hero1Props {
 export function Hero1({
   title,
   subtitle,
-  ctaText = 'Get Started',
-  ctaLink = '#',
+  ctaText,
+  ctaLink = '/products',
   showCta = true,
   backgroundImage,
   overlayOpacity = 0.5,
@@ -131,7 +142,7 @@ export function Hero1({
           )}
 
           {/* CTA Button */}
-          {showCta && (
+          {showCta && ctaText && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -145,51 +156,8 @@ export function Hero1({
               </Link>
             </motion.div>
           )}
-
-          {/* Trust Indicators */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="mt-8 sm:mt-10 md:mt-12 lg:mt-16 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto"
-          >
-            {[
-              { color: 'bg-green-500', label: '1000+ Customers' },
-              { color: 'bg-blue-500', label: 'Fast Shipping' },
-              { color: 'bg-purple-500', label: 'Secure Payment' },
-            ].map((item, index) => (
-              <div
-                key={item.label}
-                className={cn(
-                  'flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg backdrop-blur-sm text-xs sm:text-sm',
-                  backgroundImage ? 'bg-white/10 text-white' : 'bg-muted text-foreground'
-                )}
-              >
-                <span className={cn('h-2 w-2 rounded-full animate-pulse', item.color)} />
-                <span>{item.label}</span>
-              </div>
-            ))}
-          </motion.div>
         </motion.div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1, duration: 0.6, repeat: Infinity, repeatType: 'reverse' }}
-        className="absolute bottom-6 sm:bottom-8 left-1/2 -translate-x-1/2 hidden md:block"
-      >
-        <div
-          className={cn(
-            'flex flex-col items-center gap-2',
-            backgroundImage ? 'text-white/70' : 'text-muted-foreground'
-          )}
-        >
-          <span className="text-xs uppercase tracking-wider">Scroll</span>
-          <ArrowRight className="h-5 w-5 rotate-90" />
-        </div>
-      </motion.div>
     </section>
   );
 }
