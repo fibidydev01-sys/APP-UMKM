@@ -28,7 +28,7 @@ import {
   DeviceFrame,
   PreviewModeToggle,
   BuilderSidebar,
-  LandingBuilder,
+  LandingBuilderSimplified,
 } from '@/components/landing-builder';
 import type { DeviceMode, SectionType } from '@/components/landing-builder';
 import { SectionSheet } from '@/components/landing-builder/section-sheet';
@@ -317,14 +317,14 @@ export default function CustomizeLandingPage() {
           title={`Edit ${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} Section`}
           description="Customize this section's content and appearance"
         >
-          {/* Render the full LandingBuilder inside the sheet for now */}
-          {/* In the future, we can extract individual section forms */}
+          {/* Render the simplified builder (block selection only) */}
+          {/* Data editing is now handled in Settings > Landing */}
           <div className="max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
             <LandingErrorBoundary>
-              <LandingBuilder
+              <LandingBuilderSimplified
                 config={landingConfig}
+                tenant={tenant}
                 onConfigChange={setLandingConfig}
-                tenantSlug={tenant.slug}
                 hasUnsavedChanges={hasUnsavedChanges}
                 isSaving={isSaving}
                 validationErrors={validationErrors}
@@ -332,6 +332,7 @@ export default function CustomizeLandingPage() {
                 onDiscard={handleDiscard}
                 onReset={handleReset}
                 onClearErrors={clearErrors}
+                activeSection={activeSection}
               />
             </LandingErrorBoundary>
           </div>
