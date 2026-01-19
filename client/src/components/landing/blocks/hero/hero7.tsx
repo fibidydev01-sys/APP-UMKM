@@ -2,12 +2,22 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Sparkles, Zap, TrendingUp, Star, Package } from 'lucide-react';
-import { BentoGrid, BentoCard } from '@/components/ui/bento-grid';
+import { Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
+/**
+ * Hero2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - heroTitle: Marketing headline
+ * @prop subtitle - heroSubtitle: Value proposition
+ * @prop ctaText - heroCtaText: CTA button text
+ * @prop ctaLink - heroCtaLink: CTA button link
+ * @prop backgroundImage - heroBackgroundImage: Cloudinary URL (1920x800px)
+ * @prop logo - logo: Cloudinary URL (200x200px)
+ * @prop storeName - name: Store name
+ */
 interface Hero7Props {
   title: string;
   subtitle?: string;
@@ -21,195 +31,122 @@ interface Hero7Props {
 
 /**
  * Hero Block: hero7
- * Design: Bento Grid
- * Responsive: 1 col mobile → 2 col tablet → 3 col desktop
+ * Design: Split Screen
+ * Mobile: Stacked (image first) → Desktop: Side-by-side (content first)
  */
 export function Hero7({
   title,
   subtitle,
-  ctaText = 'Explore Now',
-  ctaLink = '#',
+  ctaText,
+  ctaLink = '/products',
   showCta = true,
   backgroundImage,
   logo,
   storeName,
 }: Hero7Props) {
-  // Background gradient component
-  const GradientBg = ({ className }: { className: string }) => (
-    <div
-      className={cn(
-        'absolute inset-0 bg-gradient-to-br transition-opacity opacity-60 group-hover:opacity-80',
-        className
-      )}
-    />
-  );
-
   return (
-    <section className="relative min-h-[600px] md:min-h-[700px] lg:min-h-screen bg-gradient-to-br from-background via-muted/30 to-background overflow-hidden py-10 sm:py-12 md:py-16 lg:py-20 xl:py-24">
-      {/* Animated Background Blobs - Desktop only */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
-        <div className="absolute top-1/4 right-1/4 w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-primary/5 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute bottom-1/4 left-1/4 w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-blue-500/5 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        />
-      </div>
+    <section className="relative min-h-[600px] md:min-h-[700px] lg:min-h-screen overflow-hidden">
+      <div className="container px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center min-h-[600px] md:min-h-[700px] lg:min-h-screen py-8 sm:py-12 md:py-16 lg:py-20">
+          {/* Left: Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6 }}
+            className="space-y-4 sm:space-y-6 md:space-y-8 order-2 lg:order-1"
+          >
+            {/* Logo */}
+            {logo && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="flex justify-center lg:justify-start"
+              >
+                <div className="relative h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xl">
+                  <OptimizedImage
+                    src={logo}
+                    alt={storeName || title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </motion.div>
+            )}
 
-      <div className="container relative z-10 px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12"
-        >
-          {/* Logo */}
-          {logo && (
+            {/* Badge */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex justify-center mb-4 sm:mb-6 md:mb-8"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="flex justify-center lg:justify-start"
             >
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl">
-                <OptimizedImage
-                  src={logo}
-                  alt={storeName || 'Logo'}
-                  fill
-                  className="object-cover"
-                />
-              </div>
+              <Badge variant="secondary" className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm md:text-base">
+                <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                {storeName || 'Featured'}
+              </Badge>
             </motion.div>
-          )}
 
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="inline-block mb-3 sm:mb-4 md:mb-6"
-          >
-            <Badge
-              variant="secondary"
-              className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm md:text-base shadow-lg"
+            {/* Title & Subtitle */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="space-y-3 sm:space-y-4 text-center lg:text-left"
             >
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-              {storeName || 'Featured Collection'}
-            </Badge>
-          </motion.div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-tight">
+                {title}
+              </h1>
 
-          {/* Title */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent leading-tight">
-            {title}
-          </h1>
-
-          {/* Subtitle */}
-          {subtitle && (
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
-              {subtitle}
-            </p>
-          )}
-        </motion.div>
-
-        {/* Bento Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-        >
-          <BentoGrid className="max-w-7xl mx-auto grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 auto-rows-[14rem] sm:auto-rows-[16rem] md:auto-rows-[18rem] lg:auto-rows-[20rem]">
-            {/* Card 1: Featured - Large */}
-            <BentoCard
-              name="Premium Quality"
-              className="col-span-1 sm:col-span-2 lg:col-span-2 row-span-1 lg:row-span-2"
-              description="Discover our most popular products with exclusive features and premium materials"
-              Icon={TrendingUp}
-              href={ctaLink}
-              cta={ctaText}
-              background={
-                backgroundImage ? (
-                  <div className="absolute inset-0">
-                    <OptimizedImage
-                      src={backgroundImage}
-                      alt="Featured"
-                      fill
-                      className="object-cover opacity-20 group-hover:scale-105 transition-transform duration-700"
-                    />
-                  </div>
-                ) : (
-                  <GradientBg className="from-primary/10 to-blue-500/10" />
-                )
-              }
-            />
-
-            {/* Card 2: Stats */}
-            <BentoCard
-              name="10K+ Customers"
-              className="col-span-1"
-              description="Join thousands of happy customers worldwide"
-              Icon={Zap}
-              href={ctaLink}
-              cta="Join Now"
-              background={<GradientBg className="from-green-500/10 to-emerald-500/10" />}
-            />
-
-            {/* Card 3: New Arrivals */}
-            <BentoCard
-              name="New Arrivals"
-              className="col-span-1"
-              description="Check out our latest products and collections"
-              Icon={Sparkles}
-              href={ctaLink}
-              cta="View All"
-              background={<GradientBg className="from-orange-500/10 to-red-500/10" />}
-            />
-
-            {/* Card 4: Special Offers */}
-            <BentoCard
-              name="Special Offers"
-              className="col-span-1"
-              description="Exclusive deals and limited time discounts"
-              Icon={Star}
-              href={ctaLink}
-              cta="Shop Now"
-              background={<GradientBg className="from-purple-500/10 to-pink-500/10" />}
-            />
-
-            {/* Card 5: Premium Service */}
-            <BentoCard
-              name="Premium Service"
-              className="col-span-1"
-              description="Fast shipping and 24/7 customer support"
-              Icon={Package}
-              href={ctaLink}
-              cta="Learn More"
-              background={<GradientBg className="from-blue-500/10 to-cyan-500/10" />}
-            />
-          </BentoGrid>
-        </motion.div>
-
-        {/* Bottom Trust Badges */}
-        {showCta && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="text-center mt-8 sm:mt-10 md:mt-12 lg:mt-16"
-          >
-            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-              Join thousands of satisfied customers
-            </p>
-            <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 md:gap-3">
-              {['✓ Free Shipping', '✓ Easy Returns', '✓ 24/7 Support', '✓ Secure Payment'].map(
-                (badge) => (
-                  <Badge key={badge} variant="outline" className="text-xs sm:text-sm">
-                    {badge}
-                  </Badge>
-                )
+              {subtitle && (
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-lg mx-auto lg:mx-0 leading-relaxed">
+                  {subtitle}
+                </p>
               )}
-            </div>
+            </motion.div>
+
+            {/* CTA */}
+            {showCta && ctaText && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="flex justify-center lg:justify-start pt-2"
+              >
+                <Link href={ctaLink} className="w-full sm:w-auto">
+                  <InteractiveHoverButton className="w-full sm:w-auto min-w-[200px] text-base md:text-lg px-6 md:px-8 py-4 md:py-5">
+                    {ctaText}
+                  </InteractiveHoverButton>
+                </Link>
+              </motion.div>
+            )}
           </motion.div>
-        )}
+
+          {/* Right: Image */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative h-[280px] sm:h-[350px] md:h-[450px] lg:h-[550px] xl:h-[650px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl order-1 lg:order-2"
+          >
+            {backgroundImage ? (
+              <OptimizedImage
+                src={backgroundImage}
+                alt={storeName || title}
+                fill
+                priority
+                className="object-cover hover:scale-105 transition-transform duration-700"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-primary/10 to-background flex items-center justify-center">
+                <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl opacity-20">🎨</span>
+              </div>
+            )}
+
+            {/* Bottom Gradient */}
+            <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-black/20 to-transparent" />
+          </motion.div>
+        </div>
       </div>
     </section>
   );

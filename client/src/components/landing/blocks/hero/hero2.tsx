@@ -6,8 +6,18 @@ import { Sparkles } from 'lucide-react';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
+/**
+ * Hero2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
+ *
+ * @prop title - heroTitle: Marketing headline
+ * @prop subtitle - heroSubtitle: Value proposition
+ * @prop ctaText - heroCtaText: CTA button text
+ * @prop ctaLink - heroCtaLink: CTA button link
+ * @prop backgroundImage - heroBackgroundImage: Cloudinary URL (1920x800px)
+ * @prop logo - logo: Cloudinary URL (200x200px)
+ * @prop storeName - name: Store name
+ */
 interface Hero2Props {
   title: string;
   subtitle?: string;
@@ -27,7 +37,7 @@ interface Hero2Props {
 export function Hero2({
   title,
   subtitle,
-  ctaText = 'Lihat Produk',
+  ctaText,
   ctaLink = '/products',
   showCta = true,
   backgroundImage,
@@ -96,7 +106,7 @@ export function Hero2({
             </motion.div>
 
             {/* CTA */}
-            {showCta && (
+            {showCta && ctaText && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -110,25 +120,6 @@ export function Hero2({
                 </Link>
               </motion.div>
             )}
-
-            {/* Trust Indicators */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.6 }}
-              className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4 pt-2 sm:pt-4"
-            >
-              {[
-                { color: 'bg-green-500', label: 'Trusted Brand' },
-                { color: 'bg-blue-500', label: 'Fast Delivery' },
-                { color: 'bg-purple-500', label: 'Quality Products' },
-              ].map((item) => (
-                <div key={item.label} className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-                  <span className={cn('h-2 w-2 rounded-full animate-pulse', item.color)} />
-                  <span>{item.label}</span>
-                </div>
-              ))}
-            </motion.div>
           </motion.div>
 
           {/* Right: Image */}
@@ -151,14 +142,6 @@ export function Hero2({
                 <span className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl opacity-20">🎨</span>
               </div>
             )}
-
-            {/* Decorative Badge */}
-            <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
-              <Badge className="bg-white/90 text-primary backdrop-blur-sm text-xs sm:text-sm">
-                <Sparkles className="h-3 w-3 mr-1 fill-current" />
-                New
-              </Badge>
-            </div>
 
             {/* Bottom Gradient */}
             <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 bg-gradient-to-t from-black/20 to-transparent" />
