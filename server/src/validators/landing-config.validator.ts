@@ -56,7 +56,17 @@ export type HeroBlock =
   | 'hero4'   // Parallax
   | 'hero5'   // Animated Gradient
   | 'hero6'   // Glass Morphism
-  | 'hero7';  // Bento Grid
+  | 'hero7'   // Bento Grid
+  | 'hero8' | 'hero9' | 'hero10' | 'hero11' | 'hero12' | 'hero13' | 'hero14' | 'hero15' | 'hero16' | 'hero17'
+  | 'hero18' | 'hero19' | 'hero20' | 'hero21' | 'hero22' | 'hero23' | 'hero24' | 'hero25' | 'hero26' | 'hero27'
+  | 'hero28' | 'hero29' | 'hero30' | 'hero31' | 'hero32' | 'hero33' | 'hero34' | 'hero35' | 'hero36' | 'hero37'
+  | 'hero38' | 'hero39' | 'hero40' | 'hero41' | 'hero42' | 'hero43' | 'hero44' | 'hero45' | 'hero46' | 'hero47'
+  | 'hero48' | 'hero49' | 'hero50' | 'hero51' | 'hero52' | 'hero53' | 'hero54' | 'hero55' | 'hero56' | 'hero57'
+  | 'hero58' | 'hero59' | 'hero60' | 'hero61' | 'hero62' | 'hero63' | 'hero64' | 'hero65' | 'hero66' | 'hero67'
+  | 'hero68' | 'hero69' | 'hero70' | 'hero71' | 'hero72' | 'hero73' | 'hero74' | 'hero75' | 'hero76' | 'hero77'
+  | 'hero78' | 'hero79' | 'hero80' | 'hero81' | 'hero82' | 'hero83' | 'hero84' | 'hero85' | 'hero86' | 'hero87'
+  | 'hero88' | 'hero89' | 'hero90' | 'hero91' | 'hero92' | 'hero93' | 'hero94' | 'hero95' | 'hero96' | 'hero97'
+  | 'hero98' | 'hero99' | 'hero100';
 
 export type AboutBlock =
   | 'about1'  // Grid (default)
@@ -250,7 +260,19 @@ const landingConfigSchema = {
         block: {
           type: 'string' as const,
           maxLength: 50,
-          enum: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7'],
+          enum: [
+            'hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7',
+            'hero8', 'hero9', 'hero10', 'hero11', 'hero12', 'hero13', 'hero14', 'hero15', 'hero16', 'hero17',
+            'hero18', 'hero19', 'hero20', 'hero21', 'hero22', 'hero23', 'hero24', 'hero25', 'hero26', 'hero27',
+            'hero28', 'hero29', 'hero30', 'hero31', 'hero32', 'hero33', 'hero34', 'hero35', 'hero36', 'hero37',
+            'hero38', 'hero39', 'hero40', 'hero41', 'hero42', 'hero43', 'hero44', 'hero45', 'hero46', 'hero47',
+            'hero48', 'hero49', 'hero50', 'hero51', 'hero52', 'hero53', 'hero54', 'hero55', 'hero56', 'hero57',
+            'hero58', 'hero59', 'hero60', 'hero61', 'hero62', 'hero63', 'hero64', 'hero65', 'hero66', 'hero67',
+            'hero68', 'hero69', 'hero70', 'hero71', 'hero72', 'hero73', 'hero74', 'hero75', 'hero76', 'hero77',
+            'hero78', 'hero79', 'hero80', 'hero81', 'hero82', 'hero83', 'hero84', 'hero85', 'hero86', 'hero87',
+            'hero88', 'hero89', 'hero90', 'hero91', 'hero92', 'hero93', 'hero94', 'hero95', 'hero96', 'hero97',
+            'hero98', 'hero99', 'hero100'
+          ],
         },
         config: {
           type: 'object' as const,
@@ -673,7 +695,19 @@ export function isValidTemplate(template: string): template is TemplateId {
 }
 
 export function isValidHeroBlock(block: string): block is HeroBlock {
-  const validBlocks: HeroBlock[] = ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7'];
+  const validBlocks: HeroBlock[] = [
+    'hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7',
+    'hero8', 'hero9', 'hero10', 'hero11', 'hero12', 'hero13', 'hero14', 'hero15', 'hero16', 'hero17',
+    'hero18', 'hero19', 'hero20', 'hero21', 'hero22', 'hero23', 'hero24', 'hero25', 'hero26', 'hero27',
+    'hero28', 'hero29', 'hero30', 'hero31', 'hero32', 'hero33', 'hero34', 'hero35', 'hero36', 'hero37',
+    'hero38', 'hero39', 'hero40', 'hero41', 'hero42', 'hero43', 'hero44', 'hero45', 'hero46', 'hero47',
+    'hero48', 'hero49', 'hero50', 'hero51', 'hero52', 'hero53', 'hero54', 'hero55', 'hero56', 'hero57',
+    'hero58', 'hero59', 'hero60', 'hero61', 'hero62', 'hero63', 'hero64', 'hero65', 'hero66', 'hero67',
+    'hero68', 'hero69', 'hero70', 'hero71', 'hero72', 'hero73', 'hero74', 'hero75', 'hero76', 'hero77',
+    'hero78', 'hero79', 'hero80', 'hero81', 'hero82', 'hero83', 'hero84', 'hero85', 'hero86', 'hero87',
+    'hero88', 'hero89', 'hero90', 'hero91', 'hero92', 'hero93', 'hero94', 'hero95', 'hero96', 'hero97',
+    'hero98', 'hero99', 'hero100'
+  ];
   return validBlocks.includes(block as HeroBlock);
 }
 
@@ -771,7 +805,19 @@ export const AVAILABLE_TEMPLATES: TemplateId[] = [
 ];
 
 export const AVAILABLE_BLOCKS = {
-  hero: ['hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7'] as HeroBlock[],
+  hero: [
+    'hero1', 'hero2', 'hero3', 'hero4', 'hero5', 'hero6', 'hero7',
+    'hero8', 'hero9', 'hero10', 'hero11', 'hero12', 'hero13', 'hero14', 'hero15', 'hero16', 'hero17',
+    'hero18', 'hero19', 'hero20', 'hero21', 'hero22', 'hero23', 'hero24', 'hero25', 'hero26', 'hero27',
+    'hero28', 'hero29', 'hero30', 'hero31', 'hero32', 'hero33', 'hero34', 'hero35', 'hero36', 'hero37',
+    'hero38', 'hero39', 'hero40', 'hero41', 'hero42', 'hero43', 'hero44', 'hero45', 'hero46', 'hero47',
+    'hero48', 'hero49', 'hero50', 'hero51', 'hero52', 'hero53', 'hero54', 'hero55', 'hero56', 'hero57',
+    'hero58', 'hero59', 'hero60', 'hero61', 'hero62', 'hero63', 'hero64', 'hero65', 'hero66', 'hero67',
+    'hero68', 'hero69', 'hero70', 'hero71', 'hero72', 'hero73', 'hero74', 'hero75', 'hero76', 'hero77',
+    'hero78', 'hero79', 'hero80', 'hero81', 'hero82', 'hero83', 'hero84', 'hero85', 'hero86', 'hero87',
+    'hero88', 'hero89', 'hero90', 'hero91', 'hero92', 'hero93', 'hero94', 'hero95', 'hero96', 'hero97',
+    'hero98', 'hero99', 'hero100'
+  ] as HeroBlock[],
   about: ['about1', 'about2', 'about3', 'about4', 'about5', 'about6', 'about7'] as AboutBlock[],
   products: ['products1', 'products2', 'products3', 'products4', 'products5', 'products6', 'products7'] as ProductsBlock[],
   testimonials: ['testimonials1', 'testimonials2', 'testimonials3', 'testimonials4', 'testimonials5', 'testimonials6', 'testimonials7'] as TestimonialsBlock[],
