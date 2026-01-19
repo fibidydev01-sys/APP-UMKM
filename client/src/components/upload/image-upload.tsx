@@ -208,7 +208,7 @@ export function ImageUpload({
       )}
 
       <div className={cn("relative group", className)}>
-        {value && value.trim() !== '' && showPreview ? (
+        {value && value.trim() !== '' && value.trim().startsWith('http') && showPreview ? (
           // Preview Mode
           <div
             className="relative overflow-hidden rounded-lg border bg-muted"
