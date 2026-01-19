@@ -62,6 +62,30 @@ export class TenantsService {
             freeShippingThreshold: true,
             defaultShippingCost: true,
             shippingMethods: true,
+            // Store Information Fields
+            heroTitle: true,
+            heroSubtitle: true,
+            heroCtaText: true,
+            heroCtaLink: true,
+            heroBackgroundImage: true,
+            aboutTitle: true,
+            aboutSubtitle: true,
+            aboutContent: true,
+            aboutImage: true,
+            aboutFeatures: true,
+            testimonialsTitle: true,
+            testimonialsSubtitle: true,
+            testimonials: true,
+            contactTitle: true,
+            contactSubtitle: true,
+            contactMapUrl: true,
+            contactShowMap: true,
+            contactShowForm: true,
+            ctaTitle: true,
+            ctaSubtitle: true,
+            ctaButtonText: true,
+            ctaButtonLink: true,
+            ctaButtonStyle: true,
             status: true,
             createdAt: true,
             _count: {
@@ -183,6 +207,30 @@ export class TenantsService {
             freeShippingThreshold: true,
             defaultShippingCost: true,
             shippingMethods: true,
+            // Store Information Fields
+            heroTitle: true,
+            heroSubtitle: true,
+            heroCtaText: true,
+            heroCtaLink: true,
+            heroBackgroundImage: true,
+            aboutTitle: true,
+            aboutSubtitle: true,
+            aboutContent: true,
+            aboutImage: true,
+            aboutFeatures: true,
+            testimonialsTitle: true,
+            testimonialsSubtitle: true,
+            testimonials: true,
+            contactTitle: true,
+            contactSubtitle: true,
+            contactMapUrl: true,
+            contactShowMap: true,
+            contactShowForm: true,
+            ctaTitle: true,
+            ctaSubtitle: true,
+            ctaButtonText: true,
+            ctaButtonLink: true,
+            ctaButtonStyle: true,
             status: true,
             createdAt: true,
             updatedAt: true,
@@ -259,6 +307,67 @@ export class TenantsService {
     if (dto.shippingMethods !== undefined)
       updateData.shippingMethods =
         dto.shippingMethods as unknown as Prisma.InputJsonValue;
+
+    // ==========================================
+    // STORE INFORMATION - HERO SECTION
+    // ==========================================
+    if (dto.heroTitle !== undefined) updateData.heroTitle = dto.heroTitle;
+    if (dto.heroSubtitle !== undefined)
+      updateData.heroSubtitle = dto.heroSubtitle;
+    if (dto.heroCtaText !== undefined) updateData.heroCtaText = dto.heroCtaText;
+    if (dto.heroCtaLink !== undefined) updateData.heroCtaLink = dto.heroCtaLink;
+    if (dto.heroBackgroundImage !== undefined)
+      updateData.heroBackgroundImage = dto.heroBackgroundImage;
+
+    // ==========================================
+    // STORE INFORMATION - ABOUT SECTION
+    // ==========================================
+    if (dto.aboutTitle !== undefined) updateData.aboutTitle = dto.aboutTitle;
+    if (dto.aboutSubtitle !== undefined)
+      updateData.aboutSubtitle = dto.aboutSubtitle;
+    if (dto.aboutContent !== undefined)
+      updateData.aboutContent = dto.aboutContent;
+    if (dto.aboutImage !== undefined) updateData.aboutImage = dto.aboutImage;
+    if (dto.aboutFeatures !== undefined)
+      updateData.aboutFeatures =
+        dto.aboutFeatures as unknown as Prisma.InputJsonValue;
+
+    // ==========================================
+    // STORE INFORMATION - TESTIMONIALS SECTION
+    // ==========================================
+    if (dto.testimonialsTitle !== undefined)
+      updateData.testimonialsTitle = dto.testimonialsTitle;
+    if (dto.testimonialsSubtitle !== undefined)
+      updateData.testimonialsSubtitle = dto.testimonialsSubtitle;
+    if (dto.testimonials !== undefined)
+      updateData.testimonials =
+        dto.testimonials as unknown as Prisma.InputJsonValue;
+
+    // ==========================================
+    // STORE INFORMATION - CONTACT SECTION
+    // ==========================================
+    if (dto.contactTitle !== undefined)
+      updateData.contactTitle = dto.contactTitle;
+    if (dto.contactSubtitle !== undefined)
+      updateData.contactSubtitle = dto.contactSubtitle;
+    if (dto.contactMapUrl !== undefined)
+      updateData.contactMapUrl = dto.contactMapUrl;
+    if (dto.contactShowMap !== undefined)
+      updateData.contactShowMap = dto.contactShowMap;
+    if (dto.contactShowForm !== undefined)
+      updateData.contactShowForm = dto.contactShowForm;
+
+    // ==========================================
+    // STORE INFORMATION - CTA SECTION
+    // ==========================================
+    if (dto.ctaTitle !== undefined) updateData.ctaTitle = dto.ctaTitle;
+    if (dto.ctaSubtitle !== undefined) updateData.ctaSubtitle = dto.ctaSubtitle;
+    if (dto.ctaButtonText !== undefined)
+      updateData.ctaButtonText = dto.ctaButtonText;
+    if (dto.ctaButtonLink !== undefined)
+      updateData.ctaButtonLink = dto.ctaButtonLink;
+    if (dto.ctaButtonStyle !== undefined)
+      updateData.ctaButtonStyle = dto.ctaButtonStyle;
 
     // ==========================================
     // 🔥 FIX: Handle landingConfig with detailed logging
@@ -344,6 +453,30 @@ export class TenantsService {
         freeShippingThreshold: true,
         defaultShippingCost: true,
         shippingMethods: true,
+        // Store Information Fields
+        heroTitle: true,
+        heroSubtitle: true,
+        heroCtaText: true,
+        heroCtaLink: true,
+        heroBackgroundImage: true,
+        aboutTitle: true,
+        aboutSubtitle: true,
+        aboutContent: true,
+        aboutImage: true,
+        aboutFeatures: true,
+        testimonialsTitle: true,
+        testimonialsSubtitle: true,
+        testimonials: true,
+        contactTitle: true,
+        contactSubtitle: true,
+        contactMapUrl: true,
+        contactShowMap: true,
+        contactShowForm: true,
+        ctaTitle: true,
+        ctaSubtitle: true,
+        ctaButtonText: true,
+        ctaButtonLink: true,
+        ctaButtonStyle: true,
         status: true,
         updatedAt: true,
       },
