@@ -5,13 +5,12 @@ import { DashboardSidebar } from './dashboard-sidebar';
 import { DashboardHeader } from './dashboard-header';
 import { DashboardShell } from './dashboard-shell';
 import { MobileNavbar } from './mobile-navbar';
-import { OnboardingWizard } from '@/components/onboarding';
 
 // ==========================================
 // DASHBOARD LAYOUT COMPONENT
 // - Sidebar (Desktop)
 // - Sticky Header
-// - Onboarding Wizard (Global, cross-page)
+// - Onboarding Dropdown (in Header)
 // - Mobile Bottom Navbar
 // ==========================================
 
@@ -26,15 +25,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <DashboardSidebar />
 
       <SidebarInset className="pb-20 md:pb-0">
-        {/* Sticky Header */}
+        {/* Sticky Header with Onboarding Dropdown */}
         <DashboardHeader />
-
-        {/* Onboarding Wizard - Global across all dashboard pages */}
-        <div className="border-b bg-background">
-          <div className="container px-4 py-4 md:px-6 lg:px-8">
-            <OnboardingWizard />
-          </div>
-        </div>
 
         {/* Main Content */}
         <DashboardShell>
