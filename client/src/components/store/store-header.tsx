@@ -11,7 +11,6 @@ import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
-  NavigationMenuLink,
 } from '@/components/ui/navigation-menu';
 import { CartSheet } from './cart-sheet';
 import { useStoreUrls } from '@/lib/store-url';
@@ -36,6 +35,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
     { label: 'Beranda', href: urls.home },
     { label: 'Tentang', href: urls.path('/about') },
     { label: 'Produk', href: urls.products() },
+    { label: 'Testimoni', href: urls.path('/testimonials') },
     { label: 'Kontak', href: urls.path('/contact') },
   ];
 
@@ -73,17 +73,16 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
 
               return (
                 <NavigationMenuItem key={item.href}>
-                  <Link href={item.href} legacyBehavior passHref>
-                    <NavigationMenuLink
-                      className={cn(
-                        'px-3 py-2 text-sm font-medium rounded-md transition-colors',
-                        isActive
-                          ? 'bg-primary/10 text-primary'
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                      )}
-                    >
-                      {item.label}
-                    </NavigationMenuLink>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      'px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                      isActive
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                    )}
+                  >
+                    {item.label}
                   </Link>
                 </NavigationMenuItem>
               );
