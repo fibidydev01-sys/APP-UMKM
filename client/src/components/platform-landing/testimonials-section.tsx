@@ -8,7 +8,7 @@
 import { Star, Quote, MapPin } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting (Real testimonials, no fake stats)

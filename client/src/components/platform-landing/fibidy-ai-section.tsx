@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting (4 Dialog Examples) - NO EMOJIS

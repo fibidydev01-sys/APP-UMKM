@@ -17,7 +17,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DiscoverSearch } from './discover-search';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG } from '@/config/categories';
 
 // ══════════════════════════════════════════════════════════════

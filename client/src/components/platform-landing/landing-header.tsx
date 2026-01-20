@@ -14,7 +14,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════
 // NAVIGATION DATA - V8.1 Copywriting (UPDATED)

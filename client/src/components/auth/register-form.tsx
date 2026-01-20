@@ -28,7 +28,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useRegister, useCheckSlug, useDebounce } from '@/hooks';
 import { registerSchema, type RegisterFormData } from '@/lib/validations';
 import { getCategoryOptions } from '@/config/categories';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 
 // ==========================================
 // REGISTER FORM COMPONENT

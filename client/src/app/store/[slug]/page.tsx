@@ -87,8 +87,9 @@ export default async function StorePage({ params }: StorePageProps) {
   const hasTestimonials = testimonialsEnabled && testimonialItems.length > 0;
 
   // Check if any section is enabled
+  // Note: Hero is ALWAYS enabled (critical requirements: logo + heroBackgroundImage)
   const hasAnySectionEnabled =
-    landingConfig?.hero?.enabled ||
+    true || // Hero always enabled
     landingConfig?.about?.enabled ||
     landingConfig?.products?.enabled ||
     hasTestimonials ||
@@ -114,12 +115,11 @@ export default async function StorePage({ params }: StorePageProps) {
 
       {/* TemplateProvider now in layout.tsx - no need to wrap here */}
       <div className="container px-4 py-8 space-y-8">
-        {landingConfig?.hero?.enabled && (
-          <TenantHero
-            config={landingConfig.hero}
-            tenant={tenant}
-          />
-        )}
+        {/* Hero always enabled (critical requirements: logo + heroBackgroundImage) */}
+        <TenantHero
+          config={landingConfig?.hero}
+          tenant={tenant}
+        />
 
         {landingConfig?.about?.enabled && (
           <TenantAbout

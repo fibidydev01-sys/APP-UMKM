@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting (5 Steps)

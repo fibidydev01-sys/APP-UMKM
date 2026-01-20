@@ -136,9 +136,21 @@ export function extractCtaButtonText(
 }
 
 // ============================================================================
-// 🚀 NEW: TENANT-BASED DATA EXTRACTION
-// Primary source: Tenant store information fields
-// Fallback: landingConfig (for backward compatibility)
+// ⚠️ DEPRECATED: TENANT-BASED DATA EXTRACTION
+// ============================================================================
+// These extraction functions are DEPRECATED and should not be used in new code.
+//
+// WHY DEPRECATED:
+// - Creates unnecessary intermediate data layer
+// - Components should access tenant props directly
+// - Not aligned with unified state structure (UNIFIED-STATE-STRUCTURE.md)
+//
+// MIGRATION PATH:
+// OLD: const aboutData = extractAboutData(tenant, config);
+// NEW: <TenantAbout tenant={tenant} config={config} />
+//      // Component accesses tenant.aboutTitle directly
+//
+// See REFACTORING-TARGETS.md for full migration guide
 // ============================================================================
 
 type TenantData = Tenant | PublicTenant;
@@ -158,6 +170,9 @@ export interface HeroData {
 /**
  * Extract Hero section data from tenant with fallbacks
  * Priority: tenant fields > landingConfig > defaults
+ *
+ * @deprecated This function is deprecated. Pass tenant and config directly to TenantHero component instead.
+ * @see REFACTORING-TARGETS.md for migration guide
  */
 export function extractHeroData(
   tenant: TenantData,
@@ -189,6 +204,9 @@ export interface AboutData {
 
 /**
  * Extract About section data from tenant with fallbacks
+ *
+ * @deprecated This function is deprecated. Pass tenant and config directly to TenantAbout component instead.
+ * @see REFACTORING-TARGETS.md for migration guide
  */
 export function extractAboutData(
   tenant: TenantData,
@@ -218,6 +236,9 @@ export interface TestimonialsData {
 
 /**
  * Extract Testimonials section data from tenant with fallbacks
+ *
+ * @deprecated This function is deprecated. Pass tenant and config directly to TenantTestimonials component instead.
+ * @see REFACTORING-TARGETS.md for migration guide
  */
 export function extractTestimonialsData(
   tenant: TenantData,
@@ -252,6 +273,9 @@ export interface ContactData {
 
 /**
  * Extract Contact section data from tenant with fallbacks
+ *
+ * @deprecated This function is deprecated. Pass tenant and config directly to TenantContact component instead.
+ * @see REFACTORING-TARGETS.md for migration guide
  */
 export function extractContactData(
   tenant: TenantData,
@@ -288,6 +312,9 @@ export interface CtaData {
 
 /**
  * Extract CTA section data from tenant with fallbacks
+ *
+ * @deprecated This function is deprecated. Pass tenant and config directly to TenantCta component instead.
+ * @see REFACTORING-TARGETS.md for migration guide
  */
 export function extractCtaData(
   tenant: TenantData,

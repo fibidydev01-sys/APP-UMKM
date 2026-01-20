@@ -21,7 +21,7 @@ import {
   NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
 import { DiscoverSearch } from './discover-search';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 import { getCategoryList } from '@/config/categories';
 
 // ══════════════════════════════════════════════════════════════

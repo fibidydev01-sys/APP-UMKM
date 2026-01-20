@@ -1,6 +1,6 @@
 import { ShoppingCart, Wrench, Coffee, Lightbulb } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting - ICONS instead of emojis

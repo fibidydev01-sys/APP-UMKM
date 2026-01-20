@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { CartSheet } from './cart-sheet';
 import { useStoreUrls } from '@/lib/store-url';
-import { cn } from '@/lib/cn';
+import { cn } from '@/lib/utils';
 import type { PublicTenant } from '@/types';
 
 // ==========================================

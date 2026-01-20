@@ -21,6 +21,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getTenantFullUrl } from '@/lib/store-url';
+import { tenantsApi } from '@/lib/api';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -247,11 +248,7 @@ export function UMKMShowcaseSection() {
         const tenantDetails = await Promise.all(
           tenantSlugs.map(async (item) => {
             try {
-              const detailRes = await fetch(
-                `${API_URL}/tenants/by-slug/${item.slug}`
-              );
-              if (!detailRes.ok) return null;
-              return await detailRes.json();
+              return await tenantsApi.getBySlug(item.slug);
             } catch {
               return null;
             }
