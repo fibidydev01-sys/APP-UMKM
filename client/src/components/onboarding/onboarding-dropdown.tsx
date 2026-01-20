@@ -114,14 +114,34 @@ export function OnboardingDropdown() {
     }
   }, [progress?.percentage]);
 
-  // Don't render anything if loading
+  // Show loading state instead of hiding completely
   if (isLoading || !progress) {
-    return null;
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled
+        className="h-9 gap-2 px-2.5"
+      >
+        <IconRocket className="h-5 w-5 animate-pulse opacity-50" />
+        <span className="hidden sm:inline text-sm font-medium opacity-50">Setup</span>
+      </Button>
+    );
   }
 
   // Don't render if 100% complete (fully hidden)
   if (progress.percentage >= 100) {
-    return null;
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled
+        className="h-9 gap-2 px-2.5"
+      >
+        <IconTrophy className="h-5 w-5 text-primary" />
+        <span className="hidden sm:inline text-sm font-medium text-primary">Complete!</span>
+      </Button>
+    );
   }
 
   // Dismissed state - show minimal restore button
