@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu } from 'lucide-react';
+import { Menu, Home, Store, Users, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import {
@@ -34,7 +34,6 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
   const pathname = usePathname();
   const urls = useStoreUrls(tenant.slug);
 
-  // Core navigation items (according to LANDING-DATA-CONTRACT.md)
   const navItems = [
     { label: 'Beranda', href: urls.home },
     { label: 'Tentang', href: urls.path('/about') },
@@ -43,7 +42,6 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
     { label: 'Kontak', href: urls.path('/contact') },
   ];
 
-  // Contact info for dropdown
   const contactInfo = [
     { label: 'WhatsApp', value: tenant.whatsapp, type: 'whatsapp' as const },
     { label: 'Telepon', value: tenant.phone, type: 'phone' as const },
@@ -54,7 +52,6 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
-        {/* Logo */}
         <Link href={urls.home} className="flex items-center gap-3">
           {tenant.logo ? (
             <Image
@@ -76,36 +73,63 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
           </span>
         </Link>
 
-        {/* Desktop Navigation */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
-            {/* Beranda */}
+            {/* BERANDA - DENGAN DROPDOWN */}
             <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
+              <NavigationMenuTrigger
                 className={cn(
-                  navigationMenuTriggerStyle(),
                   pathname === urls.home && 'bg-primary/10 text-primary'
                 )}
               >
-                <Link href={urls.home}>Beranda</Link>
-              </NavigationMenuLink>
+                Beranda
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                  <li className="row-span-3">
+                    <NavigationMenuLink asChild>
+                      <Link
+                        href={urls.home}
+                        className="from-muted/50 to-muted flex h-full w-full flex-col justify-end rounded-md bg-gradient-to-b p-4 no-underline outline-none transition-colors select-none hover:bg-accent focus:shadow-md md:p-6"
+                      >
+                        {tenant.logo ? (
+                          <Image
+                            src={tenant.logo}
+                            alt={tenant.name}
+                            width={60}
+                            height={60}
+                            className="rounded-full object-cover mb-2"
+                          />
+                        ) : (
+                          <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center mb-2">
+                            <span className="text-2xl font-bold text-primary">
+                              {tenant.name.charAt(0)}
+                            </span>
+                          </div>
+                        )}
+                        <div className="mb-2 text-lg font-medium sm:mt-4">
+                          {tenant.name}
+                        </div>
+                        <p className="text-muted-foreground text-sm leading-tight">
+                          {tenant.tagline || 'Selamat datang di toko kami'}
+                        </p>
+                      </Link>
+                    </NavigationMenuLink>
+                  </li>
+                  <ListItem href={urls.path('/about')} title="Tentang Kami" icon={<Users className="h-4 w-4" />}>
+                    Kenali lebih dalam tentang bisnis kami
+                  </ListItem>
+                  <ListItem href={urls.path('/testimonials')} title="Testimoni" icon={<Store className="h-4 w-4" />}>
+                    Lihat testimoni pelanggan kami
+                  </ListItem>
+                  <ListItem href={urls.path('/contact')} title="Hubungi Kami" icon={<Mail className="h-4 w-4" />}>
+                    Kontak dan informasi lokasi
+                  </ListItem>
+                </ul>
+              </NavigationMenuContent>
             </NavigationMenuItem>
 
-            {/* Tentang */}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={cn(
-                  navigationMenuTriggerStyle(),
-                  pathname === urls.path('/about') && 'bg-primary/10 text-primary'
-                )}
-              >
-                <Link href={urls.path('/about')}>Tentang</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Produk */}
+            {/* PRODUK */}
             <NavigationMenuItem>
               <NavigationMenuLink
                 asChild
@@ -118,20 +142,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
               </NavigationMenuLink>
             </NavigationMenuItem>
 
-            {/* Testimoni */}
-            <NavigationMenuItem>
-              <NavigationMenuLink
-                asChild
-                className={cn(
-                  navigationMenuTriggerStyle(),
-                  pathname === urls.path('/testimonials') && 'bg-primary/10 text-primary'
-                )}
-              >
-                <Link href={urls.path('/testimonials')}>Testimoni</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-
-            {/* Kontak - Dropdown */}
+            {/* KONTAK - DROPDOWN */}
             <NavigationMenuItem>
               <NavigationMenuTrigger
                 className={cn(
@@ -205,12 +216,9 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
           </NavigationMenuList>
         </NavigationMenu>
 
-        {/* Actions */}
         <div className="flex items-center gap-2">
-          {/* ✅ FIX: CartSheet without props (check your actual component) */}
           <CartSheet tenant={tenant} />
 
-          {/* WhatsApp Button - Desktop */}
           {tenant.whatsapp && (
             <Button asChild size="sm" className="hidden sm:flex">
               <a
@@ -223,7 +231,6 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
             </Button>
           )}
 
-          {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
@@ -257,7 +264,6 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                   );
                 })}
 
-                {/* WhatsApp - Mobile */}
                 {tenant.whatsapp && (
                   <a
                     href={`https://wa.me/${tenant.whatsapp.replace(/\D/g, '')}`}
@@ -274,5 +280,36 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
         </div>
       </div>
     </header>
+  );
+}
+
+function ListItem({
+  title,
+  children,
+  href,
+  icon,
+  ...props
+}: React.ComponentPropsWithoutRef<"li"> & {
+  href: string;
+  title: string;
+  icon?: React.ReactNode;
+}) {
+  return (
+    <li {...props}>
+      <NavigationMenuLink asChild>
+        <Link
+          href={href}
+          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+        >
+          <div className="flex items-center gap-2">
+            {icon}
+            <div className="text-sm font-medium leading-none">{title}</div>
+          </div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+            {children}
+          </p>
+        </Link>
+      </NavigationMenuLink>
+    </li>
   );
 }
