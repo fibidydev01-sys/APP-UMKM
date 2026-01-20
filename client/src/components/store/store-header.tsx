@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -117,7 +117,10 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[280px] sm:w-[350px]">
-              <nav className="flex flex-col gap-2 mt-8">
+              <SheetHeader>
+                <SheetTitle>Menu</SheetTitle>
+              </SheetHeader>
+              <nav className="flex flex-col gap-2 mt-4">
                 {navItems.map((item) => {
                   const isActive = pathname === item.href ||
                     (item.href !== urls.home && pathname.startsWith(item.href));

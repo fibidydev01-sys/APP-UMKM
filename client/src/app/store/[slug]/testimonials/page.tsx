@@ -5,7 +5,7 @@ import { normalizeTestimonials } from '@/lib/landing';
 import { TenantTestimonials } from '@/components/landing';
 import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/components/seo';
 import { Star } from 'lucide-react';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant, Testimonial } from '@/types';
 
 // ==========================================
 // TESTIMONIALS PAGE
@@ -53,7 +53,8 @@ export default async function TestimonialsPage({ params }: TestimonialsPageProps
   // ✅ FIX: No type annotation
   const landingConfig = tenant.landingConfig;
   const testimonialConfig = landingConfig?.testimonials;
-  const testimonialItems = normalizeTestimonials(testimonialConfig?.config?.items);
+  // ✅ FIX: Get testimonials from tenant.testimonials (same as landing page)
+  const testimonialItems = normalizeTestimonials(tenant.testimonials as Testimonial[] | undefined);
 
   // Calculate stats
   const totalReviews = testimonialItems.length;
@@ -110,12 +111,8 @@ export default async function TestimonialsPage({ params }: TestimonialsPageProps
         {/* Testimonials Content */}
         {totalReviews > 0 ? (
           <TenantTestimonials
-            config={{
-              ...testimonialConfig,
-              config: {
-                items: testimonialItems,
-              },
-            }}
+            config={testimonialConfig}
+            tenant={tenant}
           />
         ) : (
           <div className="text-center py-12 bg-muted/30 rounded-lg">
