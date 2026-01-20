@@ -77,7 +77,9 @@ export function useOnboarding(): UseOnboardingReturn {
     // For now, this is a placeholder for potential API refresh
   }, []);
 
-  const isLoading = !tenant || productsLoading;
+  // ✅ FIX: Only wait for tenant! Products can be 0 (no problem for calculation)
+  // Progress calculation is INSTANT - no need to wait for products API!
+  const isLoading = !tenant;
 
   return {
     progress,
