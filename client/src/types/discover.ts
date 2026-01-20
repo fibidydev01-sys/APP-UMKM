@@ -29,6 +29,7 @@ export interface TenantDetail {
   address: string | null;
   logo: string | null;
   banner: string | null;
+  heroBackgroundImage?: string | null;
   theme?: {
     primaryColor?: string;
   };
