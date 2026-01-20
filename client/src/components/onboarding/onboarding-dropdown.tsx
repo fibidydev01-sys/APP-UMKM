@@ -17,14 +17,11 @@ import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useOnboarding } from '@/hooks/use-onboarding';
-import { useTenant } from '@/hooks/use-tenant';
 import { CircularProgress } from './circular-progress';
 import { OnboardingStepStatus } from '@/lib/onboarding';
 
@@ -96,7 +93,6 @@ function CompactStep({ step }: CompactStepProps) {
 }
 
 export function OnboardingDropdown() {
-  const { tenant } = useTenant();
   const {
     progress,
     isLoading,
