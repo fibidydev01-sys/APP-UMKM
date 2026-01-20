@@ -39,7 +39,6 @@ import {
   Focus,
   Timer,
   Star,
-  Users,
   MessageSquare,
   Zap,
   Layers,

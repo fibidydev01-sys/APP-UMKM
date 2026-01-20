@@ -157,9 +157,7 @@ export function LandingBuilderSimplified({
   tenant,
   onConfigChange,
   hasUnsavedChanges,
-  isSaving,
   validationErrors = [],
-  onPublish,
   onDiscard,
   onReset,
   onClearErrors,
@@ -210,16 +208,6 @@ export function LandingBuilderSimplified({
   // ==========================================================================
   // ACTION HANDLERS
   // ==========================================================================
-  const handlePublish = async () => {
-    await onPublish();
-  };
-
-  const handleDiscard = () => {
-    if (hasUnsavedChanges) {
-      setShowDiscardDialog(true);
-    }
-  };
-
   const handleConfirmDiscard = () => {
     onDiscard();
     setShowDiscardDialog(false);

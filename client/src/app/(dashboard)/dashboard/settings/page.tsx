@@ -10,7 +10,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { Loader2, Save, Plus, Trash2, MoveUp, MoveDown, Check } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, Check } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,7 +30,6 @@ import {
   BankAccountDialog,
   EwalletDialog,
 } from '@/components/settings';
-import type { LandingContentData } from '@/components/settings';
 import { ImageUpload } from '@/components/upload';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
@@ -604,7 +603,7 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   const updateStoreTabData = <K extends keyof typeof storeTabData>(
     key: K,
-    value: any
+    value: (typeof storeTabData)[K]
   ) => {
     if (storeTabData) {
       setStoreTabData({ ...storeTabData, [key]: value });
@@ -906,7 +905,7 @@ export default function SettingsPage() {
                             </Button>
                           </div>
                           {storeTabData.aboutFeatures.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">Belum ada fitur. Klik "Tambah Fitur" untuk menambahkan.</p>
+                            <p className="text-sm text-muted-foreground">Belum ada fitur. Klik &quot;Tambah Fitur&quot; untuk menambahkan.</p>
                           ) : (
                             <div className="space-y-3">
                               {storeTabData.aboutFeatures.map((feature, index) => (
@@ -1039,7 +1038,7 @@ export default function SettingsPage() {
                           </div>
                           {storeTabData.testimonials.length === 0 ? (
                             <p className="text-sm text-muted-foreground">
-                              Belum ada testimonial. Klik "Tambah Testimonial" untuk menambahkan.
+                              Belum ada testimonial. Klik &quot;Tambah Testimonial&quot; untuk menambahkan.
                             </p>
                           ) : (
                             <div className="space-y-3">

@@ -6,7 +6,7 @@
 
 'use client';
 
-import { Monitor, Laptop, Tablet, Smartphone } from 'lucide-react';
+import { Monitor, Tablet, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { DeviceMode } from './device-frame';

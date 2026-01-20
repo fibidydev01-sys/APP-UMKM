@@ -62,8 +62,9 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
   const limit = productsConfig?.limit || LANDING_CONSTANTS.PRODUCT_LIMIT_DEFAULT;
 
   // Smart URL routing
-  const urls = storeSlug ? useStoreUrls(storeSlug) : null;
-  const productsLink = urls?.products() || fallbacks.productsLink || '/products';
+  // Hook must be called unconditionally (React Hooks rules)
+  const urls = useStoreUrls(storeSlug || '');
+  const productsLink = storeSlug ? (urls?.products() || '/products') : (fallbacks.productsLink || '/products');
 
   const commonProps = {
     products,

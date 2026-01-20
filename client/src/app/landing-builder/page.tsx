@@ -24,7 +24,7 @@ import { BlockSidebar } from '@/components/landing-builder/block-sidebar';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
-import { mergeWithTemplateDefaults } from '@/lib/landing';
+import { mergeWithTemplateDefaults, type TemplateId } from '@/lib/landing';
 import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import type { TenantLandingConfig, Product } from '@/types';
@@ -59,7 +59,6 @@ export default function LandingBuilderPage() {
     publishChanges: handlePublish,
     discardChanges: handleDiscard,
     resetToDefaults: handleReset,
-    clearValidationErrors: clearErrors,
   } = useLandingConfig({
     initialConfig: tenant?.landingConfig,
     onSaveSuccess: () => refresh(),
@@ -102,7 +101,7 @@ export default function LandingBuilderPage() {
 
     const mergedConfig = mergeWithTemplateDefaults(
       landingConfig,
-      initialTemplateParam as any,
+      initialTemplateParam as TemplateId,
       {
         name: tenant.name,
         category: tenant.category,

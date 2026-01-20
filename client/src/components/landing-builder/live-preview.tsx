@@ -5,7 +5,6 @@
 // Real-time preview of landing page
 // ==========================================
 
-import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Smartphone, Monitor, Tablet, ExternalLink, Loader2 } from 'lucide-react';

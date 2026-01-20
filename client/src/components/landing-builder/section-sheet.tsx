@@ -35,7 +35,6 @@ interface SectionSheetProps {
 }
 
 export function SectionSheet({
-  section,
   isOpen,
   onClose,
   title,

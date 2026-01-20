@@ -19,7 +19,6 @@ import {
   X,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -120,11 +119,8 @@ type SectionKey = (typeof SECTIONS)[number]['key'];
 export function LandingBuilder({
   config,
   onConfigChange,
-  tenantSlug,
   hasUnsavedChanges,
-  isSaving,
   validationErrors = [],
-  onPublish,
   onDiscard,
   onReset,
   onClearErrors,
@@ -198,23 +194,9 @@ export function LandingBuilder({
   // ==========================================================================
   // ACTION HANDLERS
   // ==========================================================================
-  const handlePublish = async () => {
-    await onPublish();
-  };
-
-  const handleDiscard = () => {
-    if (hasUnsavedChanges) {
-      setShowDiscardDialog(true);
-    }
-  };
-
   const handleConfirmDiscard = () => {
     onDiscard();
     setShowDiscardDialog(false);
-  };
-
-  const handleReset = () => {
-    setShowResetDialog(true);
   };
 
   const handleConfirmReset = async () => {

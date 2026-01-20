@@ -11,7 +11,6 @@
  */
 'use client';
 
-import { useState } from 'react';
 import {
   Target,
   BookOpen,

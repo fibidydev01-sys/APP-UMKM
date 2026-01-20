@@ -9,14 +9,6 @@ import { Check } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import type {
-  HeroBlock,
-  AboutBlock,
-  ProductsBlock,
-  TestimonialsBlock,
-  ContactBlock,
-  CtaBlock,
-} from '@/types/landing';
 
 // ==========================================
 // BLOCK METADATA (v3.0 NUMBERING SYSTEM)
@@ -103,7 +95,6 @@ const BLOCK_OPTIONS_MAP = {
 // ==========================================
 
 type SectionType = keyof typeof BLOCK_OPTIONS_MAP;
-type BlockType = HeroBlock | AboutBlock | ProductsBlock | TestimonialsBlock | ContactBlock | CtaBlock;
 
 interface BlockSelectorProps {
   section: SectionType;

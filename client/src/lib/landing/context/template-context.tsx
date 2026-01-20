@@ -11,7 +11,6 @@ import React, { createContext, useContext, useState, useMemo } from 'react';
 import {
   getTemplate,
   DEFAULT_TEMPLATE_ID,
-  type LandingTemplate,
   type TemplateContextValue,
   type HeroBlock,
   type AboutBlock,
