@@ -81,61 +81,53 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
           <NavigationMenuList>
             {/* Beranda */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  href={urls.home}
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    pathname === urls.home && 'bg-primary/10 text-primary'
-                  )}
-                >
-                  Beranda
-                </Link>
+              <NavigationMenuLink
+                asChild
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname === urls.home && 'bg-primary/10 text-primary'
+                )}
+              >
+                <Link href={urls.home}>Beranda</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             {/* Tentang */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  href={urls.path('/about')}
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    pathname === urls.path('/about') && 'bg-primary/10 text-primary'
-                  )}
-                >
-                  Tentang
-                </Link>
+              <NavigationMenuLink
+                asChild
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname === urls.path('/about') && 'bg-primary/10 text-primary'
+                )}
+              >
+                <Link href={urls.path('/about')}>Tentang</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             {/* Produk */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  href={urls.products()}
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    pathname.startsWith(urls.products()) && 'bg-primary/10 text-primary'
-                  )}
-                >
-                  Produk
-                </Link>
+              <NavigationMenuLink
+                asChild
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname.startsWith(urls.products()) && 'bg-primary/10 text-primary'
+                )}
+              >
+                <Link href={urls.products()}>Produk</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
             {/* Testimoni */}
             <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  href={urls.path('/testimonials')}
-                  className={cn(
-                    navigationMenuTriggerStyle(),
-                    pathname === urls.path('/testimonials') && 'bg-primary/10 text-primary'
-                  )}
-                >
-                  Testimoni
-                </Link>
+              <NavigationMenuLink
+                asChild
+                className={cn(
+                  navigationMenuTriggerStyle(),
+                  pathname === urls.path('/testimonials') && 'bg-primary/10 text-primary'
+                )}
+              >
+                <Link href={urls.path('/testimonials')}>Testimoni</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
