@@ -11,6 +11,10 @@ import {
   NavigationMenu,
   NavigationMenuList,
   NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuTrigger,
+  NavigationMenuContent,
+  navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { CartSheet } from './cart-sheet';
 import { useStoreUrls } from '@/lib/store-url';
@@ -38,6 +42,14 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
     { label: 'Testimoni', href: urls.path('/testimonials') },
     { label: 'Kontak', href: urls.path('/contact') },
   ];
+
+  // Contact info for dropdown
+  const contactInfo = [
+    { label: 'WhatsApp', value: tenant.whatsapp, type: 'whatsapp' as const },
+    { label: 'Telepon', value: tenant.phone, type: 'phone' as const },
+    { label: 'Email', value: 'email' in tenant ? tenant.email : undefined, type: 'email' as const },
+    { label: 'Alamat', value: tenant.address, type: 'address' as const },
+  ].filter(item => item.value);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -67,26 +79,137 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
         {/* Desktop Navigation */}
         <NavigationMenu className="hidden md:flex">
           <NavigationMenuList>
-            {navItems.map((item) => {
-              const isActive = pathname === item.href ||
-                (item.href !== urls.home && pathname.startsWith(item.href));
+            {/* Beranda */}
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  href={urls.home}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    pathname === urls.home && 'bg-primary/10 text-primary'
+                  )}
+                >
+                  Beranda
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
 
-              return (
-                <NavigationMenuItem key={item.href}>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      'px-3 py-2 text-sm font-medium rounded-md transition-colors',
-                      isActive
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                </NavigationMenuItem>
-              );
-            })}
+            {/* Tentang */}
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  href={urls.path('/about')}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    pathname === urls.path('/about') && 'bg-primary/10 text-primary'
+                  )}
+                >
+                  Tentang
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            {/* Produk */}
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  href={urls.products()}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    pathname.startsWith(urls.products()) && 'bg-primary/10 text-primary'
+                  )}
+                >
+                  Produk
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            {/* Testimoni */}
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  href={urls.path('/testimonials')}
+                  className={cn(
+                    navigationMenuTriggerStyle(),
+                    pathname === urls.path('/testimonials') && 'bg-primary/10 text-primary'
+                  )}
+                >
+                  Testimoni
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            {/* Kontak - Dropdown */}
+            <NavigationMenuItem>
+              <NavigationMenuTrigger
+                className={cn(
+                  pathname === urls.path('/contact') && 'bg-primary/10 text-primary'
+                )}
+              >
+                Kontak
+              </NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <div className="w-[400px] p-4">
+                  <div className="mb-4">
+                    <h3 className="text-sm font-semibold mb-1">{tenant.name}</h3>
+                    <p className="text-xs text-muted-foreground">
+                      Hubungi kami melalui
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3">
+                    {contactInfo.map((info) => (
+                      <div
+                        key={info.label}
+                        className="flex items-start gap-3 p-3 rounded-lg hover:bg-accent transition-colors"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium">{info.label}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5 break-words">
+                            {info.type === 'whatsapp' && (
+                              <a
+                                href={`https://wa.me/${info.value.replace(/\D/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-primary transition-colors"
+                              >
+                                {info.value}
+                              </a>
+                            )}
+                            {info.type === 'phone' && (
+                              <a
+                                href={`tel:${info.value}`}
+                                className="hover:text-primary transition-colors"
+                              >
+                                {info.value}
+                              </a>
+                            )}
+                            {info.type === 'email' && (
+                              <a
+                                href={`mailto:${info.value}`}
+                                className="hover:text-primary transition-colors"
+                              >
+                                {info.value}
+                              </a>
+                            )}
+                            {info.type === 'address' && info.value}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t">
+                    <Link
+                      href={urls.path('/contact')}
+                      className="text-sm text-primary hover:underline"
+                    >
+                      Lihat Halaman Kontak →
+                    </Link>
+                  </div>
+                </div>
+              </NavigationMenuContent>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
