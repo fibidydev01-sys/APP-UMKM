@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
     openGraph: {
       title: `Hubungi ${tenant.name}`,
       description,
-      images: tenant.banner ? [tenant.banner] : tenant.logo ? [tenant.logo] : [],
+      images: tenant.heroBackgroundImage ? [tenant.heroBackgroundImage] : tenant.logo ? [tenant.logo] : [],
     },
   };
 }

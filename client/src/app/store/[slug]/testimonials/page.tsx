@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: TestimonialsPageProps): Promi
     openGraph: {
       title: `Review ${tenant.name}`,
       description: `Testimoni pelanggan ${tenant.name}`,
-      images: tenant.banner ? [tenant.banner] : tenant.logo ? [tenant.logo] : [],
+      images: tenant.heroBackgroundImage ? [tenant.heroBackgroundImage] : tenant.logo ? [tenant.logo] : [],
     },
   };
 }

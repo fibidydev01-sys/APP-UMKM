@@ -89,7 +89,6 @@ export interface Tenant {
   phone?: string;
   address?: string;
   logo?: string;
-  banner?: string;
   theme?: { primaryColor?: string };
   landingConfig?: TenantLandingConfig;
   // SEO Fields
@@ -158,7 +157,6 @@ export interface PublicTenant {
   phone?: string;
   address?: string;
   logo?: string;
-  banner?: string;
   theme?: { primaryColor?: string };
   landingConfig?: TenantLandingConfig;
   // SEO Fields

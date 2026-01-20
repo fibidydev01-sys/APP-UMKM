@@ -100,7 +100,7 @@ export async function generateMetadata({
       slug: tenant.slug,
       description: tenant.description,
       logo: tenant.logo,
-      banner: tenant.banner,
+      heroBackgroundImage: tenant.heroBackgroundImage,
       metaTitle: tenant.metaTitle,
       metaDescription: tenant.metaDescription,
     },
@@ -179,7 +179,7 @@ export default async function StoreLayout({
             phone: tenant.phone,
             address: tenant.address,
             logo: tenant.logo,
-            banner: tenant.banner,
+            heroBackgroundImage: tenant.heroBackgroundImage,
             socialLinks: tenant.socialLinks,
           }}
         />

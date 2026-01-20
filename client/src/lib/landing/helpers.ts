@@ -171,7 +171,7 @@ export function extractHeroData(
     subtitle: tenant.heroSubtitle || heroConfig?.subtitle || tenant.description || '',
     ctaText: tenant.heroCtaText || config?.ctaText || 'Lihat Produk',
     ctaLink: tenant.heroCtaLink || config?.ctaLink || '/products',
-    backgroundImage: tenant.heroBackgroundImage || config?.backgroundImage || tenant.banner,
+    backgroundImage: tenant.heroBackgroundImage || config?.backgroundImage,
   };
 }
 

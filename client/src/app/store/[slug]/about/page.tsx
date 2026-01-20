@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
     openGraph: {
       title: `Tentang ${tenant.name}`,
       description,
-      images: tenant.banner ? [tenant.banner] : tenant.logo ? [tenant.logo] : [],
+      images: tenant.heroBackgroundImage ? [tenant.heroBackgroundImage] : tenant.logo ? [tenant.logo] : [],
     },
   };
 }
@@ -87,7 +87,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             config={aboutConfig}
             fallbacks={{
               content: tenant.description || undefined,
-              image: tenant.banner || undefined,
+              image: tenant.heroBackgroundImage || undefined,
             }}
           />
         ) : (

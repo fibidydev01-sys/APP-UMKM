@@ -28,7 +28,7 @@ interface TenantHeroProps {
  * - subtitle → tenant.heroSubtitle (fallback: tenant.description)
  * - ctaText → tenant.heroCtaText
  * - ctaLink → tenant.heroCtaLink
- * - backgroundImage → tenant.heroBackgroundImage (fallback: tenant.banner)
+ * - backgroundImage → tenant.heroBackgroundImage
  * - logo → tenant.logo
  * - storeName → tenant.name
  *
