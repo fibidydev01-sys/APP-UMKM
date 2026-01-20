@@ -129,18 +129,45 @@ export function OnboardingDropdown() {
     );
   }
 
-  // Loading or no progress - show default button (ALWAYS VISIBLE!)
+  // Loading or no progress - STILL CLICKABLE for testing!
   if (isLoading || !progress) {
     return (
-      <Button
-        variant="ghost"
-        size="sm"
-        disabled
-        className="h-9 gap-2 px-2.5"
-      >
-        <IconRocket className="h-5 w-5" />
-        <span className="hidden sm:inline text-sm font-medium">Setup</span>
-      </Button>
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 gap-2 px-2.5"
+          >
+            <IconRocket className="h-5 w-5 animate-pulse" />
+            <span className="hidden sm:inline text-sm font-medium">Setup</span>
+            <IconChevronDown className="h-3.5 w-3.5 transition-transform duration-200 hidden sm:inline" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[380px] p-4">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <IconRocket className="h-5 w-5 animate-pulse text-muted-foreground" />
+              <div>
+                <h4 className="text-sm font-semibold">Loading...</h4>
+                <p className="text-xs text-muted-foreground">Fetching onboarding data</p>
+              </div>
+            </div>
+            <div className="space-y-2 pt-2">
+              {/* Skeleton loading */}
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex gap-2 animate-pulse">
+                  <div className="h-4 w-4 rounded-full bg-muted" />
+                  <div className="flex-1 space-y-1">
+                    <div className="h-3 bg-muted rounded w-3/4" />
+                    <div className="h-2 bg-muted rounded w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
