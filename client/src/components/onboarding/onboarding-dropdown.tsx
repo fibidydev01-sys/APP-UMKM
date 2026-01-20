@@ -114,31 +114,10 @@ export function OnboardingDropdown() {
     }
   }, [progress?.percentage]);
 
-  // Loading state - still clickable to show loading UI
+  // Don't render if dependencies not ready (tenant/products data)
+  // Progress calculation is INSTANT - no loading state needed!
   if (isLoading || !progress) {
-    return (
-      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-9 gap-2 px-2.5"
-          >
-            <IconRocket className="h-5 w-5 animate-pulse" />
-            <span className="hidden sm:inline text-sm font-medium">Setup</span>
-            <IconChevronDown className="h-3.5 w-3.5 transition-transform duration-200 hidden sm:inline" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[380px] p-0">
-          <div className="flex items-center justify-center p-8">
-            <div className="text-center space-y-2">
-              <IconRocket className="h-8 w-8 mx-auto animate-pulse text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">Loading onboarding data...</p>
-            </div>
-          </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    );
+    return null;
   }
 
   // 100% complete - show celebration message
