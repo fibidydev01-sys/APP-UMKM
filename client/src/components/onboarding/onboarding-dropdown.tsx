@@ -114,10 +114,34 @@ export function OnboardingDropdown() {
     }
   }, [progress?.percentage]);
 
-  // Don't render if dependencies not ready (tenant/products data)
-  // Progress calculation is INSTANT - no loading state needed!
+  // Dismissed state - show minimal restore button
+  if (isDismissed) {
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={restoreOnboarding}
+        className="h-9 px-2 text-xs text-muted-foreground hover:text-foreground"
+      >
+        <IconRefresh className="h-4 w-4" />
+        <span className="sr-only">Restore onboarding</span>
+      </Button>
+    );
+  }
+
+  // Loading or no progress - show default button (ALWAYS VISIBLE!)
   if (isLoading || !progress) {
-    return null;
+    return (
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled
+        className="h-9 gap-2 px-2.5"
+      >
+        <IconRocket className="h-5 w-5" />
+        <span className="hidden sm:inline text-sm font-medium">Setup</span>
+      </Button>
+    );
   }
 
   // 100% complete - show celebration message
@@ -148,21 +172,6 @@ export function OnboardingDropdown() {
           </div>
         </DropdownMenuContent>
       </DropdownMenu>
-    );
-  }
-
-  // Dismissed state - show minimal restore button
-  if (isDismissed) {
-    return (
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={restoreOnboarding}
-        className="h-9 px-2 text-xs text-muted-foreground hover:text-foreground"
-      >
-        <IconRefresh className="h-4 w-4" />
-        <span className="sr-only">Restore onboarding</span>
-      </Button>
     );
   }
 
