@@ -114,33 +114,61 @@ export function OnboardingDropdown() {
     }
   }, [progress?.percentage]);
 
-  // Show loading state instead of hiding completely
+  // Loading state - still clickable to show loading UI
   if (isLoading || !progress) {
     return (
-      <Button
-        variant="ghost"
-        size="sm"
-        disabled
-        className="h-9 gap-2 px-2.5"
-      >
-        <IconRocket className="h-5 w-5 animate-pulse opacity-50" />
-        <span className="hidden sm:inline text-sm font-medium opacity-50">Setup</span>
-      </Button>
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 gap-2 px-2.5"
+          >
+            <IconRocket className="h-5 w-5 animate-pulse" />
+            <span className="hidden sm:inline text-sm font-medium">Setup</span>
+            <IconChevronDown className="h-3.5 w-3.5 transition-transform duration-200 hidden sm:inline" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[380px] p-0">
+          <div className="flex items-center justify-center p-8">
+            <div className="text-center space-y-2">
+              <IconRocket className="h-8 w-8 mx-auto animate-pulse text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Loading onboarding data...</p>
+            </div>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
-  // Don't render if 100% complete (fully hidden)
+  // 100% complete - show celebration message
   if (progress.percentage >= 100) {
     return (
-      <Button
-        variant="ghost"
-        size="sm"
-        disabled
-        className="h-9 gap-2 px-2.5"
-      >
-        <IconTrophy className="h-5 w-5 text-primary" />
-        <span className="hidden sm:inline text-sm font-medium text-primary">Complete!</span>
-      </Button>
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-9 gap-2 px-2.5"
+          >
+            <IconTrophy className="h-5 w-5 text-primary" />
+            <span className="hidden sm:inline text-sm font-medium text-primary">Complete!</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[380px] p-0">
+          <div className="flex items-center justify-center p-8">
+            <div className="text-center space-y-3">
+              <IconTrophy className="h-12 w-12 mx-auto text-primary" />
+              <div>
+                <h3 className="text-lg font-semibold">Selamat! 🎉</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Toko Anda sudah 100% siap untuk dipublikasikan!
+                </p>
+              </div>
+            </div>
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
     );
   }
 
