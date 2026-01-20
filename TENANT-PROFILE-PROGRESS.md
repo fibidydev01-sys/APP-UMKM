@@ -3,6 +3,8 @@
 > **Inspirasi**: Lemon Squeezy onboarding setup progress
 >
 > Track kemajuan tenant dalam melengkapi profil bisnis mereka dari 0-100%
+>
+> **Data Source**: Aligned with `/LANDING-DATA-CONTRACT.md` (Unified State v2.1)
 
 ---
 
@@ -26,75 +28,94 @@ Progress ini akan:
 
 ### **Total Score: 100 Points**
 
-#### 1. **Informasi Dasar** (25 points)
+#### 1. **Business Identity** (15 points)
 | Item | Points | Field | Required |
 |------|--------|-------|----------|
-| Nama Toko | 5 | `tenant.name` | ✅ Auto (required) |
-| Logo Toko | 5 | `tenant.logo` | ❌ |
-| Deskripsi Singkat | 5 | `tenant.description` | ❌ |
-| Kategori Bisnis | 3 | `tenant.category` | ✅ Auto (required) |
-| Tagline | 2 | `tenant.tagline` | ❌ |
-| Hero Background | 5 | `tenant.heroBackgroundImage` | ❌ |
+| Nama Toko | 0 | `tenant.name` | ✅ Auto (required) |
+| Logo Toko | 4 | `tenant.logo` | ❌ |
+| Banner Toko | 3 | `tenant.banner` | ❌ |
+| Kategori Bisnis | 0 | `tenant.category` | ✅ Auto (required) |
+| Deskripsi Singkat | 4 | `tenant.description` | ❌ |
+| Warna Tema | 4 | `tenant.theme.primaryColor` | ❌ |
 
-**Total: 25 points**
+**Total: 15 points**
+**Note:** Name & category auto-completed during registration (0 points)
 
 ---
 
-#### 2. **Kontak & Lokasi** (20 points)
+#### 2. **Hero Section** (18 points)
 | Item | Points | Field | Required |
 |------|--------|-------|----------|
-| WhatsApp | 7 | `tenant.whatsapp` | ❌ (highly recommended) |
-| Nomor Telepon | 3 | `tenant.phone` | ❌ |
-| Email | 3 | `tenant.email` | ❌ |
-| Alamat Lengkap | 7 | `tenant.address` | ❌ |
+| Hero Title | 4 | `tenant.heroTitle` | ❌ |
+| Hero Subtitle | 3 | `tenant.heroSubtitle` | ❌ |
+| Hero CTA Text | 2 | `tenant.heroCtaText` | ❌ |
+| Hero CTA Link | 2 | `tenant.heroCtaLink` | ❌ |
+| Hero Background Image | 7 | `tenant.heroBackgroundImage` | ❌ |
 
-**Total: 20 points**
+**Total: 18 points**
 
 ---
 
-#### 3. **Halaman About** (15 points)
+#### 3. **About Section** (15 points)
 | Item | Points | Field | Required |
 |------|--------|-------|----------|
-| About Title | 3 | `tenant.aboutTitle` | ❌ |
+| About Title | 2 | `tenant.aboutTitle` | ❌ |
 | About Subtitle | 2 | `tenant.aboutSubtitle` | ❌ |
-| About Content | 5 | `tenant.aboutContent` | ❌ |
-| About Image | 3 | `tenant.aboutImage` | ❌ |
+| About Content | 5 | `tenant.aboutContent` (min 50 chars) | ❌ |
+| About Image | 4 | `tenant.aboutImage` | ❌ |
 | About Features | 2 | `tenant.aboutFeatures` (min 1) | ❌ |
 
 **Total: 15 points**
 
 ---
 
-#### 4. **Testimoni** (10 points)
+#### 4. **Testimonials Section** (12 points)
 | Item | Points | Field | Required |
 |------|--------|-------|----------|
-| Minimal 1 Testimoni | 5 | `tenant.testimonials` (length >= 1) | ❌ |
-| Minimal 3 Testimoni | 5 | `tenant.testimonials` (length >= 3) | ❌ |
+| Testimonials Title | 2 | `tenant.testimonialsTitle` | ❌ |
+| Testimonials Subtitle | 2 | `tenant.testimonialsSubtitle` | ❌ |
+| Minimal 1 Testimoni | 4 | `tenant.testimonials` (length >= 1) | ❌ |
+| Minimal 3 Testimoni | 4 | `tenant.testimonials` (length >= 3) | ❌ |
 
-**Total: 10 points**
+**Total: 12 points**
 
 ---
 
-#### 5. **Produk** (20 points)
+#### 5. **Contact Section** (15 points)
+| Item | Points | Field | Required |
+|------|--------|-------|----------|
+| Contact Title | 1 | `tenant.contactTitle` | ❌ |
+| Contact Subtitle | 1 | `tenant.contactSubtitle` | ❌ |
+| WhatsApp | 5 | `tenant.whatsapp` | ✅ Highly recommended |
+| Nomor Telepon | 2 | `tenant.phone` | ❌ |
+| Email | 0 | `tenant.email` | ✅ Auto (from auth) |
+| Alamat Lengkap | 4 | `tenant.address` (min 10 chars) | ❌ |
+| Google Maps URL | 2 | `tenant.contactMapUrl` | ❌ |
+
+**Total: 15 points**
+
+---
+
+#### 6. **CTA Section** (8 points)
+| Item | Points | Field | Required |
+|------|--------|-------|----------|
+| CTA Title | 2 | `tenant.ctaTitle` | ❌ |
+| CTA Subtitle | 2 | `tenant.ctaSubtitle` | ❌ |
+| CTA Button Text | 2 | `tenant.ctaButtonText` | ❌ |
+| CTA Button Link | 2 | `tenant.ctaButtonLink` | ❌ |
+
+**Total: 8 points**
+**Note:** `ctaButtonStyle` tidak di-score (defaultable)
+
+---
+
+#### 7. **Products** (17 points)
 | Item | Points | Field | Required |
 |------|--------|-------|----------|
 | Minimal 1 Produk | 10 | `products.length >= 1` | ❌ |
-| Minimal 5 Produk | 10 | `products.length >= 5` | ❌ |
+| Minimal 5 Produk | 7 | `products.length >= 5` | ❌ |
 
-**Total: 20 points**
-
----
-
-#### 6. **Landing Page Config** (10 points)
-| Item | Points | Field | Required |
-|------|--------|-------|----------|
-| Hero Section Aktif | 2 | `landingConfig.hero.enabled` | ❌ |
-| About Section Aktif | 2 | `landingConfig.about.enabled` | ❌ |
-| Products Section Aktif | 2 | `landingConfig.products.enabled` | ❌ |
-| Testimonials Section Aktif | 2 | `landingConfig.testimonials.enabled` | ❌ |
-| Contact Section Aktif | 2 | `landingConfig.contact.enabled` | ❌ |
-
-**Total: 10 points**
+**Total: 17 points**
 
 ---
 
@@ -112,14 +133,16 @@ Progress ini akan:
 │  Selesaikan setup untuk meningkatkan visibilitas│
 │  toko Anda dan menarik lebih banyak pelanggan!  │
 │                                                  │
-│  ✅ Informasi Dasar (25/25)                     │
-│  ✅ Kontak & Lokasi (20/20)                     │
-│  ⚠️  Halaman About (10/15)                      │
-│      └─ Tambah About Image → [Isi Sekarang]    │
-│  ❌ Testimoni (0/10)                            │
-│      └─ Tambah minimal 1 testimoni              │
-│  ✅ Produk (20/20)                              │
-│  ✅ Landing Page Config (10/10)                 │
+│  ✅ Business Identity (15/15)                   │
+│  ⚠️  Hero Section (11/18)                       │
+│      └─ Tambah Hero Background → [Isi Sekarang]│
+│  ✅ About Section (15/15)                       │
+│  ❌ Testimonials (0/12)                         │
+│      └─ Tambah testimoni pertama                │
+│  ⚠️  Contact Section (8/15)                     │
+│      └─ Tambah WhatsApp (5 pts)                 │
+│  ❌ CTA Section (0/8)                           │
+│  ✅ Products (17/17)                            │
 │                                                  │
 │  [Lihat Detail Setup] [Dismiss]                 │
 └─────────────────────────────────────────────────┘
@@ -136,11 +159,11 @@ Progress ini akan:
 
 ## 💾 Data Structure
 
-### **Backend: New Table/Field**
+### **Backend: New Fields**
 
 ```prisma
 model Tenant {
-  // ... existing fields
+  // ... existing fields from LANDING-DATA-CONTRACT.md
 
   // Profile Progress (auto-calculated)
   profileProgress     Int       @default(0)  // 0-100
@@ -176,7 +199,7 @@ export interface ProfileProgress {
     maxScore: number;
     items: ProfileProgressItem[];
   }[];
-  milestone: 'bronze' | 'silver' | 'gold' | 'diamond';
+  milestone: 'bronze' | 'silver' | 'gold' | 'diamond' | null;
   isComplete: boolean;
 }
 
@@ -220,49 +243,58 @@ export function calculateProfileProgress(
 
 ## 📐 Calculation Logic
 
-### **Pseudocode**
+### **Pseudocode (Aligned with LANDING-DATA-CONTRACT.md)**
 
 ```typescript
-function calculateProfileProgress(tenant, productsCount) {
+function calculateProfileProgress(tenant: Tenant, productsCount: number): ProfileProgress {
   let score = 0;
 
-  // 1. Basic Info (25 pts)
-  if (tenant.name) score += 5; // auto
-  if (tenant.logo) score += 5;
-  if (tenant.description && tenant.description.length > 20) score += 5;
-  if (tenant.category) score += 3; // auto
-  if (tenant.tagline) score += 2;
-  if (tenant.heroBackgroundImage) score += 5;
+  // 1. Business Identity (15 pts)
+  // name & category = auto (0 pts)
+  if (tenant.logo) score += 4;
+  if (tenant.banner) score += 3;
+  if (tenant.description && tenant.description.length > 20) score += 4;
+  if (tenant.theme?.primaryColor) score += 4;
 
-  // 2. Contact (20 pts)
-  if (tenant.whatsapp) score += 7;
-  if (tenant.phone) score += 3;
-  if (tenant.email) score += 3;
-  if (tenant.address && tenant.address.length > 10) score += 7;
+  // 2. Hero Section (18 pts)
+  if (tenant.heroTitle) score += 4;
+  if (tenant.heroSubtitle) score += 3;
+  if (tenant.heroCtaText) score += 2;
+  if (tenant.heroCtaLink) score += 2;
+  if (tenant.heroBackgroundImage) score += 7;
 
-  // 3. About Page (15 pts)
-  if (tenant.aboutTitle) score += 3;
+  // 3. About Section (15 pts)
+  if (tenant.aboutTitle) score += 2;
   if (tenant.aboutSubtitle) score += 2;
   if (tenant.aboutContent && tenant.aboutContent.length > 50) score += 5;
-  if (tenant.aboutImage) score += 3;
+  if (tenant.aboutImage) score += 4;
   if (tenant.aboutFeatures && tenant.aboutFeatures.length > 0) score += 2;
 
-  // 4. Testimonials (10 pts)
+  // 4. Testimonials Section (12 pts)
+  if (tenant.testimonialsTitle) score += 2;
+  if (tenant.testimonialsSubtitle) score += 2;
   const testimonialsCount = tenant.testimonials?.length || 0;
-  if (testimonialsCount >= 1) score += 5;
-  if (testimonialsCount >= 3) score += 5;
+  if (testimonialsCount >= 1) score += 4;
+  if (testimonialsCount >= 3) score += 4;
 
-  // 5. Products (20 pts)
+  // 5. Contact Section (15 pts)
+  if (tenant.contactTitle) score += 1;
+  if (tenant.contactSubtitle) score += 1;
+  if (tenant.whatsapp) score += 5;
+  if (tenant.phone) score += 2;
+  // email = auto (0 pts)
+  if (tenant.address && tenant.address.length > 10) score += 4;
+  if (tenant.contactMapUrl) score += 2;
+
+  // 6. CTA Section (8 pts)
+  if (tenant.ctaTitle) score += 2;
+  if (tenant.ctaSubtitle) score += 2;
+  if (tenant.ctaButtonText) score += 2;
+  if (tenant.ctaButtonLink) score += 2;
+
+  // 7. Products (17 pts)
   if (productsCount >= 1) score += 10;
-  if (productsCount >= 5) score += 10;
-
-  // 6. Landing Config (10 pts)
-  const config = tenant.landingConfig;
-  if (config?.hero?.enabled) score += 2;
-  if (config?.about?.enabled) score += 2;
-  if (config?.products?.enabled) score += 2;
-  if (config?.testimonials?.enabled) score += 2;
-  if (config?.contact?.enabled) score += 2;
+  if (productsCount >= 5) score += 7;
 
   return {
     totalScore: score,
@@ -273,7 +305,7 @@ function calculateProfileProgress(tenant, productsCount) {
   };
 }
 
-function getMilestone(score) {
+function getMilestone(score: number) {
   if (score >= 100) return 'diamond';
   if (score >= 75) return 'gold';
   if (score >= 50) return 'silver';
@@ -330,9 +362,20 @@ function getMilestone(score) {
 - Can re-show widget via settings
 - Progress visible to tenant only (not public)
 - Consider adding "Setup Later" skip option
+- **Aligned with LANDING-DATA-CONTRACT.md v2.1 (Unified State)**
+
+---
+
+## 🔗 References
+
+- **Data Contract**: `/LANDING-DATA-CONTRACT.md`
+- **Unified State**: `/UNIFIED-STATE-STRUCTURE.md`
+- **Type Definitions**: `/client/src/types/tenant.ts`
+- **API Client**: `/client/src/lib/api/tenants.ts`
 
 ---
 
 **Created:** 2026-01-20
 **Last Updated:** 2026-01-20
+**Version:** 2.0 (Aligned with Data Contract v2.1)
 **Status:** 📋 Specification Phase
