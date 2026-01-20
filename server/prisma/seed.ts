@@ -12,9 +12,9 @@ const prisma = new PrismaClient();
 // UNSPLASH IMAGE URLS - HIGH QUALITY & FREE
 // ==========================================
 const IMAGES = {
-  // Logo & Banner
+  // Logo & Hero Background
   logo: 'https://images.unsplash.com/photo-1550547660-d9450f859349?w=200&h=200&fit=crop&q=80',
-  banner:
+  heroBackground:
     'https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=1200&h=400&fit=crop&q=80',
 
   // Burger Products
@@ -109,7 +109,6 @@ async function main() {
       phone: '081234567890',
       address: 'Jl. Asia Raya No. 88, Jakarta Pusat',
       logo: IMAGES.logo,
-      banner: IMAGES.banner,
       password: hashedPassword,
       status: TenantStatus.ACTIVE,
 
@@ -139,7 +138,7 @@ async function main() {
         'Rasakan sensasi burger berkualitas dengan bumbu rahasia khas Asia. Dibuat fresh setiap hari dengan bahan-bahan pilihan.',
       heroCtaText: 'Pesan Sekarang',
       heroCtaLink: '/products',
-      heroBackgroundImage: IMAGES.banner,
+      heroBackgroundImage: IMAGES.heroBackground,
 
       // About Data
       aboutTitle: 'Kenapa Burger China?',
