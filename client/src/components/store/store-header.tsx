@@ -1,12 +1,18 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuLink,
+} from '@/components/ui/navigation-menu';
 import { CartSheet } from './cart-sheet';
 import { useStoreUrls } from '@/lib/store-url';
 import { cn } from '@/lib/cn';
@@ -25,37 +31,13 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
   const pathname = usePathname();
   const urls = useStoreUrls(tenant.slug);
 
-  // ✅ FIX: No type annotation
-  const landingConfig = tenant.landingConfig;
-
-  // Check what data exists
-  const hasAbout = !!landingConfig?.about?.config?.content || !!tenant.description;
-  const hasContact = !!tenant.address || !!tenant.whatsapp || !!tenant.phone;
-
-  // ✅ FIX: Stable check without calling normalizeTestimonials (avoids Date.now/Math.random hydration issue)
-  const hasTestimonials = useMemo(() => {
-    const items = landingConfig?.testimonials?.config?.items;
-    if (!items || !Array.isArray(items)) return false;
-    // Check if any valid testimonials exist (without normalizing IDs)
-    return items.some(
-      (item: any) =>
-        item &&
-        typeof item === 'object' &&
-        typeof item.name === 'string' &&
-        item.name.trim() !== '' &&
-        typeof item.content === 'string' &&
-        item.content.trim() !== ''
-    );
-  }, [landingConfig?.testimonials?.config?.items]);
-
-  // Build nav items
+  // Core navigation items (according to LANDING-DATA-CONTRACT.md)
   const navItems = [
-    { label: 'Beranda', href: urls.home, show: true },
-    { label: 'Tentang', href: urls.path('/about'), show: hasAbout },
-    { label: 'Produk', href: urls.products(), show: true },
-    { label: 'Testimoni', href: urls.path('/testimonials'), show: hasTestimonials },
-    { label: 'Kontak', href: urls.path('/contact'), show: hasContact },
-  ].filter(item => item.show);
+    { label: 'Beranda', href: urls.home },
+    { label: 'Tentang', href: urls.path('/about') },
+    { label: 'Produk', href: urls.products() },
+    { label: 'Kontak', href: urls.path('/contact') },
+  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -83,27 +65,31 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== urls.home && pathname.startsWith(item.href));
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList>
+            {navItems.map((item) => {
+              const isActive = pathname === item.href ||
+                (item.href !== urls.home && pathname.startsWith(item.href));
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'px-3 py-2 text-sm font-medium rounded-md transition-colors',
-                  isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+              return (
+                <NavigationMenuItem key={item.href}>
+                  <Link href={item.href} legacyBehavior passHref>
+                    <NavigationMenuLink
+                      className={cn(
+                        'px-3 py-2 text-sm font-medium rounded-md transition-colors',
+                        isActive
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                      )}
+                    >
+                      {item.label}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              );
+            })}
+          </NavigationMenuList>
+        </NavigationMenu>
 
         {/* Actions */}
         <div className="flex items-center gap-2">
