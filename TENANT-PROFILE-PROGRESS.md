@@ -24,6 +24,22 @@ Progress ini akan:
 
 ---
 
+## 🚨 Critical Requirements for Go Live
+
+**Untuk tenant bisa "publish" dan mulai jualan, 2 item ini WAJIB:**
+
+| Item | Field | Why Critical? |
+|------|-------|---------------|
+| 🎨 **Logo Toko** | `tenant.logo` | Brand identity utama, tampil di header dan semua halaman |
+| 🖼️ **Hero Background Image** | `tenant.heroBackgroundImage` | First impression di landing page, membuat toko terlihat profesional |
+
+**Onboarding Flow:**
+- Wizard akan guide tenant untuk upload **Logo** dan **Hero Background** di step pertama
+- Tanpa kedua item ini, tenant **tidak bisa publish** toko mereka
+- Setelah critical items complete, tenant bisa mulai jualan (items lain optional tapi recommended)
+
+---
+
 ## 📊 Progress Categories & Scoring
 
 ### **Total Score: 100 Points**
@@ -32,7 +48,7 @@ Progress ini akan:
 | Item | Points | Field | Required |
 |------|--------|-------|----------|
 | Nama Toko | 0 | `tenant.name` | ✅ Auto (required) |
-| Logo Toko | 4 | `tenant.logo` | ❌ |
+| 🚨 **Logo Toko** | 4 | `tenant.logo` | ✅ **CRITICAL** for go live |
 | Banner Toko | 3 | `tenant.banner` | ❌ |
 | Kategori Bisnis | 0 | `tenant.category` | ✅ Auto (required) |
 | Deskripsi Singkat | 4 | `tenant.description` | ❌ |
@@ -40,6 +56,7 @@ Progress ini akan:
 
 **Total: 15 points**
 **Note:** Name & category auto-completed during registration (0 points)
+**Critical:** Logo is REQUIRED before tenant can publish their store
 
 ---
 
@@ -50,9 +67,10 @@ Progress ini akan:
 | Hero Subtitle | 3 | `tenant.heroSubtitle` | ❌ |
 | Hero CTA Text | 2 | `tenant.heroCtaText` | ❌ |
 | Hero CTA Link | 2 | `tenant.heroCtaLink` | ❌ |
-| Hero Background Image | 7 | `tenant.heroBackgroundImage` | ❌ |
+| 🚨 **Hero Background Image** | 7 | `tenant.heroBackgroundImage` | ✅ **CRITICAL** for go live |
 
 **Total: 18 points**
+**Critical:** Hero Background Image is REQUIRED for professional first impression
 
 ---
 
@@ -157,6 +175,58 @@ Progress ini akan:
 
 ---
 
+### **Wizard Onboarding (Enterprise SaaS Style)**
+
+**Inspirasi:** Claude, Documenso, enterprise SaaS onboarding
+
+```tsx
+┌─────────────────────────────────────────────────┐
+│  Get started with Fibidy                        │
+│  ○━━━━━━━━━━━━━━━━━━━━━━ 2 out of 6 steps left │
+│                                  [•••] [Dismiss]│
+├─────────────────────────────────────────────────┤
+│                                                  │
+│  ✅ 1. Upload your logo                         │
+│      Your brand identity is set up!             │
+│                                                  │
+│  ✅ 2. Add hero background image                │
+│      Your landing page looks professional       │
+│                                                  │
+│  ▼  3. Add your first product                   │
+│      Upload products to start selling online.   │
+│      You'll see how easy it is to manage your   │
+│      catalog.                                   │
+│      [Add Product →]                            │
+│                                                  │
+│  ○  4. Add customer testimonials                │
+│      Build trust with social proof              │
+│                                                  │
+│  ○  5. Connect WhatsApp                         │
+│      Enable direct customer communication       │
+│                                                  │
+│  ○  6. Customize your branding                  │
+│      Add colors and banner for unique look      │
+│                                                  │
+└─────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+- ✅ Expandable/collapsible steps (one open at a time)
+- ✅ Circular progress indicator (steps remaining)
+- ✅ Action buttons per step
+- ✅ Dismissable (with option to restore)
+- ✅ Step status: completed (✅), in-progress (▼), pending (○)
+- ✅ Critical steps highlighted at top
+- ✅ Dropdown menu: Dismiss, Give Feedback
+
+**Implementation Reference:**
+- Component pattern similar to Documenso onboarding
+- Uses shadcn/ui components (Button, DropdownMenu)
+- Tabler icons for status indicators
+- Smooth animations for expand/collapse
+
+---
+
 ## 💾 Data Structure
 
 ### **Backend: New Fields**
@@ -201,6 +271,11 @@ export interface ProfileProgress {
   }[];
   milestone: 'bronze' | 'silver' | 'gold' | 'diamond' | null;
   isComplete: boolean;
+  canPublish: boolean;       // true if critical requirements met (logo + hero background)
+  criticalItems: {
+    logo: boolean;
+    heroBackground: boolean;
+  };
 }
 
 export function calculateProfileProgress(
@@ -221,13 +296,16 @@ export function calculateProfileProgress(
 - [ ] Create API endpoint `/api/tenants/me/progress`
 - [ ] Auto-calculate progress on tenant update
 
-### **Phase 2: Dashboard Widget** 📊
-- [ ] Create `ProfileProgressWidget` component
-- [ ] Show in dashboard sidebar or top
-- [ ] Progress bar with percentage
-- [ ] Collapsible checklist
-- [ ] Action buttons per item
-- [ ] Dismiss functionality
+### **Phase 2: Wizard Onboarding UI** 🧙‍♂️
+- [ ] Create `OnboardingWizard` component (enterprise SaaS style)
+- [ ] Implement expandable/collapsible steps
+- [ ] Circular progress indicator (remaining steps)
+- [ ] Critical steps (Logo + Hero Background) at top
+- [ ] Action buttons per step with routing
+- [ ] Dismiss/restore functionality
+- [ ] Step status indicators (completed, in-progress, pending)
+- [ ] Dropdown menu (Dismiss, Give Feedback)
+- [ ] Smooth expand/collapse animations
 
 ### **Phase 3: Notifications** 🔔
 - [ ] Toast when progress increases
@@ -249,9 +327,14 @@ export function calculateProfileProgress(
 function calculateProfileProgress(tenant: Tenant, productsCount: number): ProfileProgress {
   let score = 0;
 
+  // 🚨 CRITICAL REQUIREMENTS CHECK
+  const hasLogo = !!tenant.logo;
+  const hasHeroBackground = !!tenant.heroBackgroundImage;
+  const canPublish = hasLogo && hasHeroBackground;
+
   // 1. Business Identity (15 pts)
   // name & category = auto (0 pts)
-  if (tenant.logo) score += 4;
+  if (hasLogo) score += 4; // CRITICAL
   if (tenant.banner) score += 3;
   if (tenant.description && tenant.description.length > 20) score += 4;
   if (tenant.theme?.primaryColor) score += 4;
@@ -261,7 +344,7 @@ function calculateProfileProgress(tenant: Tenant, productsCount: number): Profil
   if (tenant.heroSubtitle) score += 3;
   if (tenant.heroCtaText) score += 2;
   if (tenant.heroCtaLink) score += 2;
-  if (tenant.heroBackgroundImage) score += 7;
+  if (hasHeroBackground) score += 7; // CRITICAL
 
   // 3. About Section (15 pts)
   if (tenant.aboutTitle) score += 2;
@@ -301,7 +384,12 @@ function calculateProfileProgress(tenant: Tenant, productsCount: number): Profil
     maxPoints: 100,
     percentage: score,
     milestone: getMilestone(score),
-    isComplete: score === 100
+    isComplete: score === 100,
+    canPublish, // Can tenant publish their store?
+    criticalItems: {
+      logo: hasLogo,
+      heroBackground: hasHeroBackground,
+    },
   };
 }
 
