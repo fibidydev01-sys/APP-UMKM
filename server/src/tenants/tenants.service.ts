@@ -50,7 +50,6 @@ export class TenantsService {
             phone: true,
             address: true,
             logo: true,
-            banner: true,
             theme: true,
             landingConfig: true,
             metaTitle: true,
@@ -195,7 +194,6 @@ export class TenantsService {
             phone: true,
             address: true,
             logo: true,
-            banner: true,
             theme: true,
             landingConfig: true,
             metaTitle: true,
@@ -282,7 +280,6 @@ export class TenantsService {
     if (dto.phone !== undefined) updateData.phone = dto.phone;
     if (dto.address !== undefined) updateData.address = dto.address;
     if (dto.logo !== undefined) updateData.logo = dto.logo;
-    if (dto.banner !== undefined) updateData.banner = dto.banner;
     if (dto.theme !== undefined)
       updateData.theme = dto.theme as Prisma.InputJsonValue;
 
@@ -441,7 +438,6 @@ export class TenantsService {
         phone: true,
         address: true,
         logo: true,
-        banner: true,
         theme: true,
         landingConfig: true,
         metaTitle: true,

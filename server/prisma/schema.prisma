@@ -50,7 +50,6 @@ model Tenant {
   phone         String?
   address       String?
   logo          String?
-  banner        String?
   theme         Json?
   landingConfig Json?
   

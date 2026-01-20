@@ -588,10 +588,6 @@ export class UpdateTenantDto {
   logo?: string;
 
   @IsOptional()
-  @IsString()
-  banner?: string;
-
-  @IsOptional()
   @IsObject()
   theme?: {
     primaryColor?: string;

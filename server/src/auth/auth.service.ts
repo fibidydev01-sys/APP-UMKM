@@ -164,7 +164,6 @@ export class AuthService {
         phone: true,
         address: true,
         logo: true,
-        banner: true,
         theme: true,
         status: true,
         createdAt: true,
@@ -219,7 +218,6 @@ export class AuthService {
           phone: true,
           address: true,
           logo: true,
-          banner: true,
           theme: true,
           landingConfig: true,
           // SEO Fields
