@@ -453,6 +453,34 @@ interface Tenant {
 
 **Used In:**
 - WhatsApp Checkout Dialog → Courier selection & shipping calculation
+- Product Page → Shipping info display
+
+**Shipping Calculation Logic:**
+
+The system uses **flat-rate shipping** with an optional free shipping threshold:
+
+```typescript
+// Shipping is calculated based on subtotal and threshold
+const shipping = (freeShippingThreshold && subtotal >= freeShippingThreshold)
+  ? 0
+  : defaultShippingCost;
+```
+
+**Important Notes:**
+- **Courier selection is informational only** - it appears in the WhatsApp message but does not affect the shipping cost
+- **Flat-rate shipping** - one fixed price applies regardless of courier choice
+- **Free shipping threshold** - when subtotal reaches this amount, shipping becomes free
+- **No per-courier pricing** - all couriers use the same flat rate (this is intentional for simplicity)
+
+**Example Scenarios:**
+1. `subtotal = Rp 100,000`, `freeShippingThreshold = Rp 150,000`, `defaultShippingCost = Rp 10,000`
+   → Shipping = **Rp 10,000** (below threshold)
+
+2. `subtotal = Rp 200,000`, `freeShippingThreshold = Rp 150,000`, `defaultShippingCost = Rp 10,000`
+   → Shipping = **GRATIS** (above threshold)
+
+3. `subtotal = Rp 50,000`, `freeShippingThreshold = null`, `defaultShippingCost = Rp 0`
+   → Shipping = **GRATIS** (always free when default cost is 0)
 
 ### SEO Settings (`/dashboard/settings` → SEO Tab)
 
