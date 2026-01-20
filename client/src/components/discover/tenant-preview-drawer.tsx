@@ -82,9 +82,9 @@ function ExploreTenantCard({ tenant, onClick }: ExploreTenantCardProps) {
     >
       {/* Thumbnail */}
       <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted mb-2">
-        {tenant.banner ? (
+        {tenant.heroBackgroundImage ? (
           <Image
-            src={tenant.banner}
+            src={tenant.heroBackgroundImage}
             alt={tenant.name}
             fill
             className="object-cover group-hover:scale-105 transition-transform duration-300"
@@ -339,13 +339,13 @@ export function TenantPreviewDrawer({
             {/* Sentinel for sticky detection */}
             <div ref={headerSentinelRef} className="h-0" />
 
-            {/* Banner Image */}
+            {/* Hero Background Image */}
             <div className="px-4 py-6">
               <div className="relative w-full max-w-2xl mx-auto aspect-[16/10] rounded-xl overflow-hidden bg-muted">
-                {tenant.banner ? (
+                {tenant.heroBackgroundImage ? (
                   <Image
-                    src={tenant.banner}
-                    alt={tenant.name || 'Store Banner'}
+                    src={tenant.heroBackgroundImage}
+                    alt={tenant.name || 'Store Hero'}
                     fill
                     className="object-cover"
                     priority
