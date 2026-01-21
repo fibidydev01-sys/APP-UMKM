@@ -185,6 +185,19 @@ export default function LandingBuilderPage() {
   }
 
   // ============================================================================
+  // PREVENT BODY SCROLL - Override body overflow for this page only
+  // ============================================================================
+
+  useEffect(() => {
+    // Hide body scrollbar to prevent double scrollbar (preview has its own scroll)
+    document.body.style.overflow = 'hidden';
+    return () => {
+      // Restore body overflow when leaving page
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // ============================================================================
   // RENDER: FULL SCREEN ISOLATED LAYOUT
   // ============================================================================
 
