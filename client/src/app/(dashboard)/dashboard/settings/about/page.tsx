@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { TenantAbout } from '@/components/landing';
+import { About1 } from '@/components/landing/blocks';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -286,16 +286,12 @@ export default function AboutPage() {
                   Pratinjau real-time dari About Section Anda
                 </p>
                 <div className="border rounded-lg overflow-hidden bg-muted/20">
-                  <TenantAbout
-                    tenant={{
-                      ...tenant,
-                      aboutTitle: formData.aboutTitle,
-                      aboutSubtitle: formData.aboutSubtitle,
-                      aboutContent: formData.aboutContent,
-                      aboutImage: formData.aboutImage,
-                      aboutFeatures: formData.aboutFeatures,
-                    } as Tenant}
-                    config={{ block: 'about1' }}
+                  <About1
+                    title={formData.aboutTitle || 'Tentang Kami'}
+                    subtitle={formData.aboutSubtitle}
+                    content={formData.aboutContent}
+                    image={formData.aboutImage}
+                    features={formData.aboutFeatures}
                   />
                 </div>
               </div>

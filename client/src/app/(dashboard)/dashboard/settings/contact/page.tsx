@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
-import { TenantContact } from '@/components/landing';
+import { Contact1 } from '@/components/landing/blocks';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -259,19 +259,17 @@ export default function ContactPage() {
                   Pratinjau real-time dari Contact Section Anda
                 </p>
                 <div className="border rounded-lg overflow-hidden bg-muted/20">
-                  <TenantContact
-                    tenant={{
-                      ...tenant,
-                      contactTitle: formData.contactTitle,
-                      contactSubtitle: formData.contactSubtitle,
-                      contactMapUrl: formData.contactMapUrl,
-                      contactShowMap: formData.contactShowMap,
-                      contactShowForm: formData.contactShowForm,
-                      phone: formData.phone,
-                      whatsapp: formData.whatsapp,
-                      address: formData.address,
-                    } as Tenant}
-                    config={{ block: 'contact1' }}
+                  <Contact1
+                    title={formData.contactTitle || 'Hubungi Kami'}
+                    subtitle={formData.contactSubtitle}
+                    whatsapp={formData.whatsapp}
+                    phone={formData.phone}
+                    email={tenant?.email}
+                    address={formData.address}
+                    storeName={tenant?.name || ''}
+                    mapUrl={formData.contactMapUrl}
+                    showMap={formData.contactShowMap}
+                    showForm={formData.contactShowForm}
                   />
                 </div>
               </div>

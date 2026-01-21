@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
-import { TenantCta } from '@/components/landing';
+import { Cta1 } from '@/components/landing/blocks';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -196,16 +196,12 @@ export default function CTAPage() {
                   Pratinjau real-time dari CTA Section Anda
                 </p>
                 <div className="border rounded-lg overflow-hidden bg-muted/20">
-                  <TenantCta
-                    tenant={{
-                      ...tenant,
-                      ctaTitle: formData.ctaTitle,
-                      ctaSubtitle: formData.ctaSubtitle,
-                      ctaButtonText: formData.ctaButtonText,
-                      ctaButtonLink: formData.ctaButtonLink,
-                      ctaButtonStyle: formData.ctaButtonStyle,
-                    } as Tenant}
-                    config={{ block: 'cta1' }}
+                  <Cta1
+                    title={formData.ctaTitle || 'Siap Memulai?'}
+                    subtitle={formData.ctaSubtitle}
+                    buttonText={formData.ctaButtonText || 'Mulai Sekarang'}
+                    buttonLink={formData.ctaButtonLink || '/products'}
+                    buttonVariant={formData.ctaButtonStyle === 'outline' ? 'outline' : formData.ctaButtonStyle === 'secondary' ? 'secondary' : 'default'}
                   />
                 </div>
               </div>

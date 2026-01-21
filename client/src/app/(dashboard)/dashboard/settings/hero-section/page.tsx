@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { TenantHero } from '@/components/landing';
+import { Hero1 } from '@/components/landing/blocks';
+import { extractHeroData } from '@/lib/landing';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -340,20 +341,15 @@ export default function HeroSectionPage() {
                   Pratinjau real-time dari Hero Section Anda
                 </p>
                 <div className="border rounded-lg overflow-hidden bg-muted/20">
-                  <TenantHero
-                    tenant={{
-                      ...tenant,
-                      name: formData.name,
-                      description: formData.description,
-                      heroTitle: formData.heroTitle,
-                      heroSubtitle: formData.heroSubtitle,
-                      heroCtaText: formData.heroCtaText,
-                      heroCtaLink: formData.heroCtaLink,
-                      heroBackgroundImage: formData.heroBackgroundImage,
-                      logo: formData.logo,
-                      theme: { primaryColor: formData.primaryColor },
-                    } as Tenant}
-                    config={{ block: 'hero1' }}
+                  <Hero1
+                    title={formData.heroTitle || formData.name || ''}
+                    subtitle={formData.heroSubtitle || formData.description}
+                    ctaText={formData.heroCtaText || 'Lihat Produk'}
+                    ctaLink={formData.heroCtaLink || '/products'}
+                    showCta={true}
+                    backgroundImage={formData.heroBackgroundImage}
+                    logo={formData.logo}
+                    storeName={formData.name}
                   />
                 </div>
               </div>

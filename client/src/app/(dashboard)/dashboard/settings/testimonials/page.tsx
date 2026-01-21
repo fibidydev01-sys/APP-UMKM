@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { TenantTestimonials } from '@/components/landing';
+import { Testimonials1 } from '@/components/landing/blocks';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -255,14 +255,10 @@ export default function TestimonialsPage() {
                   </div>
                 ) : (
                   <div className="border rounded-lg overflow-hidden bg-muted/20">
-                    <TenantTestimonials
-                      tenant={{
-                        ...tenant,
-                        testimonialsTitle: formData.testimonialsTitle,
-                        testimonialsSubtitle: formData.testimonialsSubtitle,
-                        testimonials: formData.testimonials,
-                      } as Tenant}
-                      config={{ block: 'testimonials1' }}
+                    <Testimonials1
+                      title={formData.testimonialsTitle || 'Testimoni'}
+                      subtitle={formData.testimonialsSubtitle}
+                      items={formData.testimonials}
                     />
                   </div>
                 )}
