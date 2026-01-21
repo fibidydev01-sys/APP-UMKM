@@ -515,6 +515,15 @@ class LandingConfigDto {
   @IsString()
   template?: string;
 
+  // 🚀 NEW: Section order for drag & drop
+  @IsOptional()
+  @IsArray()
+  @IsIn(['hero', 'about', 'products', 'testimonials', 'contact', 'cta'], {
+    each: true,
+    message: 'Section order harus berisi section yang valid',
+  })
+  sectionOrder?: string[];
+
   @IsOptional()
   @ValidateNested()
   @Type(() => HeroSectionDto)
