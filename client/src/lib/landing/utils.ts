@@ -94,6 +94,7 @@ export function mergeLandingConfig(
   const result: TenantLandingConfig = {
     enabled: tenant.enabled ?? defaults.enabled,
     template: tenant.template ?? defaults.template,
+    sectionOrder: tenant.sectionOrder ?? defaults.sectionOrder, // 🚀 NEW: Preserve section order
     hero: {
       enabled: tenant.hero?.enabled ?? defaults.hero?.enabled ?? false,
       title: tenant.hero?.title ?? defaults.hero?.title,

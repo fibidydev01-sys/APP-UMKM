@@ -1411,9 +1411,9 @@ const landingConfigSchema = {
         type: 'string' as const,
         enum: ['hero', 'about', 'products', 'testimonials', 'contact', 'cta'],
       },
-      minItems: 6,
-      maxItems: 6,
-      uniqueItems: true,
+      minItems: 1, // 🔥 FIX: Allow partial section orders (at least 1 section)
+      maxItems: 6, // Maximum 6 sections
+      uniqueItems: true, // No duplicates
     },
 
     // 🚀 UPDATED: Hero with block
