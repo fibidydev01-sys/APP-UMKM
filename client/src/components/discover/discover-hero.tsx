@@ -1,7 +1,8 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V14.0 (Dropdown + Clean Categories)
-// Changed: Replaced tabs with dropdown selector
-// Changed: Categories now use CategoryFilterBar pattern with arrows
+// DISCOVER HERO - V15.0 (NavigationMenu + No Icons)
+// Changed: Using NavigationMenu for dropdown
+// Changed: Removed all emojis/icons
+// Changed: Max 3 categories, z-[99999]
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -23,12 +24,13 @@ import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG, CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -161,34 +163,39 @@ export function DiscoverHero({
             </p>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* DROPDOWN - 7 Category Groups with emojis          */}
-            {/* z-[9999] ensures dropdown stays on top            */}
+            {/* DROPDOWN - NavigationMenu (No Icons)               */}
+            {/* z-[99999] ensures dropdown stays on top            */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="mb-6 relative z-[9999]">
-              <Select value={activeTab} onValueChange={(value) => handleTabClick(value as TabType)}>
-                <SelectTrigger className="w-fit bg-background border-2 rounded-full px-4 py-2 h-auto gap-2 font-medium shadow-sm hover:shadow-md transition-shadow">
-                  <SelectValue>
-                    <span className="flex items-center gap-2">
-                      <span>{tabs.find(t => t.id === activeTab)?.emoji}</span>
-                      <span>{tabs.find(t => t.id === activeTab)?.label}</span>
-                    </span>
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent position="popper" side="bottom" align="start" className="z-[99999] rounded-xl border-2 shadow-xl">
-                  {tabs.map((tab) => (
-                    <SelectItem
-                      key={tab.id}
-                      value={tab.id}
-                      className="cursor-pointer rounded-lg"
-                    >
-                      <span className="flex items-center gap-2">
-                        <span>{tab.emoji}</span>
-                        <span>{tab.label}</span>
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="mb-6 relative z-[99999]">
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="bg-background border-2 rounded-full px-4 py-2 h-auto font-medium shadow-sm hover:shadow-md transition-shadow">
+                      {tabs.find(t => t.id === activeTab)?.label}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent className="z-[99999]">
+                      <ul className="grid w-[200px] gap-1 p-2">
+                        {tabs.map((tab) => (
+                          <li key={tab.id}>
+                            <NavigationMenuLink asChild>
+                              <button
+                                onClick={() => handleTabClick(tab.id)}
+                                className={cn(
+                                  'block w-full select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors text-left',
+                                  'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                                  activeTab === tab.id && 'bg-accent text-accent-foreground'
+                                )}
+                              >
+                                {tab.label}
+                              </button>
+                            </NavigationMenuLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
 
             {/* Search Bar */}
@@ -203,8 +210,8 @@ export function DiscoverHero({
             </div>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* POPULAR TAGS - CategoryFilterBar Pattern           */}
-            {/* Clean arrows with gradient fade effect             */}
+            {/* POPULAR TAGS - No Icons, Gradient Arrows           */}
+            {/* Max 3 categories per group                          */}
             {/* ══════════════════════════════════════════════════ */}
             <div className="relative flex items-center min-w-0">
               {showLeftArrow && (
@@ -228,14 +235,10 @@ export function DiscoverHero({
                       key={catKey}
                       href={`/discover/${categoryKeyToSlug(catKey)}`}
                       className={cn(
-                        'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
+                        'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
                         'text-muted-foreground hover:text-foreground hover:bg-muted'
                       )}
                     >
-                      <span
-                        className="w-2 h-2 rounded-full shrink-0"
-                        style={{ backgroundColor: category.color }}
-                      />
                       {category.labelShort}
                     </Link>
                   );

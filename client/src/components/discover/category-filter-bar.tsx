@@ -1,7 +1,8 @@
 // ══════════════════════════════════════════════════════════════
-// CATEGORY FILTER BAR - V11.0 (Simplified)
-// Removed: Sort dropdown and Filter popover
-// Shows only: Category navigation tabs
+// CATEGORY FILTER BAR - V12.0 (NavigationMenu Style, No Icons)
+// Changed: Using NavigationMenu-style components
+// Changed: Removed all colored dots/icons
+// Changed: Highest z-index (z-[99999])
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -13,6 +14,14 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getCategoryList } from '@/config/categories';
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -38,6 +47,11 @@ export function CategoryFilterBar({
   const [showRightArrow, setShowRightArrow] = useState(false);
 
   const categories = getCategoryList();
+
+  // Find current category label
+  const currentCategory = selectedCategory
+    ? categories.find(c => c.key === selectedCategory)
+    : null;
 
   // Scroll arrows
   const checkScrollArrows = useCallback(() => {
@@ -78,16 +92,15 @@ export function CategoryFilterBar({
       className={cn(
         'bg-background border-b transition-all duration-300',
         // ══════════════════════════════════════════════════════
-        // z-30: LOWERED from z-40
-        // This ensures search dropdown (z-99999) stays on top
+        // z-[99999]: HIGHEST z-index for dropdown
         // ══════════════════════════════════════════════════════
-        isSticky && 'sticky top-16 z-30 shadow-sm'
+        isSticky && 'sticky top-16 z-[99999] shadow-sm'
       )}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 h-14">
 
-          {/* Category Pills */}
+          {/* Category Pills with NavigationMenu Dropdown */}
           <div className="relative flex-1 flex items-center min-w-0">
             {showLeftArrow && (
               <button
@@ -102,6 +115,7 @@ export function CategoryFilterBar({
               ref={scrollContainerRef}
               className="flex items-center gap-1 overflow-x-auto scrollbar-hide scroll-smooth px-1"
             >
+              {/* Discover Button */}
               <button
                 onClick={() => handleCategoryClick(null)}
                 className={cn(
@@ -114,18 +128,18 @@ export function CategoryFilterBar({
                 Discover
               </button>
 
+              {/* Category Items - No Icons */}
               {categories.map((cat) => (
                 <button
                   key={cat.key}
                   onClick={() => handleCategoryClick(cat.key)}
                   className={cn(
-                    'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
+                    'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
                     selectedCategory === cat.key
                       ? 'bg-foreground text-background'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                   )}
                 >
-                  <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
                   {cat.labelShort}
                 </button>
               ))}
