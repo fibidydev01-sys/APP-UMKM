@@ -1,13 +1,13 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V11.2 (Compact Carousel)
-// Feature: More compact carousel with smaller badges
+// DISCOVER HERO - V12.0 (Manual Scroll)
+// Changed: Replaced Embla Carousel with manual horizontal scroll
+// Pattern: Same as CategoryFilterBar for consistency
 // Arrows only appear when content overflows
-// Removed "Popular:" label for cleaner design
 // ══════════════════════════════════════════════════════════════
 
 'use client';
 
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Store,
@@ -15,17 +15,11 @@ import {
   Wrench,
   Sparkles,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
-} from '@/components/ui/carousel';
 import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG } from '@/config/categories';
@@ -100,9 +94,9 @@ export function DiscoverHero({
   searchQuery = '',
   activeTab = 'umkm',
 }: DiscoverHeroProps) {
-  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
 
   // Get categories based on active tab
   const popularCategories = useMemo(() => {
@@ -113,24 +107,34 @@ export function DiscoverHero({
     onTabChange?.(tabId);
   }, [onTabChange]);
 
-  // Track carousel scroll state
+  // Check scroll arrows visibility
+  const checkScrollArrows = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    setShowLeftArrow(scrollLeft > 0);
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+  }, []);
+
   useEffect(() => {
-    if (!carouselApi) return;
-
-    const updateScrollState = () => {
-      setCanScrollPrev(carouselApi.canScrollPrev());
-      setCanScrollNext(carouselApi.canScrollNext());
-    };
-
-    updateScrollState();
-    carouselApi.on('select', updateScrollState);
-    carouselApi.on('reInit', updateScrollState);
-
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    checkScrollArrows();
+    container.addEventListener('scroll', checkScrollArrows, { passive: true });
+    window.addEventListener('resize', checkScrollArrows);
     return () => {
-      carouselApi.off('select', updateScrollState);
-      carouselApi.off('reInit', updateScrollState);
+      container.removeEventListener('scroll', checkScrollArrows);
+      window.removeEventListener('resize', checkScrollArrows);
     };
-  }, [carouselApi]);
+  }, [checkScrollArrows, activeTab]);
+
+  const scrollLeft = useCallback(() => {
+    scrollContainerRef.current?.scrollBy({ left: -150, behavior: 'smooth' });
+  }, []);
+
+  const scrollRight = useCallback(() => {
+    scrollContainerRef.current?.scrollBy({ left: 150, behavior: 'smooth' });
+  }, []);
 
   return (
     <section className="relative pt-20 pb-8">
@@ -199,48 +203,56 @@ export function DiscoverHero({
             </div>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* POPULAR TAGS - Compact Carousel (4 per tab)        */}
+            {/* POPULAR TAGS - Horizontal Scroll (4 per tab)       */}
             {/* Arrows only show when there's overflow              */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="relative z-10 -mx-1">
-              <Carousel
-                opts={{
-                  align: 'start',
-                  loop: false,
-                  slidesToScroll: 1,
-                }}
-                setApi={setCarouselApi}
-                className="w-full"
+            <div className="relative z-10">
+              {showLeftArrow && (
+                <button
+                  onClick={scrollLeft}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-6 w-6 flex items-center justify-center bg-background border rounded-full shadow-sm hover:bg-muted transition-colors"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </button>
+              )}
+
+              <div
+                ref={scrollContainerRef}
+                className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth"
               >
-                <CarouselContent className="-ml-1">
-                  {popularCategories.map((catKey) => {
-                    const category = CATEGORY_CONFIG[catKey];
-                    if (!category) return null;
-                    return (
-                      <CarouselItem key={catKey} className="pl-1 basis-auto">
-                        <Link
-                          href={`/discover/${categoryKeyToSlug(catKey)}`}
-                          className={cn(
-                            'inline-flex items-center gap-1.5',
-                            'px-2.5 py-1 text-xs rounded-full border',
-                            'bg-background hover:bg-muted hover:border-primary/50',
-                            'transition-colors duration-200',
-                            'whitespace-nowrap'
-                          )}
-                        >
-                          <span
-                            className="w-1.5 h-1.5 rounded-full"
-                            style={{ backgroundColor: category.color }}
-                          />
-                          {category.labelShort}
-                        </Link>
-                      </CarouselItem>
-                    );
-                  })}
-                </CarouselContent>
-                {canScrollPrev && <CarouselPrevious className="-left-2 h-6 w-6" />}
-                {canScrollNext && <CarouselNext className="-right-2 h-6 w-6" />}
-              </Carousel>
+                {popularCategories.map((catKey) => {
+                  const category = CATEGORY_CONFIG[catKey];
+                  if (!category) return null;
+                  return (
+                    <Link
+                      key={catKey}
+                      href={`/discover/${categoryKeyToSlug(catKey)}`}
+                      className={cn(
+                        'inline-flex items-center gap-1.5',
+                        'px-2.5 py-1 text-xs rounded-full border',
+                        'bg-background hover:bg-muted hover:border-primary/50',
+                        'transition-colors duration-200',
+                        'whitespace-nowrap shrink-0'
+                      )}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: category.color }}
+                      />
+                      {category.labelShort}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {showRightArrow && (
+                <button
+                  onClick={scrollRight}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-6 w-6 flex items-center justify-center bg-background border rounded-full shadow-sm hover:bg-muted transition-colors"
+                >
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           </div>
 
