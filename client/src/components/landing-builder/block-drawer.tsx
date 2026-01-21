@@ -155,24 +155,26 @@ export function BlockDrawer({
 
   return (
     <Drawer.Root
-      open={true} // 🚀 Always mounted
-      modal={false} // 🚀 Don't block page interaction
-      dismissible={true} // 🚀 Allow dragging, but with snap points for protection
-      snapPoints={['120px', '80vh']} // 🚀 [COLLAPSED peek, EXPANDED full]
-      activeSnapPoint={expanded ? '80vh' : '120px'} // 🚀 Current snap position
+      open={true} // 🚀 Always open
+      modal={false} // 🚀 Non-modal (doesn't block page)
+      dismissible={true} // 🚀 Can drag to dismiss
+      snapPoints={[0.15, 0.8]} // 🚀 [COLLAPSED 15%, EXPANDED 80%]
+      activeSnapPoint={expanded ? 0.8 : 0.15} // 🚀 Current snap (fraction of viewport)
       setActiveSnapPoint={(snapPoint) => {
-        // 🚀 Sync expanded state with snap point when user drags
-        if (snapPoint === '80vh' && !expanded) {
-          onToggleExpanded(); // User dragged up → expand
-        } else if (snapPoint === '120px' && expanded) {
-          onToggleExpanded(); // User dragged down → collapse
+        // 🚀 Sync expanded state when user drags between snap points
+        if (snapPoint === 0.8 && !expanded) {
+          onToggleExpanded(); // Dragged to expanded
+        } else if (snapPoint === 0.15 && expanded) {
+          onToggleExpanded(); // Dragged to collapsed
         }
       }}
+      shouldScaleBackground={false} // 🚀 Don't scale background (non-modal)
     >
       <Drawer.Portal>
         {/* No overlay - drawer is not modal */}
         <Drawer.Content
-          className="bg-background flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-50 border-t shadow-lg"
+          className="bg-background flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-[100] border-t-2 border-border shadow-2xl"
+          style={{ maxHeight: '85vh' }} // Ensure it doesn't go off-screen
         >
           {/* Drag Handle - Draggable to expand/collapse */}
           <div
