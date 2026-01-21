@@ -833,11 +833,13 @@ Uncomment to import Google fonts if you want to use them in your project.
     @apply border-border outline-ring/50;
   }
   html {
-    /* Removed overflow-y to prevent double scrollbar */
+    height: 100%;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    scrollbar-gutter: stable; /* Reserve space for scrollbar to prevent shifting */
+    min-height: 100vh;
+    /* Always show scrollbar to prevent layout shift */
+    overflow-y: scroll !important;
     margin-right: 0 !important;
     padding-right: 0 !important;
   }
@@ -848,8 +850,8 @@ html body,
 html body[data-scroll-locked],
 html body[data-vaul-drawer-visible],
 html body[data-vaul-no-body-styles] {
-  /* Keep scrollbar gutter stable but don't force overflow */
-  scrollbar-gutter: stable !important;
+  /* Force scrollbar to always be visible to prevent shifting */
+  overflow-y: scroll !important;
   --removed-body-scroll-bar-size: 0 !important;
   margin-right: 0 !important;
   padding-right: 0 !important;
@@ -865,8 +867,8 @@ html body[data-vaul-no-body-styles] {
 }
 
 html body[data-scroll-locked] {
-  /* Scrollbar gutter keeps layout stable without forcing overflow */
-  scrollbar-gutter: stable !important;
+  /* Force scrollbar to always be visible */
+  overflow-y: scroll !important;
   --removed-body-scroll-bar-size: 0 !important;
   margin-right: 0 !important;
   &#explorer {
