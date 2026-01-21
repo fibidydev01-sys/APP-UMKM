@@ -204,7 +204,7 @@ function CategoryHero({ category, tenantCount }: CategoryHeroProps) {
 // MAIN CLIENT COMPONENT
 // ══════════════════════════════════════════════════════════════
 
-export function CategoryPageClient({ categoryKey }: CategoryPageClientProps) {
+export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: CategoryPageClientProps) {
   const router = useRouter();
   const category = CATEGORY_CONFIG[categoryKey];
 
