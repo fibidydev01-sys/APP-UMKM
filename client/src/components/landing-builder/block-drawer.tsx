@@ -8,7 +8,12 @@
 
 'use client';
 
-import { Drawer } from 'vaul';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
+} from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -181,7 +186,7 @@ export function BlockDrawer({
   }
 
   return (
-    <Drawer.Root
+    <Drawer
       open={true} // 🚀 Always open (when not closed)
       modal={false} // 🚀 Non-modal (doesn't block page)
       dismissible={false} // 🚀 Can't drag to dismiss (protected!)
@@ -196,12 +201,7 @@ export function BlockDrawer({
       }}
       shouldScaleBackground={false} // 🚀 Don't scale background (non-modal)
     >
-      <Drawer.Portal>
-        {/* No overlay - drawer is not modal */}
-        <Drawer.Content
-          className="bg-background flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-[100] border-t-2 border-border shadow-2xl"
-          style={{ maxHeight: '85vh' }} // Ensure it doesn't go off-screen
-        >
+      <DrawerContent className="max-h-[85vh]">
           {/* Drag Handle - Draggable to expand/collapse */}
           <div
             className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/30 mt-4 cursor-grab active:cursor-grabbing hover:bg-muted-foreground/50 transition-colors"
@@ -213,12 +213,12 @@ export function BlockDrawer({
             <div className="p-4 border-b flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <Drawer.Title className="font-semibold text-lg capitalize">
+                  <DrawerTitle className="capitalize">
                     {section} Blocks
-                  </Drawer.Title>
-                  <Drawer.Description className="text-sm text-muted-foreground mt-1">
+                  </DrawerTitle>
+                  <DrawerDescription>
                     {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to expand'}
-                  </Drawer.Description>
+                  </DrawerDescription>
                 </div>
                 {/* Close Button - Top right */}
                 <Button
@@ -297,9 +297,8 @@ export function BlockDrawer({
               )}
             </div>
           )}
-        </Drawer.Content>
-      </Drawer.Portal>
-    </Drawer.Root>
+      </DrawerContent>
+    </Drawer>
   );
 }
 
