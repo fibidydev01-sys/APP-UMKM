@@ -152,19 +152,25 @@ function SortableSectionItem({
         onClick={() => onSectionClick(section.id)}
         title={section.label} // Always show tooltip
       >
-        {/* Drag Handle - Positioned absolute on hover */}
+        {/* Drag Handle | Separator - Inline on hover */}
         {!collapsed && (
-          <div
-            {...attributes}
-            {...listeners}
-            className={cn(
-              'cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted/50 transition-colors',
-              'opacity-0 group-hover:opacity-100 absolute left-1 top-1/2 -translate-y-1/2'
-            )}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <GripVertical className="h-3 w-3 text-muted-foreground" />
-          </div>
+          <>
+            <div
+              {...attributes}
+              {...listeners}
+              className={cn(
+                'cursor-grab active:cursor-grabbing transition-opacity',
+                'opacity-0 group-hover:opacity-100'
+              )}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <GripVertical className="h-4 w-4 text-muted-foreground" />
+            </div>
+            <div className={cn(
+              'h-4 w-px bg-border transition-opacity',
+              'opacity-0 group-hover:opacity-100'
+            )} />
+          </>
         )}
 
         {/* Icon */}
@@ -225,8 +231,8 @@ export function BuilderSidebar({
     <div
       className={cn(
         'border-r bg-muted/30 p-3 space-y-2 transition-all duration-300',
-        // 🚀 Icon-only sidebar - horizontal layout with separator
-        collapsed ? 'w-16' : 'w-28',
+        // 🚀 Icon-only sidebar - horizontal layout with 2 separators
+        collapsed ? 'w-16' : 'w-36',
         className
       )}
     >
