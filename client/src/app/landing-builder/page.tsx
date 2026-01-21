@@ -46,10 +46,6 @@ export default function LandingBuilderPage() {
   const [showBlockSidebar, setShowBlockSidebar] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // 🚀 Section order state - default order if not in config
-  const defaultSectionOrder: SectionType[] = ['hero', 'about', 'products', 'testimonials', 'cta', 'contact'];
-  const sectionOrder = landingConfig?.sectionOrder || defaultSectionOrder;
-
   // ============================================================================
   // LANDING CONFIG HOOK
   // ============================================================================
@@ -67,6 +63,10 @@ export default function LandingBuilderPage() {
     initialConfig: tenant?.landingConfig,
     onSaveSuccess: () => refresh(),
   });
+
+  // 🚀 Section order state - default order if not in config
+  const defaultSectionOrder: SectionType[] = ['hero', 'about', 'products', 'testimonials', 'cta', 'contact'];
+  const sectionOrder = landingConfig?.sectionOrder || defaultSectionOrder;
 
   // ============================================================================
   // FETCH PRODUCTS FOR PREVIEW

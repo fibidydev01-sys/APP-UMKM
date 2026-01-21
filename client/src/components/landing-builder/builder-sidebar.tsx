@@ -34,8 +34,10 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
+import type { SectionKey } from '@/types';
 
-export type SectionType = 'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta';
+// 🚀 Re-export as SectionType for backward compatibility
+export type SectionType = SectionKey;
 
 interface Section {
   id: SectionType;

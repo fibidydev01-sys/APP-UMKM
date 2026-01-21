@@ -18,7 +18,7 @@ import {
   TenantContact,
   TenantCta,
 } from '@/components/landing';
-import type { TenantLandingConfig, Product, Tenant } from '@/types';
+import type { TenantLandingConfig, Product, Tenant, SectionKey } from '@/types';
 
 // ==========================================
 // TYPES
@@ -57,7 +57,7 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
   const [device, setDevice] = useState<DeviceType>('desktop');
 
   // 🚀 Section order - use config.sectionOrder or default order
-  const defaultOrder: Array<'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta'> = [
+  const defaultOrder: SectionKey[] = [
     'hero',
     'about',
     'products',
