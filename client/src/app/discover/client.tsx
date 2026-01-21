@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import {
   DiscoverHeader,
   DiscoverHero,
-  CategoryFilterBar,
   DiscoverFooter,
   TenantPreviewDrawer,
   TenantCard,
@@ -21,11 +20,10 @@ import {
   SearchResultsHeader,
   NoResults,
 } from '@/components/discover';
-import type { ShowcaseTenant, SortOption } from '@/types/discover';
+import type { ShowcaseTenant } from '@/types/discover';
 import {
   fetchAllTenants,
   getCategoryLabel,
-  getCategoryColor,
   sortTenants,
   CACHE_DURATION,
 } from '@/lib/discover';
@@ -87,9 +85,6 @@ export function DiscoverPageClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [sortBy, setSortBy] = useState<SortOption>('popular');
   const [activeTab, setActiveTab] = useState<TabType>('umkm');
 
   // Drawer State
@@ -155,21 +150,8 @@ export function DiscoverPageClient() {
       });
     }
 
-    // Apply category filter
-    if (selectedCategory) {
-      result = result.filter((tenant) => tenant.category === selectedCategory);
-    }
-
-    // Apply color filter
-    if (selectedColor) {
-      result = result.filter((tenant) => {
-        const categoryColor = getCategoryColor(tenant.category);
-        return categoryColor === selectedColor;
-      });
-    }
-
-    // Apply sort using centralized utility
-    result = sortTenants(result, sortBy);
+    // Default sort: popular (by product count)
+    result = sortTenants(result, 'popular');
 
     return result;
   })();
@@ -195,18 +177,6 @@ export function DiscoverPageClient() {
     router.push('/discover', { scroll: false });
   }, [router]);
 
-  const handleCategorySelect = useCallback((category: string | null) => {
-    setSelectedCategory(category);
-  }, []);
-
-  const handleColorSelect = useCallback((color: string | null) => {
-    setSelectedColor(color);
-  }, []);
-
-  const handleSortChange = useCallback((sort: SortOption) => {
-    setSortBy(sort);
-  }, []);
-
   const handleTabChange = useCallback((tab: TabType) => {
     setActiveTab(tab);
   }, []);
@@ -227,13 +197,6 @@ export function DiscoverPageClient() {
   const isSearchMode = !!searchQuery;
   const hasResults = filteredTenants.length > 0;
 
-  const getFilterDescription = () => {
-    const parts: string[] = [];
-    if (selectedCategory) parts.push(`Kategori: ${getCategoryLabel(selectedCategory)}`);
-    if (selectedColor) parts.push(`Warna: ${selectedColor}`);
-    return parts.join(' • ');
-  };
-
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
@@ -253,46 +216,19 @@ export function DiscoverPageClient() {
         ) : (
           <DiscoverHero
             onSearch={handleSearch}
-            onCategorySelect={handleCategorySelect}
             onTabChange={handleTabChange}
             searchQuery={searchQuery}
             activeTab={activeTab}
           />
         )}
 
-        {/* Filter Bar */}
-        <CategoryFilterBar
-          selectedCategory={selectedCategory}
-          onCategorySelect={handleCategorySelect}
-          selectedColor={selectedColor}
-          onColorSelect={handleColorSelect}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
-          isSticky={true}
-        />
-
         {/* Content */}
         <section className="py-8">
           <div className="container mx-auto px-4">
-            {/* Stats & Filter Info */}
+            {/* Stats */}
             {!loading && filteredTenants.length > 0 && (
               <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground mb-6">
                 <span>{filteredTenants.length} UMKM ditemukan</span>
-                {(selectedCategory || selectedColor) && (
-                  <>
-                    <span>•</span>
-                    <span>{getFilterDescription()}</span>
-                    <button
-                      onClick={() => {
-                        handleCategorySelect(null);
-                        handleColorSelect(null);
-                      }}
-                      className="text-primary hover:underline"
-                    >
-                      Reset Filter
-                    </button>
-                  </>
-                )}
               </div>
             )}
 
@@ -329,32 +265,16 @@ export function DiscoverPageClient() {
                 <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
                   <Store className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h3 className="font-semibold mb-2">
-                  {selectedCategory || selectedColor ? 'Tidak ada hasil' : 'Belum ada toko'}
-                </h3>
+                <h3 className="font-semibold mb-2">Belum ada toko</h3>
                 <p className="text-muted-foreground mb-6">
-                  {selectedCategory || selectedColor
-                    ? 'Tidak ada UMKM yang cocok dengan filter.'
-                    : 'Jadilah yang pertama membuat toko di Fibidy!'}
+                  Jadilah yang pertama membuat toko di Fibidy!
                 </p>
-                {selectedCategory || selectedColor ? (
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedCategory(null);
-                      setSelectedColor(null);
-                    }}
-                  >
-                    Reset Filter
-                  </Button>
-                ) : (
-                  <Button asChild>
-                    <Link href="/register">
-                      Buat Toko Sekarang
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                )}
+                <Button asChild>
+                  <Link href="/register">
+                    Buat Toko Sekarang
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
             )}
 
