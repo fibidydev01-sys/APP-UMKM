@@ -126,7 +126,7 @@ export function DiscoverHeader({
             <span
               className={cn(
                 'font-bold text-xl transition-all duration-300',
-                showHeaderSearch ? 'hidden lg:block' : 'block'
+                isScrolled ? 'hidden lg:block' : 'block'
               )}
             >
               Fibidy
