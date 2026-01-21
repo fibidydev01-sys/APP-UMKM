@@ -7,7 +7,7 @@
 
 'use client';
 
-import { Button } from '@/components/ui/button';
+// Button removed - using div to avoid nested button issue with Switch
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import {
@@ -143,14 +143,28 @@ function SortableSectionItem({
         isDragging && 'opacity-50 z-50'
       )}
     >
-      <Button
-        variant={isActive ? 'secondary' : 'ghost'}
+      <div
         className={cn(
-          'w-full h-auto transition-all justify-center items-center gap-2 py-3 px-2',
+          // Base button styles
+          'inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium',
+          'transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+          'disabled:pointer-events-none disabled:opacity-50',
+          // Variant styles
+          isActive ? 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80' : 'hover:bg-accent hover:text-accent-foreground',
+          // Custom styles
+          'w-full h-auto transition-all justify-center items-center gap-2 py-3 px-2 cursor-pointer',
           isActive && 'bg-primary/10 text-primary hover:bg-primary/15'
         )}
         onClick={() => onSectionClick(section.id)}
         title={section.label} // Always show tooltip
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSectionClick(section.id);
+          }
+        }}
       >
         {/* Drag Handle | Separator - Inline on hover */}
         {!collapsed && (
@@ -188,7 +202,7 @@ function SortableSectionItem({
             />
           </>
         )}
-      </Button>
+      </div>
     </div>
   );
 }
