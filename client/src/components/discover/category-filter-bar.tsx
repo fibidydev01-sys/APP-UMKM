@@ -6,6 +6,7 @@
 'use client';
 
 import { useRef, useState, useEffect, useCallback, memo } from 'react';
+import Link from 'next/link';
 import {
   ChevronDown,
   SlidersHorizontal,
@@ -30,6 +31,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG, getCategoryList, type CategoryConfig } from '@/config/categories';
+import { categoryKeyToSlug } from '@/lib/categories/unified-service';
 
 // ══════════════════════════════════════════════════════════════
 // Z-INDEX HIERARCHY (FINAL V10.7):
@@ -318,8 +320,8 @@ export function CategoryFilterBar({
               ref={scrollContainerRef}
               className="flex items-center gap-1 overflow-x-auto scrollbar-hide scroll-smooth px-1"
             >
-              <button
-                onClick={() => handleCategoryClick(null)}
+              <Link
+                href="/discover"
                 className={cn(
                   'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
                   !selectedCategory
@@ -328,12 +330,12 @@ export function CategoryFilterBar({
                 )}
               >
                 Discover
-              </button>
+              </Link>
 
               {categories.map((cat) => (
-                <button
+                <Link
                   key={cat.key}
-                  onClick={() => handleCategoryClick(cat.key)}
+                  href={`/discover/${categoryKeyToSlug(cat.key)}`}
                   className={cn(
                     'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
                     selectedCategory === cat.key
@@ -343,7 +345,7 @@ export function CategoryFilterBar({
                 >
                   <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
                   {cat.labelShort}
-                </button>
+                </Link>
               ))}
             </div>
 
