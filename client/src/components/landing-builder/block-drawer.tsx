@@ -226,15 +226,15 @@ export function BlockDrawer({
                     {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to expand'}
                   </DrawerDescription>
                 </div>
-                {/* Close Button - Top right */}
+                {/* Minimize Button - Top right (minimize to 5% instead of closing) */}
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={onClose}
+                  onClick={() => onStateChange('minimized')}
                   className="h-8 w-8 ml-2"
-                  title="Close drawer"
+                  title="Minimize drawer"
                 >
-                  <X className="h-4 w-4" />
+                  <Minimize2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
