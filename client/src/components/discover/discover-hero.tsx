@@ -1,8 +1,7 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V13.0 (7 Category Groups)
-// Changed: Replaced UMKM/Produk/Jasa tabs with 7 main category groups
-// Groups: KULINER, RUMAH_TAMAN, OTOMOTIF, KESEHATAN_KECANTIKAN,
-//         TRAVEL_HIBURAN, BELANJA, LAINNYA
+// DISCOVER HERO - V14.0 (Dropdown + Clean Categories)
+// Changed: Replaced tabs with dropdown selector
+// Changed: Categories now use CategoryFilterBar pattern with arrows
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -23,6 +22,13 @@ import { Badge } from '@/components/ui/badge';
 import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG, CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -155,27 +161,34 @@ export function DiscoverHero({
             </p>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* TABS - 7 Category Groups with emojis              */}
+            {/* DROPDOWN - 7 Category Groups with emojis          */}
+            {/* z-[9999] ensures dropdown stays on top            */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-hide">
-              {tabs.map((tab) => {
-                const isActive = activeTab === tab.id;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => handleTabClick(tab.id)}
-                    className={cn(
-                      'flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0',
-                      isActive
-                        ? 'bg-foreground text-background shadow-lg'
-                        : 'bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground'
-                    )}
-                  >
-                    <span>{tab.emoji}</span>
-                    <span>{tab.label}</span>
-                  </button>
-                );
-              })}
+            <div className="mb-6 relative z-[9999]">
+              <Select value={activeTab} onValueChange={(value) => handleTabClick(value as TabType)}>
+                <SelectTrigger className="w-fit bg-background border-2 rounded-full px-4 py-2 h-auto gap-2 font-medium shadow-sm hover:shadow-md transition-shadow">
+                  <SelectValue>
+                    <span className="flex items-center gap-2">
+                      <span>{tabs.find(t => t.id === activeTab)?.emoji}</span>
+                      <span>{tabs.find(t => t.id === activeTab)?.label}</span>
+                    </span>
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent className="z-[99999] rounded-xl border-2 shadow-xl">
+                  {tabs.map((tab) => (
+                    <SelectItem
+                      key={tab.id}
+                      value={tab.id}
+                      className="cursor-pointer rounded-lg"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span>{tab.emoji}</span>
+                        <span>{tab.label}</span>
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Search Bar */}
@@ -190,22 +203,22 @@ export function DiscoverHero({
             </div>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* POPULAR TAGS - Horizontal Scroll (4 per tab)       */}
-            {/* Arrows only show when there's overflow              */}
+            {/* POPULAR TAGS - CategoryFilterBar Pattern           */}
+            {/* Clean arrows with gradient fade effect             */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="relative z-10">
+            <div className="relative flex items-center min-w-0">
               {showLeftArrow && (
                 <button
                   onClick={scrollLeft}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-6 w-6 flex items-center justify-center bg-background border rounded-full shadow-sm hover:bg-muted transition-colors"
+                  className="absolute left-0 z-10 h-8 w-8 flex items-center justify-center bg-gradient-to-r from-background via-background to-transparent"
                 >
-                  <ChevronLeft className="h-3.5 w-3.5" />
+                  <ChevronLeft className="h-4 w-4" />
                 </button>
               )}
 
               <div
                 ref={scrollContainerRef}
-                className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth"
+                className="flex items-center gap-1 overflow-x-auto scrollbar-hide scroll-smooth px-1"
               >
                 {popularCategories.map((catKey) => {
                   const category = CATEGORY_CONFIG[catKey];
@@ -215,15 +228,12 @@ export function DiscoverHero({
                       key={catKey}
                       href={`/discover/${categoryKeyToSlug(catKey)}`}
                       className={cn(
-                        'inline-flex items-center gap-1.5',
-                        'px-2.5 py-1 text-xs rounded-full border',
-                        'bg-background hover:bg-muted hover:border-primary/50',
-                        'transition-colors duration-200',
-                        'whitespace-nowrap shrink-0'
+                        'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
+                        'text-muted-foreground hover:text-foreground hover:bg-muted'
                       )}
                     >
                       <span
-                        className="w-1.5 h-1.5 rounded-full"
+                        className="w-2 h-2 rounded-full shrink-0"
                         style={{ backgroundColor: category.color }}
                       />
                       {category.labelShort}
@@ -235,9 +245,9 @@ export function DiscoverHero({
               {showRightArrow && (
                 <button
                   onClick={scrollRight}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-6 w-6 flex items-center justify-center bg-background border rounded-full shadow-sm hover:bg-muted transition-colors"
+                  className="absolute right-0 z-10 h-8 w-8 flex items-center justify-center bg-gradient-to-l from-background via-background to-transparent"
                 >
-                  <ChevronRight className="h-3.5 w-3.5" />
+                  <ChevronRight className="h-4 w-4" />
                 </button>
               )}
             </div>
