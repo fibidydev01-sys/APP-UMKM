@@ -199,87 +199,19 @@ export function DiscoverHeader({
                 />
               </div>
 
-              <nav className="flex flex-col gap-1">
-                {/* Kategori Section */}
-                <p className="text-sm font-semibold text-muted-foreground mb-2 px-3">
-                  Explore Kategori
-                </p>
-
-                {/* All Categories */}
-                <button
-                  onClick={() => {
-                    handleCategorySelect(null);
-                    setIsOpen(false);
-                  }}
-                  className={cn(
-                    'flex items-center gap-3 px-3 py-2.5 rounded-md text-left transition-colors',
-                    !selectedCategory
-                      ? 'bg-primary/10 text-primary font-medium'
-                      : 'hover:bg-accent'
-                  )}
-                >
-                  <Store className="h-4 w-4" />
-                  <span>Semua Kategori</span>
-                </button>
-
-                {/* Category List */}
-                <div className="max-h-64 overflow-y-auto space-y-0.5 mt-1">
-                  {categories.map((cat) => {
-                    const Icon = cat.icon;
-                    return (
-                      <button
-                        key={cat.key}
-                        onClick={() => {
-                          handleCategorySelect(cat.key);
-                          setIsOpen(false);
-                        }}
-                        className={cn(
-                          'flex items-center gap-3 px-3 py-2.5 rounded-md w-full text-left transition-colors',
-                          selectedCategory === cat.key
-                            ? 'bg-primary/10 text-primary font-medium'
-                            : 'hover:bg-accent'
-                        )}
-                      >
-                        <Icon
-                          className="h-4 w-4 shrink-0"
-                          style={{ color: cat.color }}
-                        />
-                        <span className="truncate">{cat.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* Lainnya Section */}
-                <div className="border-t my-4" />
-                <p className="text-sm font-semibold text-muted-foreground mb-2 px-3">
-                  Lainnya
-                </p>
-                {moreItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className="block px-3 py-2.5 rounded-md hover:bg-accent transition-colors"
-                  >
-                    {item.label}
+              {/* Mobile CTA */}
+              <div className="flex flex-col gap-2">
+                <Button variant="outline" asChild className="w-full">
+                  <Link href="/login" onClick={() => setIsOpen(false)}>
+                    Masuk
                   </Link>
-                ))}
-
-                {/* Mobile CTA */}
-                <div className="flex flex-col gap-2 mt-6 pt-4 border-t">
-                  <Button variant="outline" asChild className="w-full">
-                    <Link href="/login" onClick={() => setIsOpen(false)}>
-                      Masuk
-                    </Link>
-                  </Button>
-                  <Button asChild className="w-full">
-                    <Link href="/register" onClick={() => setIsOpen(false)}>
-                      Buat Toko
-                    </Link>
-                  </Button>
-                </div>
-              </nav>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link href="/register" onClick={() => setIsOpen(false)}>
+                    Buat Toko
+                  </Link>
+                </Button>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
