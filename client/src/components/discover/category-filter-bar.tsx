@@ -1,7 +1,8 @@
 // ══════════════════════════════════════════════════════════════
-// CATEGORY FILTER BAR - V13.0 (NavigationMenu Groups + Hover)
-// Each group (Kuliner, Rumah & Taman, etc.) shows sub-categories on hover
-// No icons/emojis, highest z-index
+// CATEGORY FILTER BAR - V14.0 (NavigationMenu Groups + Hover)
+// Fixed: viewport={false} to prevent clipping in scroll container
+// Each group shows sub-categories on hover
+// No icons/emojis
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -86,10 +87,7 @@ export function CategoryFilterBar({
     <div
       className={cn(
         'bg-background border-b transition-all duration-300',
-        // ══════════════════════════════════════════════════════
-        // z-[99999]: HIGHEST z-index for dropdown
-        // ══════════════════════════════════════════════════════
-        isSticky && 'sticky top-16 z-[99999] shadow-sm'
+        isSticky && 'sticky top-16 z-40 shadow-sm'
       )}
     >
       <div className="container mx-auto px-4">
@@ -123,15 +121,15 @@ export function CategoryFilterBar({
                 Discover
               </button>
 
-              {/* NavigationMenu for Groups */}
-              <NavigationMenu className="max-w-none">
+              {/* NavigationMenu for Groups - viewport={false} prevents clipping */}
+              <NavigationMenu viewport={false} className="max-w-none">
                 <NavigationMenuList className="gap-1">
                   {groups.map((group) => {
                     const subCategories = getCategoriesByGroup(group.key);
                     const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
 
                     return (
-                      <NavigationMenuItem key={group.key}>
+                      <NavigationMenuItem key={group.key} className="relative">
                         <NavigationMenuTrigger
                           className={cn(
                             'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 h-auto bg-transparent',
@@ -142,7 +140,7 @@ export function CategoryFilterBar({
                         >
                           {group.label}
                         </NavigationMenuTrigger>
-                        <NavigationMenuContent className="z-[99999]">
+                        <NavigationMenuContent>
                           <ul className="grid w-[220px] gap-1 p-2 max-h-[400px] overflow-y-auto">
                             {subCategories.map((cat) => (
                               <li key={cat.key}>

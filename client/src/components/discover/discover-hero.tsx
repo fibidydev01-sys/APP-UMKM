@@ -1,8 +1,8 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V15.0 (NavigationMenu + No Icons)
-// Changed: Using NavigationMenu for dropdown
-// Changed: Removed all emojis/icons
-// Changed: Max 3 categories, z-[99999]
+// DISCOVER HERO - V16.0 (Select Dropdown + No Icons)
+// Changed: Using Select dropdown (simpler)
+// Changed: z-index lower than header
+// Changed: Max 3 categories
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -24,13 +24,12 @@ import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG, CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -163,39 +162,28 @@ export function DiscoverHero({
             </p>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* DROPDOWN - NavigationMenu (No Icons)               */}
-            {/* z-[99999] ensures dropdown stays on top            */}
+            {/* DROPDOWN - Select (No Icons)                       */}
+            {/* z-30: Lower than header (z-50)                     */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="mb-6 relative z-[99999]">
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger className="bg-background border-2 rounded-full px-4 py-2 h-auto font-medium shadow-sm hover:shadow-md transition-shadow">
-                      {tabs.find(t => t.id === activeTab)?.label}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent className="z-[99999]">
-                      <ul className="grid w-[200px] gap-1 p-2">
-                        {tabs.map((tab) => (
-                          <li key={tab.id}>
-                            <NavigationMenuLink asChild>
-                              <button
-                                onClick={() => handleTabClick(tab.id)}
-                                className={cn(
-                                  'block w-full select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors text-left',
-                                  'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-                                  activeTab === tab.id && 'bg-accent text-accent-foreground'
-                                )}
-                              >
-                                {tab.label}
-                              </button>
-                            </NavigationMenuLink>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
+            <div className="mb-6 relative z-30">
+              <Select value={activeTab} onValueChange={(value) => handleTabClick(value as TabType)}>
+                <SelectTrigger className="w-fit bg-background border-2 rounded-full px-4 py-2 h-auto gap-2 font-medium shadow-sm hover:shadow-md transition-shadow">
+                  <SelectValue>
+                    {tabs.find(t => t.id === activeTab)?.label}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent position="popper" side="bottom" align="start" className="rounded-xl border-2 shadow-xl">
+                  {tabs.map((tab) => (
+                    <SelectItem
+                      key={tab.id}
+                      value={tab.id}
+                      className="cursor-pointer rounded-lg"
+                    >
+                      {tab.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Search Bar */}
