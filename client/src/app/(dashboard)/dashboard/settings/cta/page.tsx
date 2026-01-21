@@ -10,9 +10,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
+import { TenantCta } from '@/components/landing';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
+import type { Tenant } from '@/types';
 
 export default function CTAPage() {
   const router = useRouter();
@@ -184,6 +186,27 @@ export default function CTAPage() {
                       Ini adalah preview tombol CTA Anda
                     </span>
                   </div>
+                </div>
+              </div>
+
+              {/* Live Preview */}
+              <div className="space-y-2 pt-6 mt-6 border-t">
+                <Label className="text-lg font-semibold">Live Preview</Label>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Pratinjau real-time dari CTA Section Anda
+                </p>
+                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                  <TenantCta
+                    tenant={{
+                      ...tenant,
+                      ctaTitle: formData.ctaTitle,
+                      ctaSubtitle: formData.ctaSubtitle,
+                      ctaButtonText: formData.ctaButtonText,
+                      ctaButtonLink: formData.ctaButtonLink,
+                      ctaButtonStyle: formData.ctaButtonStyle,
+                    } as Tenant}
+                    config={{ block: 'cta1' }}
+                  />
                 </div>
               </div>
 

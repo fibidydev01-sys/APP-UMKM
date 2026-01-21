@@ -10,10 +10,12 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
+import { TenantHero } from '@/components/landing';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import type { Tenant } from '@/types';
 
 const THEME_COLORS = [
   { name: 'Sky', value: '#0ea5e9', class: 'bg-sky-500' },
@@ -328,6 +330,31 @@ export default function HeroSectionPage() {
                       Pilih warna utama untuk toko online Anda
                     </p>
                   </div>
+                </div>
+              </div>
+
+              {/* Live Preview */}
+              <div className="space-y-2 pt-6 mt-6 border-t">
+                <Label className="text-lg font-semibold">Live Preview</Label>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Pratinjau real-time dari Hero Section Anda
+                </p>
+                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                  <TenantHero
+                    tenant={{
+                      ...tenant,
+                      name: formData.name,
+                      description: formData.description,
+                      heroTitle: formData.heroTitle,
+                      heroSubtitle: formData.heroSubtitle,
+                      heroCtaText: formData.heroCtaText,
+                      heroCtaLink: formData.heroCtaLink,
+                      heroBackgroundImage: formData.heroBackgroundImage,
+                      logo: formData.logo,
+                      theme: { primaryColor: formData.primaryColor },
+                    } as Tenant}
+                    config={{ block: 'hero1' }}
+                  />
                 </div>
               </div>
 

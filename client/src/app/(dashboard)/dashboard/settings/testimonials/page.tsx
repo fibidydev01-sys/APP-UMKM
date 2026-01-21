@@ -11,10 +11,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
+import { TenantTestimonials } from '@/components/landing';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { Testimonial } from '@/types';
+import type { Testimonial, Tenant } from '@/types';
 
 export default function TestimonialsPage() {
   const router = useRouter();
@@ -238,6 +239,33 @@ export default function TestimonialsPage() {
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Live Preview */}
+              <div className="space-y-2 pt-6 mt-6 border-t">
+                <Label className="text-lg font-semibold">Live Preview</Label>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Pratinjau real-time dari Testimonials Section Anda
+                </p>
+                {formData.testimonials.length === 0 ? (
+                  <div className="border rounded-lg p-8 bg-muted/20 text-center">
+                    <p className="text-muted-foreground">
+                      Tambahkan minimal 1 testimonial untuk melihat preview
+                    </p>
+                  </div>
+                ) : (
+                  <div className="border rounded-lg overflow-hidden bg-muted/20">
+                    <TenantTestimonials
+                      tenant={{
+                        ...tenant,
+                        testimonialsTitle: formData.testimonialsTitle,
+                        testimonialsSubtitle: formData.testimonialsSubtitle,
+                        testimonials: formData.testimonials,
+                      } as Tenant}
+                      config={{ block: 'testimonials1' }}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Save Button */}

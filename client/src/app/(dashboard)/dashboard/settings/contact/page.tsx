@@ -11,9 +11,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
+import { TenantContact } from '@/components/landing';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
+import type { Tenant } from '@/types';
 
 export default function ContactPage() {
   const router = useRouter();
@@ -247,6 +249,30 @@ export default function ContactPage() {
                       onCheckedChange={(checked) => updateFormData('contactShowForm', checked)}
                     />
                   </div>
+                </div>
+              </div>
+
+              {/* Live Preview */}
+              <div className="space-y-2 pt-6 mt-6 border-t">
+                <Label className="text-lg font-semibold">Live Preview</Label>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Pratinjau real-time dari Contact Section Anda
+                </p>
+                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                  <TenantContact
+                    tenant={{
+                      ...tenant,
+                      contactTitle: formData.contactTitle,
+                      contactSubtitle: formData.contactSubtitle,
+                      contactMapUrl: formData.contactMapUrl,
+                      contactShowMap: formData.contactShowMap,
+                      contactShowForm: formData.contactShowForm,
+                      phone: formData.phone,
+                      whatsapp: formData.whatsapp,
+                      address: formData.address,
+                    } as Tenant}
+                    config={{ block: 'contact1' }}
+                  />
                 </div>
               </div>
 
