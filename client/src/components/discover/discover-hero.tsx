@@ -1,6 +1,7 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V10.8 FINAL
-// Feature: Tabs filter Popular tags (4 categories per type)
+// DISCOVER HERO - V11.0 (Carousel)
+// Feature: Popular tags now use Carousel for better mobile/desktop UX
+// Tabs filter Popular tags (4 categories per type)
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -16,6 +17,13 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG } from '@/config/categories';
@@ -167,32 +175,45 @@ export function DiscoverHero({
             </div>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* POPULAR TAGS - Dynamic based on active tab (4)     */}
+            {/* POPULAR TAGS - Carousel based on active tab (4)    */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="flex flex-wrap items-center gap-2 relative z-10">
-              <span className="text-sm text-muted-foreground">Popular:</span>
-              {popularCategories.map((catKey) => {
-                const category = CATEGORY_CONFIG[catKey];
-                if (!category) return null;
-                return (
-                  <Link
-                    key={catKey}
-                    href={`/discover/${categoryKeyToSlug(catKey)}`}
-                    className={cn(
-                      'px-3 py-1.5 text-sm rounded-full border',
-                      'bg-background hover:bg-muted hover:border-primary/50',
-                      'transition-colors duration-200',
-                      'flex items-center gap-1.5'
-                    )}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: category.color }}
-                    />
-                    {category.labelShort}
-                  </Link>
-                );
-              })}
+            <div className="relative z-10">
+              <span className="text-sm text-muted-foreground mb-3 block">Popular:</span>
+              <Carousel
+                opts={{
+                  align: 'start',
+                  loop: false,
+                }}
+                className="w-full"
+              >
+                <CarouselContent className="-ml-2">
+                  {popularCategories.map((catKey) => {
+                    const category = CATEGORY_CONFIG[catKey];
+                    if (!category) return null;
+                    return (
+                      <CarouselItem key={catKey} className="pl-2 basis-auto">
+                        <Link
+                          href={`/discover/${categoryKeyToSlug(catKey)}`}
+                          className={cn(
+                            'px-3 py-1.5 text-sm rounded-full border',
+                            'bg-background hover:bg-muted hover:border-primary/50',
+                            'transition-colors duration-200',
+                            'flex items-center gap-1.5 whitespace-nowrap'
+                          )}
+                        >
+                          <span
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: category.color }}
+                          />
+                          {category.labelShort}
+                        </Link>
+                      </CarouselItem>
+                    );
+                  })}
+                </CarouselContent>
+                <CarouselPrevious className="-left-3 h-7 w-7" />
+                <CarouselNext className="-right-3 h-7 w-7" />
+              </Carousel>
             </div>
           </div>
 
