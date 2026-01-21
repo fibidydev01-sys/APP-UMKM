@@ -1,9 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { CategoryCard } from '../category-card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { getCategoryList } from '@/config/categories';
-import { Package, Check } from 'lucide-react';
+import { Package, Check, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ==========================================
@@ -28,6 +31,17 @@ export function StepCategory({
   onBack,
 }: StepCategoryProps) {
   const categories = getCategoryList();
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
+
+  const handleCustomCategorySelect = () => {
+    if (customCategory.trim()) {
+      onSelectCategory(customCategory.trim());
+      setShowCustomInput(false);
+    }
+  };
+
+  const isPredefinedSelected = categories.some((c) => c.key === selectedCategory);
 
   return (
     <div className="space-y-6">
@@ -39,7 +53,7 @@ export function StepCategory({
         </p>
       </div>
 
-      {/* Category Grid */}
+      {/* Category Grid - Predefined */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {categories.map((cat) => (
           <CategoryCard
@@ -48,35 +62,100 @@ export function StepCategory({
             label={cat.label}
             color={cat.color}
             isSelected={selectedCategory === cat.key}
-            onClick={() => onSelectCategory(cat.key)}
+            onClick={() => {
+              onSelectCategory(cat.key);
+              setShowCustomInput(false);
+              setCustomCategory('');
+            }}
           />
         ))}
       </div>
 
-      {/* "Lainnya" Card - Full Width */}
-      <button
-        type="button"
-        onClick={() => onSelectCategory('OTHER')}
-        className={cn(
-          'w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all',
-          selectedCategory === 'OTHER'
-            ? 'border-primary bg-primary/10'
-            : 'border-dashed border-muted-foreground/30 hover:border-primary/50'
-        )}
-      >
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted">
-          <Package className="w-5 h-5 text-muted-foreground" />
+      {/* "Lainnya" Section */}
+      {!showCustomInput ? (
+        <button
+          type="button"
+          onClick={() => setShowCustomInput(true)}
+          className={cn(
+            'w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all',
+            'border-dashed border-muted-foreground/30 hover:border-primary/50'
+          )}
+        >
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted">
+            <Package className="w-5 h-5 text-muted-foreground" />
+          </div>
+          <div className="text-left flex-1">
+            <p className="font-medium">Lainnya</p>
+            <p className="text-sm text-muted-foreground">
+              Jenis usaha tidak ada di daftar
+            </p>
+          </div>
+          <Sparkles className="w-5 h-5 text-muted-foreground" />
+        </button>
+      ) : (
+        <div className="p-4 rounded-xl border-2 border-primary bg-primary/5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Package className="w-5 h-5 text-primary" />
+            <p className="font-medium">Kategori Custom</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="custom-category">Nama Kategori</Label>
+            <Input
+              id="custom-category"
+              placeholder="Contoh: Distro Streetwear, Klinik Hewan, Service Komputer"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && customCategory.trim()) {
+                  handleCustomCategorySelect();
+                }
+              }}
+              autoFocus
+            />
+            <p className="text-xs text-muted-foreground">
+              Kategori ini akan tersimpan dan bisa dicari oleh pengguna lain
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setShowCustomInput(false);
+                setCustomCategory('');
+              }}
+              className="flex-1"
+            >
+              Batal
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleCustomCategorySelect}
+              disabled={!customCategory.trim()}
+              className="flex-1"
+            >
+              Gunakan Kategori Ini
+            </Button>
+          </div>
         </div>
-        <div className="text-left flex-1">
-          <p className="font-medium">Lainnya</p>
-          <p className="text-sm text-muted-foreground">
-            Jenis usaha tidak ada di daftar
-          </p>
+      )}
+
+      {/* Selected Custom Category Display */}
+      {selectedCategory && !isPredefinedSelected && (
+        <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+          <div className="flex items-center gap-2">
+            <Check className="w-5 h-5 text-primary" />
+            <div>
+              <p className="font-medium">Kategori terpilih:</p>
+              <p className="text-sm text-muted-foreground">{selectedCategory}</p>
+            </div>
+          </div>
         </div>
-        {selectedCategory === 'OTHER' && (
-          <Check className="w-5 h-5 text-primary" />
-        )}
-      </button>
+      )}
 
       {/* Navigation Buttons */}
       <div className="flex gap-3 pt-4">

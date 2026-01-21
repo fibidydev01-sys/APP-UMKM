@@ -38,6 +38,7 @@ import {
 interface CategoryPageClientProps {
   categoryKey: string;
   categorySlug: string;
+  isDynamic?: boolean; // true if category is dynamic (not predefined)
 }
 
 // ══════════════════════════════════════════════════════════════
