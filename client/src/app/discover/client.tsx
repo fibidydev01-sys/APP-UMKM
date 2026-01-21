@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER PAGE CLIENT - V12.0 REFACTORED
-// Uses centralized lib/discover utilities
+// DISCOVER PAGE CLIENT - V13.0 (7 Category Groups)
+// Updated to use new 7 category groups instead of UMKM/Produk/Jasa
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -32,7 +32,7 @@ import {
 // TYPES
 // ══════════════════════════════════════════════════════════════
 
-type TabType = 'umkm' | 'produk' | 'jasa';
+type TabType = 'KULINER' | 'RUMAH_TAMAN' | 'OTOMOTIF' | 'KESEHATAN_KECANTIKAN' | 'TRAVEL_HIBURAN' | 'BELANJA' | 'LAINNYA';
 
 // ══════════════════════════════════════════════════════════════
 // BROWSER CACHE (sessionStorage)
@@ -85,7 +85,7 @@ export function DiscoverPageClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState(urlSearchQuery);
-  const [activeTab, setActiveTab] = useState<TabType>('umkm');
+  const [activeTab, setActiveTab] = useState<TabType>('KULINER');
 
   // Drawer State
   const [selectedTenant, setSelectedTenant] = useState<ShowcaseTenant | null>(null);
