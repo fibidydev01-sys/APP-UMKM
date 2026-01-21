@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// CATEGORY FILTER BAR - V14.0 (NavigationMenu Groups + Hover)
-// Fixed: viewport={false} to prevent clipping in scroll container
+// CATEGORY FILTER BAR - V15.0 (NavigationMenu like Hero)
+// Pattern: Same as Hero but using NavigationMenu with hover
 // Each group shows sub-categories on hover
 // No icons/emojis
 // ══════════════════════════════════════════════════════════════
@@ -93,7 +93,7 @@ export function CategoryFilterBar({
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 h-14">
 
-          {/* Navigation Menu with Groups */}
+          {/* Navigation with scroll arrows */}
           <div className="relative flex-1 flex items-center min-w-0">
             {showLeftArrow && (
               <button
@@ -106,7 +106,7 @@ export function CategoryFilterBar({
 
             <div
               ref={scrollContainerRef}
-              className="flex items-center gap-1 overflow-x-auto scrollbar-hide scroll-smooth px-1"
+              className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth px-1"
             >
               {/* Discover Button */}
               <button
@@ -121,15 +121,15 @@ export function CategoryFilterBar({
                 Discover
               </button>
 
-              {/* NavigationMenu for Groups - viewport={false} prevents clipping */}
-              <NavigationMenu viewport={false} className="max-w-none">
-                <NavigationMenuList className="gap-1">
-                  {groups.map((group) => {
-                    const subCategories = getCategoriesByGroup(group.key);
-                    const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
+              {/* NavigationMenu for each Group */}
+              {groups.map((group) => {
+                const subCategories = getCategoriesByGroup(group.key);
+                const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
 
-                    return (
-                      <NavigationMenuItem key={group.key} className="relative">
+                return (
+                  <NavigationMenu key={group.key} className="shrink-0">
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
                         <NavigationMenuTrigger
                           className={cn(
                             'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 h-auto bg-transparent',
@@ -161,10 +161,10 @@ export function CategoryFilterBar({
                           </ul>
                         </NavigationMenuContent>
                       </NavigationMenuItem>
-                    );
-                  })}
-                </NavigationMenuList>
-              </NavigationMenu>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                );
+              })}
             </div>
 
             {showRightArrow && (
