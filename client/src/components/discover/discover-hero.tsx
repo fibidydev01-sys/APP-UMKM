@@ -1,8 +1,8 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V11.1 (Smart Carousel)
-// Feature: Carousel arrows only appear when content overflows
+// DISCOVER HERO - V11.2 (Compact Carousel)
+// Feature: More compact carousel with smaller badges
+// Arrows only appear when content overflows
 // Removed "Popular:" label for cleaner design
-// Tabs filter Popular tags (4 categories per type)
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -199,35 +199,37 @@ export function DiscoverHero({
             </div>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* POPULAR TAGS - Carousel based on active tab (4)    */}
+            {/* POPULAR TAGS - Compact Carousel (4 per tab)        */}
             {/* Arrows only show when there's overflow              */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="relative z-10">
+            <div className="relative z-10 -mx-1">
               <Carousel
                 opts={{
                   align: 'start',
                   loop: false,
+                  slidesToScroll: 1,
                 }}
                 setApi={setCarouselApi}
                 className="w-full"
               >
-                <CarouselContent className="-ml-2">
+                <CarouselContent className="-ml-1">
                   {popularCategories.map((catKey) => {
                     const category = CATEGORY_CONFIG[catKey];
                     if (!category) return null;
                     return (
-                      <CarouselItem key={catKey} className="pl-2 basis-auto">
+                      <CarouselItem key={catKey} className="pl-1 basis-auto">
                         <Link
                           href={`/discover/${categoryKeyToSlug(catKey)}`}
                           className={cn(
-                            'px-3 py-1.5 text-sm rounded-full border',
+                            'inline-flex items-center gap-1.5',
+                            'px-2.5 py-1 text-xs rounded-full border',
                             'bg-background hover:bg-muted hover:border-primary/50',
                             'transition-colors duration-200',
-                            'flex items-center gap-1.5 whitespace-nowrap'
+                            'whitespace-nowrap'
                           )}
                         >
                           <span
-                            className="w-2 h-2 rounded-full"
+                            className="w-1.5 h-1.5 rounded-full"
                             style={{ backgroundColor: category.color }}
                           />
                           {category.labelShort}
@@ -236,8 +238,8 @@ export function DiscoverHero({
                     );
                   })}
                 </CarouselContent>
-                {canScrollPrev && <CarouselPrevious className="-left-3 h-7 w-7" />}
-                {canScrollNext && <CarouselNext className="-right-3 h-7 w-7" />}
+                {canScrollPrev && <CarouselPrevious className="-left-2 h-6 w-6" />}
+                {canScrollNext && <CarouselNext className="-right-2 h-6 w-6" />}
               </Carousel>
             </div>
           </div>
