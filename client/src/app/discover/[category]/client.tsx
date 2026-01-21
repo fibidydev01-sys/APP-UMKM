@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   DiscoverHeader,
+  CategoryFilterBar,
   MinimalFooter,
 } from '@/components/discover';
 import type { ShowcaseTenant, SortOption } from '@/types/discover';
@@ -305,6 +306,15 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
       <main className="flex-1">
         {/* Category Hero */}
         <CategoryHero category={category} tenantCount={tenants.length} />
+
+        {/* Filter Bar (Sticky) */}
+        <CategoryFilterBar
+          selectedCategory={categoryKey}
+          onCategorySelect={handleCategorySelect}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
+          isSticky={true}
+        />
 
         {/* Content */}
         <section className="py-8">
