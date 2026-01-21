@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// CATEGORY FILTER BAR - V15.0 (NavigationMenu like Hero)
-// Pattern: Same as Hero but using NavigationMenu with hover
+// CATEGORY FILTER BAR - V16.0 (Custom Dropdown)
+// Using custom dropdown with portal for reliable rendering
 // Each group shows sub-categories on hover
 // No icons/emojis
 // ══════════════════════════════════════════════════════════════
@@ -11,17 +11,16 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -121,48 +120,44 @@ export function CategoryFilterBar({
                 Discover
               </button>
 
-              {/* NavigationMenu for each Group */}
+              {/* DropdownMenu for each Group */}
               {groups.map((group) => {
                 const subCategories = getCategoriesByGroup(group.key);
                 const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
 
                 return (
-                  <NavigationMenu key={group.key} className="shrink-0">
-                    <NavigationMenuList>
-                      <NavigationMenuItem>
-                        <NavigationMenuTrigger
+                  <DropdownMenu key={group.key}>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className={cn(
+                          'flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 shrink-0',
+                          isGroupActive
+                            ? 'bg-foreground text-background'
+                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+                        )}
+                      >
+                        {group.label}
+                        <ChevronDown className="h-3 w-3" />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="start"
+                      className="w-[220px] max-h-[400px] overflow-y-auto z-50"
+                    >
+                      {subCategories.map((cat) => (
+                        <DropdownMenuItem
+                          key={cat.key}
+                          onClick={() => handleCategoryClick(cat.key)}
                           className={cn(
-                            'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 h-auto bg-transparent',
-                            isGroupActive
-                              ? 'bg-foreground text-background'
-                              : 'text-muted-foreground hover:text-foreground hover:bg-muted data-[state=open]:bg-muted'
+                            'cursor-pointer',
+                            selectedCategory === cat.key && 'bg-accent font-medium'
                           )}
                         >
-                          {group.label}
-                        </NavigationMenuTrigger>
-                        <NavigationMenuContent>
-                          <ul className="grid w-[220px] gap-1 p-2 max-h-[400px] overflow-y-auto">
-                            {subCategories.map((cat) => (
-                              <li key={cat.key}>
-                                <NavigationMenuLink asChild>
-                                  <button
-                                    onClick={() => handleCategoryClick(cat.key)}
-                                    className={cn(
-                                      'block w-full select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors text-left',
-                                      'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
-                                      selectedCategory === cat.key && 'bg-accent text-accent-foreground font-medium'
-                                    )}
-                                  >
-                                    {cat.labelShort}
-                                  </button>
-                                </NavigationMenuLink>
-                              </li>
-                            ))}
-                          </ul>
-                        </NavigationMenuContent>
-                      </NavigationMenuItem>
-                    </NavigationMenuList>
-                  </NavigationMenu>
+                          {cat.labelShort}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 );
               })}
             </div>
