@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button';
 import {
   DiscoverHeader,
   DiscoverHero,
-  CategoryFilterBar,
   DiscoverFooter,
   TenantPreviewDrawer,
   TenantCard,
