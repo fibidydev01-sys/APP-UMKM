@@ -57,10 +57,10 @@ const tabs = Object.values(CATEGORY_GROUPS).map(group => ({
   color: group.color,
 }));
 
-// Get top 4 categories per group for popular section
+// Get top 3 categories per group for popular section
 function getPopularCategoriesForGroup(groupKey: string): string[] {
   const categories = getCategoriesByGroup(groupKey);
-  return categories.slice(0, 4).map(cat => cat.key);
+  return categories.slice(0, 3).map(cat => cat.key);
 }
 
 // Placeholder text per group
@@ -92,7 +92,7 @@ export function DiscoverHero({
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
 
-  // Get top 4 categories for the active group
+  // Get top 3 categories for the active group
   const popularCategories = useMemo(() => {
     return getPopularCategoriesForGroup(activeTab);
   }, [activeTab]);
@@ -174,7 +174,7 @@ export function DiscoverHero({
                     </span>
                   </SelectValue>
                 </SelectTrigger>
-                <SelectContent className="z-[99999] rounded-xl border-2 shadow-xl">
+                <SelectContent position="popper" side="bottom" align="start" className="z-[99999] rounded-xl border-2 shadow-xl">
                   {tabs.map((tab) => (
                     <SelectItem
                       key={tab.id}
