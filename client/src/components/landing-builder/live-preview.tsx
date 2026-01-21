@@ -8,7 +8,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Smartphone, Monitor, Tablet, ExternalLink, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { TemplateProvider } from '@/lib/landing';
 import {
   TenantHero,
@@ -31,6 +31,7 @@ interface LivePreviewProps {
   tenant: Tenant;
   products: Product[];
   isLoading?: boolean;
+  activeSection?: SectionKey | null; // 🚀 NEW: Active section for auto-scroll
 }
 
 // ==========================================
@@ -53,8 +54,18 @@ const DEVICE_ICONS: Record<DeviceType, React.ReactNode> = {
 // MAIN COMPONENT
 // ==========================================
 
-export function LivePreview({ config, tenant, products, isLoading = false }: LivePreviewProps) {
+export function LivePreview({ config, tenant, products, isLoading = false, activeSection }: LivePreviewProps) {
   const [device, setDevice] = useState<DeviceType>('desktop');
+
+  // 🚀 Section refs for auto-scroll
+  const sectionRefs = useRef<Record<SectionKey, HTMLDivElement | null>>({
+    hero: null,
+    about: null,
+    products: null,
+    testimonials: null,
+    cta: null,
+    contact: null,
+  });
 
   // 🚀 Section order - use config.sectionOrder or default order
   const defaultOrder: SectionKey[] = [
@@ -67,6 +78,19 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
   ];
   const sectionOrder = config?.sectionOrder || defaultOrder;
 
+  // 🚀 Auto-scroll to active section
+  useEffect(() => {
+    if (!activeSection) return;
+
+    const sectionElement = sectionRefs.current[activeSection];
+    if (sectionElement) {
+      sectionElement.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      });
+    }
+  }, [activeSection]);
+
   // Section enabled checks
   const heroEnabled = config?.hero?.enabled === true;
   const aboutEnabled = config?.about?.enabled === true;
@@ -78,30 +102,41 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
   const hasAnySectionEnabled =
     heroEnabled || aboutEnabled || productsEnabled || testimonialsEnabled || ctaEnabled || contactEnabled;
 
-  // 🚀 Section rendering map
-  const sectionComponents = {
+  // 🚀 Section rendering map with refs for auto-scroll
+  const sectionComponents: Record<SectionKey, React.ReactNode> = {
     hero: heroEnabled ? (
-      <TenantHero key="hero" config={config.hero} tenant={tenant} />
+      <div key="hero" ref={(el) => (sectionRefs.current.hero = el)}>
+        <TenantHero config={config.hero} tenant={tenant} />
+      </div>
     ) : null,
     about: aboutEnabled ? (
-      <TenantAbout key="about" config={config.about} tenant={tenant} />
+      <div key="about" ref={(el) => (sectionRefs.current.about = el)}>
+        <TenantAbout config={config.about} tenant={tenant} />
+      </div>
     ) : null,
     products: productsEnabled ? (
-      <TenantProducts
-        key="products"
-        products={products}
-        config={config.products}
-        storeSlug={tenant.slug}
-      />
+      <div key="products" ref={(el) => (sectionRefs.current.products = el)}>
+        <TenantProducts
+          products={products}
+          config={config.products}
+          storeSlug={tenant.slug}
+        />
+      </div>
     ) : null,
     testimonials: testimonialsEnabled ? (
-      <TenantTestimonials key="testimonials" config={config.testimonials} tenant={tenant} />
+      <div key="testimonials" ref={(el) => (sectionRefs.current.testimonials = el)}>
+        <TenantTestimonials config={config.testimonials} tenant={tenant} />
+      </div>
     ) : null,
     cta: ctaEnabled ? (
-      <TenantCta key="cta" config={config.cta} tenant={tenant} />
+      <div key="cta" ref={(el) => (sectionRefs.current.cta = el)}>
+        <TenantCta config={config.cta} tenant={tenant} />
+      </div>
     ) : null,
     contact: contactEnabled ? (
-      <TenantContact key="contact" config={config.contact} tenant={tenant} />
+      <div key="contact" ref={(el) => (sectionRefs.current.contact = el)}>
+        <TenantContact config={config.contact} tenant={tenant} />
+      </div>
     ) : null,
   };
 

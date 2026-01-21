@@ -310,6 +310,7 @@ export default function LandingBuilderPage() {
               tenant={tenant}
               products={products}
               isLoading={productsLoading}
+              activeSection={activeSection} // 🚀 Pass active section for auto-scroll
             />
           </LandingErrorBoundary>
         </div>
