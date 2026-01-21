@@ -18,6 +18,7 @@ export { DeviceFrame } from './device-frame';
 export { PreviewModeToggle } from './preview-mode-toggle';
 export { BuilderSidebar } from './builder-sidebar';
 export { SectionSheet } from './section-sheet';
+export { BlockDrawer } from './block-drawer'; // 🚀 NEW: Vaul drawer for blocks
 
 export type { DeviceMode } from './device-frame';
 export type { SectionType } from './builder-sidebar';

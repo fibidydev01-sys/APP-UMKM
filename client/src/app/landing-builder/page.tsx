@@ -18,9 +18,9 @@ import {
   LivePreview,
   LandingErrorBoundary,
   BuilderSidebar,
+  BlockDrawer,
 } from '@/components/landing-builder';
 import type { SectionType } from '@/components/landing-builder';
-import { BlockSidebar } from '@/components/landing-builder/block-sidebar';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
@@ -291,7 +291,7 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* Main Layout: Sidebar + Variant Sidebar + Preview (Sheet is overlay) */}
+      {/* Main Layout: Sidebar + Preview + Drawer (overlay) */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT: Section Sidebar (Fixed) */}
         <BuilderSidebar
@@ -301,18 +301,6 @@ export default function LandingBuilderPage() {
           sectionOrder={sectionOrder}
           onSectionOrderChange={handleSectionOrderChange}
         />
-
-        {/* LEFT 2: Block Sidebar (Canva-style) */}
-        {showBlockSidebar && activeSection && (
-          <BlockSidebar
-            section={activeSection}
-            currentBlock={landingConfig?.[activeSection]?.block}
-            sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
-            onBlockSelect={handleBlockSelect}
-            onToggleSection={handleToggleSection}
-            onBack={handleBlockSidebarClose}
-          />
-        )}
 
         {/* CENTER: Live Preview */}
         <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
@@ -325,6 +313,19 @@ export default function LandingBuilderPage() {
             />
           </LandingErrorBoundary>
         </div>
+
+        {/* BOTTOM: Block Drawer (Vaul - slides from bottom) */}
+        {activeSection && (
+          <BlockDrawer
+            open={showBlockSidebar}
+            onOpenChange={setShowBlockSidebar}
+            section={activeSection}
+            currentBlock={landingConfig?.[activeSection]?.block}
+            sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
+            onBlockSelect={handleBlockSelect}
+            onToggleSection={handleToggleSection}
+          />
+        )}
       </div>
     </div>
   );
