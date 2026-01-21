@@ -87,7 +87,7 @@ const sectionsData: Section[] = [
 ];
 
 interface BuilderSidebarProps {
-  activeSection: SectionType | null;
+  activeSection: SectionType; // 🚀 Always set (defaults to 'hero')
   onSectionClick: (section: SectionType) => void;
   collapsed?: boolean;
   className?: string;

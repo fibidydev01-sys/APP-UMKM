@@ -42,7 +42,7 @@ export default function LandingBuilderPage() {
   const [productsLoading, setProductsLoading] = useState(true);
 
   // UI State
-  const [activeSection, setActiveSection] = useState<SectionType | null>(null);
+  const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerExpanded, setDrawerExpanded] = useState(false); // 🚀 Drawer collapsed/expanded state
 
@@ -353,17 +353,15 @@ export default function LandingBuilderPage() {
         </div>
 
         {/* BOTTOM: Block Drawer (Always visible - collapsed/expanded states) */}
-        {activeSection && (
-          <BlockDrawer
-            expanded={drawerExpanded}
-            onToggleExpanded={handleToggleDrawer}
-            section={activeSection}
-            currentBlock={landingConfig?.[activeSection]?.block}
-            sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
-            onBlockSelect={handleBlockSelect}
-            onToggleSection={handleToggleSection}
-          />
-        )}
+        <BlockDrawer
+          expanded={drawerExpanded}
+          onToggleExpanded={handleToggleDrawer}
+          section={activeSection}
+          currentBlock={landingConfig?.[activeSection]?.block}
+          sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
+          onBlockSelect={handleBlockSelect}
+          onToggleSection={handleToggleSection}
+        />
       </div>
     </div>
   );
