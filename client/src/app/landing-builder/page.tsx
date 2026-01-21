@@ -337,16 +337,31 @@ export default function LandingBuilderPage() {
         />
 
         {/* CENTER: Live Preview */}
-        <div className="flex-1 overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
-          <LandingErrorBoundary>
-            <LivePreview
-              config={landingConfig}
-              tenant={tenant}
-              products={products}
-              isLoading={productsLoading}
-              activeSection={activeSection} // 🚀 Pass active section for auto-scroll
-            />
-          </LandingErrorBoundary>
+        <div className="flex-1 flex flex-col overflow-hidden bg-gradient-to-br from-muted/30 via-background to-muted/30">
+          {/* 🚀 Dynamic Section Header - Shows active section name */}
+          {activeSection && (
+            <div className="h-12 border-b bg-background/95 backdrop-blur flex items-center px-4">
+              <h2 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                Live Preview
+              </h2>
+              <div className="h-5 w-px bg-border mx-3" />
+              <h3 className="font-semibold text-base capitalize">
+                {activeSection === 'cta' ? 'CTA' : activeSection}
+              </h3>
+            </div>
+          )}
+
+          <div className="flex-1 overflow-hidden">
+            <LandingErrorBoundary>
+              <LivePreview
+                config={landingConfig}
+                tenant={tenant}
+                products={products}
+                isLoading={productsLoading}
+                activeSection={activeSection} // 🚀 Pass active section for auto-scroll
+              />
+            </LandingErrorBoundary>
+          </div>
         </div>
 
         {/* BOTTOM: Block Drawer (Vaul - slides from bottom) */}

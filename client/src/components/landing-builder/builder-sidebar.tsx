@@ -146,47 +146,39 @@ function SortableSectionItem({
       <Button
         variant={isActive ? 'secondary' : 'ghost'}
         className={cn(
-          'w-full h-auto transition-all',
-          collapsed
-            ? 'justify-center p-3'
-            : 'justify-start gap-3 py-3 pr-2',
+          'w-full h-auto transition-all justify-center p-3',
           isActive && 'bg-primary/10 text-primary hover:bg-primary/15'
         )}
         onClick={() => onSectionClick(section.id)}
-        title={collapsed ? section.label : undefined}
+        title={section.label} // Always show tooltip
       >
-        {/* Drag Handle - Only show when not collapsed */}
+        {/* Drag Handle - Positioned absolute on hover */}
         {!collapsed && (
           <div
             {...attributes}
             {...listeners}
             className={cn(
               'cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted/50 transition-colors',
-              'opacity-0 group-hover:opacity-100'
+              'opacity-0 group-hover:opacity-100 absolute left-1 top-1/2 -translate-y-1/2'
             )}
             onClick={(e) => e.stopPropagation()}
           >
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
+            <GripVertical className="h-3 w-3 text-muted-foreground" />
           </div>
         )}
 
-        <Icon className={cn('h-5 w-5 flex-shrink-0', isActive && 'text-primary')} />
+        {/* Icon only */}
+        <Icon className={cn('h-5 w-5', isActive && 'text-primary')} />
+
+        {/* Toggle - Positioned absolute on right */}
         {!collapsed && (
-          <>
-            <div className="flex-1 text-left">
-              <div className="font-medium">{section.label}</div>
-              <div className="text-xs text-muted-foreground">
-                {section.description}
-              </div>
-            </div>
-            {/* 🚀 Quick toggle - right side */}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2">
             <Switch
               checked={enabled}
               onCheckedChange={(checked) => onToggleSection(section.id, checked)}
               onClick={(e) => e.stopPropagation()}
-              className="ml-2"
             />
-          </>
+          </div>
         )}
       </Button>
     </div>
@@ -231,20 +223,12 @@ export function BuilderSidebar({
     <div
       className={cn(
         'border-r bg-muted/30 p-4 space-y-2 transition-all duration-300',
-        collapsed ? 'w-20' : 'w-64',
+        // 🚀 Icon-only sidebar - fixed width (wider for toggle switch)
+        collapsed ? 'w-16' : 'w-24',
         className
       )}
     >
-      {!collapsed && (
-        <div className="mb-4 px-2">
-          <h3 className="font-semibold text-sm text-muted-foreground">
-            SECTIONS
-          </h3>
-          <p className="text-xs text-muted-foreground mt-1">
-            Drag to reorder
-          </p>
-        </div>
-      )}
+      {/* Removed header - icon-only design */}
 
       <DndContext
         sensors={sensors}
