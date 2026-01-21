@@ -832,6 +832,9 @@ Uncomment to import Google fonts if you want to use them in your project.
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow-y: scroll;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
     scrollbar-gutter: stable;
