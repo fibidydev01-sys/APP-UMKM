@@ -15,6 +15,7 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import {
   Check,
+  X,
   Minimize2,
   Grid3x3,
   Film,
@@ -125,9 +126,12 @@ const BLOCK_OPTIONS_MAP = {
   cta: CTA_BLOCKS,
 } as const;
 
+type DrawerState = 'closed' | 'minimized' | 'collapsed' | 'expanded';
+
 interface BlockDrawerProps {
-  expanded: boolean; // 🚀 Collapsed (just header) vs Expanded (full height)
-  onToggleExpanded: () => void;
+  state: DrawerState; // 🚀 4 states: closed, minimized, collapsed, expanded
+  onStateChange: (state: DrawerState) => void;
+  onClose: () => void; // 🚀 Close button handler
   section: SectionType;
   currentBlock?: string;
   sectionEnabled?: boolean;
@@ -137,14 +141,16 @@ interface BlockDrawerProps {
 
 /**
  * Vaul drawer for block selection
- * 3 Snap States:
- * - CLOSED: Hidden (dismissible but protected)
- * - COLLAPSED (120px): Peek state - default when clicking section
- * - EXPANDED (80vh): Full height - drag up to expand
+ * 4 States System:
+ * - CLOSED: Completely hidden (Close button only)
+ * - MINIMIZED: Ciut - just handle visible (~40px)
+ * - COLLAPSED: Peek - header + toggle (~15% viewport)
+ * - EXPANDED: Full - all content (~80% viewport)
  */
 export function BlockDrawer({
-  expanded,
-  onToggleExpanded,
+  state,
+  onStateChange,
+  onClose,
   section,
   currentBlock,
   sectionEnabled = true,
@@ -153,19 +159,39 @@ export function BlockDrawer({
 }: BlockDrawerProps) {
   const blocks = BLOCK_OPTIONS_MAP[section];
 
+  // Map state to snap point fraction
+  const getSnapPoint = (drawerState: DrawerState): number => {
+    switch (drawerState) {
+      case 'minimized': return 0.05; // 5% - ciut (just handle)
+      case 'collapsed': return 0.15; // 15% - peek
+      case 'expanded': return 0.8; // 80% - full
+      default: return 0.15;
+    }
+  };
+
+  // Map snap point to state
+  const getStateFromSnap = (snap: number): DrawerState => {
+    if (snap >= 0.7) return 'expanded';
+    if (snap >= 0.1) return 'collapsed';
+    return 'minimized';
+  };
+
+  if (state === 'closed') {
+    return null; // Don't render when closed
+  }
+
   return (
     <Drawer.Root
-      open={true} // 🚀 Always open
+      open={true} // 🚀 Always open (when not closed)
       modal={false} // 🚀 Non-modal (doesn't block page)
-      dismissible={true} // 🚀 Can drag to dismiss
-      snapPoints={[0.15, 0.8]} // 🚀 [COLLAPSED 15%, EXPANDED 80%]
-      activeSnapPoint={expanded ? 0.8 : 0.15} // 🚀 Current snap (fraction of viewport)
+      dismissible={false} // 🚀 Can't drag to dismiss (protected!)
+      snapPoints={[0.05, 0.15, 0.8]} // 🚀 [MINIMIZED 5%, COLLAPSED 15%, EXPANDED 80%]
+      activeSnapPoint={getSnapPoint(state)} // 🚀 Current snap position
       setActiveSnapPoint={(snapPoint) => {
-        // 🚀 Sync expanded state when user drags between snap points
-        if (snapPoint === 0.8 && !expanded) {
-          onToggleExpanded(); // Dragged to expanded
-        } else if (snapPoint === 0.15 && expanded) {
-          onToggleExpanded(); // Dragged to collapsed
+        // 🚀 Update state based on snap point
+        const newState = getStateFromSnap(snapPoint as number);
+        if (newState !== state) {
+          onStateChange(newState);
         }
       }}
       shouldScaleBackground={false} // 🚀 Don't scale background (non-modal)
@@ -182,28 +208,34 @@ export function BlockDrawer({
             aria-label="Drag to resize drawer"
           />
 
-          {/* Header - Always visible */}
-          <div className="p-4 border-b flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <div>
-                <Drawer.Title className="font-semibold text-lg capitalize">
-                  {section} Blocks
-                </Drawer.Title>
-                <Drawer.Description className="text-sm text-muted-foreground mt-1">
-                  {expanded ? 'Drag down to collapse' : 'Drag up to expand'}
-                </Drawer.Description>
+          {/* Header - Only show in collapsed/expanded (not minimized) */}
+          {state !== 'minimized' && (
+            <div className="p-4 border-b flex-shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <Drawer.Title className="font-semibold text-lg capitalize">
+                    {section} Blocks
+                  </Drawer.Title>
+                  <Drawer.Description className="text-sm text-muted-foreground mt-1">
+                    {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to expand'}
+                  </Drawer.Description>
+                </div>
+                {/* Close Button - Top right */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onClose}
+                  className="h-8 w-8 ml-2"
+                  title="Close drawer"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onToggleExpanded}
-              >
-                {expanded ? 'Collapse' : 'Expand'}
-              </Button>
             </div>
-          </div>
+          )}
 
-          {/* Section Toggle - Always visible (peek content in collapsed state) */}
+          {/* Section Toggle - Only show in collapsed/expanded */}
+          {state !== 'minimized' &&
           {onToggleSection && (
             <div className="px-4 py-3 border-b bg-muted/30 flex-shrink-0">
               <div className="flex items-center justify-between">
@@ -227,7 +259,7 @@ export function BlockDrawer({
           )}
 
           {/* Block Grid - Only show when expanded */}
-          {expanded && (
+          {state === 'expanded' && (
             <div className="flex-1 overflow-auto p-4">
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
               {blocks.map((block) => {

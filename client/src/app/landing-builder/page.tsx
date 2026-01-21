@@ -44,7 +44,7 @@ export default function LandingBuilderPage() {
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [drawerExpanded, setDrawerExpanded] = useState(false); // 🚀 Drawer collapsed/expanded state
+  const [drawerState, setDrawerState] = useState<'collapsed'>('collapsed'); // 🚀 4 states: closed, minimized, collapsed, expanded
 
   // 🎬 Ref to track drawer opening timeout (for cleanup on rapid clicks)
   const drawerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -127,19 +127,19 @@ export default function LandingBuilderPage() {
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
 
-    // 🚀 Drawer always visible, just expand it after scroll animation
-    if (drawerTimeoutRef.current) {
-      clearTimeout(drawerTimeoutRef.current);
-    }
+    // 🚀 If drawer closed, open to collapsed (peek) state
+    // Otherwise keep current state (don't auto-expand)
+    if (drawerState === 'closed') {
+      if (drawerTimeoutRef.current) {
+        clearTimeout(drawerTimeoutRef.current);
+      }
 
-    // 🎬 Expand drawer after scroll completes (if not already expanded)
-    if (!drawerExpanded) {
       drawerTimeoutRef.current = setTimeout(() => {
-        setDrawerExpanded(true);
+        setDrawerState('collapsed');
         drawerTimeoutRef.current = null;
       }, 700);
     }
-  }, [drawerExpanded]);
+  }, [drawerState]);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
   const handleBlockSelect = useCallback((block: string) => {
@@ -191,9 +191,9 @@ export default function LandingBuilderPage() {
     return landingConfig?.[section]?.enabled ?? true;
   }, [landingConfig]);
 
-  // 🚀 Toggle drawer expanded/collapsed - for Buka/Tutup button
-  const handleToggleDrawer = useCallback(() => {
-    setDrawerExpanded((prev) => !prev);
+  // 🚀 Close drawer completely - for Close button
+  const handleCloseDrawer = useCallback(() => {
+    setDrawerState('closed');
   }, []);
 
   // 🚀 Handle section reordering
@@ -346,16 +346,15 @@ export default function LandingBuilderPage() {
               products={products}
               isLoading={productsLoading}
               activeSection={activeSection} // 🚀 Pass active section for auto-scroll
-              drawerOpen={drawerExpanded} // 🚀 Pass drawer expanded state
-              onToggleDrawer={handleToggleDrawer} // 🚀 Pass toggle handler
             />
           </LandingErrorBoundary>
         </div>
 
-        {/* BOTTOM: Block Drawer (Always visible - collapsed/expanded states) */}
+        {/* BOTTOM: Block Drawer (4 states: closed, minimized, collapsed, expanded) */}
         <BlockDrawer
-          expanded={drawerExpanded}
-          onToggleExpanded={handleToggleDrawer}
+          state={drawerState}
+          onStateChange={setDrawerState}
+          onClose={handleCloseDrawer}
           section={activeSection}
           currentBlock={landingConfig?.[activeSection]?.block}
           sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
