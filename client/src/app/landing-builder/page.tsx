@@ -9,7 +9,7 @@
  */
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -45,6 +45,9 @@ export default function LandingBuilderPage() {
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
   const [showBlockSidebar, setShowBlockSidebar] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // 🎬 Ref to track drawer opening timeout (for cleanup on rapid clicks)
+  const drawerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // ============================================================================
   // LANDING CONFIG HOOK
@@ -120,10 +123,20 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Show block sidebar
+  // Step 1: User clicks section → Scroll first, then show drawer after animation
   const handleSectionClick = useCallback((section: SectionType) => {
+    // Clear any pending drawer timeout (prevents multiple drawers on rapid clicks)
+    if (drawerTimeoutRef.current) {
+      clearTimeout(drawerTimeoutRef.current);
+    }
+
     setActiveSection(section);
-    setShowBlockSidebar(true);
+
+    // 🎬 Delay drawer opening to let scroll animation complete (~600-800ms)
+    drawerTimeoutRef.current = setTimeout(() => {
+      setShowBlockSidebar(true);
+      drawerTimeoutRef.current = null;
+    }, 700);
   }, []);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
