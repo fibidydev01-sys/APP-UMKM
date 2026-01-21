@@ -15,7 +15,6 @@ import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import {
   Check,
-  X,
   Minimize2,
   Grid3x3,
   Film,
@@ -171,12 +170,11 @@ export function BlockDrawer({
                 </Drawer.Description>
               </div>
               <Button
-                variant="ghost"
-                size="icon"
+                variant="outline"
+                size="sm"
                 onClick={() => onOpenChange(false)}
-                className="h-8 w-8"
               >
-                <X className="h-4 w-4" />
+                Close
               </Button>
             </div>
           </div>

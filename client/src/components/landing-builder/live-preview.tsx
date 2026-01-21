@@ -31,7 +31,9 @@ interface LivePreviewProps {
   tenant: Tenant;
   products: Product[];
   isLoading?: boolean;
-  activeSection?: SectionKey | null; // 🚀 NEW: Active section for auto-scroll
+  activeSection?: SectionKey | null; // 🚀 Active section for auto-scroll
+  drawerOpen?: boolean; // 🚀 Drawer state for Buka button
+  onToggleDrawer?: () => void; // 🚀 Toggle drawer handler
 }
 
 // ==========================================
@@ -54,7 +56,15 @@ const DEVICE_ICONS: Record<DeviceType, React.ReactNode> = {
 // MAIN COMPONENT
 // ==========================================
 
-export function LivePreview({ config, tenant, products, isLoading = false, activeSection }: LivePreviewProps) {
+export function LivePreview({
+  config,
+  tenant,
+  products,
+  isLoading = false,
+  activeSection,
+  drawerOpen = false,
+  onToggleDrawer,
+}: LivePreviewProps) {
   const [device, setDevice] = useState<DeviceType>('desktop');
 
   // 🚀 Section refs for auto-scroll
@@ -153,6 +163,20 @@ export function LivePreview({ config, tenant, products, isLoading = false, activ
               <h3 className="font-semibold capitalize">
                 {activeSection === 'cta' ? 'CTA' : activeSection}
               </h3>
+              {/* 🚀 Buka/Tutup Drawer Button */}
+              {onToggleDrawer && (
+                <>
+                  <div className="h-5 w-px bg-border" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onToggleDrawer}
+                    className="h-7 px-3"
+                  >
+                    {drawerOpen ? 'Tutup' : 'Buka'}
+                  </Button>
+                </>
+              )}
             </>
           )}
           {isLoading && (

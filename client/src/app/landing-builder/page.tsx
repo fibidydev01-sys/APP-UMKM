@@ -123,21 +123,25 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Scroll first, then show drawer after animation
+  // Step 1: User clicks section → Scroll first, then show drawer (if not already open)
   const handleSectionClick = useCallback((section: SectionType) => {
-    // Clear any pending drawer timeout (prevents multiple drawers on rapid clicks)
+    setActiveSection(section);
+
+    // 🚀 If drawer already open, just switch section (no close/reopen!)
+    if (showBlockSidebar) {
+      return; // Drawer stays open, content updates
+    }
+
+    // 🎬 Only open drawer if it's closed - delay for scroll animation
     if (drawerTimeoutRef.current) {
       clearTimeout(drawerTimeoutRef.current);
     }
 
-    setActiveSection(section);
-
-    // 🎬 Delay drawer opening to let scroll animation complete (~600-800ms)
     drawerTimeoutRef.current = setTimeout(() => {
       setShowBlockSidebar(true);
       drawerTimeoutRef.current = null;
     }, 700);
-  }, []);
+  }, [showBlockSidebar]);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
   const handleBlockSelect = useCallback((block: string) => {
@@ -193,6 +197,11 @@ export default function LandingBuilderPage() {
   const handleBlockSidebarClose = useCallback(() => {
     setShowBlockSidebar(false);
     setActiveSection(null);
+  }, []);
+
+  // 🚀 Toggle drawer - for Buka/Tutup button
+  const handleToggleDrawer = useCallback(() => {
+    setShowBlockSidebar((prev) => !prev);
   }, []);
 
   // 🚀 Handle section reordering
@@ -345,6 +354,8 @@ export default function LandingBuilderPage() {
               products={products}
               isLoading={productsLoading}
               activeSection={activeSection} // 🚀 Pass active section for auto-scroll
+              drawerOpen={showBlockSidebar} // 🚀 Pass drawer state
+              onToggleDrawer={handleToggleDrawer} // 🚀 Pass toggle handler
             />
           </LandingErrorBoundary>
         </div>
