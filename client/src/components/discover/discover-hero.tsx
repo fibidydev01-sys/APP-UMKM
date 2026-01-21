@@ -13,6 +13,11 @@ import {
   Wrench,
   Sparkles,
   ArrowRight,
+  UtensilsCrossed,
+  Home,
+  Car,
+  Heart,
+  Plane,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +29,7 @@ import { CATEGORY_CONFIG } from '@/config/categories';
 // TYPES
 // ══════════════════════════════════════════════════════════════
 
-type TabType = 'umkm' | 'produk' | 'jasa';
+type TabType = 'restaurants' | 'home-garden' | 'auto-services' | 'health-beauty' | 'travel-activities';
 
 interface DiscoverHeroProps {
   onSearch?: (query: string) => void;
@@ -39,41 +44,59 @@ interface DiscoverHeroProps {
 // ══════════════════════════════════════════════════════════════
 
 const tabs = [
-  { id: 'umkm' as TabType, label: 'UMKM', icon: Store, description: 'Toko & Usaha' },
-  { id: 'produk' as TabType, label: 'Produk', icon: Package, description: 'Barang & Item' },
-  { id: 'jasa' as TabType, label: 'Jasa', icon: Wrench, description: 'Layanan & Service' },
+  { id: 'restaurants' as TabType, label: 'Restaurants', icon: UtensilsCrossed, description: 'Food & Dining' },
+  { id: 'home-garden' as TabType, label: 'Home & Garden', icon: Home, description: 'Home Services' },
+  { id: 'auto-services' as TabType, label: 'Auto Services', icon: Car, description: 'Car & Vehicle' },
+  { id: 'health-beauty' as TabType, label: 'Health & Beauty', icon: Heart, description: 'Wellness & Beauty' },
+  { id: 'travel-activities' as TabType, label: 'Travel & Activities', icon: Plane, description: 'Travel & Fun' },
 ];
 
 // Mapping kategori berdasarkan tipe (4 per tipe)
 const CATEGORIES_BY_TYPE: Record<TabType, string[]> = {
-  // UMKM - Toko & Usaha fisik
-  umkm: [
+  // Restaurants - Food & Dining
+  'restaurants': [
     'WARUNG_KELONTONG',  // Warung
-    'TOKO_BANGUNAN',     // Bangunan
     'KEDAI_KOPI',        // Kopi
+    'CATERING',          // Catering
+    'TOKO_KUE',          // Kue
+  ],
+  // Home & Garden - Home Services
+  'home-garden': [
+    'TOKO_BANGUNAN',     // Bangunan
+    'LAUNDRY',           // Laundry
+    'PERCETAKAN',        // Print
+    'PETSHOP',           // Pet
+  ],
+  // Auto Services - Car & Vehicle
+  'auto-services': [
+    'BENGKEL_MOTOR',     // Bengkel
+    'LAUNDRY',           // Laundry
+    'TOKO_BANGUNAN',     // Bangunan
     'APOTEK',            // Apotek
   ],
-  // Produk - Barang yang dijual
-  produk: [
-    'TOKO_KUE',          // Kue
-    'PETSHOP',           // Pet
-    'PERCETAKAN',        // Print
-    'TOKO_BANGUNAN',     // Bangunan (material)
-  ],
-  // Jasa - Layanan & Service
-  jasa: [
-    'BENGKEL_MOTOR',     // Bengkel
+  // Health & Beauty - Wellness & Beauty
+  'health-beauty': [
     'SALON_BARBERSHOP',  // Salon
+    'APOTEK',            // Apotek
     'LAUNDRY',           // Laundry
+    'PETSHOP',           // Pet
+  ],
+  // Travel & Activities - Travel & Fun
+  'travel-activities': [
+    'KEDAI_KOPI',        // Kopi
     'CATERING',          // Catering
+    'PETSHOP',           // Pet
+    'TOKO_KUE',          // Kue
   ],
 };
 
 // Placeholder text per tab
 const SEARCH_PLACEHOLDERS: Record<TabType, string> = {
-  umkm: 'Cari warung, toko, kedai...',
-  produk: 'Cari makanan, kue, produk...',
-  jasa: 'Cari bengkel, salon, laundry...',
+  'restaurants': 'Search restaurants, cafes, catering...',
+  'home-garden': 'Search home services, garden...',
+  'auto-services': 'Search car repair, maintenance...',
+  'health-beauty': 'Search salons, pharmacies, wellness...',
+  'travel-activities': 'Search travel, activities, fun...',
 };
 
 function categoryKeyToSlug(key: string): string {
@@ -88,12 +111,12 @@ export function DiscoverHero({
   onSearch,
   onTabChange,
   searchQuery = '',
-  activeTab = 'umkm',
+  activeTab = 'restaurants',
 }: DiscoverHeroProps) {
 
   // Get categories based on active tab
   const popularCategories = useMemo(() => {
-    return CATEGORIES_BY_TYPE[activeTab] || CATEGORIES_BY_TYPE.umkm;
+    return CATEGORIES_BY_TYPE[activeTab] || CATEGORIES_BY_TYPE.restaurants;
   }, [activeTab]);
 
   const handleTabClick = useCallback((tabId: TabType) => {
@@ -170,7 +193,6 @@ export function DiscoverHero({
             {/* POPULAR TAGS - Dynamic based on active tab (4)     */}
             {/* ══════════════════════════════════════════════════ */}
             <div className="flex flex-wrap items-center gap-2 relative z-10">
-              <span className="text-sm text-muted-foreground">Popular:</span>
               {popularCategories.map((catKey) => {
                 const category = CATEGORY_CONFIG[catKey];
                 if (!category) return null;

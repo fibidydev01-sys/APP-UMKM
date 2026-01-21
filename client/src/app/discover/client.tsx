@@ -34,7 +34,7 @@ import {
 // TYPES
 // ══════════════════════════════════════════════════════════════
 
-type TabType = 'umkm' | 'produk' | 'jasa';
+type TabType = 'restaurants' | 'home-garden' | 'auto-services' | 'health-beauty' | 'travel-activities';
 
 // ══════════════════════════════════════════════════════════════
 // BROWSER CACHE (sessionStorage)
@@ -90,7 +90,7 @@ export function DiscoverPageClient() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('popular');
-  const [activeTab, setActiveTab] = useState<TabType>('umkm');
+  const [activeTab, setActiveTab] = useState<TabType>('restaurants');
 
   // Drawer State
   const [selectedTenant, setSelectedTenant] = useState<ShowcaseTenant | null>(null);
@@ -261,17 +261,6 @@ export function DiscoverPageClient() {
             activeTab={activeTab}
           />
         )}
-
-        {/* Filter Bar */}
-        <CategoryFilterBar
-          selectedCategory={selectedCategory}
-          onCategorySelect={handleCategorySelect}
-          selectedColor={selectedColor}
-          onColorSelect={handleColorSelect}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
-          isSticky={true}
-        />
 
         {/* Content */}
         <section className="py-8">
