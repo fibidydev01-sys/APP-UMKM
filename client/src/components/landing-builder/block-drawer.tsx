@@ -187,6 +187,7 @@ export function BlockDrawer({
 
   return (
     <Drawer
+      direction="bottom" // 🚀 Slide from bottom edge
       open={true} // 🚀 Always open (when not closed)
       modal={false} // 🚀 Non-modal (doesn't block page)
       dismissible={false} // 🚀 Can't drag to dismiss (protected!)
