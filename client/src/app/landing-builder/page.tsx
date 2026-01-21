@@ -156,7 +156,7 @@ export default function LandingBuilderPage() {
     // NO form sheet - just update config directly
   }, [activeSection, landingConfig, setLandingConfig]);
 
-  // Toggle section enabled/disabled
+  // Toggle section enabled/disabled (for drawer)
   const handleToggleSection = useCallback((enabled: boolean) => {
     if (!activeSection || !landingConfig) return;
 
@@ -169,6 +169,25 @@ export default function LandingBuilderPage() {
       },
     } as TenantLandingConfig);
   }, [activeSection, landingConfig, setLandingConfig]);
+
+  // 🚀 Quick toggle from sidebar (any section)
+  const handleSidebarToggleSection = useCallback((section: SectionType, enabled: boolean) => {
+    if (!landingConfig) return;
+
+    const currentSection = landingConfig[section] || {};
+    setLandingConfig({
+      ...landingConfig,
+      [section]: {
+        ...currentSection,
+        enabled,
+      },
+    } as TenantLandingConfig);
+  }, [landingConfig, setLandingConfig]);
+
+  // 🚀 Get section enabled status
+  const getSectionEnabled = useCallback((section: SectionType): boolean => {
+    return landingConfig?.[section]?.enabled ?? true;
+  }, [landingConfig]);
 
   // Close block sidebar
   const handleBlockSidebarClose = useCallback(() => {
@@ -313,6 +332,8 @@ export default function LandingBuilderPage() {
           collapsed={sidebarCollapsed}
           sectionOrder={sectionOrder}
           onSectionOrderChange={handleSectionOrderChange}
+          getSectionEnabled={getSectionEnabled}
+          onToggleSection={handleSidebarToggleSection}
         />
 
         {/* CENTER: Live Preview */}

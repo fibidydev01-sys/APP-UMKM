@@ -8,6 +8,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import {
   Sparkles,
@@ -93,20 +94,27 @@ interface BuilderSidebarProps {
   // 🚀 NEW: Section order state
   sectionOrder: SectionType[];
   onSectionOrderChange: (newOrder: SectionType[]) => void;
+  // 🚀 NEW: Section enable/disable state
+  getSectionEnabled: (section: SectionType) => boolean;
+  onToggleSection: (section: SectionType, enabled: boolean) => void;
 }
 
 interface SortableSectionItemProps {
   section: Section;
   isActive: boolean;
   collapsed: boolean;
+  enabled: boolean;
   onSectionClick: (section: SectionType) => void;
+  onToggleSection: (section: SectionType, enabled: boolean) => void;
 }
 
 function SortableSectionItem({
   section,
   isActive,
   collapsed,
+  enabled,
   onSectionClick,
+  onToggleSection,
 }: SortableSectionItemProps) {
   const {
     attributes,
@@ -164,12 +172,21 @@ function SortableSectionItem({
 
         <Icon className={cn('h-5 w-5 flex-shrink-0', isActive && 'text-primary')} />
         {!collapsed && (
-          <div className="flex-1 text-left">
-            <div className="font-medium">{section.label}</div>
-            <div className="text-xs text-muted-foreground">
-              {section.description}
+          <>
+            <div className="flex-1 text-left">
+              <div className="font-medium">{section.label}</div>
+              <div className="text-xs text-muted-foreground">
+                {section.description}
+              </div>
             </div>
-          </div>
+            {/* 🚀 Quick toggle - right side */}
+            <Switch
+              checked={enabled}
+              onCheckedChange={(checked) => onToggleSection(section.id, checked)}
+              onClick={(e) => e.stopPropagation()}
+              className="ml-2"
+            />
+          </>
         )}
       </Button>
     </div>
@@ -183,6 +200,8 @@ export function BuilderSidebar({
   className,
   sectionOrder,
   onSectionOrderChange,
+  getSectionEnabled,
+  onToggleSection,
 }: BuilderSidebarProps) {
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -238,6 +257,7 @@ export function BuilderSidebar({
         >
           {orderedSections.map((section) => {
             const isActive = activeSection === section.id;
+            const enabled = getSectionEnabled(section.id);
 
             return (
               <SortableSectionItem
@@ -245,7 +265,9 @@ export function BuilderSidebar({
                 section={section}
                 isActive={isActive}
                 collapsed={collapsed}
+                enabled={enabled}
                 onSectionClick={onSectionClick}
+                onToggleSection={onToggleSection}
               />
             );
           })}
