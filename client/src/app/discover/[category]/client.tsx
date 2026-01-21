@@ -298,9 +298,7 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
       {/* Header */}
       <DiscoverHeader
         onSearch={handleSearch}
-        onCategorySelect={handleCategorySelect}
         searchQuery={searchQuery}
-        selectedCategory={categoryKey}
       />
 
       <main className="flex-1">

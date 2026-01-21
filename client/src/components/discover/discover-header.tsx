@@ -1,8 +1,8 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HEADER - V11.0 (Cleaned & Refactored)
+// DISCOVER HEADER - V11.1 (Cleaned & Refactored)
 // Removed: Explore and Lainnya navigation dropdowns
 // Simplified: Mobile menu to only show search and CTA buttons
-// Fixed: Search ONLY appears when hero search is completely hidden
+// Fixed: Search appears when hero search hidden OR on pages without hero
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -56,7 +56,8 @@ export function DiscoverHeader({
     const heroSearchElement = document.getElementById(heroSearchId);
 
     if (!heroSearchElement) {
-      // If no hero search element found, observer callback will handle state
+      // If no hero search found (e.g., category pages), show header search
+      setHeroSearchVisible(false);
       return;
     }
 

@@ -239,9 +239,7 @@ export function DiscoverPageClient() {
       {/* Header */}
       <DiscoverHeader
         onSearch={handleSearch}
-        onCategorySelect={handleCategorySelect}
         searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
       />
 
       <main className="flex-1">
