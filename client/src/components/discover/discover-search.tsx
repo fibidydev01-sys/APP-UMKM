@@ -179,14 +179,27 @@ export function DiscoverSearch({
       const trimmed = searchQuery.trim();
       if (!trimmed) return;
 
-      saveRecentSearch(trimmed);
-      setRecentSearches(getRecentSearches());
+      // Check if query matches a category
+      const matchingCategory = categories.find(
+        (cat) =>
+          cat.label.toLowerCase() === trimmed.toLowerCase() ||
+          cat.labelShort.toLowerCase() === trimmed.toLowerCase()
+      );
+
       setIsFocused(false);
 
-      onSearch?.(trimmed);
-      router.push(`/discover?q=${encodeURIComponent(trimmed)}`);
+      if (matchingCategory) {
+        // Redirect to category page
+        router.push(`/discover/${categoryKeyToSlug(matchingCategory.key)}`);
+      } else {
+        // Redirect to search results
+        saveRecentSearch(trimmed);
+        setRecentSearches(getRecentSearches());
+        onSearch?.(trimmed);
+        router.push(`/discover?q=${encodeURIComponent(trimmed)}`);
+      }
     },
-    [onSearch, router]
+    [categories, onSearch, router]
   );
 
   const handleCategoryClick = useCallback(
