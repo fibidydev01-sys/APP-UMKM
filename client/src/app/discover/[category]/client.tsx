@@ -19,6 +19,7 @@ import {
   DiscoverHeader,
   CategoryFilterBar,
   MinimalFooter,
+  TenantPreviewDrawer,
 } from '@/components/discover';
 import type { ShowcaseTenant } from '@/types/discover';
 import { CATEGORY_CONFIG } from '@/config/categories';
@@ -61,15 +62,23 @@ function TenantCardSkeleton() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// TENANT CARD - Dribbble Style
+// TENANT CARD - Dribbble Style (with onClick for Drawer)
 // ══════════════════════════════════════════════════════════════
 
 interface TenantCardProps {
   tenant: ShowcaseTenant;
+  onClick?: (tenant: ShowcaseTenant) => void;
 }
 
-function TenantCard({ tenant }: TenantCardProps) {
+function TenantCard({ tenant, onClick }: TenantCardProps) {
   const productCount = tenant._count?.products || 0;
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick(tenant);
+    }
+  };
 
   return (
     <Link
@@ -77,6 +86,7 @@ function TenantCard({ tenant }: TenantCardProps) {
       target="_blank"
       rel="noopener noreferrer"
       className="group block"
+      onClick={handleClick}
     >
       {/* Image Container */}
       <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-muted">
@@ -214,6 +224,10 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Drawer State
+  const [selectedTenant, setSelectedTenant] = useState<ShowcaseTenant | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   // ════════════════════════════════════════════════════════════
   // FETCH TENANTS
   // ════════════════════════════════════════════════════════════
@@ -283,6 +297,15 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
     },
     [categoryKey, router]
   );
+
+  const handleCardClick = useCallback((tenant: ShowcaseTenant) => {
+    setSelectedTenant(tenant);
+    setDrawerOpen(true);
+  }, []);
+
+  const handleTenantSelect = useCallback((tenant: ShowcaseTenant) => {
+    setSelectedTenant(tenant);
+  }, []);
 
   // ════════════════════════════════════════════════════════════
   // RENDER
@@ -368,7 +391,7 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
             {!loading && !error && filteredTenants.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                 {filteredTenants.map((tenant) => (
-                  <TenantCard key={tenant.id} tenant={tenant} />
+                  <TenantCard key={tenant.id} tenant={tenant} onClick={handleCardClick} />
                 ))}
               </div>
             )}
@@ -388,6 +411,16 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
 
       {/* Footer */}
       <MinimalFooter />
+
+      {/* Tenant Preview Drawer */}
+      <TenantPreviewDrawer
+        tenant={selectedTenant}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        tenantUrl={selectedTenant?.url || ''}
+        allTenants={tenants}
+        onTenantSelect={handleTenantSelect}
+      />
     </div>
   );
 }

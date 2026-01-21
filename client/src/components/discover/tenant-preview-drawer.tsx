@@ -250,7 +250,7 @@ export function TenantPreviewDrawer({
   const primaryColor = tenant.theme?.primaryColor || categoryInfo.color;
 
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root open={open} onOpenChange={onOpenChange} noBodyStyles>
       <Drawer.Portal>
         {/* Overlay */}
         <Drawer.Overlay className="fixed inset-0 bg-black/60 z-[9999]" />
