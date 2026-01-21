@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// CATEGORY FILTER BAR - V16.0 (Custom Dropdown)
-// Using custom dropdown with portal for reliable rendering
+// CATEGORY FILTER BAR - V17.0 (Hover Dropdown)
+// Dropdown appears on HOVER, not click
 // Each group shows sub-categories on hover
 // No icons/emojis
 // ══════════════════════════════════════════════════════════════
@@ -34,6 +34,76 @@ interface CategoryFilterBarProps {
 
 // Get all groups
 const groups = Object.values(CATEGORY_GROUPS);
+
+// ══════════════════════════════════════════════════════════════
+// GROUP DROPDOWN COMPONENT (with hover)
+// ══════════════════════════════════════════════════════════════
+
+interface GroupDropdownProps {
+  group: typeof groups[0];
+  selectedCategory: string | null;
+  onCategoryClick: (key: string) => void;
+}
+
+function GroupDropdown({ group, selectedCategory, onCategoryClick }: GroupDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const subCategories = getCategoriesByGroup(group.key);
+  const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpen(false);
+    }, 150);
+  };
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <button
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className={cn(
+            'flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 shrink-0',
+            isGroupActive
+              ? 'bg-foreground text-background'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
+          )}
+        >
+          {group.label}
+          <ChevronDown className="h-3 w-3" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        className="w-[220px] max-h-[400px] overflow-y-auto"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {subCategories.map((cat) => (
+          <DropdownMenuItem
+            key={cat.key}
+            onClick={() => onCategoryClick(cat.key)}
+            className={cn(
+              'cursor-pointer',
+              selectedCategory === cat.key && 'bg-accent font-medium'
+            )}
+          >
+            {cat.labelShort}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 // ══════════════════════════════════════════════════════════════
 // MAIN COMPONENT
@@ -120,46 +190,15 @@ export function CategoryFilterBar({
                 Discover
               </button>
 
-              {/* DropdownMenu for each Group */}
-              {groups.map((group) => {
-                const subCategories = getCategoriesByGroup(group.key);
-                const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
-
-                return (
-                  <DropdownMenu key={group.key}>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        className={cn(
-                          'flex items-center gap-1 px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 shrink-0',
-                          isGroupActive
-                            ? 'bg-foreground text-background'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                        )}
-                      >
-                        {group.label}
-                        <ChevronDown className="h-3 w-3" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="start"
-                      className="w-[220px] max-h-[400px] overflow-y-auto z-50"
-                    >
-                      {subCategories.map((cat) => (
-                        <DropdownMenuItem
-                          key={cat.key}
-                          onClick={() => handleCategoryClick(cat.key)}
-                          className={cn(
-                            'cursor-pointer',
-                            selectedCategory === cat.key && 'bg-accent font-medium'
-                          )}
-                        >
-                          {cat.labelShort}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                );
-              })}
+              {/* Hover Dropdown for each Group */}
+              {groups.map((group) => (
+                <GroupDropdown
+                  key={group.key}
+                  group={group}
+                  selectedCategory={selectedCategory}
+                  onCategoryClick={handleCategoryClick}
+                />
+              ))}
             </div>
 
             {showRightArrow && (
