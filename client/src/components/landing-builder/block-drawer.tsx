@@ -235,8 +235,7 @@ export function BlockDrawer({
           )}
 
           {/* Section Toggle - Only show in collapsed/expanded */}
-          {state !== 'minimized' &&
-          {onToggleSection && (
+          {state !== 'minimized' && onToggleSection && (
             <div className="px-4 py-3 border-b bg-muted/30 flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div>
