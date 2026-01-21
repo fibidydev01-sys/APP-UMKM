@@ -20,7 +20,7 @@ import {
   BuilderSidebar,
   BlockDrawer,
 } from '@/components/landing-builder';
-import type { SectionType } from '@/components/landing-builder';
+import type { SectionType, DrawerState } from '@/components/landing-builder';
 import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
@@ -44,7 +44,7 @@ export default function LandingBuilderPage() {
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [drawerState, setDrawerState] = useState<'collapsed'>('collapsed'); // 🚀 4 states: closed, minimized, collapsed, expanded
+  const [drawerState, setDrawerState] = useState<DrawerState>('collapsed'); // 🚀 4 states: closed, minimized, collapsed, expanded
 
   // 🎬 Ref to track drawer opening timeout (for cleanup on rapid clicks)
   const drawerTimeoutRef = useRef<NodeJS.Timeout | null>(null);

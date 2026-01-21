@@ -131,7 +131,7 @@ const BLOCK_OPTIONS_MAP = {
   cta: CTA_BLOCKS,
 } as const;
 
-type DrawerState = 'closed' | 'minimized' | 'collapsed' | 'expanded';
+export type DrawerState = 'closed' | 'minimized' | 'collapsed' | 'expanded';
 
 interface BlockDrawerProps {
   state: DrawerState; // 🚀 4 states: closed, minimized, collapsed, expanded

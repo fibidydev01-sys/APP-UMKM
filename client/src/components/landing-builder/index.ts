@@ -22,3 +22,4 @@ export { BlockDrawer } from './block-drawer'; // 🚀 NEW: Vaul drawer for block
 
 export type { DeviceMode } from './device-frame';
 export type { SectionType } from './builder-sidebar';
+export type { DrawerState } from './block-drawer';
