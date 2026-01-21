@@ -10,6 +10,9 @@
 import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
+  Store,
+  Package,
+  Wrench,
   Sparkles,
   ArrowRight,
   ChevronLeft,
