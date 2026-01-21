@@ -833,18 +833,25 @@ Uncomment to import Google fonts if you want to use them in your project.
     @apply border-border outline-ring/50;
   }
   html {
-    overflow-y: scroll;
+    overflow-y: scroll !important;
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
     scrollbar-gutter: stable;
+    margin-right: 0 !important;
+    padding-right: 0 !important;
   }
 }
 
-html body[data-scroll-locked] {
+/* Prevent ANY body style changes from dialogs/drawers */
+html body,
+html body[data-scroll-locked],
+html body[data-vaul-drawer-visible],
+html body[data-vaul-no-body-styles] {
   overflow-y: scroll !important;
   --removed-body-scroll-bar-size: 0 !important;
   margin-right: 0 !important;
+  padding-right: 0 !important;
 }
 
 .hide-scrollbar {
