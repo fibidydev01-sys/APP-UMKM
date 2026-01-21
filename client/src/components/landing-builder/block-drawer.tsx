@@ -10,10 +10,10 @@
 
 import {
   Drawer,
-  DrawerContent,
   DrawerTitle,
   DrawerDescription,
 } from '@/components/ui/drawer';
+import { Drawer as DrawerPrimitive } from 'vaul';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -202,7 +202,12 @@ export function BlockDrawer({
       }}
       shouldScaleBackground={false} // 🚀 Don't scale background (non-modal)
     >
-      <DrawerContent className="max-h-[85vh]">
+      {/* Custom Content: No overlay for non-modal drawer */}
+      <DrawerPrimitive.Content
+        className={cn(
+          "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto max-h-[85vh] flex-col rounded-t-lg border-t bg-background"
+        )}
+      >
           {/* Drag Handle - Draggable to expand/collapse */}
           <div
             className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/30 mt-4 cursor-grab active:cursor-grabbing hover:bg-muted-foreground/50 transition-colors"
@@ -298,7 +303,7 @@ export function BlockDrawer({
               )}
             </div>
           )}
-      </DrawerContent>
+      </DrawerPrimitive.Content>
     </Drawer>
   );
 }
