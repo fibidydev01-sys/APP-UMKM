@@ -146,6 +146,15 @@ export function LivePreview({ config, tenant, products, isLoading = false, activ
       <div className="flex items-center justify-between p-4 border-b bg-muted/30">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold">Live Preview</h3>
+          {/* 🚀 Active Section Name */}
+          {activeSection && (
+            <>
+              <div className="h-5 w-px bg-border" />
+              <h3 className="font-semibold capitalize">
+                {activeSection === 'cta' ? 'CTA' : activeSection}
+              </h3>
+            </>
+          )}
           {isLoading && (
             <Badge variant="outline" className="gap-1">
               <Loader2 className="h-3 w-3 animate-spin" />

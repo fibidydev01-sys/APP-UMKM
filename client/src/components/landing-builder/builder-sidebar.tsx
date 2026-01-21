@@ -146,7 +146,7 @@ function SortableSectionItem({
       <Button
         variant={isActive ? 'secondary' : 'ghost'}
         className={cn(
-          'w-full h-auto transition-all justify-center p-3',
+          'w-full h-auto transition-all flex-col items-center gap-2 py-3 px-2',
           isActive && 'bg-primary/10 text-primary hover:bg-primary/15'
         )}
         onClick={() => onSectionClick(section.id)}
@@ -159,7 +159,7 @@ function SortableSectionItem({
             {...listeners}
             className={cn(
               'cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted/50 transition-colors',
-              'opacity-0 group-hover:opacity-100 absolute left-1 top-1/2 -translate-y-1/2'
+              'opacity-0 group-hover:opacity-100 absolute left-1 top-2'
             )}
             onClick={(e) => e.stopPropagation()}
           >
@@ -170,15 +170,14 @@ function SortableSectionItem({
         {/* Icon only */}
         <Icon className={cn('h-5 w-5', isActive && 'text-primary')} />
 
-        {/* Toggle - Positioned absolute on right */}
+        {/* Toggle - Below icon */}
         {!collapsed && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2">
-            <Switch
-              checked={enabled}
-              onCheckedChange={(checked) => onToggleSection(section.id, checked)}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </div>
+          <Switch
+            checked={enabled}
+            onCheckedChange={(checked) => onToggleSection(section.id, checked)}
+            onClick={(e) => e.stopPropagation()}
+            className="scale-75"
+          />
         )}
       </Button>
     </div>
@@ -222,9 +221,9 @@ export function BuilderSidebar({
   return (
     <div
       className={cn(
-        'border-r bg-muted/30 p-4 space-y-2 transition-all duration-300',
-        // 🚀 Icon-only sidebar - fixed width (wider for toggle switch)
-        collapsed ? 'w-16' : 'w-24',
+        'border-r bg-muted/30 p-3 space-y-2 transition-all duration-300',
+        // 🚀 Icon-only sidebar - wider to fit icon + toggle vertically
+        collapsed ? 'w-16' : 'w-20',
         className
       )}
     >
