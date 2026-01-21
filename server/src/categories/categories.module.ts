@@ -12,6 +12,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [CategoriesController],
   providers: [CategoriesService],
-  exports: [CategoriesService],
+  exports: [CategoriesService], // Export for use in other modules (e.g., AuthModule)
 })
 export class CategoriesModule {}
