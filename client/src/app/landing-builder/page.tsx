@@ -42,8 +42,8 @@ export default function LandingBuilderPage() {
   const [productsLoading, setProductsLoading] = useState(true);
 
   // UI State
-  const [activeSection, setActiveSection] = useState<SectionType | null>(null);
-  const [showBlockSidebar, setShowBlockSidebar] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionType | null>('hero'); // Start with hero selected
+  const [showBlockSidebar, setShowBlockSidebar] = useState(true); // Drawer visible by default at COLLAPSED state
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // ============================================================================
@@ -316,17 +316,16 @@ export default function LandingBuilderPage() {
         </div>
 
         {/* BOTTOM: Block Drawer (Vaul - slides from bottom) */}
-        {activeSection && (
-          <BlockDrawer
-            open={showBlockSidebar}
-            onOpenChange={setShowBlockSidebar}
-            section={activeSection}
-            currentBlock={landingConfig?.[activeSection]?.block}
-            sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
-            onBlockSelect={handleBlockSelect}
-            onToggleSection={handleToggleSection}
-          />
-        )}
+        {/* Always visible - starts at COLLAPSED (15%) state */}
+        <BlockDrawer
+          open={showBlockSidebar}
+          onOpenChange={setShowBlockSidebar}
+          section={activeSection || 'hero'} // Fallback to hero if null
+          currentBlock={landingConfig?.[activeSection || 'hero']?.block}
+          sectionEnabled={landingConfig?.[activeSection || 'hero']?.enabled ?? true}
+          onBlockSelect={handleBlockSelect}
+          onToggleSection={handleToggleSection}
+        />
       </div>
     </div>
   );

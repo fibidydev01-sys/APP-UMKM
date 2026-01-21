@@ -139,6 +139,12 @@ interface BlockDrawerProps {
 /**
  * Vaul drawer for block selection
  * Slides from bottom, mobile-first, peekable
+ *
+ * States:
+ * - COLLAPSED (15%) - Default on load
+ * - EXPANDED (80%) - Full block grid
+ * - MINIMIZED (5%) - Just handle visible
+ * - CLOSED (0) - Hidden completely
  */
 export function BlockDrawer({
   open,
@@ -151,11 +157,21 @@ export function BlockDrawer({
 }: BlockDrawerProps) {
   const blocks = BLOCK_OPTIONS_MAP[section];
 
+  // Snap points: [minimized, collapsed, expanded]
+  const snapPoints = [0.05, 0.15, 0.8];
+
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root
+      open={open}
+      onOpenChange={onOpenChange}
+      snapPoints={snapPoints}
+      defaultSnapPoint={0.15} // Start at COLLAPSED (15%)
+      modal={false} // Don't block interaction with the rest of the page
+      dismissible={false} // Can't dismiss by dragging down - only via close button
+    >
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
-        <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[80vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+        <Drawer.Overlay className="fixed inset-0 bg-black/20 z-50" />
+        <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-50">
           {/* Drag Handle */}
           <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-4" />
 
@@ -177,6 +193,7 @@ export function BlockDrawer({
                 className="h-8 w-8"
               >
                 <X className="h-4 w-4" />
+                <span className="sr-only">Close drawer</span>
               </Button>
             </div>
           </div>
