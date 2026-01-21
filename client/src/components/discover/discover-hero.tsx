@@ -1,12 +1,13 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V11.0 (Carousel)
-// Feature: Popular tags now use Carousel for better mobile/desktop UX
+// DISCOVER HERO - V11.1 (Smart Carousel)
+// Feature: Carousel arrows only appear when content overflows
+// Removed "Popular:" label for cleaner design
 // Tabs filter Popular tags (4 categories per type)
 // ══════════════════════════════════════════════════════════════
 
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Store,
@@ -23,6 +24,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from '@/components/ui/carousel';
 import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
@@ -98,6 +100,9 @@ export function DiscoverHero({
   searchQuery = '',
   activeTab = 'umkm',
 }: DiscoverHeroProps) {
+  const [carouselApi, setCarouselApi] = useState<CarouselApi>();
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
 
   // Get categories based on active tab
   const popularCategories = useMemo(() => {
@@ -107,6 +112,25 @@ export function DiscoverHero({
   const handleTabClick = useCallback((tabId: TabType) => {
     onTabChange?.(tabId);
   }, [onTabChange]);
+
+  // Track carousel scroll state
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const updateScrollState = () => {
+      setCanScrollPrev(carouselApi.canScrollPrev());
+      setCanScrollNext(carouselApi.canScrollNext());
+    };
+
+    updateScrollState();
+    carouselApi.on('select', updateScrollState);
+    carouselApi.on('reInit', updateScrollState);
+
+    return () => {
+      carouselApi.off('select', updateScrollState);
+      carouselApi.off('reInit', updateScrollState);
+    };
+  }, [carouselApi]);
 
   return (
     <section className="relative pt-20 pb-8">
@@ -176,14 +200,15 @@ export function DiscoverHero({
 
             {/* ══════════════════════════════════════════════════ */}
             {/* POPULAR TAGS - Carousel based on active tab (4)    */}
+            {/* Arrows only show when there's overflow              */}
             {/* ══════════════════════════════════════════════════ */}
             <div className="relative z-10">
-              <span className="text-sm text-muted-foreground mb-3 block">Popular:</span>
               <Carousel
                 opts={{
                   align: 'start',
                   loop: false,
                 }}
+                setApi={setCarouselApi}
                 className="w-full"
               >
                 <CarouselContent className="-ml-2">
@@ -211,8 +236,8 @@ export function DiscoverHero({
                     );
                   })}
                 </CarouselContent>
-                <CarouselPrevious className="-left-3 h-7 w-7" />
-                <CarouselNext className="-right-3 h-7 w-7" />
+                {canScrollPrev && <CarouselPrevious className="-left-3 h-7 w-7" />}
+                {canScrollNext && <CarouselNext className="-right-3 h-7 w-7" />}
               </Carousel>
             </div>
           </div>
