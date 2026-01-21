@@ -126,8 +126,8 @@ const BLOCK_OPTIONS_MAP = {
 } as const;
 
 interface BlockDrawerProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  expanded: boolean; // 🚀 Collapsed (just header) vs Expanded (full height)
+  onToggleExpanded: () => void;
   section: SectionType;
   currentBlock?: string;
   sectionEnabled?: boolean;
@@ -137,11 +137,13 @@ interface BlockDrawerProps {
 
 /**
  * Vaul drawer for block selection
- * Slides from bottom, mobile-first, peekable
+ * Always visible at bottom with collapsed/expanded states
+ * Collapsed: just header visible
+ * Expanded: full height with blocks
  */
 export function BlockDrawer({
-  open,
-  onOpenChange,
+  expanded,
+  onToggleExpanded,
   section,
   currentBlock,
   sectionEnabled = true,
@@ -151,59 +153,80 @@ export function BlockDrawer({
   const blocks = BLOCK_OPTIONS_MAP[section];
 
   return (
-    <Drawer.Root open={open} onOpenChange={onOpenChange}>
+    <Drawer.Root
+      open={true} // 🚀 Always open (always visible)
+      modal={false} // 🚀 Don't block interaction with page
+      dismissible={false} // 🚀 Can't be dismissed by dragging down
+    >
       <Drawer.Portal>
-        <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
-        <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[80vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
-          {/* Drag Handle */}
-          <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-4" />
+        {/* No overlay - drawer is not modal */}
+        <Drawer.Content
+          className={cn(
+            'bg-background flex flex-col rounded-t-[10px] fixed bottom-0 left-0 right-0 z-50 border-t shadow-lg transition-all duration-300',
+            expanded ? 'h-[80vh]' : 'h-auto' // 🚀 Dynamic height
+          )}
+        >
+          {/* Drag Handle - Click to expand/collapse */}
+          <button
+            onClick={onToggleExpanded}
+            className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/20 mt-4 cursor-pointer hover:bg-muted-foreground/40 transition-colors"
+            aria-label={expanded ? 'Collapse drawer' : 'Expand drawer'}
+          />
 
-          {/* Header */}
-          <div className="p-4 border-b">
+          {/* Header - Always visible */}
+          <div className="p-4 border-b flex-shrink-0 cursor-pointer" onClick={onToggleExpanded}>
             <div className="flex items-center justify-between">
               <div>
                 <Drawer.Title className="font-semibold text-lg capitalize">
                   {section} Blocks
                 </Drawer.Title>
-                <Drawer.Description className="text-sm text-muted-foreground mt-1">
-                  Select a block style
-                </Drawer.Description>
+                {!expanded && (
+                  <Drawer.Description className="text-sm text-muted-foreground mt-1">
+                    Click to expand
+                  </Drawer.Description>
+                )}
               </div>
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => onOpenChange(false)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleExpanded();
+                }}
               >
-                Close
+                {expanded ? 'Collapse' : 'Expand'}
               </Button>
             </div>
           </div>
 
-          {/* Section Toggle */}
-          {onToggleSection && (
-            <div className="px-4 py-3 border-b bg-muted/30">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="drawer-section-toggle" className="text-sm font-medium">
-                    Section Aktif
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {sectionEnabled
-                      ? 'Section akan ditampilkan di landing page'
-                      : 'Section tidak akan ditampilkan'}
-                  </p>
+          {/* Content - Only show when expanded */}
+          {expanded && (
+            <>
+              {/* Section Toggle */}
+              {onToggleSection && (
+                <div className="px-4 py-3 border-b bg-muted/30">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="drawer-section-toggle" className="text-sm font-medium">
+                        Section Aktif
+                      </Label>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {sectionEnabled
+                          ? 'Section akan ditampilkan di landing page'
+                          : 'Section tidak akan ditampilkan'}
+                      </p>
+                    </div>
+                    <Switch
+                      id="drawer-section-toggle"
+                      checked={sectionEnabled}
+                      onCheckedChange={onToggleSection}
+                    />
+                  </div>
                 </div>
-                <Switch
-                  id="drawer-section-toggle"
-                  checked={sectionEnabled}
-                  onCheckedChange={onToggleSection}
-                />
-              </div>
-            </div>
-          )}
+              )}
 
-          {/* Block Grid - Scrollable */}
-          <div className="flex-1 overflow-auto p-4">
+              {/* Block Grid - Scrollable */}
+              <div className="flex-1 overflow-auto p-4">
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
               {blocks.map((block) => {
                 const isSelected = currentBlock === block.value;
@@ -239,7 +262,9 @@ export function BlockDrawer({
                 </p>
               </div>
             )}
-          </div>
+              </div>
+            </>
+          )}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

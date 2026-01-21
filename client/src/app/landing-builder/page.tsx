@@ -43,8 +43,8 @@ export default function LandingBuilderPage() {
 
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType | null>(null);
-  const [showBlockSidebar, setShowBlockSidebar] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [drawerExpanded, setDrawerExpanded] = useState(false); // 🚀 Drawer collapsed/expanded state
 
   // 🎬 Ref to track drawer opening timeout (for cleanup on rapid clicks)
   const drawerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -123,25 +123,23 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Scroll first, then show drawer (if not already open)
+  // Step 1: User clicks section → Scroll first, update active section
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
 
-    // 🚀 If drawer already open, just switch section (no close/reopen!)
-    if (showBlockSidebar) {
-      return; // Drawer stays open, content updates
-    }
-
-    // 🎬 Only open drawer if it's closed - delay for scroll animation
+    // 🚀 Drawer always visible, just expand it after scroll animation
     if (drawerTimeoutRef.current) {
       clearTimeout(drawerTimeoutRef.current);
     }
 
-    drawerTimeoutRef.current = setTimeout(() => {
-      setShowBlockSidebar(true);
-      drawerTimeoutRef.current = null;
-    }, 700);
-  }, [showBlockSidebar]);
+    // 🎬 Expand drawer after scroll completes (if not already expanded)
+    if (!drawerExpanded) {
+      drawerTimeoutRef.current = setTimeout(() => {
+        setDrawerExpanded(true);
+        drawerTimeoutRef.current = null;
+      }, 700);
+    }
+  }, [drawerExpanded]);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
   const handleBlockSelect = useCallback((block: string) => {
@@ -193,15 +191,9 @@ export default function LandingBuilderPage() {
     return landingConfig?.[section]?.enabled ?? true;
   }, [landingConfig]);
 
-  // Close block sidebar
-  const handleBlockSidebarClose = useCallback(() => {
-    setShowBlockSidebar(false);
-    setActiveSection(null);
-  }, []);
-
-  // 🚀 Toggle drawer - for Buka/Tutup button
+  // 🚀 Toggle drawer expanded/collapsed - for Buka/Tutup button
   const handleToggleDrawer = useCallback(() => {
-    setShowBlockSidebar((prev) => !prev);
+    setDrawerExpanded((prev) => !prev);
   }, []);
 
   // 🚀 Handle section reordering
@@ -354,17 +346,17 @@ export default function LandingBuilderPage() {
               products={products}
               isLoading={productsLoading}
               activeSection={activeSection} // 🚀 Pass active section for auto-scroll
-              drawerOpen={showBlockSidebar} // 🚀 Pass drawer state
+              drawerOpen={drawerExpanded} // 🚀 Pass drawer expanded state
               onToggleDrawer={handleToggleDrawer} // 🚀 Pass toggle handler
             />
           </LandingErrorBoundary>
         </div>
 
-        {/* BOTTOM: Block Drawer (Vaul - slides from bottom) */}
+        {/* BOTTOM: Block Drawer (Always visible - collapsed/expanded states) */}
         {activeSection && (
           <BlockDrawer
-            open={showBlockSidebar}
-            onOpenChange={setShowBlockSidebar}
+            expanded={drawerExpanded}
+            onToggleExpanded={handleToggleDrawer}
             section={activeSection}
             currentBlock={landingConfig?.[activeSection]?.block}
             sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
