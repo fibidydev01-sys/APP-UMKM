@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { CATEGORY_CONFIG } from '@/config/categories';
 import type {
   Category,
@@ -17,9 +18,10 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 // ==========================================
 
 /**
- * Fetch all unique categories from backend
+ * Fetch all unique categories from backend (uncached)
+ * Internal function - use getCachedCategories() instead
  */
-export async function fetchAllCategoriesFromDB(): Promise<string[]> {
+async function fetchAllCategoriesFromDBInternal(): Promise<string[]> {
   try {
     const res = await fetch(`${API_URL}/categories`, {
       next: { revalidate: 300 }, // Cache for 5 minutes
@@ -32,9 +34,15 @@ export async function fetchAllCategoriesFromDB(): Promise<string[]> {
 }
 
 /**
- * Fetch category stats (with counts)
+ * Fetch all unique categories from backend (CACHED)
+ * Deduplicates multiple calls within the same request
  */
-export async function fetchCategoryStats(): Promise<CategoryStatsResponse[]> {
+export const fetchAllCategoriesFromDB = cache(fetchAllCategoriesFromDBInternal);
+
+/**
+ * Fetch category stats (with counts) - internal
+ */
+async function fetchCategoryStatsInternal(): Promise<CategoryStatsResponse[]> {
   try {
     const res = await fetch(`${API_URL}/categories/stats`, {
       next: { revalidate: 300 }, // Cache for 5 minutes
@@ -45,6 +53,12 @@ export async function fetchCategoryStats(): Promise<CategoryStatsResponse[]> {
     return [];
   }
 }
+
+/**
+ * Fetch category stats (with counts) - CACHED
+ * Deduplicates multiple calls within the same request
+ */
+export const fetchCategoryStats = cache(fetchCategoryStatsInternal);
 
 /**
  * Search categories (autocomplete)

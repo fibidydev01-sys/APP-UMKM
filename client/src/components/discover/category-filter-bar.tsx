@@ -121,109 +121,26 @@ function getUniqueColors(): { color: string; label: string; categories: string[]
 }
 
 // ══════════════════════════════════════════════════════════════
-// SORT PANEL
-// ══════════════════════════════════════════════════════════════
-
-interface SortPanelProps {
-  sortBy: SortOption;
-  onSortChange: (sort: SortOption) => void;
-  onClose: () => void;
-}
-
-const SortPanel = memo(function SortPanel({
-  sortBy,
-  onSortChange,
-  onClose,
-}: SortPanelProps) {
-  return (
-    <div className="w-[280px] p-0">
-      <div className="flex items-center justify-between p-3 border-b">
-        <h3 className="font-semibold text-sm">Urutkan</h3>
-        <button
-          onClick={onClose}
-          className="text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-
-      <div className="p-2">
-        {sortOptions.map((option) => {
-          const Icon = option.icon;
-          const isSelected = sortBy === option.value;
-          return (
-            <button
-              key={option.value}
-              onClick={() => {
-                onSortChange(option.value);
-                onClose();
-              }}
-              className={cn(
-                'flex items-start gap-3 w-full p-3 rounded-lg text-left transition-colors',
-                isSelected ? 'bg-primary/10' : 'hover:bg-muted'
-              )}
-            >
-              <div
-                className={cn(
-                  'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
-                  isSelected ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                )}
-              >
-                <Icon className="h-4 w-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className={cn('text-sm font-medium', isSelected && 'text-primary')}>
-                  {option.label}
-                </p>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {option.description}
-                </p>
-              </div>
-              {isSelected && <Check className="h-4 w-4 text-primary shrink-0 mt-1" />}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-});
-
-// ══════════════════════════════════════════════════════════════
 // FILTER PANEL
 // ══════════════════════════════════════════════════════════════
 
 interface FilterPanelProps {
   selectedColor: string | null;
   onColorSelect: (color: string | null) => void;
-  tagSearch: string;
-  onTagSearchChange: (value: string) => void;
-  categories: CategoryConfig[];
-  selectedCategory: string | null;
-  onCategorySelect: (category: string | null) => void;
   onClose: () => void;
 }
 
 const FilterPanel = memo(function FilterPanel({
   selectedColor,
   onColorSelect,
-  tagSearch,
-  onTagSearchChange,
-  categories,
-  selectedCategory,
-  onCategorySelect,
   onClose,
 }: FilterPanelProps) {
   const uniqueColors = getUniqueColors();
 
-  const filteredCategories = categories.filter((cat) =>
-    cat.label.toLowerCase().includes(tagSearch.toLowerCase()) ||
-    cat.labelShort.toLowerCase().includes(tagSearch.toLowerCase())
-  );
-
   return (
-    <div className="w-[500px] lg:w-[600px] p-0">
+    <div className="w-[320px] p-0">
       <div className="flex items-center justify-between p-4 border-b">
-        <h3 className="font-semibold">Filters</h3>
+        <h3 className="font-semibold">Color Filter</h3>
         <button
           onClick={onClose}
           className="text-muted-foreground hover:text-foreground transition-colors"
@@ -232,70 +149,7 @@ const FilterPanel = memo(function FilterPanel({
         </button>
       </div>
 
-      <div className="p-4 grid grid-cols-2 gap-6">
-        {/* Tags */}
-        <div>
-          <label className="text-sm font-medium text-muted-foreground mb-2 block">
-            Tags
-          </label>
-          <div className="relative mb-3">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search categories..."
-              value={tagSearch}
-              onChange={(e) => onTagSearchChange(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-
-          {selectedCategory && (
-            <div className="mb-3">
-              <Badge
-                variant="secondary"
-                className="gap-1 pr-1"
-                style={{
-                  backgroundColor: `${CATEGORY_CONFIG[selectedCategory]?.color}15`,
-                  color: CATEGORY_CONFIG[selectedCategory]?.color,
-                }}
-              >
-                {CATEGORY_CONFIG[selectedCategory]?.labelShort}
-                <button
-                  onClick={() => onCategorySelect(null)}
-                  className="ml-1 hover:bg-black/10 rounded-full p-0.5"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </Badge>
-            </div>
-          )}
-
-          <div className="max-h-48 overflow-y-auto space-y-1">
-            {filteredCategories.map((cat) => {
-              const Icon = cat.icon;
-              const isSelected = selectedCategory === cat.key;
-              return (
-                <button
-                  key={cat.key}
-                  onClick={() => onCategorySelect(isSelected ? null : cat.key)}
-                  className={cn(
-                    'flex items-center gap-2 w-full px-2 py-1.5 rounded text-left text-sm transition-colors',
-                    isSelected ? 'bg-primary/10 text-primary font-medium' : 'hover:bg-muted'
-                  )}
-                >
-                  <div
-                    className="w-5 h-5 rounded flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: `${cat.color}15` }}
-                  >
-                    <Icon className="h-3 w-3" style={{ color: cat.color }} />
-                  </div>
-                  <span className="truncate">{cat.labelShort}</span>
-                  {isSelected && <Check className="h-3 w-3 ml-auto shrink-0" />}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
+      <div className="p-4">
         {/* Color */}
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -348,12 +202,8 @@ const FilterPanel = memo(function FilterPanel({
 
       <div className="flex items-center justify-between p-4 border-t bg-muted/30">
         <div className="text-sm text-muted-foreground">
-          {selectedCategory || selectedColor ? (
-            <>
-              {selectedCategory && <span className="font-medium">1 kategori</span>}
-              {selectedCategory && selectedColor && <span> · </span>}
-              {selectedColor && <span className="font-medium">1 warna</span>}
-            </>
+          {selectedColor ? (
+            <span className="font-medium">1 warna terpilih</span>
           ) : (
             'Tidak ada filter aktif'
           )}
@@ -362,10 +212,8 @@ const FilterPanel = memo(function FilterPanel({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => {
-              onCategorySelect(null);
-              onColorSelect(null);
-            }}
+            onClick={() => onColorSelect(null)}
+            disabled={!selectedColor}
           >
             Reset
           </Button>
@@ -394,13 +242,10 @@ export function CategoryFilterBar({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
-  const [sortOpen, setSortOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [tagSearch, setTagSearch] = useState('');
 
   const categories = getCategoryList();
-  const activeFilterCount = (selectedCategory ? 1 : 0) + (selectedColor ? 1 : 0);
-  const currentSortLabel = sortOptions.find(s => s.value === sortBy)?.label || 'Popular';
+  const activeFilterCount = selectedColor ? 1 : 0;
 
   // Scroll arrows
   const checkScrollArrows = useCallback(() => {
@@ -457,31 +302,6 @@ export function CategoryFilterBar({
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 h-14">
-
-          {/* Sort Popover - z-[200] */}
-          <Popover open={sortOpen} onOpenChange={setSortOpen}>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-1 shrink-0">
-                {currentSortLabel}
-                <ChevronDown className={cn('h-4 w-4 transition-transform', sortOpen && 'rotate-180')} />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent
-              align="start"
-              side="bottom"
-              className="p-0 w-auto z-[200]"
-              sideOffset={8}
-            >
-              <SortPanel
-                sortBy={sortBy}
-                onSortChange={handleSortChange}
-                onClose={() => setSortOpen(false)}
-              />
-            </PopoverContent>
-          </Popover>
-
-          {/* Divider */}
-          <div className="h-6 w-px bg-border shrink-0" />
 
           {/* Category Pills */}
           <div className="relative flex-1 flex items-center min-w-0">
@@ -563,11 +383,6 @@ export function CategoryFilterBar({
               <FilterPanel
                 selectedColor={selectedColor}
                 onColorSelect={handleColorSelect}
-                tagSearch={tagSearch}
-                onTagSearchChange={setTagSearch}
-                categories={categories}
-                selectedCategory={selectedCategory}
-                onCategorySelect={handleCategoryClick}
                 onClose={() => setFilterOpen(false)}
               />
             </PopoverContent>

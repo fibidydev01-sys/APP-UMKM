@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { cookies } from 'next/headers';
 import { API_URL } from '@/config/constants';
 import type {
@@ -106,9 +107,11 @@ export const serverApi = {
     serverFetch<PaginatedResponse<Order>>('/orders', { params }),
   getOrder: (id: string) => serverFetch<Order>(`/orders/${id}`),
 
-  // Public
-  getTenantBySlug: (slug: string) =>
-    serverFetch<Tenant>(`/tenants/by-slug/${slug}`),
-  getStoreProducts: (slug: string, params?: Record<string, string | number | boolean | undefined>) =>
-    serverFetch<PaginatedResponse<Product>>(`/products/store/${slug}`, { params }),
+  // Public (CACHED to prevent duplicate fetches)
+  getTenantBySlug: cache((slug: string) =>
+    serverFetch<Tenant>(`/tenants/by-slug/${slug}`)
+  ),
+  getStoreProducts: cache((slug: string, params?: Record<string, string | number | boolean | undefined>) =>
+    serverFetch<PaginatedResponse<Product>>(`/products/store/${slug}`, { params })
+  ),
 };
