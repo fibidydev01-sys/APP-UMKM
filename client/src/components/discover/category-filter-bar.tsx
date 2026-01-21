@@ -1,8 +1,7 @@
 // ══════════════════════════════════════════════════════════════
-// CATEGORY FILTER BAR - V12.0 (NavigationMenu Style, No Icons)
-// Changed: Using NavigationMenu-style components
-// Changed: Removed all colored dots/icons
-// Changed: Highest z-index (z-[99999])
+// CATEGORY FILTER BAR - V13.0 (NavigationMenu Groups + Hover)
+// Each group (Kuliner, Rumah & Taman, etc.) shows sub-categories on hover
+// No icons/emojis, highest z-index
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -13,7 +12,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getCategoryList } from '@/config/categories';
+import { CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -33,6 +32,9 @@ interface CategoryFilterBarProps {
   isSticky?: boolean;
 }
 
+// Get all groups
+const groups = Object.values(CATEGORY_GROUPS);
+
 // ══════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ══════════════════════════════════════════════════════════════
@@ -45,13 +47,6 @@ export function CategoryFilterBar({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(false);
-
-  const categories = getCategoryList();
-
-  // Find current category label
-  const currentCategory = selectedCategory
-    ? categories.find(c => c.key === selectedCategory)
-    : null;
 
   // Scroll arrows
   const checkScrollArrows = useCallback(() => {
@@ -100,12 +95,12 @@ export function CategoryFilterBar({
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-2 h-14">
 
-          {/* Category Pills with NavigationMenu Dropdown */}
+          {/* Navigation Menu with Groups */}
           <div className="relative flex-1 flex items-center min-w-0">
             {showLeftArrow && (
               <button
                 onClick={scrollLeft}
-                className="absolute left-0 z-10 h-8 w-8 flex items-center justify-center bg-gradient-to-r from-background via-background to-transparent"
+                className="absolute left-0 z-20 h-8 w-8 flex items-center justify-center bg-gradient-to-r from-background via-background to-transparent"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -119,7 +114,7 @@ export function CategoryFilterBar({
               <button
                 onClick={() => handleCategoryClick(null)}
                 className={cn(
-                  'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
+                  'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 shrink-0',
                   !selectedCategory
                     ? 'bg-foreground text-background'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
@@ -128,27 +123,56 @@ export function CategoryFilterBar({
                 Discover
               </button>
 
-              {/* Category Items - No Icons */}
-              {categories.map((cat) => (
-                <button
-                  key={cat.key}
-                  onClick={() => handleCategoryClick(cat.key)}
-                  className={cn(
-                    'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200',
-                    selectedCategory === cat.key
-                      ? 'bg-foreground text-background'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted'
-                  )}
-                >
-                  {cat.labelShort}
-                </button>
-              ))}
+              {/* NavigationMenu for Groups */}
+              <NavigationMenu className="max-w-none">
+                <NavigationMenuList className="gap-1">
+                  {groups.map((group) => {
+                    const subCategories = getCategoriesByGroup(group.key);
+                    const isGroupActive = subCategories.some(cat => cat.key === selectedCategory);
+
+                    return (
+                      <NavigationMenuItem key={group.key}>
+                        <NavigationMenuTrigger
+                          className={cn(
+                            'px-4 py-2 text-sm font-medium rounded-full whitespace-nowrap transition-colors duration-200 h-auto bg-transparent',
+                            isGroupActive
+                              ? 'bg-foreground text-background'
+                              : 'text-muted-foreground hover:text-foreground hover:bg-muted data-[state=open]:bg-muted'
+                          )}
+                        >
+                          {group.label}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent className="z-[99999]">
+                          <ul className="grid w-[220px] gap-1 p-2 max-h-[400px] overflow-y-auto">
+                            {subCategories.map((cat) => (
+                              <li key={cat.key}>
+                                <NavigationMenuLink asChild>
+                                  <button
+                                    onClick={() => handleCategoryClick(cat.key)}
+                                    className={cn(
+                                      'block w-full select-none rounded-md p-3 text-sm leading-none no-underline outline-none transition-colors text-left',
+                                      'hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground',
+                                      selectedCategory === cat.key && 'bg-accent text-accent-foreground font-medium'
+                                    )}
+                                  >
+                                    {cat.labelShort}
+                                  </button>
+                                </NavigationMenuLink>
+                              </li>
+                            ))}
+                          </ul>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    );
+                  })}
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
 
             {showRightArrow && (
               <button
                 onClick={scrollRight}
-                className="absolute right-0 z-10 h-8 w-8 flex items-center justify-center bg-gradient-to-l from-background via-background to-transparent"
+                className="absolute right-0 z-20 h-8 w-8 flex items-center justify-center bg-gradient-to-l from-background via-background to-transparent"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
