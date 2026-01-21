@@ -46,6 +46,10 @@ export default function LandingBuilderPage() {
   const [showBlockSidebar, setShowBlockSidebar] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
+  // 🚀 Section order state - default order if not in config
+  const defaultSectionOrder: SectionType[] = ['hero', 'about', 'products', 'testimonials', 'cta', 'contact'];
+  const sectionOrder = landingConfig?.sectionOrder || defaultSectionOrder;
+
   // ============================================================================
   // LANDING CONFIG HOOK
   // ============================================================================
@@ -158,6 +162,16 @@ export default function LandingBuilderPage() {
     setShowBlockSidebar(false);
     setActiveSection(null);
   }, []);
+
+  // 🚀 Handle section reordering
+  const handleSectionOrderChange = useCallback((newOrder: SectionType[]) => {
+    if (!landingConfig) return;
+
+    setLandingConfig({
+      ...landingConfig,
+      sectionOrder: newOrder,
+    } as TenantLandingConfig);
+  }, [landingConfig, setLandingConfig]);
 
   // ============================================================================
   // LOADING STATE
@@ -284,6 +298,8 @@ export default function LandingBuilderPage() {
           activeSection={activeSection}
           onSectionClick={handleSectionClick}
           collapsed={sidebarCollapsed}
+          sectionOrder={sectionOrder}
+          onSectionOrderChange={handleSectionOrderChange}
         />
 
         {/* LEFT 2: Block Sidebar (Canva-style) */}

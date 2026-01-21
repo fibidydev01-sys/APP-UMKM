@@ -138,12 +138,19 @@ export interface CtaSectionConfig {
 }
 
 // ==========================================
+// SECTION TYPE (for ordering)
+// ==========================================
+
+export type SectionKey = 'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta';
+
+// ==========================================
 // MAIN CONFIG INTERFACE
 // ==========================================
 
 export interface TenantLandingConfig {
   enabled: boolean;
   template?: string; // Template ID
+  sectionOrder?: SectionKey[]; // 🚀 NEW: Drag & drop section ordering
   hero?: LandingSection<HeroBlock> & { config?: HeroSectionConfig };
   about?: LandingSection<AboutBlock> & { config?: AboutSectionConfig };
   products?: LandingSection<ProductsBlock> & { config?: ProductsSectionConfig };

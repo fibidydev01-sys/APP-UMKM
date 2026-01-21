@@ -1316,14 +1316,21 @@ export interface LandingSection<T = Record<string, unknown>, V = string> {
 }
 
 // ==========================================
-// 🚀 UPDATED: Landing Config with Template
+// 🚀 SECTION KEY TYPE
+// ==========================================
+
+export type SectionKey = 'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta';
+
+// ==========================================
+// 🚀 UPDATED: Landing Config with Template & Section Order
 // ==========================================
 
 export interface LandingConfig {
   [key: string]: unknown;
   enabled?: boolean;
-  template?: TemplateId; // 🚀 NEW: Template ID
+  template?: TemplateId; // 🚀 Template ID
   templateId?: string; // Legacy support
+  sectionOrder?: SectionKey[]; // 🚀 NEW: D&D section ordering
   hero?: LandingSection<HeroConfig, HeroBlock>;
   about?: LandingSection<AboutConfig, AboutBlock>;
   products?: LandingSection<ProductsConfig, ProductsBlock>;
@@ -1395,6 +1402,18 @@ const landingConfigSchema = {
         'professional-starter',
         'custom',
       ],
+    },
+
+    // 🚀 NEW: Section order for D&D
+    sectionOrder: {
+      type: 'array' as const,
+      items: {
+        type: 'string' as const,
+        enum: ['hero', 'about', 'products', 'testimonials', 'contact', 'cta'],
+      },
+      minItems: 6,
+      maxItems: 6,
+      uniqueItems: true,
     },
 
     // 🚀 UPDATED: Hero with block
@@ -2550,6 +2569,7 @@ export function getDefaultLandingConfig(): LandingConfig {
   return {
     enabled: false,
     template: 'suspended-minimalist', // 🚀 Default template
+    sectionOrder: ['hero', 'about', 'products', 'testimonials', 'cta', 'contact'], // 🚀 Default order
     hero: {
       enabled: false,
       title: '',

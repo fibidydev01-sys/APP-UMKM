@@ -56,6 +56,17 @@ const DEVICE_ICONS: Record<DeviceType, React.ReactNode> = {
 export function LivePreview({ config, tenant, products, isLoading = false }: LivePreviewProps) {
   const [device, setDevice] = useState<DeviceType>('desktop');
 
+  // 🚀 Section order - use config.sectionOrder or default order
+  const defaultOrder: Array<'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta'> = [
+    'hero',
+    'about',
+    'products',
+    'testimonials',
+    'cta',
+    'contact',
+  ];
+  const sectionOrder = config?.sectionOrder || defaultOrder;
+
   // Section enabled checks
   const heroEnabled = config?.hero?.enabled === true;
   const aboutEnabled = config?.about?.enabled === true;
@@ -66,6 +77,33 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
 
   const hasAnySectionEnabled =
     heroEnabled || aboutEnabled || productsEnabled || testimonialsEnabled || ctaEnabled || contactEnabled;
+
+  // 🚀 Section rendering map
+  const sectionComponents = {
+    hero: heroEnabled ? (
+      <TenantHero key="hero" config={config.hero} tenant={tenant} />
+    ) : null,
+    about: aboutEnabled ? (
+      <TenantAbout key="about" config={config.about} tenant={tenant} />
+    ) : null,
+    products: productsEnabled ? (
+      <TenantProducts
+        key="products"
+        products={products}
+        config={config.products}
+        storeSlug={tenant.slug}
+      />
+    ) : null,
+    testimonials: testimonialsEnabled ? (
+      <TenantTestimonials key="testimonials" config={config.testimonials} tenant={tenant} />
+    ) : null,
+    cta: ctaEnabled ? (
+      <TenantCta key="cta" config={config.cta} tenant={tenant} />
+    ) : null,
+    contact: contactEnabled ? (
+      <TenantContact key="contact" config={config.contact} tenant={tenant} />
+    ) : null,
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -128,54 +166,8 @@ export function LivePreview({ config, tenant, products, isLoading = false }: Liv
           {/* Render landing page sections */}
           <TemplateProvider initialTemplateId={config.template || 'suspended-minimalist'}>
             <div className="container px-4 py-8 space-y-8">
-              {/* Hero Section */}
-              {heroEnabled && (
-                <TenantHero
-                  config={config.hero}
-                  tenant={tenant}
-                />
-              )}
-
-              {/* About Section */}
-              {aboutEnabled && (
-                <TenantAbout
-                  config={config.about}
-                  tenant={tenant}
-                />
-              )}
-
-              {/* Products Section */}
-              {productsEnabled && (
-                <TenantProducts
-                  products={products}
-                  config={config.products}
-                  storeSlug={tenant.slug}
-                />
-              )}
-
-              {/* Testimonials Section */}
-              {testimonialsEnabled && (
-                <TenantTestimonials
-                  config={config.testimonials}
-                  tenant={tenant}
-                />
-              )}
-
-              {/* CTA Section */}
-              {ctaEnabled && (
-                <TenantCta
-                  config={config.cta}
-                  tenant={tenant}
-                />
-              )}
-
-              {/* Contact Section */}
-              {contactEnabled && (
-                <TenantContact
-                  config={config.contact}
-                  tenant={tenant}
-                />
-              )}
+              {/* 🚀 Render sections in custom order */}
+              {sectionOrder.map((sectionKey) => sectionComponents[sectionKey]).filter(Boolean)}
 
               {/* Empty State */}
               {!hasAnySectionEnabled && (
