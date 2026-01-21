@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { Cta1 } from '@/components/landing/blocks';
+import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -195,7 +196,9 @@ export default function CTAPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Pratinjau real-time dari CTA Section Anda
                 </p>
-                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                {/* Inject Theme CSS */}
+                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Cta1
                     title={formData.ctaTitle || 'Siap Memulai?'}
                     subtitle={formData.ctaSubtitle}

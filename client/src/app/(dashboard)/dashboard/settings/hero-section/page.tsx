@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
 import { Hero1 } from '@/components/landing/blocks';
-import { extractHeroData } from '@/lib/landing';
+import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -340,7 +340,9 @@ export default function HeroSectionPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Pratinjau real-time dari Hero Section Anda
                 </p>
-                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                {/* Inject Theme CSS for Real-time Preview */}
+                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }} />
+                <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Hero1
                     title={formData.heroTitle || formData.name || ''}
                     subtitle={formData.heroSubtitle || formData.description}

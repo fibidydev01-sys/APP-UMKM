@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { Contact1 } from '@/components/landing/blocks';
+import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -258,7 +259,9 @@ export default function ContactPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Pratinjau real-time dari Contact Section Anda
                 </p>
-                <div className="border rounded-lg overflow-hidden bg-muted/20">
+                {/* Inject Theme CSS */}
+                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Contact1
                     title={formData.contactTitle || 'Hubungi Kami'}
                     subtitle={formData.contactSubtitle}

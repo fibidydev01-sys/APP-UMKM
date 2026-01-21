@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
 import { Testimonials1 } from '@/components/landing/blocks';
+import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
@@ -247,6 +248,8 @@ export default function TestimonialsPage() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Pratinjau real-time dari Testimonials Section Anda
                 </p>
+                {/* Inject Theme CSS */}
+                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
                 {formData.testimonials.length === 0 ? (
                   <div className="border rounded-lg p-8 bg-muted/20 text-center">
                     <p className="text-muted-foreground">
@@ -254,7 +257,7 @@ export default function TestimonialsPage() {
                     </p>
                   </div>
                 ) : (
-                  <div className="border rounded-lg overflow-hidden bg-muted/20">
+                  <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                     <Testimonials1
                       title={formData.testimonialsTitle || 'Testimoni'}
                       subtitle={formData.testimonialsSubtitle}
