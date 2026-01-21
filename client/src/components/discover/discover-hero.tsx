@@ -1,6 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V16.0 (Select Dropdown + No Icons)
-// Changed: Using Select dropdown (simpler)
+// DISCOVER HERO - V17.0 (DropdownMenu + No Icons)
+// Changed: Using DropdownMenu with modal={false} to prevent scroll lock
 // Changed: z-index lower than header
 // Changed: Max 3 categories
 // ══════════════════════════════════════════════════════════════
@@ -17,6 +17,8 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,12 +26,11 @@ import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG, CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -162,28 +163,30 @@ export function DiscoverHero({
             </p>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* DROPDOWN - Select (No Icons)                       */}
+            {/* DROPDOWN - DropdownMenu with modal={false}         */}
             {/* z-30: Lower than header (z-50)                     */}
             {/* ══════════════════════════════════════════════════ */}
             <div className="mb-6 relative z-30">
-              <Select value={activeTab} onValueChange={(value) => handleTabClick(value as TabType)}>
-                <SelectTrigger className="w-fit bg-background border-2 rounded-full px-4 py-2 h-auto gap-2 font-medium shadow-sm hover:shadow-md transition-shadow">
-                  <SelectValue>
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <button className="flex items-center gap-2 bg-background border-2 rounded-full px-4 py-2 font-medium shadow-sm hover:shadow-md transition-shadow">
                     {tabs.find(t => t.id === activeTab)?.label}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent position="popper" side="bottom" align="start" className="rounded-xl border-2 shadow-xl">
+                    <ChevronDown className="h-4 w-4 opacity-50" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="rounded-xl border-2 shadow-xl min-w-[180px]">
                   {tabs.map((tab) => (
-                    <SelectItem
+                    <DropdownMenuItem
                       key={tab.id}
-                      value={tab.id}
-                      className="cursor-pointer rounded-lg"
+                      onClick={() => handleTabClick(tab.id)}
+                      className="cursor-pointer rounded-lg flex items-center justify-between"
                     >
                       {tab.label}
-                    </SelectItem>
+                      {activeTab === tab.id && <Check className="h-4 w-4 text-primary" />}
+                    </DropdownMenuItem>
                   ))}
-                </SelectContent>
-              </Select>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
 
             {/* Search Bar */}
