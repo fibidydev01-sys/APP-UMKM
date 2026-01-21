@@ -34,6 +34,8 @@ import {
 // TYPES
 // ══════════════════════════════════════════════════════════════
 
+type TabType = 'umkm' | 'produk' | 'jasa';
+
 // ══════════════════════════════════════════════════════════════
 // BROWSER CACHE (sessionStorage)
 // ══════════════════════════════════════════════════════════════
@@ -88,6 +90,7 @@ export function DiscoverPageClient() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<SortOption>('popular');
+  const [activeTab, setActiveTab] = useState<TabType>('umkm');
 
   // Drawer State
   const [selectedTenant, setSelectedTenant] = useState<ShowcaseTenant | null>(null);
@@ -204,6 +207,10 @@ export function DiscoverPageClient() {
     setSortBy(sort);
   }, []);
 
+  const handleTabChange = useCallback((tab: TabType) => {
+    setActiveTab(tab);
+  }, []);
+
   const handleCardClick = useCallback((tenant: ShowcaseTenant) => {
     setSelectedTenant(tenant);
     setDrawerOpen(true);
@@ -248,7 +255,10 @@ export function DiscoverPageClient() {
         ) : (
           <DiscoverHero
             onSearch={handleSearch}
+            onCategorySelect={handleCategorySelect}
+            onTabChange={handleTabChange}
             searchQuery={searchQuery}
+            activeTab={activeTab}
           />
         )}
 

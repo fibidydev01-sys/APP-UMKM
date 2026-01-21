@@ -1,10 +1,11 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V11 SIMPLIFIED
-// Search-first approach, no tabs/filters
+// DISCOVER HERO - V10.8 FINAL
+// Feature: Tabs filter Popular tags (4 categories per type)
 // ══════════════════════════════════════════════════════════════
 
 'use client';
 
+import { useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import {
   Store,
@@ -16,14 +17,67 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DiscoverSearch } from './discover-search';
+import { cn } from '@/lib/utils';
+import { CATEGORY_CONFIG } from '@/config/categories';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
 // ══════════════════════════════════════════════════════════════
 
+type TabType = 'umkm' | 'produk' | 'jasa';
+
 interface DiscoverHeroProps {
   onSearch?: (query: string) => void;
+  onCategorySelect?: (category: string | null) => void;
+  onTabChange?: (tab: TabType) => void;
   searchQuery?: string;
+  activeTab?: TabType;
+}
+
+// ══════════════════════════════════════════════════════════════
+// DATA - Category mapping by type (4 each)
+// ══════════════════════════════════════════════════════════════
+
+const tabs = [
+  { id: 'umkm' as TabType, label: 'UMKM', icon: Store, description: 'Toko & Usaha' },
+  { id: 'produk' as TabType, label: 'Produk', icon: Package, description: 'Barang & Item' },
+  { id: 'jasa' as TabType, label: 'Jasa', icon: Wrench, description: 'Layanan & Service' },
+];
+
+// Mapping kategori berdasarkan tipe (4 per tipe)
+const CATEGORIES_BY_TYPE: Record<TabType, string[]> = {
+  // UMKM - Toko & Usaha fisik
+  umkm: [
+    'WARUNG_KELONTONG',  // Warung
+    'TOKO_BANGUNAN',     // Bangunan
+    'KEDAI_KOPI',        // Kopi
+    'APOTEK',            // Apotek
+  ],
+  // Produk - Barang yang dijual
+  produk: [
+    'TOKO_KUE',          // Kue
+    'PETSHOP',           // Pet
+    'PERCETAKAN',        // Print
+    'TOKO_BANGUNAN',     // Bangunan (material)
+  ],
+  // Jasa - Layanan & Service
+  jasa: [
+    'BENGKEL_MOTOR',     // Bengkel
+    'SALON_BARBERSHOP',  // Salon
+    'LAUNDRY',           // Laundry
+    'CATERING',          // Catering
+  ],
+};
+
+// Placeholder text per tab
+const SEARCH_PLACEHOLDERS: Record<TabType, string> = {
+  umkm: 'Cari warung, toko, kedai...',
+  produk: 'Cari makanan, kue, produk...',
+  jasa: 'Cari bengkel, salon, laundry...',
+};
+
+function categoryKeyToSlug(key: string): string {
+  return key.toLowerCase().replace(/_/g, '-');
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -32,8 +86,19 @@ interface DiscoverHeroProps {
 
 export function DiscoverHero({
   onSearch,
+  onTabChange,
   searchQuery = '',
+  activeTab = 'umkm',
 }: DiscoverHeroProps) {
+
+  // Get categories based on active tab
+  const popularCategories = useMemo(() => {
+    return CATEGORIES_BY_TYPE[activeTab] || CATEGORIES_BY_TYPE.umkm;
+  }, [activeTab]);
+
+  const handleTabClick = useCallback((tabId: TabType) => {
+    onTabChange?.(tabId);
+  }, [onTabChange]);
 
   return (
     <section className="relative pt-20 pb-8">
@@ -65,15 +130,69 @@ export function DiscoverHero({
               dan ribuan UMKM lainnya.
             </p>
 
+            {/* ══════════════════════════════════════════════════ */}
+            {/* TABS - Click to filter categories                  */}
+            {/* ══════════════════════════════════════════════════ */}
+            <div className="flex items-center gap-2 mb-6">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => handleTabClick(tab.id)}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200',
+                      isActive
+                        ? 'bg-foreground text-background shadow-lg'
+                        : 'bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground'
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Search Bar */}
             <div id="hero-search" className="mb-4 relative z-40">
               <DiscoverSearch
                 size="hero"
-                placeholder="Cari warung, toko, kedai..."
+                placeholder={SEARCH_PLACEHOLDERS[activeTab]}
                 defaultValue={searchQuery}
                 onSearch={onSearch}
                 showSuggestions={true}
               />
+            </div>
+
+            {/* ══════════════════════════════════════════════════ */}
+            {/* POPULAR TAGS - Dynamic based on active tab (4)     */}
+            {/* ══════════════════════════════════════════════════ */}
+            <div className="flex flex-wrap items-center gap-2 relative z-10">
+              <span className="text-sm text-muted-foreground">Popular:</span>
+              {popularCategories.map((catKey) => {
+                const category = CATEGORY_CONFIG[catKey];
+                if (!category) return null;
+                return (
+                  <Link
+                    key={catKey}
+                    href={`/discover/${categoryKeyToSlug(catKey)}`}
+                    className={cn(
+                      'px-3 py-1.5 text-sm rounded-full border',
+                      'bg-background hover:bg-muted hover:border-primary/50',
+                      'transition-colors duration-200',
+                      'flex items-center gap-1.5'
+                    )}
+                  >
+                    <span
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: category.color }}
+                    />
+                    {category.labelShort}
+                  </Link>
+                );
+              })}
             </div>
           </div>
 
