@@ -20,7 +20,7 @@ import {
   CategoryFilterBar,
   MinimalFooter,
 } from '@/components/discover';
-import type { ShowcaseTenant, SortOption } from '@/types/discover';
+import type { ShowcaseTenant } from '@/types/discover';
 import { CATEGORY_CONFIG } from '@/config/categories';
 import {
   fetchTenantsByCategory,
@@ -213,7 +213,6 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState<SortOption>('popular');
 
   // ════════════════════════════════════════════════════════════
   // FETCH TENANTS
@@ -260,8 +259,8 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
       );
     }
 
-    // Apply sort using centralized utility
-    result = sortTenants(result, sortBy);
+    // Apply sort: default to popular (by product count)
+    result = sortTenants(result, 'popular');
 
     return result;
   })();
@@ -285,10 +284,6 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
     [categoryKey, router]
   );
 
-  const handleSortChange = useCallback((sort: SortOption) => {
-    setSortBy(sort);
-  }, []);
-
   // ════════════════════════════════════════════════════════════
   // RENDER
   // ════════════════════════════════════════════════════════════
@@ -298,21 +293,17 @@ export function CategoryPageClient({ categoryKey, categorySlug, isDynamic }: Cat
       {/* Header */}
       <DiscoverHeader
         onSearch={handleSearch}
-        onCategorySelect={handleCategorySelect}
         searchQuery={searchQuery}
-        selectedCategory={categoryKey}
       />
 
       <main className="flex-1">
         {/* Category Hero */}
         <CategoryHero category={category} tenantCount={tenants.length} />
 
-        {/* Filter Bar (Sticky) */}
+        {/* Category Navigation (Sticky) */}
         <CategoryFilterBar
           selectedCategory={categoryKey}
           onCategorySelect={handleCategorySelect}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
           isSticky={true}
         />
 

@@ -1,11 +1,13 @@
 // ══════════════════════════════════════════════════════════════
-// DISCOVER HERO - V10.8 FINAL
-// Feature: Tabs filter Popular tags (4 categories per type)
+// DISCOVER HERO - V13.0 (7 Category Groups)
+// Changed: Replaced UMKM/Produk/Jasa tabs with 7 main category groups
+// Groups: KULINER, RUMAH_TAMAN, OTOMOTIF, KESEHATAN_KECANTIKAN,
+//         TRAVEL_HIBURAN, BELANJA, LAINNYA
 // ══════════════════════════════════════════════════════════════
 
 'use client';
 
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import {
   Store,
@@ -13,18 +15,20 @@ import {
   Wrench,
   Sparkles,
   ArrowRight,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
-import { CATEGORY_CONFIG } from '@/config/categories';
+import { CATEGORY_CONFIG, CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
 // ══════════════════════════════════════════════════════════════
 
-type TabType = 'umkm' | 'produk' | 'jasa';
+type TabType = 'KULINER' | 'RUMAH_TAMAN' | 'OTOMOTIF' | 'KESEHATAN_KECANTIKAN' | 'TRAVEL_HIBURAN' | 'BELANJA' | 'LAINNYA';
 
 interface DiscoverHeroProps {
   onSearch?: (query: string) => void;
@@ -35,45 +39,33 @@ interface DiscoverHeroProps {
 }
 
 // ══════════════════════════════════════════════════════════════
-// DATA - Category mapping by type (4 each)
+// DATA - 7 Category Groups
 // ══════════════════════════════════════════════════════════════
 
-const tabs = [
-  { id: 'umkm' as TabType, label: 'UMKM', icon: Store, description: 'Toko & Usaha' },
-  { id: 'produk' as TabType, label: 'Produk', icon: Package, description: 'Barang & Item' },
-  { id: 'jasa' as TabType, label: 'Jasa', icon: Wrench, description: 'Layanan & Service' },
-];
+// Convert CATEGORY_GROUPS to tabs format
+const tabs = Object.values(CATEGORY_GROUPS).map(group => ({
+  id: group.key as TabType,
+  label: group.label,
+  emoji: group.emoji,
+  icon: group.icon,
+  color: group.color,
+}));
 
-// Mapping kategori berdasarkan tipe (4 per tipe)
-const CATEGORIES_BY_TYPE: Record<TabType, string[]> = {
-  // UMKM - Toko & Usaha fisik
-  umkm: [
-    'WARUNG_KELONTONG',  // Warung
-    'TOKO_BANGUNAN',     // Bangunan
-    'KEDAI_KOPI',        // Kopi
-    'APOTEK',            // Apotek
-  ],
-  // Produk - Barang yang dijual
-  produk: [
-    'TOKO_KUE',          // Kue
-    'PETSHOP',           // Pet
-    'PERCETAKAN',        // Print
-    'TOKO_BANGUNAN',     // Bangunan (material)
-  ],
-  // Jasa - Layanan & Service
-  jasa: [
-    'BENGKEL_MOTOR',     // Bengkel
-    'SALON_BARBERSHOP',  // Salon
-    'LAUNDRY',           // Laundry
-    'CATERING',          // Catering
-  ],
-};
+// Get top 4 categories per group for popular section
+function getPopularCategoriesForGroup(groupKey: string): string[] {
+  const categories = getCategoriesByGroup(groupKey);
+  return categories.slice(0, 4).map(cat => cat.key);
+}
 
-// Placeholder text per tab
+// Placeholder text per group
 const SEARCH_PLACEHOLDERS: Record<TabType, string> = {
-  umkm: 'Cari warung, toko, kedai...',
-  produk: 'Cari makanan, kue, produk...',
-  jasa: 'Cari bengkel, salon, laundry...',
+  KULINER: 'Cari restoran, warung, cafe...',
+  RUMAH_TAMAN: 'Cari kontraktor, tukang, cleaning...',
+  OTOMOTIF: 'Cari bengkel, cuci mobil, dealer...',
+  KESEHATAN_KECANTIKAN: 'Cari salon, barbershop, spa...',
+  TRAVEL_HIBURAN: 'Cari wisata, hotel, venue...',
+  BELANJA: 'Cari fashion, gadget, kelontong...',
+  LAINNYA: 'Cari laundry, petshop, kursus...',
 };
 
 function categoryKeyToSlug(key: string): string {
@@ -88,17 +80,49 @@ export function DiscoverHero({
   onSearch,
   onTabChange,
   searchQuery = '',
-  activeTab = 'umkm',
+  activeTab = 'KULINER',
 }: DiscoverHeroProps) {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(false);
 
-  // Get categories based on active tab
+  // Get top 4 categories for the active group
   const popularCategories = useMemo(() => {
-    return CATEGORIES_BY_TYPE[activeTab] || CATEGORIES_BY_TYPE.umkm;
+    return getPopularCategoriesForGroup(activeTab);
   }, [activeTab]);
 
   const handleTabClick = useCallback((tabId: TabType) => {
     onTabChange?.(tabId);
   }, [onTabChange]);
+
+  // Check scroll arrows visibility
+  const checkScrollArrows = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const { scrollLeft, scrollWidth, clientWidth } = container;
+    setShowLeftArrow(scrollLeft > 0);
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10);
+  }, []);
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    checkScrollArrows();
+    container.addEventListener('scroll', checkScrollArrows, { passive: true });
+    window.addEventListener('resize', checkScrollArrows);
+    return () => {
+      container.removeEventListener('scroll', checkScrollArrows);
+      window.removeEventListener('resize', checkScrollArrows);
+    };
+  }, [checkScrollArrows, activeTab]);
+
+  const scrollLeft = useCallback(() => {
+    scrollContainerRef.current?.scrollBy({ left: -150, behavior: 'smooth' });
+  }, []);
+
+  const scrollRight = useCallback(() => {
+    scrollContainerRef.current?.scrollBy({ left: 150, behavior: 'smooth' });
+  }, []);
 
   return (
     <section className="relative pt-20 pb-8">
@@ -131,24 +155,23 @@ export function DiscoverHero({
             </p>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* TABS - Click to filter categories                  */}
+            {/* TABS - 7 Category Groups with emojis              */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center gap-2 mb-6 overflow-x-auto scrollbar-hide">
               {tabs.map((tab) => {
-                const Icon = tab.icon;
                 const isActive = activeTab === tab.id;
                 return (
                   <button
                     key={tab.id}
                     onClick={() => handleTabClick(tab.id)}
                     className={cn(
-                      'flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200',
+                      'flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap shrink-0',
                       isActive
                         ? 'bg-foreground text-background shadow-lg'
                         : 'bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground'
                     )}
                   >
-                    <Icon className="h-4 w-4" />
+                    <span>{tab.emoji}</span>
                     <span>{tab.label}</span>
                   </button>
                 );
@@ -167,32 +190,56 @@ export function DiscoverHero({
             </div>
 
             {/* ══════════════════════════════════════════════════ */}
-            {/* POPULAR TAGS - Dynamic based on active tab (4)     */}
+            {/* POPULAR TAGS - Horizontal Scroll (4 per tab)       */}
+            {/* Arrows only show when there's overflow              */}
             {/* ══════════════════════════════════════════════════ */}
-            <div className="flex flex-wrap items-center gap-2 relative z-10">
-              <span className="text-sm text-muted-foreground">Popular:</span>
-              {popularCategories.map((catKey) => {
-                const category = CATEGORY_CONFIG[catKey];
-                if (!category) return null;
-                return (
-                  <Link
-                    key={catKey}
-                    href={`/discover/${categoryKeyToSlug(catKey)}`}
-                    className={cn(
-                      'px-3 py-1.5 text-sm rounded-full border',
-                      'bg-background hover:bg-muted hover:border-primary/50',
-                      'transition-colors duration-200',
-                      'flex items-center gap-1.5'
-                    )}
-                  >
-                    <span
-                      className="w-2 h-2 rounded-full"
-                      style={{ backgroundColor: category.color }}
-                    />
-                    {category.labelShort}
-                  </Link>
-                );
-              })}
+            <div className="relative z-10">
+              {showLeftArrow && (
+                <button
+                  onClick={scrollLeft}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-6 w-6 flex items-center justify-center bg-background border rounded-full shadow-sm hover:bg-muted transition-colors"
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" />
+                </button>
+              )}
+
+              <div
+                ref={scrollContainerRef}
+                className="flex items-center gap-2 overflow-x-auto scrollbar-hide scroll-smooth"
+              >
+                {popularCategories.map((catKey) => {
+                  const category = CATEGORY_CONFIG[catKey];
+                  if (!category) return null;
+                  return (
+                    <Link
+                      key={catKey}
+                      href={`/discover/${categoryKeyToSlug(catKey)}`}
+                      className={cn(
+                        'inline-flex items-center gap-1.5',
+                        'px-2.5 py-1 text-xs rounded-full border',
+                        'bg-background hover:bg-muted hover:border-primary/50',
+                        'transition-colors duration-200',
+                        'whitespace-nowrap shrink-0'
+                      )}
+                    >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full"
+                        style={{ backgroundColor: category.color }}
+                      />
+                      {category.labelShort}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              {showRightArrow && (
+                <button
+                  onClick={scrollRight}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-6 w-6 flex items-center justify-center bg-background border rounded-full shadow-sm hover:bg-muted transition-colors"
+                >
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
           </div>
 
