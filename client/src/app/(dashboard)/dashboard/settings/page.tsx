@@ -11,7 +11,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Save, ChevronRight, Megaphone, Info, MessageSquareQuote, Phone, Zap } from 'lucide-react';
+import { Loader2, Save, ChevronRight, Megaphone, Info, MessageSquareQuote, Phone, Zap, Paintbrush } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -107,6 +107,13 @@ const STORE_SECTIONS = [
     description: 'Ajakan untuk mengambil tindakan',
     icon: Zap,
     href: '/dashboard/settings/cta',
+  },
+  {
+    id: 'landing-builder',
+    title: 'Landing Builder',
+    description: 'Desain dan customize landing page',
+    icon: Paintbrush,
+    href: '/landing-builder',
   },
 ];
 
