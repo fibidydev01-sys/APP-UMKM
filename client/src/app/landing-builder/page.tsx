@@ -324,7 +324,7 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* Main Layout: Sidebar + Preview + Drawer (overlay) */}
+      {/* Main Layout: Sidebar + Preview */}
       <div className="flex-1 flex overflow-hidden">
         {/* LEFT: Section Sidebar (Fixed) */}
         <BuilderSidebar
@@ -349,19 +349,20 @@ export default function LandingBuilderPage() {
             />
           </LandingErrorBoundary>
         </div>
-
-        {/* BOTTOM: Block Drawer (4 states: closed, minimized, collapsed, expanded) */}
-        <BlockDrawer
-          state={drawerState}
-          onStateChange={setDrawerState}
-          onClose={handleCloseDrawer}
-          section={activeSection}
-          currentBlock={landingConfig?.[activeSection]?.block}
-          sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
-          onBlockSelect={handleBlockSelect}
-          onToggleSection={handleToggleSection}
-        />
       </div>
+
+      {/* BOTTOM OVERLAY: Block Drawer (4 states: closed, minimized, collapsed, expanded) */}
+      {/* Drawer uses fixed positioning to overlay at bottom - must be outside flex container */}
+      <BlockDrawer
+        state={drawerState}
+        onStateChange={setDrawerState}
+        onClose={handleCloseDrawer}
+        section={activeSection}
+        currentBlock={landingConfig?.[activeSection]?.block}
+        sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
+        onBlockSelect={handleBlockSelect}
+        onToggleSection={handleToggleSection}
+      />
     </div>
   );
 }
