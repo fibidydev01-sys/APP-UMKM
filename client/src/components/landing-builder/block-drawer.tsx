@@ -86,12 +86,13 @@ export function BlockDrawer({
   }, [allBlocks, debouncedSearch]);
 
   // 🎨 CANVA-STYLE: Virtual scrolling config
-  // Grid: 4 columns, so we virtualize rows (each row = 4 blocks)
-  const COLUMNS = 4;
+  // Grid: Responsive (2 mobile, 3 tablet, 4 desktop)
+  // We calculate rows based on max columns (4) for virtual scrolling
+  const MAX_COLUMNS = 4; // Desktop max
   const rows = useMemo(() => {
     const result: BlockOption[][] = [];
-    for (let i = 0; i < filteredBlocks.length; i += COLUMNS) {
-      result.push(filteredBlocks.slice(i, i + COLUMNS));
+    for (let i = 0; i < filteredBlocks.length; i += MAX_COLUMNS) {
+      result.push(filteredBlocks.slice(i, i + MAX_COLUMNS));
     }
     return result;
   }, [filteredBlocks]);
@@ -232,7 +233,7 @@ export function BlockDrawer({
                           height: `${virtualRow.size}px`,
                           transform: `translateY(${virtualRow.start}px)`,
                         }}
-                        className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto"
+                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 max-w-4xl mx-auto"
                       >
                         {rowBlocks.map((block) => (
                           <BlockCard
