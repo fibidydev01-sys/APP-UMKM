@@ -8,63 +8,28 @@
 // ==========================================
 
 /**
- * v3.0 NUMBERING SYSTEM
- * See MAPPING.md for design name references
+ * v3.0 NUMBERING SYSTEM - AUTO-DISCOVERY ENABLED! 🚀
+ * Blocks are auto-discovered from filesystem
+ * No manual type updates needed when adding new blocks!
  */
 
-export type HeroBlock =
-  | 'hero1'  // Centered (default)
-  | 'hero2'  // Split Screen
-  | 'hero3'  // Video Background
-  | 'hero4'  // Parallax
-  | 'hero5'  // Animated Gradient
-  | 'hero6'  // Glass Morphism
-  | 'hero7'; // Bento Grid
+// Auto-accepts any number: hero1, hero2, hero201, hero9999, etc.
+export type HeroBlock = `hero${number}`;
 
-export type AboutBlock =
-  | 'about1'  // Grid (default)
-  | 'about2'  // Side by Side
-  | 'about3'  // Centered
-  | 'about4'  // Timeline
-  | 'about5'  // Cards
-  | 'about6'  // Magazine
-  | 'about7'; // Storytelling
+// Auto-accepts any number: about1, about2, about201, etc.
+export type AboutBlock = `about${number}`;
 
-export type ProductsBlock =
-  | 'products1'  // Grid (default)
-  | 'products2'  // Grid Hover
-  | 'products3'  // Masonry
-  | 'products4'  // Carousel
-  | 'products5'  // Catalog
-  | 'products6'  // Minimal List
-  | 'products7'; // Featured Hero
+// Auto-accepts any number: products1, products2, products201, etc.
+export type ProductsBlock = `products${number}`;
 
-export type TestimonialsBlock =
-  | 'testimonials1'  // Grid Cards (default)
-  | 'testimonials2'  // Card Slider
-  | 'testimonials3'  // Quote Highlight
-  | 'testimonials4'  // Single Focus
-  | 'testimonials5'  // Video
-  | 'testimonials6'  // Social Proof
-  | 'testimonials7'; // Marquee
+// Auto-accepts any number: testimonials1, testimonials2, testimonials201, etc.
+export type TestimonialsBlock = `testimonials${number}`;
 
-export type ContactBlock =
-  | 'contact1'  // Default
-  | 'contact2'  // Split Form
-  | 'contact3'  // Centered
-  | 'contact4'  // Map Focus
-  | 'contact5'  // Minimal
-  | 'contact6'  // Social Focused
-  | 'contact7'; // Card Grid
+// Auto-accepts any number: contact1, contact2, contact201, etc.
+export type ContactBlock = `contact${number}`;
 
-export type CtaBlock =
-  | 'cta1'  // Default
-  | 'cta2'  // Bold Center
-  | 'cta3'  // Gradient Banner
-  | 'cta4'  // Split Action
-  | 'cta5'  // Floating
-  | 'cta6'  // Minimal Line
-  | 'cta7'; // Countdown
+// Auto-accepts any number: cta1, cta2, cta201, etc.
+export type CtaBlock = `cta${number}`;
 
 
 // ==========================================

@@ -1,15 +1,7 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { extractAboutData, useAboutBlock } from '@/lib/landing';
-import {
-  About1,
-  About2,
-  About3,
-  About4,
-  About5,
-  About6,
-  About7,
-} from './blocks';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantAboutProps {
@@ -18,7 +10,9 @@ interface TenantAboutProps {
 }
 
 /**
- * Tenant About Component
+ * 🚀 SMART DYNAMIC LOADING - AUTO-DISCOVERY ENABLED!
+ *
+ * NO MANUAL IMPORTS! Just add about201.tsx and it works!
  *
  * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
  * - title → tenant.aboutTitle
@@ -27,14 +21,7 @@ interface TenantAboutProps {
  * - image → tenant.aboutImage
  * - features → tenant.aboutFeatures
  *
- * 🚀 BLOCK VARIANTS:
- * - about1 → Grid (default)
- * - about2 → Side by Side
- * - about3 → Centered
- * - about4 → Timeline
- * - about5 → Cards
- * - about6 → Magazine
- * - about7 → Storytelling
+ * 🚀 SUPPORTS ALL BLOCKS: about1, about2, about3, ..., about200, about9999!
  */
 export function TenantAbout({ config, tenant }: TenantAboutProps) {
   const templateBlock = useAboutBlock();
@@ -51,22 +38,29 @@ export function TenantAbout({ config, tenant }: TenantAboutProps) {
     features: aboutData.features,
   };
 
-  // 🚀 Render appropriate block based on template
-  switch (block) {
-    case 'about2':
-      return <About2 {...commonProps} />;
+  // 🚀 SMART: Dynamic component loading
+  const blockNumber = block.replace('about', '');
+  const AboutComponent = lazy(() =>
+    import(`./blocks/about/about${blockNumber}`)
+      .then((mod) => ({ default: mod[`About${blockNumber}`] }))
+      .catch(() => import('./blocks/about/about1').then((mod) => ({ default: mod.About1 })))
+  );
 
-    case 'about3':
-      return <About3 {...commonProps} />;
+  // Render with Suspense for lazy loading
+  return (
+    <Suspense fallback={<AboutSkeleton />}>
+      <AboutComponent {...commonProps} />
+    </Suspense>
+  );
+}
 
-    case 'about4':
-      return <About4 {...commonProps} />;
-
-    case 'about5':
-      return <About5 {...commonProps} />;
-
-    case 'about6':
-      return <About6 {...commonProps} />;
+function AboutSkeleton() {
+  return (
+    <div className="min-h-screen w-full animate-pulse bg-muted flex items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
+}
 
     case 'about7':
       return <About7 {...commonProps} />;

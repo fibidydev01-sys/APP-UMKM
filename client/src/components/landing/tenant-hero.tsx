@@ -1,15 +1,7 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { extractHeroData, useHeroBlock } from '@/lib/landing';
-import {
-  Hero1,
-  Hero2,
-  Hero3,
-  Hero4,
-  Hero5,
-  Hero6,
-  Hero7,
-} from './blocks';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantHeroProps {
@@ -18,10 +10,9 @@ interface TenantHeroProps {
 }
 
 /**
- * Tenant Hero Component
+ * 🚀 SMART DYNAMIC LOADING - AUTO-DISCOVERY ENABLED!
  *
- * Wrapper that selects and renders the appropriate hero block
- * based on the current template context
+ * NO MANUAL IMPORTS! Just add hero201.tsx and it works!
  *
  * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
  * - title → tenant.heroTitle (fallback: tenant.name)
@@ -32,14 +23,7 @@ interface TenantHeroProps {
  * - logo → tenant.logo
  * - storeName → tenant.name
  *
- * 🚀 BLOCK VARIANTS:
- * - hero1 → Centered (default)
- * - hero2 → Split Screen
- * - hero3 → Video Background
- * - hero4 → Parallax
- * - hero5 → Animated Gradient
- * - hero6 → Glass Morphism
- * - hero7 → Bento Grid
+ * 🚀 SUPPORTS ALL BLOCKS: hero1, hero2, hero3, ..., hero200, hero9999!
  */
 export function TenantHero({ config, tenant }: TenantHeroProps) {
   const templateBlock = useHeroBlock();
@@ -59,25 +43,32 @@ export function TenantHero({ config, tenant }: TenantHeroProps) {
     storeName: tenant.name,
   };
 
-  // Render appropriate block based on template
-  switch (block) {
-    case 'hero2':
-      return <Hero2 {...commonProps} />;
+  // 🚀 SMART: Dynamic component loading
+  const blockNumber = block.replace('hero', '');
+  const HeroComponent = lazy(() =>
+    import(`./blocks/hero/hero${blockNumber}`)
+      .then((mod) => ({ default: mod[`Hero${blockNumber}`] }))
+      .catch(() => import('./blocks/hero/hero1').then((mod) => ({ default: mod.Hero1 })))
+  );
 
-    case 'hero3':
-      return <Hero3 {...commonProps} />;
+  // Render with Suspense for lazy loading
+  return (
+    <Suspense fallback={<HeroSkeleton />}>
+      <HeroComponent {...commonProps} />
+    </Suspense>
+  );
+}
 
-    case 'hero4':
-      return <Hero4 {...commonProps} />;
-
-    case 'hero5':
-      return <Hero5 {...commonProps} />;
-
-    case 'hero6':
-      return <Hero6 {...commonProps} />;
-
-    case 'hero7':
-      return <Hero7 {...commonProps} />;
+/**
+ * Loading skeleton while hero component loads
+ */
+function HeroSkeleton() {
+  return (
+    <div className="h-screen w-full animate-pulse bg-muted flex items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
+}
 
     // Default: hero1 (Centered)
     case 'hero1':

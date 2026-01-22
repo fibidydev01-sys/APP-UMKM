@@ -1,15 +1,7 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { extractTestimonialsData, normalizeTestimonials, useTestimonialsBlock } from '@/lib/landing';
-import {
-  Testimonials1,
-  Testimonials2,
-  Testimonials3,
-  Testimonials4,
-  Testimonials5,
-  Testimonials6,
-  Testimonials7,
-} from './blocks';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantTestimonialsProps {
@@ -18,21 +10,16 @@ interface TenantTestimonialsProps {
 }
 
 /**
- * Tenant Testimonials Component
+ * 🚀 SMART DYNAMIC LOADING - AUTO-DISCOVERY ENABLED!
+ *
+ * NO MANUAL IMPORTS! Just add testimonials201.tsx and it works!
  *
  * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
  * - title → tenant.testimonialsTitle
  * - subtitle → tenant.testimonialsSubtitle
  * - items → tenant.testimonials
  *
- * 🚀 BLOCK VARIANTS:
- * - testimonials1 → Grid Cards (default)
- * - testimonials2 → Card Slider
- * - testimonials3 → Quote Highlight
- * - testimonials4 → Single Focus
- * - testimonials5 → Video
- * - testimonials6 → Social Proof
- * - testimonials7 → Marquee
+ * 🚀 SUPPORTS ALL BLOCKS: testimonials1, testimonials2, ..., testimonials200!
  */
 export function TenantTestimonials({ config, tenant }: TenantTestimonialsProps) {
   const templateBlock = useTestimonialsBlock();
@@ -50,13 +37,29 @@ export function TenantTestimonials({ config, tenant }: TenantTestimonialsProps) 
     subtitle: testimonialsData.subtitle,
   };
 
-  // Render appropriate block based on template
-  switch (block) {
-    case 'testimonials2':
-      return <Testimonials2 {...commonProps} />;
+  // 🚀 SMART: Dynamic component loading
+  const blockNumber = block.replace('testimonials', '');
+  const TestimonialsComponent = lazy(() =>
+    import(`./blocks/testimonials/testimonials${blockNumber}`)
+      .then((mod) => ({ default: mod[`Testimonials${blockNumber}`] }))
+      .catch(() => import('./blocks/testimonials/testimonials1').then((mod) => ({ default: mod.Testimonials1 })))
+  );
 
-    case 'testimonials3':
-      return <Testimonials3 {...commonProps} />;
+  // Render with Suspense for lazy loading
+  return (
+    <Suspense fallback={<TestimonialsSkeleton />}>
+      <TestimonialsComponent {...commonProps} />
+    </Suspense>
+  );
+}
+
+function TestimonialsSkeleton() {
+  return (
+    <div className="min-h-screen w-full animate-pulse bg-muted flex items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
+}
 
     case 'testimonials4':
       return <Testimonials4 {...commonProps} />;

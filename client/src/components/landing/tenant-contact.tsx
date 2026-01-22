@@ -1,15 +1,7 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { extractContactData, useContactBlock } from '@/lib/landing';
-import {
-  Contact1,
-  Contact2,
-  Contact3,
-  Contact4,
-  Contact5,
-  Contact6,
-  Contact7,
-} from './blocks';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantContactProps {
@@ -61,29 +53,26 @@ export function TenantContact({ config, tenant }: TenantContactProps) {
     showForm: contactData.showForm,
   };
 
-  // Render appropriate block based on template
-  switch (block) {
-    case 'contact2':
-      return <Contact2 {...commonProps} />;
+  // 🚀 SMART: Dynamic component loading
+  const blockNumber = block.replace('contact', '');
+  const ContactComponent = lazy(() =>
+    import(`./blocks/contact/contact${blockNumber}`)
+      .then((mod) => ({ default: mod[`Contact${blockNumber}`] }))
+      .catch(() => import('./blocks/contact/contact1').then((mod) => ({ default: mod.Contact1 })))
+  );
 
-    case 'contact3':
-      return <Contact3 {...commonProps} />;
+  // Render with Suspense for lazy loading
+  return (
+    <Suspense fallback={<ContactSkeleton />}>
+      <ContactComponent {...commonProps} />
+    </Suspense>
+  );
+}
 
-    case 'contact4':
-      return <Contact4 {...commonProps} />;
-
-    case 'contact5':
-      return <Contact5 {...commonProps} />;
-
-    case 'contact6':
-      return <Contact6 {...commonProps} />;
-
-    case 'contact7':
-      return <Contact7 {...commonProps} />;
-
-    // Default: contact1 (Default)
-    case 'contact1':
-    default:
-      return <Contact1 {...commonProps} />;
-  }
+function ContactSkeleton() {
+  return (
+    <div className="min-h-screen w-full animate-pulse bg-muted flex items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
 }

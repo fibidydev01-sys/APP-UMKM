@@ -1,17 +1,9 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getProductsConfig } from '@/lib/landing';
 import { LANDING_CONSTANTS, useProductsBlock } from '@/lib/landing';
-import {
-  Products1,
-  Products2,
-  Products3,
-  Products4,
-  Products5,
-  Products6,
-  Products7,
-} from './blocks';
 import type { Product, TenantLandingConfig } from '@/types';
 
 // ==========================================
@@ -30,23 +22,15 @@ interface TenantProductsProps {
 }
 
 /**
- * Tenant Products Component
+ * 🚀 SMART DYNAMIC LOADING - AUTO-DISCOVERY ENABLED!
  *
- * Wrapper that selects and renders the appropriate block
- * based on the current template context
- *
- * 🚀 v3.0 NUMBERING SYSTEM:
- * - products1 → Grid (default)
- * - products2 → Grid Hover
- * - products3 → Masonry
- * - products4 → Carousel
- * - products5 → Catalog
- * - products6 → Minimal List
- * - products7 → Featured Hero
+ * NO MANUAL IMPORTS! Just add products201.tsx and it works!
  *
  * 🎯 BLOCK PRIORITY:
  * 1. config.block (user override)
  * 2. template variant (from TemplateProvider)
+ *
+ * 🚀 SUPPORTS ALL BLOCKS: products1, products2, ..., products200, products9999!
  */
 export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: TenantProductsProps) {
   const templateBlock = useProductsBlock();
@@ -76,13 +60,29 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
     limit,
   };
 
-  // Render appropriate block based on template
-  switch (block) {
-    case 'products2':
-      return <Products2 {...commonProps} />;
+  // 🚀 SMART: Dynamic component loading
+  const blockNumber = block.replace('products', '');
+  const ProductsComponent = lazy(() =>
+    import(`./blocks/products/products${blockNumber}`)
+      .then((mod) => ({ default: mod[`Products${blockNumber}`] }))
+      .catch(() => import('./blocks/products/products1').then((mod) => ({ default: mod.Products1 })))
+  );
 
-    case 'products3':
-      return <Products3 {...commonProps} />;
+  // Render with Suspense for lazy loading
+  return (
+    <Suspense fallback={<ProductsSkeleton />}>
+      <ProductsComponent {...commonProps} />
+    </Suspense>
+  );
+}
+
+function ProductsSkeleton() {
+  return (
+    <div className="min-h-screen w-full animate-pulse bg-muted flex items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
+}
 
     case 'products4':
       return <Products4 {...commonProps} />;

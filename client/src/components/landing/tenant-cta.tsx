@@ -1,15 +1,7 @@
 'use client';
 
+import { lazy, Suspense } from 'react';
 import { extractCtaData, useCtaBlock } from '@/lib/landing';
-import {
-  Cta1,
-  Cta2,
-  Cta3,
-  Cta4,
-  Cta5,
-  Cta6,
-  Cta7,
-} from './blocks';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantCtaProps {
@@ -18,7 +10,9 @@ interface TenantCtaProps {
 }
 
 /**
- * Tenant CTA Component
+ * 🚀 SMART DYNAMIC LOADING - AUTO-DISCOVERY ENABLED!
+ *
+ * NO MANUAL IMPORTS! Just add cta201.tsx and it works!
  *
  * 🎯 DATA SOURCE (from LANDING-DATA-CONTRACT.md):
  * - title → tenant.ctaTitle
@@ -27,14 +21,7 @@ interface TenantCtaProps {
  * - buttonLink → tenant.ctaButtonLink
  * - buttonStyle → tenant.ctaButtonStyle
  *
- * 🚀 BLOCK VARIANTS:
- * - cta1 → Default
- * - cta2 → Bold Center
- * - cta3 → Gradient Banner
- * - cta4 → Split Action
- * - cta5 → Floating
- * - cta6 → Minimal Line
- * - cta7 → Countdown
+ * 🚀 SUPPORTS ALL BLOCKS: cta1, cta2, cta3, ..., cta200, cta9999!
  */
 export function TenantCta({ config, tenant }: TenantCtaProps) {
   const templateBlock = useCtaBlock();
@@ -55,19 +42,29 @@ export function TenantCta({ config, tenant }: TenantCtaProps) {
     buttonVariant,
   };
 
-  // Render appropriate block based on template
-  switch (block) {
-    case 'cta2':
-      return <Cta2 {...commonProps} />;
+  // 🚀 SMART: Dynamic component loading
+  const blockNumber = block.replace('cta', '');
+  const CtaComponent = lazy(() =>
+    import(`./blocks/cta/cta${blockNumber}`)
+      .then((mod) => ({ default: mod[`Cta${blockNumber}`] }))
+      .catch(() => import('./blocks/cta/cta1').then((mod) => ({ default: mod.Cta1 })))
+  );
 
-    case 'cta3':
-      return <Cta3 {...commonProps} />;
+  // Render with Suspense for lazy loading
+  return (
+    <Suspense fallback={<CtaSkeleton />}>
+      <CtaComponent {...commonProps} />
+    </Suspense>
+  );
+}
 
-    case 'cta4':
-      return <Cta4 {...commonProps} />;
-
-    case 'cta5':
-      return <Cta5 {...commonProps} />;
+function CtaSkeleton() {
+  return (
+    <div className="min-h-[200px] w-full animate-pulse bg-muted flex items-center justify-center">
+      <div className="text-muted-foreground">Loading...</div>
+    </div>
+  );
+}
 
     case 'cta6':
       return <Cta6 {...commonProps} />;
