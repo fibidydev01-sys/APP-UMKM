@@ -157,15 +157,16 @@ export function BlockDrawer({
       open={true} // 🚀 ALWAYS OPEN - never closes!
       onOpenChange={() => {}} // Prevent closing
       modal={false} // Non-modal - doesn't block page
+      noBodyStyles // 🚀 Important for rendering!
     >
       <Drawer.Portal>
-        {/* Very light overlay - non-blocking feel */}
-        <Drawer.Overlay className="fixed inset-0 bg-black/10 z-[9998]" />
+        {/* Visible overlay to confirm drawer is rendering */}
+        <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[9998]" />
 
         <Drawer.Content
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[9999] flex flex-col rounded-t-[20px] bg-background transition-all duration-300",
-            state === 'expanded' ? "h-[80vh]" : "h-auto"
+            "fixed inset-x-0 bottom-0 z-[9999] flex flex-col rounded-t-[20px] bg-background border-t shadow-2xl",
+            state === 'expanded' ? "h-[80vh]" : "h-auto min-h-[120px]"
           )}
           aria-describedby="block-drawer-description"
         >
