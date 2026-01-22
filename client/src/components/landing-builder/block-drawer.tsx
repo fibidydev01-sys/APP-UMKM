@@ -11,12 +11,9 @@
 import { Drawer } from 'vaul';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import {
   Check,
-  X,
   Minimize2,
   Grid3x3,
   Film,
@@ -127,46 +124,57 @@ const BLOCK_OPTIONS_MAP = {
   cta: CTA_BLOCKS,
 } as const;
 
-export type DrawerState = 'closed' | 'minimized' | 'collapsed' | 'expanded';
+export type DrawerState = 'collapsed' | 'expanded'; // Only 2 states: header-only or full
 
 interface BlockDrawerProps {
-  state: DrawerState; // 🚀 4 states: closed, minimized, collapsed, expanded
+  state: DrawerState; // 🚀 2 states: collapsed (header) or expanded (full)
   onStateChange: (state: DrawerState) => void;
-  onClose: () => void; // 🚀 Close button handler
   section: SectionType;
   currentBlock?: string;
-  sectionEnabled?: boolean;
   onBlockSelect: (block: string) => void;
-  onToggleSection?: (enabled: boolean) => void;
 }
 
 /**
  * Vaul drawer for block selection
- * 4 States System:
- * - CLOSED: Completely hidden (Close button only)
- * - MINIMIZED: Ciut - just handle visible (~40px)
- * - COLLAPSED: Peek - header + toggle (~15% viewport)
- * - EXPANDED: Full - all content (~80% viewport)
+ * 2 States System:
+ * - COLLAPSED: Header visible (~15% viewport) - shows section name
+ * - EXPANDED: Full blocks visible (~80% viewport) - shows all block variants
+ *
+ * ALWAYS VISIBLE - never fully closes
+ * Can switch sections while drawer is open
  */
 export function BlockDrawer({
   state,
   onStateChange,
-  onClose,
   section,
   currentBlock,
-  sectionEnabled = true,
   onBlockSelect,
-  onToggleSection,
 }: BlockDrawerProps) {
   const blocks = BLOCK_OPTIONS_MAP[section];
 
+  // Map state to snap point
+  const getSnapPoint = (drawerState: DrawerState): number => {
+    return drawerState === 'expanded' ? 0.8 : 0.15;
+  };
+
+  // Map snap point back to state
+  const getStateFromSnap = (snap: number): DrawerState => {
+    return snap >= 0.5 ? 'expanded' : 'collapsed';
+  };
+
   return (
     <Drawer.Root
-      open={state !== 'closed'} // Open unless explicitly closed
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
+      open={true} // 🚀 ALWAYS OPEN - never closes!
+      onOpenChange={() => {}} // Prevent closing
       modal={false} // Non-modal - doesn't block page
+      snapPoints={[0.15, 0.8]} // 🚀 [COLLAPSED 15%, EXPANDED 80%]
+      activeSnapPoint={getSnapPoint(state)}
+      setActiveSnapPoint={(snapPoint) => {
+        const newState = getStateFromSnap(snapPoint as number);
+        if (newState !== state) {
+          onStateChange(newState);
+        }
+      }}
     >
       <Drawer.Portal>
         {/* Very light overlay - non-blocking feel */}
@@ -194,32 +202,37 @@ export function BlockDrawer({
             <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
           </div>
 
-          {/* Header */}
+          {/* Header - ALWAYS VISIBLE */}
           <div className="px-4 pt-2 pb-3 border-b shrink-0">
             <div className="flex items-center justify-between">
-              <div>
+              <div className="flex-1">
                 <h3 className="capitalize font-semibold text-foreground">
                   {section} Blocks
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  Choose block variant for this section
+                  {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to see blocks'}
                 </p>
               </div>
-              {/* Close Button */}
+              {/* Collapse/Expand Toggle Button */}
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={onClose}
+                onClick={() => onStateChange(state === 'expanded' ? 'collapsed' : 'expanded')}
                 className="h-8 w-8"
-                title="Close"
+                title={state === 'expanded' ? 'Collapse' : 'Expand'}
               >
-                <X className="h-4 w-4" />
+                {state === 'expanded' ? (
+                  <Minimize2 className="h-4 w-4" />
+                ) : (
+                  <Grid3x3 className="h-4 w-4" />
+                )}
               </Button>
             </div>
           </div>
 
-          {/* Block Grid - ALWAYS VISIBLE */}
-          <div className="flex-1 overflow-auto p-4">
+          {/* Block Grid - Only show when EXPANDED */}
+          {state === 'expanded' && (
+            <div className="flex-1 overflow-auto p-4">
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
               {blocks.map((block) => {
                 const isSelected = currentBlock === block.value;
@@ -244,18 +257,19 @@ export function BlockDrawer({
               })}
             </div>
 
-            {/* Current Selection Info */}
-            {currentBlock && (
-              <div className="mt-4 p-3 bg-muted/50 rounded-lg max-w-4xl mx-auto">
-                <p className="text-sm font-medium">
-                  Selected: <span className="text-primary">{currentBlock}</span>
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {blocks.find((b) => b.value === currentBlock)?.description}
-                </p>
-              </div>
-            )}
-          </div>
+              {/* Current Selection Info */}
+              {currentBlock && (
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg max-w-4xl mx-auto">
+                  <p className="text-sm font-medium">
+                    Selected: <span className="text-primary">{currentBlock}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {blocks.find((b) => b.value === currentBlock)?.description}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

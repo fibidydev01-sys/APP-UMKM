@@ -44,10 +44,7 @@ export default function LandingBuilderPage() {
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [drawerState, setDrawerState] = useState<DrawerState>('collapsed'); // 🚀 4 states: closed, minimized, collapsed, expanded
-
-  // 🎬 Ref to track drawer opening timeout (for cleanup on rapid clicks)
-  const drawerTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [drawerState, setDrawerState] = useState<DrawerState>('collapsed'); // 🚀 2 states: collapsed (header) or expanded (full blocks)
 
   // ============================================================================
   // LANDING CONFIG HOOK
@@ -123,23 +120,11 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Scroll first, update active section
+  // Step 1: User clicks section → Switch section, drawer stays open
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
-
-    // 🚀 If drawer closed, open to collapsed (peek) state
-    // Otherwise keep current state (don't auto-expand)
-    if (drawerState === 'closed') {
-      if (drawerTimeoutRef.current) {
-        clearTimeout(drawerTimeoutRef.current);
-      }
-
-      drawerTimeoutRef.current = setTimeout(() => {
-        setDrawerState('collapsed');
-        drawerTimeoutRef.current = null;
-      }, 700);
-    }
-  }, [drawerState]);
+    // 🚀 Drawer always visible - just switch content, keep current state
+  }, []);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
   const handleBlockSelect = useCallback((block: string) => {
@@ -156,20 +141,6 @@ export default function LandingBuilderPage() {
     } as TenantLandingConfig);
 
     // NO form sheet - just update config directly
-  }, [activeSection, landingConfig, setLandingConfig]);
-
-  // Toggle section enabled/disabled (for drawer)
-  const handleToggleSection = useCallback((enabled: boolean) => {
-    if (!activeSection || !landingConfig) return;
-
-    const currentSection = landingConfig[activeSection] || {};
-    setLandingConfig({
-      ...landingConfig,
-      [activeSection]: {
-        ...currentSection,
-        enabled,
-      },
-    } as TenantLandingConfig);
   }, [activeSection, landingConfig, setLandingConfig]);
 
   // 🚀 Quick toggle from sidebar (any section)
@@ -190,11 +161,6 @@ export default function LandingBuilderPage() {
   const getSectionEnabled = useCallback((section: SectionType): boolean => {
     return landingConfig?.[section]?.enabled ?? true;
   }, [landingConfig]);
-
-  // 🚀 Close drawer completely - for Close button
-  const handleCloseDrawer = useCallback(() => {
-    setDrawerState('closed');
-  }, []);
 
   // 🚀 Handle section reordering
   const handleSectionOrderChange = useCallback((newOrder: SectionType[]) => {
@@ -351,17 +317,15 @@ export default function LandingBuilderPage() {
         </div>
       </div>
 
-      {/* BOTTOM OVERLAY: Block Drawer (4 states: closed, minimized, collapsed, expanded) */}
+      {/* BOTTOM OVERLAY: Block Drawer (2 states: collapsed/expanded) */}
+      {/* Drawer ALWAYS VISIBLE - never fully closes */}
       {/* Drawer uses fixed positioning to overlay at bottom - must be outside flex container */}
       <BlockDrawer
         state={drawerState}
         onStateChange={setDrawerState}
-        onClose={handleCloseDrawer}
         section={activeSection}
         currentBlock={landingConfig?.[activeSection]?.block}
-        sectionEnabled={landingConfig?.[activeSection]?.enabled ?? true}
         onBlockSelect={handleBlockSelect}
-        onToggleSection={handleToggleSection}
       />
     </div>
   );
