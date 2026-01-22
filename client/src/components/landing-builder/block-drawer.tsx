@@ -152,29 +152,11 @@ export function BlockDrawer({
 }: BlockDrawerProps) {
   const blocks = BLOCK_OPTIONS_MAP[section];
 
-  // Map state to snap point
-  const getSnapPoint = (drawerState: DrawerState): number => {
-    return drawerState === 'expanded' ? 0.8 : 0.15;
-  };
-
-  // Map snap point back to state
-  const getStateFromSnap = (snap: number): DrawerState => {
-    return snap >= 0.5 ? 'expanded' : 'collapsed';
-  };
-
   return (
     <Drawer.Root
       open={true} // 🚀 ALWAYS OPEN - never closes!
       onOpenChange={() => {}} // Prevent closing
       modal={false} // Non-modal - doesn't block page
-      snapPoints={[0.15, 0.8]} // 🚀 [COLLAPSED 15%, EXPANDED 80%]
-      activeSnapPoint={getSnapPoint(state)}
-      setActiveSnapPoint={(snapPoint) => {
-        const newState = getStateFromSnap(snapPoint as number);
-        if (newState !== state) {
-          onStateChange(newState);
-        }
-      }}
     >
       <Drawer.Portal>
         {/* Very light overlay - non-blocking feel */}
@@ -182,7 +164,8 @@ export function BlockDrawer({
 
         <Drawer.Content
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[9999] flex h-auto max-h-[80vh] flex-col rounded-t-[20px] bg-background"
+            "fixed inset-x-0 bottom-0 z-[9999] flex flex-col rounded-t-[20px] bg-background transition-all duration-300",
+            state === 'expanded' ? "h-[80vh]" : "h-auto"
           )}
           aria-describedby="block-drawer-description"
         >
@@ -197,9 +180,12 @@ export function BlockDrawer({
               Choose a block design for the {section} section
             </VisuallyHidden.Root>
           </Drawer.Description>
-          {/* Drag Handle */}
-          <div className="flex justify-center pt-3 pb-2 shrink-0">
-            <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+          {/* Drag Handle - Click to toggle */}
+          <div
+            className="flex justify-center pt-3 pb-2 shrink-0 cursor-pointer"
+            onClick={() => onStateChange(state === 'expanded' ? 'collapsed' : 'expanded')}
+          >
+            <div className="w-10 h-1 rounded-full bg-muted-foreground/30 hover:bg-muted-foreground/50 transition-colors" />
           </div>
 
           {/* Header - ALWAYS VISIBLE */}
