@@ -1,16 +1,24 @@
 /**
  * ============================================================================
  * FILE: src/components/landing-builder/block-options.ts
- * PURPOSE: Auto-discovery of block variants from filesystem
+ * PURPOSE: Auto-generated block options for landing builder
  * ============================================================================
  *
- * 🚀 SMART AUTO-DISCOVERY SYSTEM
+ * 🚀 SMART STATIC GENERATION (Next.js Compatible!)
  *
- * This file automatically scans the filesystem for block components
- * and generates options for the block picker UI.
+ * This file generates block options automatically based on numeric ranges.
+ * NO FILESYSTEM SCANNING (Next.js doesn't support import.meta.glob)
+ * Instead, we generate options for blocks 1-200 statically.
  *
- * NO MANUAL UPDATES NEEDED!
- * Just add a new file like hero201.tsx and it will auto-appear in the UI!
+ * HOW IT WORKS:
+ * - Generates options for hero1-hero200, about1-about200, etc.
+ * - Dynamic imports in tenant components will load the actual files
+ * - If file doesn't exist, fallback to block 1 (handled in tenant components)
+ *
+ * TO ADD MORE BLOCKS:
+ * - Just add the new .tsx file (e.g., hero201.tsx)
+ * - Update BLOCKS_PER_SECTION constant below
+ * - That's it! No other changes needed.
  *
  * ============================================================================
  */
@@ -52,6 +60,16 @@ export interface BlockOption {
 }
 
 // ============================================================================
+// CONFIGURATION
+// ============================================================================
+
+/**
+ * Number of blocks available per section
+ * Update this when you add more blocks!
+ */
+const BLOCKS_PER_SECTION = 200; // hero1-hero200, about1-about200, etc.
+
+// ============================================================================
 // ICON POOL FOR ROTATION
 // ============================================================================
 
@@ -85,57 +103,33 @@ const ICON_POOL: LucideIcon[] = [
 ];
 
 // ============================================================================
-// AUTO-DISCOVERY FUNCTION
+// SMART GENERATION FUNCTION
 // ============================================================================
 
 type SectionType = 'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta';
 
 /**
- * 🚀 MAGIC: Auto-discover blocks from filesystem!
+ * 🚀 Generate block options for a section
  *
- * Uses Vite's import.meta.glob to scan for block files.
- * Automatically finds hero1.tsx, hero2.tsx, hero201.tsx, etc.
+ * Creates options for blocks 1 to BLOCKS_PER_SECTION
+ * Icons rotate through ICON_POOL
  *
  * @param section - Section name (hero, about, products, etc.)
+ * @param count - Number of blocks (default: BLOCKS_PER_SECTION)
  * @returns Array of block options sorted numerically
  */
-function discoverBlocks(section: SectionType): BlockOption[] {
-  // Vite's import.meta.glob scans filesystem at build time
-  const blockFiles = import.meta.glob(
-    '../landing/blocks/*/*.tsx',
-    { eager: true }
-  );
+function generateBlocks(section: SectionType, count: number = BLOCKS_PER_SECTION): BlockOption[] {
+  const blocks: BlockOption[] = [];
 
-  const blockNames: string[] = [];
+  for (let i = 1; i <= count; i++) {
+    blocks.push({
+      value: `${section}${i}`,
+      label: `${capitalize(section)} ${i}`,
+      icon: ICON_POOL[(i - 1) % ICON_POOL.length], // Rotate through icons
+    });
+  }
 
-  // Extract block names from file paths
-  Object.keys(blockFiles).forEach((path) => {
-    // Path format: "../landing/blocks/hero/hero1.tsx"
-    const regex = new RegExp(`/blocks/${section}/${section}(\\d+)\\.tsx$`);
-    const match = path.match(regex);
-
-    if (match) {
-      const blockNumber = match[1];
-      blockNames.push(`${section}${blockNumber}`);
-    }
-  });
-
-  // Sort numerically (hero1, hero2, ..., hero10, ..., hero201)
-  blockNames.sort((a, b) => {
-    const numA = parseInt(a.replace(section, ''));
-    const numB = parseInt(b.replace(section, ''));
-    return numA - numB;
-  });
-
-  // Generate options with rotating icons
-  return blockNames.map((blockName, index) => {
-    const number = blockName.replace(section, '');
-    return {
-      value: blockName,
-      label: `${capitalize(section)} ${number}`,
-      icon: ICON_POOL[index % ICON_POOL.length],
-    };
-  });
+  return blocks;
 }
 
 function capitalize(str: string): string {
@@ -143,15 +137,15 @@ function capitalize(str: string): string {
 }
 
 // ============================================================================
-// AUTO-GENERATED BLOCK OPTIONS (NO MANUAL WORK!)
+// GENERATED BLOCK OPTIONS
 // ============================================================================
 
-export const HERO_BLOCKS = discoverBlocks('hero');
-export const ABOUT_BLOCKS = discoverBlocks('about');
-export const PRODUCTS_BLOCKS = discoverBlocks('products');
-export const TESTIMONIALS_BLOCKS = discoverBlocks('testimonials');
-export const CONTACT_BLOCKS = discoverBlocks('contact');
-export const CTA_BLOCKS = discoverBlocks('cta');
+export const HERO_BLOCKS = generateBlocks('hero');
+export const ABOUT_BLOCKS = generateBlocks('about');
+export const PRODUCTS_BLOCKS = generateBlocks('products');
+export const TESTIMONIALS_BLOCKS = generateBlocks('testimonials');
+export const CONTACT_BLOCKS = generateBlocks('contact');
+export const CTA_BLOCKS = generateBlocks('cta');
 
 export const BLOCK_OPTIONS_MAP = {
   hero: HERO_BLOCKS,
@@ -163,11 +157,11 @@ export const BLOCK_OPTIONS_MAP = {
 } as const;
 
 // ============================================================================
-// DEBUG: Log discovered blocks (remove in production)
+// DEBUG: Log generated blocks (dev mode only)
 // ============================================================================
 
-if (import.meta.env.DEV) {
-  console.log('🚀 Auto-discovered blocks:', {
+if (process.env.NODE_ENV === 'development') {
+  console.log('🚀 Generated block options:', {
     hero: HERO_BLOCKS.length,
     about: ABOUT_BLOCKS.length,
     products: PRODUCTS_BLOCKS.length,
@@ -178,3 +172,4 @@ if (import.meta.env.DEV) {
            TESTIMONIALS_BLOCKS.length + CONTACT_BLOCKS.length + CTA_BLOCKS.length,
   });
 }
+
