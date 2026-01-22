@@ -160,40 +160,13 @@ export function BlockDrawer({
 }: BlockDrawerProps) {
   const blocks = BLOCK_OPTIONS_MAP[section];
 
-  // Map state to snap point fraction
-  const getSnapPoint = (drawerState: DrawerState): number => {
-    switch (drawerState) {
-      case 'minimized': return 0.05; // 5% - ciut (just handle)
-      case 'collapsed': return 0.15; // 15% - peek
-      case 'expanded': return 0.8; // 80% - full
-      default: return 0.15;
-    }
-  };
-
-  // Map snap point to state
-  const getStateFromSnap = (snap: number): DrawerState => {
-    if (snap >= 0.7) return 'expanded';
-    if (snap >= 0.1) return 'collapsed';
-    return 'minimized';
-  };
-
-  if (state === 'closed') {
-    return null; // Don't render when closed
-  }
-
   return (
     <Drawer.Root
-      open={true} // 🚀 Always open (when not closed)
-      onOpenChange={() => {}} // Prevent closing
-      modal={false} // Non-modal - doesn't block page interaction
-      snapPoints={[0.05, 0.15, 0.8]} // 🚀 [MINIMIZED 5%, COLLAPSED 15%, EXPANDED 80%]
-      activeSnapPoint={getSnapPoint(state)} // Current position
-      setActiveSnapPoint={(snapPoint) => {
-        const newState = getStateFromSnap(snapPoint as number);
-        if (newState !== state) {
-          onStateChange(newState);
-        }
+      open={state !== 'closed'} // Open unless explicitly closed
+      onOpenChange={(open) => {
+        if (!open) onClose();
       }}
+      modal={false} // Non-modal - doesn't block page
     >
       <Drawer.Portal>
         {/* Very light overlay - non-blocking feel */}
@@ -221,95 +194,68 @@ export function BlockDrawer({
             <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
           </div>
 
-          {/* Header - Only show in collapsed/expanded (not minimized) */}
-          {state !== 'minimized' && (
-            <div className="p-4 border-b shrink-0">
-              <div className="flex items-center justify-between">
-                <div className="flex-1">
-                  <h3 className="capitalize font-semibold text-foreground">
-                    {section} Blocks
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to expand'}
-                  </p>
-                </div>
-                {/* Minimize Button */}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => onStateChange('minimized')}
-                  className="h-8 w-8 ml-2"
-                  title="Minimize drawer"
-                >
-                  <Minimize2 className="h-4 w-4" />
-                </Button>
+          {/* Header */}
+          <div className="px-4 pt-2 pb-3 border-b shrink-0">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="capitalize font-semibold text-foreground">
+                  {section} Blocks
+                </h3>
+                <p className="text-xs text-muted-foreground">
+                  Choose block variant for this section
+                </p>
               </div>
+              {/* Close Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="h-8 w-8"
+                title="Close"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-          )}
+          </div>
 
-          {/* Section Toggle - Only show in collapsed/expanded */}
-          {state !== 'minimized' && onToggleSection && (
-            <div className="px-4 py-3 border-b bg-muted/30 shrink-0">
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="drawer-section-toggle" className="text-sm font-medium">
-                    Section Aktif
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {sectionEnabled
-                      ? 'Section akan ditampilkan di landing page'
-                      : 'Section tidak akan ditampilkan'}
-                  </p>
-                </div>
-                <Switch
-                  id="drawer-section-toggle"
-                  checked={sectionEnabled}
-                  onCheckedChange={onToggleSection}
-                />
+          {/* Block Grid - ALWAYS VISIBLE */}
+          <div className="flex-1 overflow-auto p-4">
+            <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+              {blocks.map((block) => {
+                const isSelected = currentBlock === block.value;
+                const Icon = block.icon;
+
+                return (
+                  <button
+                    key={block.value}
+                    onClick={() => onBlockSelect(block.value)}
+                    className={cn(
+                      'flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all aspect-square hover:shadow-md',
+                      isSelected
+                        ? 'border-primary bg-primary/10 text-primary shadow-md'
+                        : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
+                    )}
+                  >
+                    <Icon className="h-6 w-6 mb-2" />
+                    <span className="text-xs font-medium">{block.label}</span>
+                    {isSelected && <Check className="h-4 w-4 mt-1 text-primary" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Current Selection Info */}
+            {currentBlock && (
+              <div className="mt-4 p-3 bg-muted/50 rounded-lg max-w-4xl mx-auto">
+                <p className="text-sm font-medium">
+                  Selected: <span className="text-primary">{currentBlock}</span>
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {blocks.find((b) => b.value === currentBlock)?.description}
+                </p>
               </div>
-            </div>
-          )}
-
-          {/* Block Grid - Only show when expanded */}
-          {state === 'expanded' && (
-            <div className="flex-1 overflow-auto p-4">
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-                {blocks.map((block) => {
-                  const isSelected = currentBlock === block.value;
-                  const Icon = block.icon;
-
-                  return (
-                    <button
-                      key={block.value}
-                      onClick={() => onBlockSelect(block.value)}
-                      className={cn(
-                        'flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all aspect-square hover:shadow-md',
-                        isSelected
-                          ? 'border-primary bg-primary/10 text-primary shadow-md'
-                          : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
-                      )}
-                    >
-                      <Icon className="h-6 w-6 mb-2" />
-                      <span className="text-xs font-medium">{block.label}</span>
-                      {isSelected && <Check className="h-4 w-4 mt-1 text-primary" />}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Current Selection Info */}
-              {currentBlock && (
-                <div className="mt-4 p-3 bg-muted/50 rounded-lg max-w-4xl mx-auto">
-                  <p className="text-sm font-medium">
-                    Selected: <span className="text-primary">{currentBlock}</span>
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {blocks.find((b) => b.value === currentBlock)?.description}
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+            )}
+          </div>
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>
