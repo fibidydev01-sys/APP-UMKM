@@ -65,16 +65,3 @@ function CtaSkeleton() {
     </div>
   );
 }
-
-    case 'cta6':
-      return <Cta6 {...commonProps} />;
-
-    case 'cta7':
-      return <Cta7 {...commonProps} />;
-
-    // Default: cta1 (Default)
-    case 'cta1':
-    default:
-      return <Cta1 {...commonProps} />;
-  }
-}

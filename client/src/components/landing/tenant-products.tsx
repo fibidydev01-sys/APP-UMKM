@@ -83,22 +83,3 @@ function ProductsSkeleton() {
     </div>
   );
 }
-
-    case 'products4':
-      return <Products4 {...commonProps} />;
-
-    case 'products5':
-      return <Products5 {...commonProps} />;
-
-    case 'products6':
-      return <Products6 {...commonProps} />;
-
-    case 'products7':
-      return <Products7 {...commonProps} />;
-
-    // Default: products1 (Grid)
-    case 'products1':
-    default:
-      return <Products1 {...commonProps} />;
-  }
-}

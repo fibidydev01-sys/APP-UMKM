@@ -69,10 +69,3 @@ function HeroSkeleton() {
     </div>
   );
 }
-
-    // Default: hero1 (Centered)
-    case 'hero1':
-    default:
-      return <Hero1 {...commonProps} />;
-  }
-}

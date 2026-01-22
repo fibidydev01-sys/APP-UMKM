@@ -61,13 +61,3 @@ function AboutSkeleton() {
     </div>
   );
 }
-
-    case 'about7':
-      return <About7 {...commonProps} />;
-
-    // Default: about1 (Grid)
-    case 'about1':
-    default:
-      return <About1 {...commonProps} />;
-  }
-}

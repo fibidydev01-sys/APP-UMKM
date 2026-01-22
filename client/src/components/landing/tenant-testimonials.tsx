@@ -60,22 +60,3 @@ function TestimonialsSkeleton() {
     </div>
   );
 }
-
-    case 'testimonials4':
-      return <Testimonials4 {...commonProps} />;
-
-    case 'testimonials5':
-      return <Testimonials5 {...commonProps} />;
-
-    case 'testimonials6':
-      return <Testimonials6 {...commonProps} />;
-
-    case 'testimonials7':
-      return <Testimonials7 {...commonProps} />;
-
-    // Default: testimonials1 (Grid Cards)
-    case 'testimonials1':
-    default:
-      return <Testimonials1 {...commonProps} />;
-  }
-}
