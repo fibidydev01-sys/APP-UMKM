@@ -44,7 +44,7 @@ export default function LandingBuilderPage() {
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [drawerState, setDrawerState] = useState<DrawerState>('collapsed'); // 🚀 2 states: collapsed (header) or expanded (full blocks)
+  const [drawerState, setDrawerState] = useState<DrawerState>('expanded'); // 🚀 Start EXPANDED to show blocks immediately
 
   // ============================================================================
   // LANDING CONFIG HOOK
@@ -120,10 +120,11 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Switch section, drawer stays open
+  // Step 1: User clicks section → Switch section, AUTO EXPAND drawer
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
-    // 🚀 Drawer always visible - just switch content, keep current state
+    // 🚀 AUTO EXPAND drawer to show blocks immediately!
+    setDrawerState('expanded');
   }, []);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)
