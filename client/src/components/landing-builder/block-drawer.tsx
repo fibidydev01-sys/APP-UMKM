@@ -8,7 +8,8 @@
 
 'use client';
 
-import { Drawer as DrawerPrimitive } from 'vaul';
+import { Drawer } from 'vaul';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -181,7 +182,7 @@ export function BlockDrawer({
   }
 
   return (
-    <DrawerPrimitive.Root
+    <Drawer.Root
       direction="bottom" // 🚀 Slide from bottom edge
       open={true} // 🚀 Always open (when not closed)
       modal={false} // 🚀 Non-modal (doesn't block page)
@@ -195,15 +196,29 @@ export function BlockDrawer({
           onStateChange(newState);
         }
       }}
-      shouldScaleBackground={false} // 🚀 Don't scale background (non-modal)
+      noBodyStyles // 🚀 Same as working tenant-preview drawer
     >
-      <DrawerPrimitive.Portal>
-        {/* NO OVERLAY - non-modal drawer */}
-        <DrawerPrimitive.Content
+      <Drawer.Portal>
+        {/* Light overlay for visual separation (non-blocking) */}
+        <Drawer.Overlay className="fixed inset-0 bg-black/20 z-[9998]" />
+
+        <Drawer.Content
           className={cn(
-            "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto max-h-[85vh] flex-col rounded-t-lg border-t bg-background"
+            "fixed inset-x-0 bottom-0 z-[9999] mt-24 flex h-auto max-h-[85vh] flex-col rounded-t-lg border-t bg-background"
           )}
+          aria-describedby="block-drawer-description"
         >
+          {/* Accessibility - Hidden title/description */}
+          <Drawer.Title asChild>
+            <VisuallyHidden.Root>
+              Select {section} block
+            </VisuallyHidden.Root>
+          </Drawer.Title>
+          <Drawer.Description asChild>
+            <VisuallyHidden.Root id="block-drawer-description">
+              Choose a block design for the {section} section
+            </VisuallyHidden.Root>
+          </Drawer.Description>
           {/* Drag Handle - Draggable to expand/collapse */}
           <div
             className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/30 mt-4 cursor-grab active:cursor-grabbing hover:bg-muted-foreground/50 transition-colors"
@@ -215,12 +230,12 @@ export function BlockDrawer({
             <div className="p-4 border-b flex-shrink-0">
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <DrawerPrimitive.Title className="capitalize font-semibold text-foreground">
+                  <h3 className="capitalize font-semibold text-foreground">
                     {section} Blocks
-                  </DrawerPrimitive.Title>
-                  <DrawerPrimitive.Description className="text-sm text-muted-foreground">
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
                     {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to expand'}
-                  </DrawerPrimitive.Description>
+                  </p>
                 </div>
                 {/* Minimize Button - Top right (minimize to 5% instead of closing) */}
                 <Button
@@ -299,9 +314,9 @@ export function BlockDrawer({
               )}
             </div>
           )}
-        </DrawerPrimitive.Content>
-      </DrawerPrimitive.Portal>
-    </DrawerPrimitive.Root>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }
 
