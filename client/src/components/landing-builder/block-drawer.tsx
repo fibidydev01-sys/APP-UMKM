@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback, memo, useEffect } from 'react';
 import { Drawer } from 'vaul';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
@@ -16,7 +16,8 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Check, Minimize2, Grid3x3, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import type { SectionType } from './builder-sidebar';
-import { BLOCK_OPTIONS_MAP } from './block-options'; // 🚀 Auto-discovered blocks!
+import type { BlockOption } from './block-options';
+import { BLOCK_OPTIONS_MAP } from './block-options'; // 🚀 Auto-generated blocks!
 
 export type DrawerState = 'collapsed' | 'expanded'; // Only 2 states: header-only or full
 
@@ -31,15 +32,35 @@ interface BlockDrawerProps {
 const BLOCKS_PER_PAGE = 20; // Show 20 blocks per page
 
 /**
- * Vaul drawer for block selection with AUTO-DISCOVERY! 🚀
+ * Custom hook for debounced value (performance optimization)
+ */
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+/**
+ * Vaul drawer for block selection with AUTO-GENERATION! 🚀
  * 2 States System:
  * - COLLAPSED: Header visible (~15% viewport) - shows section name
  * - EXPANDED: Full blocks visible (~80% viewport) - shows ALL block variants
  *
  * Features:
- * - Auto-discovery from filesystem (no manual updates!)
- * - Search functionality
+ * - Smart static generation (Next.js compatible!)
+ * - Debounced search (performance optimized)
  * - Pagination for 200+ blocks
+ * - Memoized components (no unnecessary re-renders)
  * - ALWAYS VISIBLE - never fully closes
  */
 export function BlockDrawer({
@@ -52,30 +73,53 @@ export function BlockDrawer({
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
-  // Get all blocks for current section (auto-discovered!)
-  const allBlocks = BLOCK_OPTIONS_MAP[section] || [];
+  // 🚀 OPTIMIZATION: Debounce search input (300ms delay)
+  const debouncedSearch = useDebounce(search, 300);
 
-  // Filter by search
+  // Get all blocks for current section (memoized)
+  const allBlocks = useMemo(() => BLOCK_OPTIONS_MAP[section] || [], [section]);
+
+  // Filter by search (uses debounced value for performance)
   const filteredBlocks = useMemo(() => {
-    if (!search.trim()) return allBlocks;
-    const searchLower = search.toLowerCase();
+    if (!debouncedSearch.trim()) return allBlocks;
+    const searchLower = debouncedSearch.toLowerCase();
     return allBlocks.filter(
       (block) =>
         block.value.toLowerCase().includes(searchLower) ||
         block.label.toLowerCase().includes(searchLower)
     );
-  }, [allBlocks, search]);
+  }, [allBlocks, debouncedSearch]);
 
-  // Pagination
-  const totalPages = Math.ceil(filteredBlocks.length / BLOCKS_PER_PAGE);
-  const startIdx = (page - 1) * BLOCKS_PER_PAGE;
-  const endIdx = startIdx + BLOCKS_PER_PAGE;
-  const currentBlocks = filteredBlocks.slice(startIdx, endIdx);
+  // Pagination calculations (memoized)
+  const paginationData = useMemo(() => {
+    const totalPages = Math.ceil(filteredBlocks.length / BLOCKS_PER_PAGE);
+    const startIdx = (page - 1) * BLOCKS_PER_PAGE;
+    const endIdx = startIdx + BLOCKS_PER_PAGE;
+    const currentBlocks = filteredBlocks.slice(startIdx, endIdx);
 
-  // Reset page when search changes or section changes
-  useMemo(() => {
+    return { totalPages, startIdx, endIdx, currentBlocks };
+  }, [filteredBlocks, page]);
+
+  // Reset page when search or section changes
+  useEffect(() => {
     setPage(1);
-  }, [search, section]);
+  }, [debouncedSearch, section]);
+
+  // 🚀 OPTIMIZATION: Memoize handlers
+  const handleBlockSelect = useCallback(
+    (blockValue: string) => {
+      onBlockSelect(blockValue);
+    },
+    [onBlockSelect]
+  );
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  }, []);
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage);
+  }, []);
 
   return (
     <Drawer.Root
@@ -154,7 +198,7 @@ export function BlockDrawer({
                   type="text"
                   placeholder="Search blocks..."
                   value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={handleSearchChange}
                   className="pl-8 h-9"
                 />
               </div>
@@ -165,29 +209,16 @@ export function BlockDrawer({
           {state === 'expanded' && (
             <div className="flex-1 flex flex-col">
               <div className="flex-1 overflow-auto p-4">
-                {currentBlocks.length > 0 ? (
+                {paginationData.currentBlocks.length > 0 ? (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
-                    {currentBlocks.map((block) => {
-                      const isSelected = currentBlock === block.value;
-                      const Icon = block.icon;
-
-                      return (
-                        <button
-                          key={block.value}
-                          onClick={() => onBlockSelect(block.value)}
-                          className={cn(
-                            'flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all aspect-square hover:shadow-md',
-                            isSelected
-                              ? 'border-primary bg-primary/10 text-primary shadow-md'
-                              : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
-                          )}
-                        >
-                          <Icon className="h-6 w-6 mb-2" />
-                          <span className="text-xs font-medium">{block.label}</span>
-                          {isSelected && <Check className="h-4 w-4 mt-1 text-primary" />}
-                        </button>
-                      );
-                    })}
+                    {paginationData.currentBlocks.map((block) => (
+                      <BlockCard
+                        key={block.value}
+                        block={block}
+                        isSelected={currentBlock === block.value}
+                        onSelect={handleBlockSelect}
+                      />
+                    ))}
                   </div>
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
@@ -197,11 +228,11 @@ export function BlockDrawer({
               </div>
 
               {/* Pagination - Show if more than one page */}
-              {totalPages > 1 && (
+              {paginationData.totalPages > 1 && (
                 <div className="border-t p-3 shrink-0">
                   <div className="flex items-center justify-between max-w-4xl mx-auto">
                     <div className="text-xs text-muted-foreground">
-                      Showing {startIdx + 1}-{Math.min(endIdx, filteredBlocks.length)} of{' '}
+                      Showing {paginationData.startIdx + 1}-{Math.min(paginationData.endIdx, filteredBlocks.length)} of{' '}
                       {filteredBlocks.length}
                     </div>
 
@@ -209,7 +240,7 @@ export function BlockDrawer({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        onClick={() => handlePageChange(Math.max(1, page - 1))}
                         disabled={page === 1}
                         className="h-7 px-2"
                       >
@@ -217,12 +248,12 @@ export function BlockDrawer({
                       </Button>
 
                       <div className="flex items-center gap-1">
-                        {Array.from({ length: totalPages }, (_, i) => i + 1)
+                        {Array.from({ length: paginationData.totalPages }, (_, i) => i + 1)
                           .filter((p) => {
                             // Show: 1, current-1, current, current+1, last
                             return (
                               p === 1 ||
-                              p === totalPages ||
+                              p === paginationData.totalPages ||
                               Math.abs(p - page) <= 1
                             );
                           })
@@ -234,7 +265,7 @@ export function BlockDrawer({
                               <Button
                                 variant={p === page ? 'default' : 'outline'}
                                 size="sm"
-                                onClick={() => setPage(p)}
+                                onClick={() => handlePageChange(p)}
                                 className="h-7 w-7 p-0"
                               >
                                 {p}
@@ -246,8 +277,8 @@ export function BlockDrawer({
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                        disabled={page === totalPages}
+                        onClick={() => handlePageChange(Math.min(paginationData.totalPages, page + 1))}
+                        disabled={page === paginationData.totalPages}
                         className="h-7 px-2"
                       >
                         <ChevronRight className="h-4 w-4" />
@@ -263,3 +294,37 @@ export function BlockDrawer({
     </Drawer.Root>
   );
 }
+
+/**
+ * 🚀 OPTIMIZED: Memoized block card component
+ * Prevents unnecessary re-renders when parent re-renders
+ */
+interface BlockCardProps {
+  block: BlockOption;
+  isSelected: boolean;
+  onSelect: (blockValue: string) => void;
+}
+
+const BlockCard = memo(function BlockCard({ block, isSelected, onSelect }: BlockCardProps) {
+  const Icon = block.icon;
+
+  const handleClick = useCallback(() => {
+    onSelect(block.value);
+  }, [block.value, onSelect]);
+
+  return (
+    <button
+      onClick={handleClick}
+      className={cn(
+        'flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all aspect-square hover:shadow-md',
+        isSelected
+          ? 'border-primary bg-primary/10 text-primary shadow-md'
+          : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
+      )}
+    >
+      <Icon className="h-6 w-6 mb-2" />
+      <span className="text-xs font-medium">{block.label}</span>
+      {isSelected && <Check className="h-4 w-4 mt-1 text-primary" />}
+    </button>
+  );
+});
