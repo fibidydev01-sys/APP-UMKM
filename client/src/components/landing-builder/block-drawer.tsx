@@ -184,12 +184,20 @@ export function BlockDrawer({
   return (
     <Drawer.Root
       open={true} // 🚀 Always open (when not closed)
-      onOpenChange={() => {}} // Required prop, no-op for now
-      noBodyStyles
+      onOpenChange={() => {}} // Prevent closing
+      modal={false} // Non-modal - doesn't block page interaction
+      snapPoints={[0.05, 0.15, 0.8]} // 🚀 [MINIMIZED 5%, COLLAPSED 15%, EXPANDED 80%]
+      activeSnapPoint={getSnapPoint(state)} // Current position
+      setActiveSnapPoint={(snapPoint) => {
+        const newState = getStateFromSnap(snapPoint as number);
+        if (newState !== state) {
+          onStateChange(newState);
+        }
+      }}
     >
       <Drawer.Portal>
-        {/* Light overlay for visual separation */}
-        <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[9998]" />
+        {/* Very light overlay - non-blocking feel */}
+        <Drawer.Overlay className="fixed inset-0 bg-black/10 z-[9998]" />
 
         <Drawer.Content
           className={cn(
@@ -213,31 +221,95 @@ export function BlockDrawer({
             <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
           </div>
 
-          {/* TEST HEADER - Simple version */}
-          <div className="p-6 border-b shrink-0">
-            <h2 className="text-xl font-bold">🚀 DRAWER TEST!</h2>
-            <p className="text-muted-foreground">Section: {section}</p>
-            <p className="text-sm text-green-600 font-mono">If you see this, drawer is WORKING! ✅</p>
-          </div>
-
-          {/* TEST CONTENT - Simple version */}
-          <div className="flex-1 overflow-auto p-6">
-            <div className="max-w-2xl mx-auto space-y-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-                <p className="font-semibold text-blue-900 dark:text-blue-100">✅ Drawer is rendering!</p>
-                <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">State: {state}</p>
+          {/* Header - Only show in collapsed/expanded (not minimized) */}
+          {state !== 'minimized' && (
+            <div className="p-4 border-b shrink-0">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <h3 className="capitalize font-semibold text-foreground">
+                    {section} Blocks
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {state === 'expanded' ? 'Drag down to collapse' : 'Drag up to expand'}
+                  </p>
+                </div>
+                {/* Minimize Button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => onStateChange('minimized')}
+                  className="h-8 w-8 ml-2"
+                  title="Minimize drawer"
+                >
+                  <Minimize2 className="h-4 w-4" />
+                </Button>
               </div>
-
-              <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
-                <p className="font-semibold text-green-900 dark:text-green-100">Section: {section}</p>
-                <p className="text-sm text-green-700 dark:text-green-300 mt-1">Current block: {currentBlock || 'none'}</p>
-              </div>
-
-              <Button onClick={onClose} className="w-full">
-                Close Drawer (Test)
-              </Button>
             </div>
-          </div>
+          )}
+
+          {/* Section Toggle - Only show in collapsed/expanded */}
+          {state !== 'minimized' && onToggleSection && (
+            <div className="px-4 py-3 border-b bg-muted/30 shrink-0">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="drawer-section-toggle" className="text-sm font-medium">
+                    Section Aktif
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {sectionEnabled
+                      ? 'Section akan ditampilkan di landing page'
+                      : 'Section tidak akan ditampilkan'}
+                  </p>
+                </div>
+                <Switch
+                  id="drawer-section-toggle"
+                  checked={sectionEnabled}
+                  onCheckedChange={onToggleSection}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Block Grid - Only show when expanded */}
+          {state === 'expanded' && (
+            <div className="flex-1 overflow-auto p-4">
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-w-4xl mx-auto">
+                {blocks.map((block) => {
+                  const isSelected = currentBlock === block.value;
+                  const Icon = block.icon;
+
+                  return (
+                    <button
+                      key={block.value}
+                      onClick={() => onBlockSelect(block.value)}
+                      className={cn(
+                        'flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all aspect-square hover:shadow-md',
+                        isSelected
+                          ? 'border-primary bg-primary/10 text-primary shadow-md'
+                          : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
+                      )}
+                    >
+                      <Icon className="h-6 w-6 mb-2" />
+                      <span className="text-xs font-medium">{block.label}</span>
+                      {isSelected && <Check className="h-4 w-4 mt-1 text-primary" />}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Current Selection Info */}
+              {currentBlock && (
+                <div className="mt-4 p-3 bg-muted/50 rounded-lg max-w-4xl mx-auto">
+                  <p className="text-sm font-medium">
+                    Selected: <span className="text-primary">{currentBlock}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {blocks.find((b) => b.value === currentBlock)?.description}
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>
