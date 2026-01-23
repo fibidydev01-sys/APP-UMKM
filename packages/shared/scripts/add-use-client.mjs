@@ -12,13 +12,15 @@ const __dirname = dirname(__filename);
 const distPath = path.join(__dirname, '..', 'dist');
 
 // Files that need 'use client' directive
+// Add to ui and hooks bundles to ensure client-side features work correctly
+// Note: This marks all UI components as client components, which is necessary
+// for components that use hooks like react-hook-form, but may cause issues
+// with components that could be server-side rendered
 const filesToModify = [
   'ui/index.js',
   'ui/index.mjs',
   'hooks/index.js',
   'hooks/index.mjs',
-  'index.js',
-  'index.mjs',
 ];
 
 filesToModify.forEach((file) => {

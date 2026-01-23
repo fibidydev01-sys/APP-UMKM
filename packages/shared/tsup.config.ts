@@ -18,7 +18,7 @@ export default defineConfig({
   // Generate TypeScript declaration files
   dts: true,
 
-  // Disable code splitting to preserve 'use client' directives
+  // Disable code splitting to have single bundle files
   splitting: false,
 
   // Clean dist folder before build
@@ -52,11 +52,6 @@ export default defineConfig({
 
   // Keep names for better debugging
   keepNames: true,
-
-  // Add 'use client' directive to all output files for Next.js App Router compatibility
-  banner: {
-    js: '"use client";',
-  },
 
   // Run post-build script after each build (including watch mode)
   onSuccess: async () => {
