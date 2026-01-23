@@ -1,10 +1,12 @@
 # UMKM Multi-Tenant Platform
 
-> Platform multi-tenant untuk UMKM dengan landing page builder dan dashboard management
+> Platform multi-tenant untuk UMKM dengan landing page builder dan dashboard
+> management
 
 ## 📦 Struktur Monorepo
 
-Proyek ini menggunakan **pnpm workspace** untuk mengelola multiple packages dalam satu repository:
+Proyek ini menggunakan **pnpm workspace** untuk mengelola multiple packages
+dalam satu repository:
 
 ```
 APP-UMKM/
@@ -115,20 +117,24 @@ pnpm clean:install
 
 ### @umkm/shared ⭐ **NEW**
 
-**Single Source of Truth** untuk shared code - UI components, utilities, types & hooks.
+**Single Source of Truth** untuk shared code - UI components, utilities, types &
+hooks.
 
 **Contains:**
+
 - 🎨 UI Components (Button, Card, Dialog, dll)
 - 🛠️ Utilities (cn, formatPrice, formatDate, dll)
 - 📝 TypeScript types & interfaces
 - 🎣 Custom React hooks
 
 **Usage:**
+
 ```tsx
 import { Button, cn, formatPrice } from '@umkm/shared';
 ```
 
 **Benefits:**
+
 - ✅ No code duplication
 - ✅ Single source of truth
 - ✅ Consistent UI & logic
@@ -141,6 +147,7 @@ import { Button, cn, formatPrice } from '@umkm/shared';
 Dashboard admin untuk mengelola tenant, products, dan settings.
 
 **Tech Stack:**
+
 - Next.js 16.1
 - React 19.2
 - TailwindCSS 4
@@ -150,6 +157,7 @@ Dashboard admin untuk mengelola tenant, products, dan settings.
 - **@umkm/shared** ⭐
 
 **Commands:**
+
 ```bash
 cd client
 pnpm dev    # Start dev server (port 3000)
@@ -162,6 +170,7 @@ pnpm start  # Run production build
 Landing page builder dengan live preview dan customization.
 
 **Tech Stack:**
+
 - Next.js 16.1
 - React 19.2
 - TailwindCSS 4
@@ -171,6 +180,7 @@ Landing page builder dengan live preview dan customization.
 - **@umkm/shared** ⭐
 
 **Commands:**
+
 ```bash
 cd client-web
 pnpm dev    # Start dev server (port 3001)
@@ -183,6 +193,7 @@ pnpm start  # Run production build (port 3001)
 Backend API dengan multi-tenancy support.
 
 **Tech Stack:**
+
 - NestJS 11
 - Prisma ORM
 - PostgreSQL
@@ -190,6 +201,7 @@ Backend API dengan multi-tenancy support.
 - Upstash Redis
 
 **Commands:**
+
 ```bash
 cd server
 pnpm start:dev     # Start with watch mode
@@ -201,21 +213,25 @@ pnpm prisma:migrate # Run migrations
 ## 🔧 Keunggulan pnpm Workspace
 
 ### 1. **Performance Superior**
+
 - ⚡ **3x lebih cepat** dari npm/yarn
 - 💾 **Hemat disk space** - dependencies di-share via hard links
 - 🚀 **Parallel execution** - install & build multiple workspace sekaligus
 
 ### 2. **Dependency Management**
+
 - 🔒 **Strict mode** - mencegah phantom dependencies
 - 📦 **Auto deduplication** - dependency yang sama hanya install 1x
 - 🎯 **Scoped packages** - `@umkm/*` namespace untuk internal packages
 
 ### 3. **Monorepo Native**
+
 - 🏗️ **Workspace filtering** - jalankan command di specific workspace
 - 🔄 **Shared dependencies** - typescript, prettier, dll di root
 - 📊 **Better visibility** - satu lock file untuk semua workspace
 
 ### 4. **Developer Experience**
+
 ```bash
 # Filter by workspace name
 pnpm --filter @umkm/client dev
@@ -236,11 +252,11 @@ Setiap workspace memiliki `.env` file masing-masing:
 
 ```bash
 # client/.env.local
-NEXT_PUBLIC_API_URL=http://localhost:3030
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your-cloud-name
 
 # client-web/.env.local
-NEXT_PUBLIC_API_URL=http://localhost:3030
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
 
 # server/.env
 DATABASE_URL="postgresql://user:password@localhost:5432/umkm"
@@ -288,6 +304,7 @@ git commit -m "chore: upgrade dependencies"
 ### Prisma Download Issue
 
 Jika Prisma gagal download binary:
+
 ```bash
 export PRISMA_ENGINES_CHECKSUM_IGNORE_MISSING=1
 pnpm --filter @umkm/server prisma generate
