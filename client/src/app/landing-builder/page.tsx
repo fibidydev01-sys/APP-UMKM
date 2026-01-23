@@ -175,6 +175,20 @@ export default function LandingBuilderPage() {
   }, [landingConfig, setLandingConfig]);
 
   // ============================================================================
+  // PREVENT BODY SCROLL - Override body overflow for this page only
+  // ⚠️ MUST be before any conditional returns to follow Rules of Hooks!
+  // ============================================================================
+
+  useEffect(() => {
+    // Hide body scrollbar to prevent double scrollbar (preview has its own scroll)
+    document.body.style.overflow = 'hidden';
+    return () => {
+      // Restore body overflow when leaving page
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // ============================================================================
   // LOADING STATE - Multi-step loading with progress indicators
   // ============================================================================
 
@@ -196,19 +210,6 @@ export default function LandingBuilderPage() {
       </div>
     );
   }
-
-  // ============================================================================
-  // PREVENT BODY SCROLL - Override body overflow for this page only
-  // ============================================================================
-
-  useEffect(() => {
-    // Hide body scrollbar to prevent double scrollbar (preview has its own scroll)
-    document.body.style.overflow = 'hidden';
-    return () => {
-      // Restore body overflow when leaving page
-      document.body.style.overflow = '';
-    };
-  }, []);
 
   // ============================================================================
   // RENDER: FULL SCREEN ISOLATED LAYOUT
