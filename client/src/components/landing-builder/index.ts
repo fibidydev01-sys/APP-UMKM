@@ -20,6 +20,7 @@ export { BuilderSidebar } from './builder-sidebar';
 export { SectionSheet } from './section-sheet';
 export { BlockDrawer } from './block-drawer'; // 🚀 Auto-discovers blocks from filesystem!
 export { BLOCK_OPTIONS_MAP } from './block-options'; // 🚀 Auto-generated block metadata
+export { BuilderLoadingSteps } from './builder-loading-steps'; // 🚀 Multi-step loading screen
 
 export type { DeviceMode } from './device-frame';
 export type { SectionType } from './builder-sidebar';

@@ -13,12 +13,12 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   LivePreview,
   LandingErrorBoundary,
   BuilderSidebar,
   BlockDrawer,
+  BuilderLoadingSteps,
 } from '@/components/landing-builder';
 import type { SectionType, DrawerState } from '@/components/landing-builder';
 import { useTenant } from '@/hooks';
@@ -45,6 +45,7 @@ export default function LandingBuilderPage() {
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerState, setDrawerState] = useState<DrawerState>('expanded'); // 🚀 Start EXPANDED to show blocks immediately
+  const [loadingAnimationComplete, setLoadingAnimationComplete] = useState(false); // 🚀 Track loading animation
 
   // ============================================================================
   // LANDING CONFIG HOOK
@@ -174,19 +175,17 @@ export default function LandingBuilderPage() {
   }, [landingConfig, setLandingConfig]);
 
   // ============================================================================
-  // LOADING STATE
+  // LOADING STATE - Multi-step loading with progress indicators
   // ============================================================================
 
   const tenantLoading = tenant === null;
+  const showLoadingScreen = tenantLoading || !loadingAnimationComplete;
 
-  if (tenantLoading) {
+  if (showLoadingScreen) {
     return (
-      <div className="h-screen flex items-center justify-center">
-        <div className="space-y-4 w-full max-w-4xl px-4">
-          <Skeleton className="h-12 w-full" />
-          <Skeleton className="h-96 w-full" />
-        </div>
-      </div>
+      <BuilderLoadingSteps
+        onComplete={() => setLoadingAnimationComplete(true)}
+      />
     );
   }
 
