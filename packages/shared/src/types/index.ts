@@ -46,6 +46,12 @@ export * from './category';
 // Cloudinary Types
 export * from './cloudinary';
 
+// SEO Types
+export * from './seo';
+
+// Onboarding Types
+export * from './onboarding';
+
 // ==========================================
 // UTILITY TYPES
 // ==========================================
@@ -83,7 +89,13 @@ export type ISODateString = string;
 /**
  * JSON value type
  */
-export type JSONValue = string | number | boolean | null | JSONValue[] | { [key: string]: JSONValue };
+export type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | { [key: string]: JSONValue };
 
 /**
  * Extract promise type

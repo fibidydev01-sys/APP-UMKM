@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { QuotaTrackerService } from '../managers/quota-tracker.service';
-import { IndexNowResult } from '../interfaces';
+import { IndexNowResult } from '@umkm/shared/types';
 
 // ==========================================
 // INDEXNOW SERVICE

@@ -37,12 +37,18 @@ export interface AuthResponse {
 }
 
 /**
- * JWT Payload (decoded token)
+ * JWT Payload input (for signing)
  */
-export interface JwtPayload {
-  sub: string;      // tenant id
+export interface JwtPayloadInput {
+  sub: string; // tenant id
   email: string;
   slug: string;
+}
+
+/**
+ * JWT Payload (decoded token - includes iat and exp from JWT)
+ */
+export interface JwtPayload extends JwtPayloadInput {
   iat: number;
   exp: number;
 }

@@ -1,7 +1,11 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../../redis/redis.service';
-import { GoogleApiKeyConfig, GoogleApiKeyInput, KeyStats } from '../interfaces';
+import {
+  GoogleApiKeyConfig,
+  GoogleApiKeyInput,
+  KeyStats,
+} from '@umkm/shared/types';
 
 // ==========================================
 // KEY MANAGER SERVICE

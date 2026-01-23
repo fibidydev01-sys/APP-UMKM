@@ -10,7 +10,7 @@ import { SeoService } from '../seo/seo.service';
 import { Prisma } from '@prisma/client';
 import { UpdateTenantDto, ChangePasswordDto } from './dto';
 import * as bcrypt from 'bcrypt';
-import type { TenantLandingConfig } from '@umkm/shared/types';
+import type { TenantLandingConfig, DashboardStats } from '@umkm/shared/types';
 
 // 🔥 Import validator
 import { validateAndSanitizeLandingConfig } from '../validators/landing-config.validator';
@@ -560,7 +560,7 @@ export class TenantsService {
   // ==========================================
   // 🚀 OPTIMIZED: GET DASHBOARD STATS
   // ==========================================
-  async getDashboardStats(tenantId: string) {
+  async getDashboardStats(tenantId: string): Promise<DashboardStats> {
     const cacheKey = CACHE_KEYS.TENANT_STATS(tenantId);
 
     return this.redis.getOrSet(
