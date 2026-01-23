@@ -80,8 +80,6 @@ const STEP_CONFIGS: StepConfig[] = [
 // ============================================================================
 
 export function BuilderLoadingSteps({ loadingStates, onComplete, className }: BuilderLoadingStepsProps) {
-  const hasCalledComplete = useRef(false);
-
   // Calculate step statuses
   const steps = STEP_CONFIGS.map(config => ({
     ...config,
@@ -95,17 +93,21 @@ export function BuilderLoadingSteps({ loadingStates, onComplete, className }: Bu
   // Check if all done
   const allComplete = steps.every(s => s.status === 'completed');
 
-  // Call onComplete when all steps are done (only once)
+  // Call onComplete when all steps are done
+  // Use a ref to store the onComplete callback to avoid stale closure issues
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
+
   useEffect(() => {
-    if (allComplete && !hasCalledComplete.current) {
-      hasCalledComplete.current = true;
-      // Small delay for smooth transition
-      const timer = setTimeout(() => {
-        onComplete?.();
-      }, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [allComplete, onComplete]);
+    if (!allComplete) return;
+
+    // All steps complete - call onComplete after brief delay
+    const timer = setTimeout(() => {
+      onCompleteRef.current?.();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [allComplete]); // Only depend on allComplete, not onComplete
 
   return (
     <div className={cn(

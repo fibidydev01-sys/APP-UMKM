@@ -194,14 +194,14 @@ export default function LandingBuilderPage() {
 
   const tenantLoading = tenant === null;
   const configReady = landingConfig !== null && landingConfig !== undefined;
-
-  // Show loading screen only when there's actual loading happening
   const isStillLoading = tenantLoading || productsLoading || !configReady;
-  const showLoadingScreen = isStillLoading || !loadingComplete;
 
-  if (showLoadingScreen) {
+  // Show loading screen while data is loading OR until animation completes
+  // Key prop forces remount on navigation to reset internal state
+  if (isStillLoading || !loadingComplete) {
     return (
       <BuilderLoadingSteps
+        key="builder-loading" // Reset on remount
         loadingStates={{
           tenantLoading,
           productsLoading,
