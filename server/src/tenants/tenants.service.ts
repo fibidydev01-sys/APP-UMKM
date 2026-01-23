@@ -10,6 +10,7 @@ import { SeoService } from '../seo/seo.service';
 import { Prisma } from '@prisma/client';
 import { UpdateTenantDto, ChangePasswordDto } from './dto';
 import * as bcrypt from 'bcrypt';
+import type { TenantLandingConfig } from '@umkm/shared/types';
 
 // 🔥 Import validator
 import { validateAndSanitizeLandingConfig } from '../validators/landing-config.validator';
@@ -108,7 +109,7 @@ export class TenantsService {
         }
 
         this.logger.debug(
-          `[findBySlug] Found tenant, landingConfig enabled: ${(tenant.landingConfig as any)?.enabled}`,
+          `[findBySlug] Found tenant, landingConfig enabled: ${(tenant.landingConfig as TenantLandingConfig | null)?.enabled}`,
         );
 
         return tenant;
@@ -480,7 +481,7 @@ export class TenantsService {
 
     this.logger.log(`[updateMe] Update successful`);
     this.logger.debug(
-      `[updateMe] Saved landingConfig enabled: ${(tenant.landingConfig as any)?.enabled}`,
+      `[updateMe] Saved landingConfig enabled: ${(tenant.landingConfig as TenantLandingConfig | null)?.enabled}`,
     );
 
     // ==========================================
