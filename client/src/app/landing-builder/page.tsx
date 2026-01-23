@@ -45,7 +45,7 @@ export default function LandingBuilderPage() {
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [drawerState, setDrawerState] = useState<DrawerState>('expanded'); // 🚀 Start EXPANDED to show blocks immediately
-  const [loadingAnimationComplete, setLoadingAnimationComplete] = useState(false); // 🚀 Track loading animation
+  const [loadingComplete, setLoadingComplete] = useState(false); // 🚀 Track when loading screen dismissed
 
   // ============================================================================
   // LANDING CONFIG HOOK
@@ -189,16 +189,25 @@ export default function LandingBuilderPage() {
   }, []);
 
   // ============================================================================
-  // LOADING STATE - Multi-step loading with progress indicators
+  // LOADING STATE - Real loading based on actual data fetching
   // ============================================================================
 
   const tenantLoading = tenant === null;
-  const showLoadingScreen = tenantLoading || !loadingAnimationComplete;
+  const configReady = landingConfig !== null && landingConfig !== undefined;
+
+  // Show loading screen only when there's actual loading happening
+  const isStillLoading = tenantLoading || productsLoading || !configReady;
+  const showLoadingScreen = isStillLoading || !loadingComplete;
 
   if (showLoadingScreen) {
     return (
       <BuilderLoadingSteps
-        onComplete={() => setLoadingAnimationComplete(true)}
+        loadingStates={{
+          tenantLoading,
+          productsLoading,
+          configReady,
+        }}
+        onComplete={() => setLoadingComplete(true)}
       />
     );
   }

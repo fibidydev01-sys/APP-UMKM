@@ -3,12 +3,12 @@
  * FILE: components/landing-builder/builder-loading-steps.tsx
  * ============================================================================
  * Multi-step loading screen for Landing Builder
- * Shows progressive steps to make loading feel intentional, not broken
+ * Shows REAL loading progress based on actual data fetching status
  * ============================================================================
  */
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Check, Loader2 } from 'lucide-react';
 
@@ -16,53 +16,96 @@ import { Check, Loader2 } from 'lucide-react';
 // TYPES
 // ============================================================================
 
-interface LoadingStep {
-  id: string;
-  label: string;
-  duration: number; // ms to show this step
+export interface LoadingStates {
+  tenantLoading: boolean;
+  productsLoading: boolean;
+  configReady: boolean;
 }
 
 interface BuilderLoadingStepsProps {
+  loadingStates: LoadingStates;
   onComplete?: () => void;
   className?: string;
 }
 
 // ============================================================================
-// LOADING STEPS CONFIG
+// LOADING STEPS (Dynamic based on actual states)
 // ============================================================================
 
-const LOADING_STEPS: LoadingStep[] = [
-  { id: 'prepare', label: 'Menyiapkan Editor...', duration: 800 },
-  { id: 'blocks', label: 'Memuat Design Blocks...', duration: 1000 },
-  { id: 'config', label: 'Mengambil Konfigurasi...', duration: 700 },
-  { id: 'preview', label: 'Menyiapkan Preview...', duration: 600 },
-  { id: 'final', label: 'Hampir Selesai...', duration: 500 },
+interface StepConfig {
+  id: string;
+  label: string;
+  loadingLabel: string;
+  getStatus: (states: LoadingStates) => 'pending' | 'loading' | 'completed';
+}
+
+const STEP_CONFIGS: StepConfig[] = [
+  {
+    id: 'tenant',
+    label: 'Data Toko',
+    loadingLabel: 'Memuat data toko...',
+    getStatus: (s) => s.tenantLoading ? 'loading' : 'completed',
+  },
+  {
+    id: 'products',
+    label: 'Produk',
+    loadingLabel: 'Mengambil daftar produk...',
+    getStatus: (s) => {
+      if (s.tenantLoading) return 'pending';
+      return s.productsLoading ? 'loading' : 'completed';
+    },
+  },
+  {
+    id: 'config',
+    label: 'Konfigurasi Landing',
+    loadingLabel: 'Memuat konfigurasi...',
+    getStatus: (s) => {
+      if (s.tenantLoading) return 'pending';
+      return s.configReady ? 'completed' : 'loading';
+    },
+  },
+  {
+    id: 'ready',
+    label: 'Siap!',
+    loadingLabel: 'Menyiapkan editor...',
+    getStatus: (s) => {
+      if (s.tenantLoading || s.productsLoading || !s.configReady) return 'pending';
+      return 'completed';
+    },
+  },
 ];
 
 // ============================================================================
 // COMPONENT
 // ============================================================================
 
-export function BuilderLoadingSteps({ onComplete, className }: BuilderLoadingStepsProps) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [completedSteps, setCompletedSteps] = useState<string[]>([]);
+export function BuilderLoadingSteps({ loadingStates, onComplete, className }: BuilderLoadingStepsProps) {
+  const hasCalledComplete = useRef(false);
 
+  // Calculate step statuses
+  const steps = STEP_CONFIGS.map(config => ({
+    ...config,
+    status: config.getStatus(loadingStates),
+  }));
+
+  // Calculate progress
+  const completedCount = steps.filter(s => s.status === 'completed').length;
+  const progress = (completedCount / steps.length) * 100;
+
+  // Check if all done
+  const allComplete = steps.every(s => s.status === 'completed');
+
+  // Call onComplete when all steps are done (only once)
   useEffect(() => {
-    if (currentStep >= LOADING_STEPS.length) {
-      onComplete?.();
-      return;
+    if (allComplete && !hasCalledComplete.current) {
+      hasCalledComplete.current = true;
+      // Small delay for smooth transition
+      const timer = setTimeout(() => {
+        onComplete?.();
+      }, 300);
+      return () => clearTimeout(timer);
     }
-
-    const step = LOADING_STEPS[currentStep];
-    const timer = setTimeout(() => {
-      setCompletedSteps(prev => [...prev, step.id]);
-      setCurrentStep(prev => prev + 1);
-    }, step.duration);
-
-    return () => clearTimeout(timer);
-  }, [currentStep, onComplete]);
-
-  const progress = Math.min((currentStep / LOADING_STEPS.length) * 100, 100);
+  }, [allComplete, onComplete]);
 
   return (
     <div className={cn(
@@ -93,18 +136,18 @@ export function BuilderLoadingSteps({ onComplete, className }: BuilderLoadingSte
 
         {/* Steps List */}
         <div className="space-y-3">
-          {LOADING_STEPS.map((step, index) => {
-            const isCompleted = completedSteps.includes(step.id);
-            const isActive = index === currentStep;
-            const isPending = index > currentStep;
+          {steps.map((step) => {
+            const isCompleted = step.status === 'completed';
+            const isLoading = step.status === 'loading';
+            const isPending = step.status === 'pending';
 
             return (
               <div
                 key={step.id}
                 className={cn(
                   'flex items-center gap-3 p-3 rounded-lg transition-all duration-300',
-                  isActive && 'bg-primary/5 border border-primary/20',
-                  isCompleted && 'opacity-60',
+                  isLoading && 'bg-primary/5 border border-primary/20',
+                  isCompleted && 'opacity-70',
                   isPending && 'opacity-30'
                 )}
               >
@@ -112,12 +155,12 @@ export function BuilderLoadingSteps({ onComplete, className }: BuilderLoadingSte
                 <div className={cn(
                   'flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center transition-all',
                   isCompleted && 'bg-primary text-primary-foreground',
-                  isActive && 'bg-primary/20',
+                  isLoading && 'bg-primary/20',
                   isPending && 'bg-muted'
                 )}>
                   {isCompleted ? (
                     <Check className="w-3.5 h-3.5" />
-                  ) : isActive ? (
+                  ) : isLoading ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
                   ) : (
                     <div className="w-2 h-2 rounded-full bg-muted-foreground/30" />
@@ -127,11 +170,11 @@ export function BuilderLoadingSteps({ onComplete, className }: BuilderLoadingSte
                 {/* Label */}
                 <span className={cn(
                   'text-sm font-medium transition-colors',
-                  isActive && 'text-primary',
+                  isLoading && 'text-primary',
                   isCompleted && 'text-muted-foreground',
                   isPending && 'text-muted-foreground/50'
                 )}>
-                  {step.label}
+                  {isLoading ? step.loadingLabel : step.label}
                 </span>
               </div>
             );
