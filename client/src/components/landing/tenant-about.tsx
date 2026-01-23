@@ -1,12 +1,20 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType } from 'react';
 import { extractAboutData, useAboutBlock } from '@/lib/landing';
-import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
+import type { TenantLandingConfig, Tenant, PublicTenant, FeatureItem } from '@umkm/shared/types';
 
 interface TenantAboutProps {
   config?: TenantLandingConfig['about'];
   tenant: Tenant | PublicTenant;
+}
+
+interface AboutBlockProps {
+  title: string;
+  subtitle: string;
+  content: string;
+  image?: string;
+  features: FeatureItem[];
 }
 
 /**
@@ -40,10 +48,14 @@ export function TenantAbout({ config, tenant }: TenantAboutProps) {
 
   // 🚀 SMART: Dynamic component loading
   const blockNumber = block.replace('about', '');
-  const AboutComponent = lazy(() =>
+  const AboutComponent = lazy<ComponentType<AboutBlockProps>>(() =>
     import(`./blocks/about/about${blockNumber}`)
-      .then((mod) => ({ default: mod[`About${blockNumber}`] }))
-      .catch(() => import('./blocks/about/about1').then((mod) => ({ default: mod.About1 })))
+      .then((mod) => ({ default: mod[`About${blockNumber}`] as ComponentType<AboutBlockProps> }))
+      .catch(() =>
+        import('./blocks/about/about1').then((mod) => ({
+          default: mod.About1 as ComponentType<AboutBlockProps>,
+        }))
+      )
   );
 
   // Render with Suspense for lazy loading

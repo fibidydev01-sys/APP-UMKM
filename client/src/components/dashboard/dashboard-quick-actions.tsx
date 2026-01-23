@@ -20,7 +20,7 @@ import { BentoGrid, BentoActionCard } from '@umkm/shared/ui';
 // ==========================================
 
 interface QuickAction {
-  icon: React.ElementType;
+  icon: React.ElementType<{ className?: string }>;
   name: string;
   description: string;
   href: string;
@@ -109,11 +109,11 @@ export function DashboardQuickActions() {
   return (
     <BentoGrid
       className={cn(
-        "grid-cols-3 h-full",
+        'grid-cols-3 h-full',
         // Gap responsive
-        "gap-2 sm:gap-2.5 md:gap-3 lg:gap-4",
+        'gap-2 sm:gap-2.5 md:gap-3 lg:gap-4',
         // Remove default auto-rows, use explicit rows
-        "auto-rows-auto"
+        'auto-rows-auto'
       )}
       style={{
         gridTemplateRows: 'repeat(3, 1fr)',

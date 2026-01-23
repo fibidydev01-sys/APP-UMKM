@@ -1,12 +1,25 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType } from 'react';
 import { extractContactData, useContactBlock } from '@/lib/landing';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
 
 interface TenantContactProps {
   config?: TenantLandingConfig['contact'];
   tenant: Tenant | PublicTenant;
+}
+
+interface ContactBlockProps {
+  title: string;
+  subtitle: string;
+  whatsapp?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  storeName: string;
+  mapUrl?: string;
+  showMap: boolean;
+  showForm: boolean;
 }
 
 /**
@@ -55,10 +68,16 @@ export function TenantContact({ config, tenant }: TenantContactProps) {
 
   // 🚀 SMART: Dynamic component loading
   const blockNumber = block.replace('contact', '');
-  const ContactComponent = lazy(() =>
+  const ContactComponent = lazy<ComponentType<ContactBlockProps>>(() =>
     import(`./blocks/contact/contact${blockNumber}`)
-      .then((mod) => ({ default: mod[`Contact${blockNumber}`] }))
-      .catch(() => import('./blocks/contact/contact1').then((mod) => ({ default: mod.Contact1 })))
+      .then((mod) => ({
+        default: mod[`Contact${blockNumber}`] as ComponentType<ContactBlockProps>,
+      }))
+      .catch(() =>
+        import('./blocks/contact/contact1').then((mod) => ({
+          default: mod.Contact1 as ComponentType<ContactBlockProps>,
+        }))
+      )
   );
 
   // Render with Suspense for lazy loading

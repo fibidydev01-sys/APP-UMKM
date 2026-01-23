@@ -110,41 +110,72 @@ export function LivePreview({
   const contactEnabled = config?.contact?.enabled === true;
 
   const hasAnySectionEnabled =
-    heroEnabled || aboutEnabled || productsEnabled || testimonialsEnabled || ctaEnabled || contactEnabled;
+    heroEnabled ||
+    aboutEnabled ||
+    productsEnabled ||
+    testimonialsEnabled ||
+    ctaEnabled ||
+    contactEnabled;
 
   // 🚀 Section rendering map with refs for auto-scroll
   const sectionComponents: Record<SectionKey, React.ReactNode> = {
     hero: heroEnabled ? (
-      <div key="hero" ref={(el) => (sectionRefs.current.hero = el)}>
+      <div
+        key="hero"
+        ref={(el) => {
+          sectionRefs.current.hero = el;
+        }}
+      >
         <TenantHero config={config.hero} tenant={tenant} />
       </div>
     ) : null,
     about: aboutEnabled ? (
-      <div key="about" ref={(el) => (sectionRefs.current.about = el)}>
+      <div
+        key="about"
+        ref={(el) => {
+          sectionRefs.current.about = el;
+        }}
+      >
         <TenantAbout config={config.about} tenant={tenant} />
       </div>
     ) : null,
     products: productsEnabled ? (
-      <div key="products" ref={(el) => (sectionRefs.current.products = el)}>
-        <TenantProducts
-          products={products}
-          config={config.products}
-          storeSlug={tenant.slug}
-        />
+      <div
+        key="products"
+        ref={(el) => {
+          sectionRefs.current.products = el;
+        }}
+      >
+        <TenantProducts products={products} config={config.products} storeSlug={tenant.slug} />
       </div>
     ) : null,
     testimonials: testimonialsEnabled ? (
-      <div key="testimonials" ref={(el) => (sectionRefs.current.testimonials = el)}>
+      <div
+        key="testimonials"
+        ref={(el) => {
+          sectionRefs.current.testimonials = el;
+        }}
+      >
         <TenantTestimonials config={config.testimonials} tenant={tenant} />
       </div>
     ) : null,
     cta: ctaEnabled ? (
-      <div key="cta" ref={(el) => (sectionRefs.current.cta = el)}>
+      <div
+        key="cta"
+        ref={(el) => {
+          sectionRefs.current.cta = el;
+        }}
+      >
         <TenantCta config={config.cta} tenant={tenant} />
       </div>
     ) : null,
     contact: contactEnabled ? (
-      <div key="contact" ref={(el) => (sectionRefs.current.contact = el)}>
+      <div
+        key="contact"
+        ref={(el) => {
+          sectionRefs.current.contact = el;
+        }}
+      >
         <TenantContact config={config.contact} tenant={tenant} />
       </div>
     ) : null,
@@ -167,12 +198,7 @@ export function LivePreview({
               {onToggleDrawer && (
                 <>
                   <div className="h-5 w-px bg-border" />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onToggleDrawer}
-                    className="h-7 px-3"
-                  >
+                  <Button variant="outline" size="sm" onClick={onToggleDrawer} className="h-7 px-3">
                     {drawerOpen ? 'Tutup' : 'Buka'}
                   </Button>
                 </>
@@ -204,11 +230,7 @@ export function LivePreview({
 
           <div className="h-6 w-px bg-border mx-2" />
 
-          <Button
-            variant="outline"
-            size="sm"
-            asChild
-          >
+          <Button variant="outline" size="sm" asChild>
             <a
               href={`/store/${tenant.slug}`}
               target="_blank"
@@ -240,9 +262,7 @@ export function LivePreview({
               {/* Empty State */}
               {!hasAnySectionEnabled && (
                 <div className="text-center py-12 bg-muted/30 rounded-lg">
-                  <p className="text-muted-foreground mb-2">
-                    Landing page belum dikonfigurasi
-                  </p>
+                  <p className="text-muted-foreground mb-2">Landing page belum dikonfigurasi</p>
                   <p className="text-sm text-muted-foreground">
                     Aktifkan section di panel konfigurasi
                   </p>

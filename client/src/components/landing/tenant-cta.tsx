@@ -1,12 +1,20 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType } from 'react';
 import { extractCtaData, useCtaBlock } from '@/lib/landing';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
 
 interface TenantCtaProps {
   config?: TenantLandingConfig['cta'];
   tenant: Tenant | PublicTenant;
+}
+
+interface CtaBlockProps {
+  title: string;
+  subtitle: string;
+  buttonText: string;
+  buttonLink: string;
+  buttonVariant: 'default' | 'secondary' | 'outline';
 }
 
 /**
@@ -31,8 +39,11 @@ export function TenantCta({ config, tenant }: TenantCtaProps) {
   const ctaData = extractCtaData(tenant, config ? { cta: config } : undefined);
 
   const buttonVariant: 'default' | 'secondary' | 'outline' =
-    ctaData.buttonStyle === 'outline' ? 'outline' :
-    ctaData.buttonStyle === 'secondary' ? 'secondary' : 'default';
+    ctaData.buttonStyle === 'outline'
+      ? 'outline'
+      : ctaData.buttonStyle === 'secondary'
+        ? 'secondary'
+        : 'default';
 
   const commonProps = {
     title: ctaData.title,
@@ -44,10 +55,14 @@ export function TenantCta({ config, tenant }: TenantCtaProps) {
 
   // 🚀 SMART: Dynamic component loading
   const blockNumber = block.replace('cta', '');
-  const CtaComponent = lazy(() =>
+  const CtaComponent = lazy<ComponentType<CtaBlockProps>>(() =>
     import(`./blocks/cta/cta${blockNumber}`)
-      .then((mod) => ({ default: mod[`Cta${blockNumber}`] }))
-      .catch(() => import('./blocks/cta/cta1').then((mod) => ({ default: mod.Cta1 })))
+      .then((mod) => ({ default: mod[`Cta${blockNumber}`] as ComponentType<CtaBlockProps> }))
+      .catch(() =>
+        import('./blocks/cta/cta1').then((mod) => ({
+          default: mod.Cta1 as ComponentType<CtaBlockProps>,
+        }))
+      )
   );
 
   // Render with Suspense for lazy loading

@@ -71,10 +71,7 @@ export async function generateMetadata({
 // STORE LAYOUT COMPONENT
 // ==========================================
 
-export default async function StoreLayout({
-  children,
-  params,
-}: StoreLayoutProps) {
+export default async function StoreLayout({ children, params }: StoreLayoutProps) {
   const { slug } = await params;
   const tenant = await getTenant(slug);
 
@@ -113,7 +110,7 @@ export default async function StoreLayout({
             phone: tenant.phone,
             address: tenant.address,
             logo: tenant.logo,
-            heroBackgroundImage: tenant.heroBackgroundImage,
+            banner: tenant.heroBackgroundImage,
             socialLinks: tenant.socialLinks,
           }}
         />
@@ -122,9 +119,7 @@ export default async function StoreLayout({
 
         {/* 🚀 WRAP CHILDREN WITH TEMPLATE PROVIDER */}
         <main className="flex-1">
-          <TemplateProvider initialTemplateId={templateId}>
-            {children}
-          </TemplateProvider>
+          <TemplateProvider initialTemplateId={templateId}>{children}</TemplateProvider>
         </main>
 
         <StoreFooter tenant={tenant} />

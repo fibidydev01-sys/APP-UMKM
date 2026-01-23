@@ -9,8 +9,12 @@ interface Contact1Props {
   subtitle?: string;
   whatsapp?: string | null;
   phone?: string | null;
+  email?: string | null;
   address?: string | null;
   storeName?: string;
+  mapUrl?: string | null;
+  showMap?: boolean;
+  showForm?: boolean;
 }
 
 /**
@@ -24,8 +28,12 @@ export function Contact1({
   subtitle,
   whatsapp,
   phone,
+  email,
   address,
   storeName,
+  mapUrl,
+  showMap,
+  showForm,
 }: Contact1Props) {
   const whatsappLink = whatsapp
     ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Halo ${storeName || ''}, saya tertarik dengan produk Anda.`)}`

@@ -73,11 +73,7 @@ export default function TestimonialsPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -137,6 +133,7 @@ export default function TestimonialsPage() {
                       variant="outline"
                       onClick={() => {
                         const newTestimonial: Testimonial = {
+                          id: `t-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                           name: '',
                           role: '',
                           content: '',
@@ -164,7 +161,9 @@ export default function TestimonialsPage() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => {
-                                  const updated = formData.testimonials.filter((_, i) => i !== index);
+                                  const updated = formData.testimonials.filter(
+                                    (_, i) => i !== index
+                                  );
                                   updateFormData('testimonials', updated);
                                 }}
                               >
@@ -249,7 +248,11 @@ export default function TestimonialsPage() {
                   Pratinjau real-time dari Testimonials Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 {formData.testimonials.length === 0 ? (
                   <div className="border rounded-lg p-8 bg-muted/20 text-center">
                     <p className="text-muted-foreground">

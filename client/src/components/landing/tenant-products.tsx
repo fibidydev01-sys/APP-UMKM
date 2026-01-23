@@ -1,6 +1,6 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType } from 'react';
 import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getProductsConfig } from '@/lib/landing';
 import { LANDING_CONSTANTS, useProductsBlock } from '@/lib/landing';
@@ -21,6 +21,16 @@ interface TenantProductsProps {
   };
 }
 
+interface ProductsBlockProps {
+  products: Product[];
+  title: string;
+  subtitle: string;
+  showViewAll: boolean;
+  productsLink: string;
+  storeSlug: string;
+  limit: number;
+}
+
 /**
  * 🚀 SMART DYNAMIC LOADING - AUTO-DISCOVERY ENABLED!
  *
@@ -32,7 +42,12 @@ interface TenantProductsProps {
  *
  * 🚀 SUPPORTS ALL BLOCKS: products1, products2, ..., products200, products9999!
  */
-export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: TenantProductsProps) {
+export function TenantProducts({
+  products,
+  config,
+  storeSlug,
+  fallbacks = {},
+}: TenantProductsProps) {
   const templateBlock = useProductsBlock();
   const block = config?.block || templateBlock;
 
@@ -48,7 +63,9 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
   // Smart URL routing
   // Hook must be called unconditionally (React Hooks rules)
   const urls = useStoreUrls(storeSlug || '');
-  const productsLink = storeSlug ? (urls?.products() || '/products') : (fallbacks.productsLink || '/products');
+  const productsLink = storeSlug
+    ? urls?.products() || '/products'
+    : fallbacks.productsLink || '/products';
 
   const commonProps = {
     products,
@@ -62,10 +79,16 @@ export function TenantProducts({ products, config, storeSlug, fallbacks = {} }: 
 
   // 🚀 SMART: Dynamic component loading
   const blockNumber = block.replace('products', '');
-  const ProductsComponent = lazy(() =>
+  const ProductsComponent = lazy<ComponentType<ProductsBlockProps>>(() =>
     import(`./blocks/products/products${blockNumber}`)
-      .then((mod) => ({ default: mod[`Products${blockNumber}`] }))
-      .catch(() => import('./blocks/products/products1').then((mod) => ({ default: mod.Products1 })))
+      .then((mod) => ({
+        default: mod[`Products${blockNumber}`] as ComponentType<ProductsBlockProps>,
+      }))
+      .catch(() =>
+        import('./blocks/products/products1').then((mod) => ({
+          default: mod.Products1 as ComponentType<ProductsBlockProps>,
+        }))
+      )
   );
 
   // Render with Suspense for lazy loading

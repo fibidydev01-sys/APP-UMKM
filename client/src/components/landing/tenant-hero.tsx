@@ -1,12 +1,23 @@
 'use client';
 
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, type ComponentType } from 'react';
 import { extractHeroData, useHeroBlock } from '@/lib/landing';
 import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
 
 interface TenantHeroProps {
   config?: TenantLandingConfig['hero'];
   tenant: Tenant | PublicTenant;
+}
+
+interface HeroBlockProps {
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  ctaLink: string;
+  showCta: boolean;
+  backgroundImage?: string;
+  logo?: string;
+  storeName: string;
 }
 
 /**
@@ -45,10 +56,14 @@ export function TenantHero({ config, tenant }: TenantHeroProps) {
 
   // 🚀 SMART: Dynamic component loading
   const blockNumber = block.replace('hero', '');
-  const HeroComponent = lazy(() =>
+  const HeroComponent = lazy<ComponentType<HeroBlockProps>>(() =>
     import(`./blocks/hero/hero${blockNumber}`)
-      .then((mod) => ({ default: mod[`Hero${blockNumber}`] }))
-      .catch(() => import('./blocks/hero/hero1').then((mod) => ({ default: mod.Hero1 })))
+      .then((mod) => ({ default: mod[`Hero${blockNumber}`] as ComponentType<HeroBlockProps> }))
+      .catch(() =>
+        import('./blocks/hero/hero1').then((mod) => ({
+          default: mod.Hero1 as ComponentType<HeroBlockProps>,
+        }))
+      )
   );
 
   // Render with Suspense for lazy loading

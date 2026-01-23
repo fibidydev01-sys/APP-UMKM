@@ -4,17 +4,7 @@
 // ══════════════════════════════════════════════════════════════
 
 import Link from 'next/link';
-import {
-  Check,
-  X,
-  Rocket,
-  Crown,
-  Clock,
-  Lock,
-  CreditCard,
-  RefreshCw,
-  FileX,
-} from 'lucide-react';
+import { Check, X, Rocket, Crown, Clock, Lock, CreditCard, RefreshCw, FileX } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
@@ -32,7 +22,7 @@ interface PricingFeature {
 
 interface PricingPlan {
   name: string;
-  icon: React.ElementType;
+  icon: React.ElementType<{ className?: string }>;
   price: string;
   priceNote: string;
   description: string;
@@ -149,9 +139,7 @@ export function PricingSection() {
               {plan.badge && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                   <Badge className="px-4 py-1 shadow-lg gap-1">
-                    {plan.comingSoon ? (
-                      <Clock className="h-3 w-3" />
-                    ) : null}
+                    {plan.comingSoon ? <Clock className="h-3 w-3" /> : null}
                     {plan.badge}
                   </Badge>
                 </div>
@@ -159,14 +147,18 @@ export function PricingSection() {
 
               <CardHeader className="text-center pb-4 pt-8">
                 {/* Icon */}
-                <div className={cn(
-                  'w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4',
-                  plan.popular ? 'bg-primary/10' : 'bg-muted'
-                )}>
-                  <plan.icon className={cn(
-                    'h-7 w-7',
-                    plan.popular ? 'text-primary' : 'text-muted-foreground'
-                  )} />
+                <div
+                  className={cn(
+                    'w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4',
+                    plan.popular ? 'bg-primary/10' : 'bg-muted'
+                  )}
+                >
+                  <plan.icon
+                    className={cn(
+                      'h-7 w-7',
+                      plan.popular ? 'text-primary' : 'text-muted-foreground'
+                    )}
+                  />
                 </div>
 
                 {/* Name */}
@@ -174,21 +166,19 @@ export function PricingSection() {
 
                 {/* Price */}
                 <div className="mt-4 mb-2">
-                  <div className={cn(
-                    'text-4xl font-bold',
-                    plan.comingSoon ? 'text-muted-foreground' : 'text-foreground'
-                  )}>
+                  <div
+                    className={cn(
+                      'text-4xl font-bold',
+                      plan.comingSoon ? 'text-muted-foreground' : 'text-foreground'
+                    )}
+                  >
                     {plan.price}
                   </div>
-                  <div className="text-sm text-muted-foreground mt-1">
-                    {plan.priceNote}
-                  </div>
+                  <div className="text-sm text-muted-foreground mt-1">{plan.priceNote}</div>
                 </div>
 
                 {/* Description */}
-                <p className="text-sm text-muted-foreground">
-                  {plan.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{plan.description}</p>
               </CardHeader>
 
               <CardContent className="flex-1 flex flex-col">
@@ -243,7 +233,10 @@ export function PricingSection() {
         <div className="text-center mt-12 space-y-4">
           <div className="flex flex-wrap justify-center items-center gap-6">
             {trustBadges.map((badge) => (
-              <div key={badge.text} className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div
+                key={badge.text}
+                className="flex items-center gap-2 text-sm text-muted-foreground"
+              >
                 <badge.icon className="h-4 w-4 text-primary" />
                 <span>{badge.text}</span>
               </div>

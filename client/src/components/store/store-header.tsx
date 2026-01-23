@@ -45,9 +45,18 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
   const contactInfo = [
     { label: 'WhatsApp', value: tenant.whatsapp, type: 'whatsapp' as const },
     { label: 'Telepon', value: tenant.phone, type: 'phone' as const },
-    { label: 'Email', value: 'email' in tenant ? tenant.email : undefined, type: 'email' as const },
+    {
+      label: 'Email',
+      value: 'email' in tenant ? (tenant as { email?: string }).email : undefined,
+      type: 'email' as const,
+    },
     { label: 'Alamat', value: tenant.address, type: 'address' as const },
-  ].filter(item => item.value);
+  ].filter(
+    (
+      item
+    ): item is { label: string; value: string; type: 'whatsapp' | 'phone' | 'email' | 'address' } =>
+      Boolean(item.value)
+  );
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -63,14 +72,10 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
             />
           ) : (
             <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-lg font-bold text-primary">
-                {tenant.name.charAt(0)}
-              </span>
+              <span className="text-lg font-bold text-primary">{tenant.name.charAt(0)}</span>
             </div>
           )}
-          <span className="font-semibold text-lg hidden sm:block">
-            {tenant.name}
-          </span>
+          <span className="font-semibold text-lg hidden sm:block">{tenant.name}</span>
         </Link>
 
         <NavigationMenu className="hidden md:flex">
@@ -78,9 +83,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
             {/* BERANDA - DENGAN DROPDOWN */}
             <NavigationMenuItem>
               <NavigationMenuTrigger
-                className={cn(
-                  pathname === urls.home && 'bg-primary/10 text-primary'
-                )}
+                className={cn(pathname === urls.home && 'bg-primary/10 text-primary')}
               >
                 Beranda
               </NavigationMenuTrigger>
@@ -107,22 +110,32 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                             </span>
                           </div>
                         )}
-                        <div className="mb-2 text-lg font-medium sm:mt-4">
-                          {tenant.name}
-                        </div>
+                        <div className="mb-2 text-lg font-medium sm:mt-4">{tenant.name}</div>
                         <p className="text-muted-foreground text-sm leading-tight">
-                          {tenant.tagline || 'Selamat datang di toko kami'}
+                          {tenant.description || 'Selamat datang di toko kami'}
                         </p>
                       </Link>
                     </NavigationMenuLink>
                   </li>
-                  <ListItem href={urls.path('/about')} title="Tentang Kami" icon={<Users className="h-4 w-4" />}>
+                  <ListItem
+                    href={urls.path('/about')}
+                    title="Tentang Kami"
+                    icon={<Users className="h-4 w-4" />}
+                  >
                     Kenali lebih dalam tentang bisnis kami
                   </ListItem>
-                  <ListItem href={urls.path('/testimonials')} title="Testimoni" icon={<Store className="h-4 w-4" />}>
+                  <ListItem
+                    href={urls.path('/testimonials')}
+                    title="Testimoni"
+                    icon={<Store className="h-4 w-4" />}
+                  >
                     Lihat testimoni pelanggan kami
                   </ListItem>
-                  <ListItem href={urls.path('/contact')} title="Hubungi Kami" icon={<Mail className="h-4 w-4" />}>
+                  <ListItem
+                    href={urls.path('/contact')}
+                    title="Hubungi Kami"
+                    icon={<Mail className="h-4 w-4" />}
+                  >
                     Kontak dan informasi lokasi
                   </ListItem>
                 </ul>
@@ -145,9 +158,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
             {/* KONTAK - DROPDOWN */}
             <NavigationMenuItem>
               <NavigationMenuTrigger
-                className={cn(
-                  pathname === urls.path('/contact') && 'bg-primary/10 text-primary'
-                )}
+                className={cn(pathname === urls.path('/contact') && 'bg-primary/10 text-primary')}
               >
                 Kontak
               </NavigationMenuTrigger>
@@ -155,9 +166,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                 <div className="w-[400px] p-4">
                   <div className="mb-4">
                     <h3 className="text-sm font-semibold mb-1">{tenant.name}</h3>
-                    <p className="text-xs text-muted-foreground">
-                      Hubungi kami melalui
-                    </p>
+                    <p className="text-xs text-muted-foreground">Hubungi kami melalui</p>
                   </div>
 
                   <div className="grid gap-3">
@@ -244,7 +253,8 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
               </SheetHeader>
               <nav className="flex flex-col gap-2 mt-4">
                 {navItems.map((item) => {
-                  const isActive = pathname === item.href ||
+                  const isActive =
+                    pathname === item.href ||
                     (item.href !== urls.home && pathname.startsWith(item.href));
 
                   return (
@@ -254,9 +264,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
                         'px-4 py-3 text-base font-medium rounded-lg transition-colors',
-                        isActive
-                          ? 'bg-primary/10 text-primary'
-                          : 'text-foreground hover:bg-muted'
+                        isActive ? 'bg-primary/10 text-primary' : 'text-foreground hover:bg-muted'
                       )}
                     >
                       {item.label}
@@ -289,7 +297,7 @@ function ListItem({
   href,
   icon,
   ...props
-}: React.ComponentPropsWithoutRef<"li"> & {
+}: React.ComponentPropsWithoutRef<'li'> & {
   href: string;
   title: string;
   icon?: React.ReactNode;
@@ -305,9 +313,7 @@ function ListItem({
             {icon}
             <div className="text-sm font-medium leading-none">{title}</div>
           </div>
-          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-            {children}
-          </p>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
         </Link>
       </NavigationMenuLink>
     </li>

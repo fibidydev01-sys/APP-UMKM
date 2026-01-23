@@ -2,7 +2,6 @@
 
 import { ThemeProvider } from './theme-provider';
 import { HydrationProvider } from './hydration-provider';
-import { PWAProvider } from '@/components/pwa';
 
 // ==========================================
 // MAIN PROVIDERS WRAPPER
@@ -15,17 +14,8 @@ interface ProvidersProps {
 
 export function Providers({ children }: ProvidersProps) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="light"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <HydrationProvider>
-        <PWAProvider>
-          {children}
-        </PWAProvider>
-      </HydrationProvider>
+    <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+      <HydrationProvider>{children}</HydrationProvider>
     </ThemeProvider>
   );
 }

@@ -3,33 +3,27 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@umkm/shared/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
 import { ordersApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { OrderStatus, PaymentStatus } from '@umkm/shared/types';
+import { OrderStatus, PaymentStatus } from '@umkm/shared/types';
 
 // ==========================================
 // STATUS OPTIONS
 // ==========================================
 
 const orderStatusOptions: { value: OrderStatus; label: string }[] = [
-  { value: 'PENDING', label: 'Menunggu' },
-  { value: 'PROCESSING', label: 'Diproses' },
-  { value: 'COMPLETED', label: 'Selesai' },
-  { value: 'CANCELLED', label: 'Dibatalkan' },
+  { value: OrderStatus.PENDING, label: 'Menunggu' },
+  { value: OrderStatus.PROCESSING, label: 'Diproses' },
+  { value: OrderStatus.COMPLETED, label: 'Selesai' },
+  { value: OrderStatus.CANCELLED, label: 'Dibatalkan' },
 ];
 
 const paymentStatusOptions: { value: PaymentStatus; label: string }[] = [
-  { value: 'PENDING', label: 'Belum Bayar' },
-  { value: 'PARTIAL', label: 'Sebagian' },
-  { value: 'PAID', label: 'Lunas' },
-  { value: 'FAILED', label: 'Gagal' },
+  { value: PaymentStatus.PENDING, label: 'Belum Bayar' },
+  { value: PaymentStatus.PARTIAL, label: 'Sebagian' },
+  { value: PaymentStatus.PAID, label: 'Lunas' },
+  { value: PaymentStatus.FAILED, label: 'Gagal' },
 ];
 
 // ==========================================
@@ -74,31 +68,19 @@ export function OrderStatusSelect({
   };
 
   // ✅ Jika CANCELLED, tampilkan text saja (tidak bisa diubah)
-  if (status === 'CANCELLED') {
-    return (
-      <span className="text-sm text-muted-foreground">Dibatalkan</span>
-    );
+  if (status === OrderStatus.CANCELLED) {
+    return <span className="text-sm text-muted-foreground">Dibatalkan</span>;
   }
 
   // ✅ Jika COMPLETED, tampilkan text saja
-  if (status === 'COMPLETED') {
-    return (
-      <span className="text-sm text-muted-foreground">Selesai</span>
-    );
+  if (status === OrderStatus.COMPLETED) {
+    return <span className="text-sm text-muted-foreground">Selesai</span>;
   }
 
   return (
-    <Select
-      value={status}
-      onValueChange={handleChange}
-      disabled={disabled || isLoading}
-    >
+    <Select value={status} onValueChange={handleChange} disabled={disabled || isLoading}>
       <SelectTrigger className="w-[140px]">
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <SelectValue />
-        )}
+        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <SelectValue />}
       </SelectTrigger>
       <SelectContent>
         {orderStatusOptions.map((option) => (
@@ -155,25 +137,15 @@ export function PaymentStatusSelect({
   };
 
   // ✅ Jika order CANCELLED, tampilkan text saja (tidak bisa ubah payment)
-  if (orderStatus === 'CANCELLED') {
-    const label = paymentStatusOptions.find(o => o.value === status)?.label || status;
-    return (
-      <span className="text-sm text-muted-foreground">{label}</span>
-    );
+  if (orderStatus === OrderStatus.CANCELLED) {
+    const label = paymentStatusOptions.find((o) => o.value === status)?.label || status;
+    return <span className="text-sm text-muted-foreground">{label}</span>;
   }
 
   return (
-    <Select
-      value={status}
-      onValueChange={handleChange}
-      disabled={disabled || isLoading}
-    >
+    <Select value={status} onValueChange={handleChange} disabled={disabled || isLoading}>
       <SelectTrigger className="w-[130px]">
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <SelectValue />
-        )}
+        {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <SelectValue />}
       </SelectTrigger>
       <SelectContent>
         {paymentStatusOptions.map((option) => (
