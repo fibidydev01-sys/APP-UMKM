@@ -14,12 +14,7 @@ export {
 } from './use-auth';
 
 // Tenant Hooks
-export {
-  useTenant,
-  usePublicTenant,
-  useUpdateTenant,
-  useDashboardStats,
-} from './use-tenant';
+export { useTenant, usePublicTenant, useUpdateTenant, useDashboardStats } from './use-tenant';
 
 // Products Hooks
 export {
@@ -54,9 +49,19 @@ export {
 
 // Utility Hooks
 export { useDebounce, useDebouncedCallback } from './use-debounce';
-export { useMediaQuery, useIsMobile, useIsTablet, useIsDesktop, useIsLargeDesktop, breakpoints } from './use-media-query';
 export { useMounted, useIsClient } from './use-mounted';
+
+// Media Query Hooks - Re-export from shared (Single Source of Truth)
+export {
+  useMediaQuery,
+  useIsMobile,
+  useIsTablet,
+  useIsDesktop,
+  useIsLargeDesktop,
+  useIsMediumUp,
+  useMobileProductLimit,
+  breakpoints,
+} from '@umkm/shared/hooks';
 
 export { useLandingConfig } from './use-landing-config';
 export { useRegisterWizard } from './use-register-wizard';
-

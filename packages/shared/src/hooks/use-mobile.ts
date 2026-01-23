@@ -1,40 +1,92 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore, useCallback } from 'react';
 
-const MOBILE_BREAKPOINT = 768;
+// ==========================================
+// MEDIA QUERY HOOKS - Single Source of Truth
+// Uses useSyncExternalStore for proper SSR/hydration handling
+// ==========================================
 
 /**
- * Hook to detect if the current viewport is mobile.
- * Returns `undefined` during SSR/initial hydration, then the actual value.
- * This prevents hydration mismatch errors.
+ * Generic media query hook using useSyncExternalStore
+ * This is the React 18+ recommended way to handle media queries
+ * - No hydration mismatch errors
+ * - Proper SSR support (returns false on server)
+ * - Efficient event listener management
  */
-export function useIsMobile(): boolean {
-  // Initialize with undefined to prevent hydration mismatch
-  // The first render on client will match server (both treat as desktop)
-  const [isMobile, setIsMobile] = useState<boolean | undefined>(undefined);
+export function useMediaQuery(query: string): boolean {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const mediaQuery = window.matchMedia(query);
+      mediaQuery.addEventListener('change', callback);
+      return () => mediaQuery.removeEventListener('change', callback);
+    },
+    [query]
+  );
 
-  useEffect(() => {
-    // Use matchMedia for better performance
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+  const getSnapshot = useCallback(() => {
+    return window.matchMedia(query).matches;
+  }, [query]);
 
-    const onChange = () => {
-      setIsMobile(mql.matches);
-    };
-
-    // Set initial value
-    setIsMobile(mql.matches);
-
-    // Listen for changes
-    mql.addEventListener('change', onChange);
-    return () => mql.removeEventListener('change', onChange);
+  const getServerSnapshot = useCallback(() => {
+    // Return false on server (no window) - desktop-first approach
+    return false;
   }, []);
 
-  // Return false when undefined (SSR/initial) to match desktop-first rendering
-  return isMobile ?? false;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-export function useMobileProductLimit(products: unknown[], limit: number = 12): unknown[] {
+// ==========================================
+// BREAKPOINT HOOKS
+// Tailwind-aligned breakpoints
+// ==========================================
+
+/** Mobile: < 640px (Tailwind sm breakpoint) */
+export function useIsMobile(): boolean {
+  return useMediaQuery('(max-width: 639px)');
+}
+
+/** Tablet: 640px - 1023px */
+export function useIsTablet(): boolean {
+  return useMediaQuery('(min-width: 640px) and (max-width: 1023px)');
+}
+
+/** Desktop: >= 1024px (Tailwind lg breakpoint) */
+export function useIsDesktop(): boolean {
+  return useMediaQuery('(min-width: 1024px)');
+}
+
+/** Large Desktop: >= 1280px (Tailwind xl breakpoint) */
+export function useIsLargeDesktop(): boolean {
+  return useMediaQuery('(min-width: 1280px)');
+}
+
+/** Medium screens and up: >= 768px (Tailwind md breakpoint) */
+export function useIsMediumUp(): boolean {
+  return useMediaQuery('(min-width: 768px)');
+}
+
+// ==========================================
+// BREAKPOINT CONSTANTS
+// ==========================================
+
+export const breakpoints = {
+  sm: '(min-width: 640px)',
+  md: '(min-width: 768px)',
+  lg: '(min-width: 1024px)',
+  xl: '(min-width: 1280px)',
+  '2xl': '(min-width: 1536px)',
+} as const;
+
+// ==========================================
+// UTILITY HOOKS
+// ==========================================
+
+/**
+ * Limits array to specified count on mobile devices
+ * Useful for reducing render load on mobile
+ */
+export function useMobileProductLimit<T>(products: T[], limit: number = 12): T[] {
   const isMobile = useIsMobile();
 
   if (!isMobile) return products;

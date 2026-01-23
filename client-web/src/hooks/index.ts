@@ -5,12 +5,16 @@
 
 // Utility Hooks
 export { useDebounce, useDebouncedCallback } from './use-debounce';
+export { useMounted, useIsClient } from './use-mounted';
+
+// Media Query Hooks - Re-export from shared (Single Source of Truth)
 export {
   useMediaQuery,
   useIsMobile,
   useIsTablet,
   useIsDesktop,
   useIsLargeDesktop,
+  useIsMediumUp,
+  useMobileProductLimit,
   breakpoints,
-} from './use-media-query';
-export { useMounted, useIsClient } from './use-mounted';
+} from '@umkm/shared/hooks';
