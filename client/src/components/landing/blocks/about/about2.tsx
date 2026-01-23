@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 interface About2Props {
   title: string;
@@ -25,7 +25,9 @@ export function About2({ title, subtitle, content, image, features = [] }: About
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
         {subtitle && (
-          <p className="text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">{subtitle}</p>
+          <p className="text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
+            {subtitle}
+          </p>
         )}
       </div>
 
@@ -33,21 +35,14 @@ export function About2({ title, subtitle, content, image, features = [] }: About
         {/* Left: Main Image */}
         {image && (
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl ring-1 ring-border">
-            <OptimizedImage
-              src={image}
-              alt={title}
-              fill
-              className="object-cover"
-            />
+            <OptimizedImage src={image} alt={title} fill className="object-cover" />
           </div>
         )}
 
         {/* Right: Content + Features Gallery */}
         <div className="space-y-8">
           {content && (
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-              {content}
-            </p>
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{content}</p>
           )}
 
           {/* Features as Image Cards */}

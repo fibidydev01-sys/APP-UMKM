@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star, Quote } from 'lucide-react';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@umkm/shared/types';
 
@@ -44,8 +44,9 @@ export function Testimonials3({ items, title, subtitle }: Testimonials3Props) {
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star
                   key={`featured-star-${i}`}
-                  className={`h-6 w-6 ${i < featuredItem.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
-                    }`}
+                  className={`h-6 w-6 ${
+                    i < featuredItem.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
+                  }`}
                 />
               ))}
             </div>
@@ -75,9 +76,7 @@ export function Testimonials3({ items, title, subtitle }: Testimonials3Props) {
             </Avatar>
             <div className="text-left">
               <p className="font-bold text-foreground text-lg">{featuredItem.name}</p>
-              {featuredItem.role && (
-                <p className="text-muted-foreground">{featuredItem.role}</p>
-              )}
+              {featuredItem.role && <p className="text-muted-foreground">{featuredItem.role}</p>}
             </div>
           </div>
         </div>

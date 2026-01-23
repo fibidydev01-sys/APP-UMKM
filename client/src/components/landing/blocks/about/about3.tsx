@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { CheckCircle } from 'lucide-react';
 
 interface About3Props {
@@ -26,9 +26,7 @@ export function About3({ title, subtitle, content, image, features = [] }: About
         {/* Centered Header */}
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
-          {subtitle && (
-            <p className="text-lg md:text-xl text-muted-foreground mt-4">{subtitle}</p>
-          )}
+          {subtitle && <p className="text-lg md:text-xl text-muted-foreground mt-4">{subtitle}</p>}
         </div>
 
         {/* Content */}
@@ -56,12 +54,7 @@ export function About3({ title, subtitle, content, image, features = [] }: About
         {/* Image Below */}
         {image && (
           <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border">
-            <OptimizedImage
-              src={image}
-              alt={title}
-              fill
-              className="object-cover"
-            />
+            <OptimizedImage src={image} alt={title} fill className="object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
           </div>
         )}

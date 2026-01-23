@@ -6,7 +6,7 @@ import { Button } from '@umkm/shared/ui';
 import { Dialog, DialogTitle } from '@umkm/shared/ui';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { cn } from '@/lib/utils';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 interface ProductGalleryProps {
   images: string[];

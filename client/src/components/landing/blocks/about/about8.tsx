@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 /**
  * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
@@ -41,23 +41,14 @@ export function About8({ title, subtitle, content, image, features = [] }: About
         {image && (
           <div>
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-              <OptimizedImage
-                src={image}
-                alt={title}
-                fill
-                className="object-cover"
-              />
+              <OptimizedImage src={image} alt={title} fill className="object-cover" />
             </div>
           </div>
         )}
 
         {/* Right: Content */}
         <div className="space-y-6">
-          {content && (
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              {content}
-            </p>
-          )}
+          {content && <p className="text-muted-foreground leading-relaxed text-lg">{content}</p>}
 
           {/* Features Gallery - Display as image cards */}
           {features.length > 0 && (

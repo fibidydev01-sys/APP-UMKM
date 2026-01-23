@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star } from 'lucide-react';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@umkm/shared/types';
 
@@ -78,8 +78,9 @@ export function Testimonials6({ items, title, subtitle }: Testimonials6Props) {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={`${key}-star-${i}`}
-                      className={`h-3.5 w-3.5 ${i < item.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
-                        }`}
+                      className={`h-3.5 w-3.5 ${
+                        i < item.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
+                      }`}
                     />
                   ))}
                 </div>

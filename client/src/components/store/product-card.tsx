@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 // ❌ REMOVE: import Image from 'next/image';
 // ❌ REMOVE: import { CldImage } from 'next-cloudinary';
-import { OptimizedImage } from '@umkm/shared/ui'; // ✅ ADD
+import { OptimizedImage } from '@/components/ui/optimized-image'; // ✅ ADD
 import Link from 'next/link';
 import { ShoppingCart, Plus, Check } from 'lucide-react';
 import { Card, CardContent } from '@umkm/shared/ui';
@@ -22,11 +22,7 @@ interface ProductCardProps {
   showAddToCart?: boolean;
 }
 
-export function ProductCard({
-  product,
-  storeSlug,
-  showAddToCart = true,
-}: ProductCardProps) {
+export function ProductCard({ product, storeSlug, showAddToCart = true }: ProductCardProps) {
   const [isAdding, setIsAdding] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const itemQty = useItemQty(product.id);
@@ -47,23 +43,26 @@ export function ProductCard({
 
   const url = useMemo(() => productUrl(storeSlug, product.id), [storeSlug, product.id]);
 
-  const handleAddToCart = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isOutOfStock) return;
+  const handleAddToCart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isOutOfStock) return;
 
-    setIsAdding(true);
-    addItem({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images?.[0],
-      unit: product.unit || undefined,
-      maxStock: product.trackStock ? product.stock ?? undefined : undefined,
-    });
+      setIsAdding(true);
+      addItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0],
+        unit: product.unit || undefined,
+        maxStock: product.trackStock ? (product.stock ?? undefined) : undefined,
+      });
 
-    setTimeout(() => setIsAdding(false), 500);
-  }, [isOutOfStock, addItem, product]);
+      setTimeout(() => setIsAdding(false), 500);
+    },
+    [isOutOfStock, addItem, product]
+  );
 
   return (
     <Card className="group overflow-hidden transition-shadow hover:shadow-md">
@@ -93,9 +92,7 @@ export function ProductCard({
                 -{discountPercent}%
               </Badge>
             )}
-            {product.isFeatured && (
-              <Badge className="text-xs bg-primary">Unggulan</Badge>
-            )}
+            {product.isFeatured && <Badge className="text-xs bg-primary">Unggulan</Badge>}
           </div>
 
           {/* Out of Stock Overlay */}
@@ -127,26 +124,20 @@ export function ProductCard({
         {/* Content - unchanged */}
         <CardContent className="p-3">
           {product.category && (
-            <p className="text-xs text-muted-foreground mb-1 truncate">
-              {product.category}
-            </p>
+            <p className="text-xs text-muted-foreground mb-1 truncate">{product.category}</p>
           )}
           <h3 className="font-medium text-sm leading-tight line-clamp-2 min-h-[2.5rem]">
             {product.name}
           </h3>
           <div className="mt-2 flex items-baseline gap-2">
-            <span className="font-semibold text-primary">
-              {formatPrice(product.price)}
-            </span>
+            <span className="font-semibold text-primary">{formatPrice(product.price)}</span>
             {hasDiscount && (
               <span className="text-xs text-muted-foreground line-through">
                 {formatPrice(product.comparePrice!)}
               </span>
             )}
           </div>
-          {product.unit && (
-            <p className="text-xs text-muted-foreground mt-1">per {product.unit}</p>
-          )}
+          {product.unit && <p className="text-xs text-muted-foreground mt-1">per {product.unit}</p>}
           {itemQty > 0 && (
             <div className="mt-2 flex items-center gap-1 text-xs text-primary">
               <ShoppingCart className="h-3 w-3" />
@@ -161,9 +152,15 @@ export function ProductCard({
         <div className="px-3 pb-3 md:hidden">
           <Button size="sm" variant="outline" className="w-full" onClick={handleAddToCart}>
             {isAdding ? (
-              <><Check className="h-4 w-4 mr-2" />Ditambahkan</>
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                Ditambahkan
+              </>
             ) : (
-              <><Plus className="h-4 w-4 mr-2" />Tambah</>
+              <>
+                <Plus className="h-4 w-4 mr-2" />
+                Tambah
+              </>
             )}
           </Button>
         </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Card, CardContent } from '@umkm/shared/ui';
 
 interface About5Props {
@@ -26,7 +26,9 @@ export function About5({ title, subtitle, content, image, features = [] }: About
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
         {subtitle && (
-          <p className="text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">{subtitle}</p>
+          <p className="text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
+            {subtitle}
+          </p>
         )}
         {content && (
           <p className="text-base text-muted-foreground mt-6 max-w-3xl mx-auto leading-relaxed">
@@ -41,12 +43,7 @@ export function About5({ title, subtitle, content, image, features = [] }: About
         {image && (
           <Card className="md:col-span-2 lg:col-span-2 overflow-hidden border-0 shadow-xl">
             <div className="relative aspect-[2/1] md:aspect-[16/9]">
-              <OptimizedImage
-                src={image}
-                alt={title}
-                fill
-                className="object-cover"
-              />
+              <OptimizedImage src={image} alt={title} fill className="object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="text-white/90 text-lg font-medium">{subtitle}</p>

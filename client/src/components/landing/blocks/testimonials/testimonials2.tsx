@@ -5,7 +5,7 @@ import { Card, CardContent } from '@umkm/shared/ui';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@umkm/shared/types';
 
@@ -75,8 +75,9 @@ export function Testimonials2({ items, title, subtitle }: Testimonials2Props) {
                   {Array.from({ length: 5 }).map((_, i) => (
                     <Star
                       key={`star-${i}`}
-                      className={`h-5 w-5 ${i < currentItem.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
-                        }`}
+                      className={`h-5 w-5 ${
+                        i < currentItem.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
+                      }`}
                     />
                   ))}
                 </div>
@@ -108,9 +109,7 @@ export function Testimonials2({ items, title, subtitle }: Testimonials2Props) {
                 </Avatar>
                 <div>
                   <p className="font-semibold text-foreground text-lg">{currentItem.name}</p>
-                  {currentItem.role && (
-                    <p className="text-muted-foreground">{currentItem.role}</p>
-                  )}
+                  {currentItem.role && <p className="text-muted-foreground">{currentItem.role}</p>}
                 </div>
               </div>
             </CardContent>
@@ -123,8 +122,9 @@ export function Testimonials2({ items, title, subtitle }: Testimonials2Props) {
             <button
               key={index}
               onClick={() => setCurrentIndex(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${index === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/30'
-                }`}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                index === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/30'
+              }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />
           ))}

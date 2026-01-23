@@ -3,7 +3,7 @@
 import { Card, CardContent } from '@umkm/shared/ui';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star } from 'lucide-react';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@umkm/shared/types';
 
@@ -48,17 +48,16 @@ export function Testimonials5({ items, title, subtitle }: Testimonials5Props) {
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={`${key}-star-${i}`}
-                        className={`h-4 w-4 ${i < item.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
-                          }`}
+                        className={`h-4 w-4 ${
+                          i < item.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
+                        }`}
                       />
                     ))}
                   </div>
                 )}
 
                 {/* Content */}
-                <p className="text-foreground leading-relaxed mb-5">
-                  &quot;{item.content}&quot;
-                </p>
+                <p className="text-foreground leading-relaxed mb-5">&quot;{item.content}&quot;</p>
 
                 {/* Author */}
                 <div className="flex items-center gap-3">
@@ -81,9 +80,7 @@ export function Testimonials5({ items, title, subtitle }: Testimonials5Props) {
                   </Avatar>
                   <div>
                     <p className="font-semibold text-foreground">{item.name}</p>
-                    {item.role && (
-                      <p className="text-sm text-muted-foreground">{item.role}</p>
-                    )}
+                    {item.role && <p className="text-sm text-muted-foreground">{item.role}</p>}
                   </div>
                 </div>
               </CardContent>

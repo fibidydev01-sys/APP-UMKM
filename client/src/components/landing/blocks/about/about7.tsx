@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Quote } from 'lucide-react';
 
 interface About7Props {
@@ -32,12 +32,7 @@ export function About7({ title, subtitle, content, image, features = [] }: About
       {/* Full Width Image with Overlay Quote */}
       {image && (
         <div className="relative aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl mb-12 md:mb-16">
-          <OptimizedImage
-            src={image}
-            alt={title}
-            fill
-            className="object-cover"
-          />
+          <OptimizedImage src={image} alt={title} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
 
           {/* Quote Overlay */}

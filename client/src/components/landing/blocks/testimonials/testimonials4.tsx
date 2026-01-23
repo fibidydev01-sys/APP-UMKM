@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star, Quote } from 'lucide-react';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@umkm/shared/types';
 
@@ -45,8 +45,9 @@ export function Testimonials4({ items, title, subtitle }: Testimonials4Props) {
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={`star-${i}`}
-                className={`h-5 w-5 ${i < activeItem.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
-                  }`}
+                className={`h-5 w-5 ${
+                  i < activeItem.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
+                }`}
               />
             ))}
           </div>
@@ -60,9 +61,7 @@ export function Testimonials4({ items, title, subtitle }: Testimonials4Props) {
         {/* Active Author */}
         <div className="mb-10">
           <p className="font-bold text-foreground text-xl">{activeItem.name}</p>
-          {activeItem.role && (
-            <p className="text-muted-foreground mt-1">{activeItem.role}</p>
-          )}
+          {activeItem.role && <p className="text-muted-foreground mt-1">{activeItem.role}</p>}
         </div>
 
         {/* Avatar Selector */}
@@ -73,10 +72,11 @@ export function Testimonials4({ items, title, subtitle }: Testimonials4Props) {
               <button
                 key={item.id || index}
                 onClick={() => setActiveIndex(index)}
-                className={`relative transition-all duration-300 ${index === activeIndex
-                  ? 'scale-110 ring-4 ring-primary ring-offset-2 ring-offset-background rounded-full'
-                  : 'opacity-50 hover:opacity-80'
-                  }`}
+                className={`relative transition-all duration-300 ${
+                  index === activeIndex
+                    ? 'scale-110 ring-4 ring-primary ring-offset-2 ring-offset-background rounded-full'
+                    : 'opacity-50 hover:opacity-80'
+                }`}
               >
                 <Avatar className="h-12 w-12 md:h-14 md:w-14">
                   {avatarType !== 'none' ? (

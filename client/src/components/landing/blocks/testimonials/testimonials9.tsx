@@ -4,7 +4,7 @@ import { Card, CardContent } from '@umkm/shared/ui';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 import { getImageSource } from '@/lib/cloudinary';
 import { useState } from 'react';
 import type { Testimonial } from '@umkm/shared/types';
@@ -26,11 +26,7 @@ interface Testimonials9Props {
  * Testimonials Block: testimonials9
  * Design: Card Slider
  */
-export function Testimonials9({
-  items,
-  title,
-  subtitle,
-}: Testimonials9Props) {
+export function Testimonials9({ items, title, subtitle }: Testimonials9Props) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   if (items.length === 0) return null;
@@ -101,18 +97,14 @@ export function Testimonials9({
                         <Star
                           key={`${key}-star-${i}`}
                           className={`h-4 w-4 ${
-                            i < item.rating!
-                              ? 'text-yellow-500 fill-yellow-500'
-                              : 'text-muted'
+                            i < item.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
                           }`}
                         />
                       ))}
                     </div>
                   )}
 
-                  <p className="text-muted-foreground mb-4 italic">
-                    &quot;{item.content}&quot;
-                  </p>
+                  <p className="text-muted-foreground mb-4 italic">&quot;{item.content}&quot;</p>
 
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10 overflow-hidden">
@@ -127,16 +119,12 @@ export function Testimonials9({
                           className="object-cover w-full h-full"
                         />
                       ) : (
-                        <AvatarFallback>
-                          {item.name.charAt(0).toUpperCase()}
-                        </AvatarFallback>
+                        <AvatarFallback>{item.name.charAt(0).toUpperCase()}</AvatarFallback>
                       )}
                     </Avatar>
                     <div>
                       <p className="font-medium">{item.name}</p>
-                      {item.role && (
-                        <p className="text-sm text-muted-foreground">{item.role}</p>
-                      )}
+                      {item.role && <p className="text-sm text-muted-foreground">{item.role}</p>}
                     </div>
                   </div>
                 </CardContent>
@@ -152,9 +140,7 @@ export function Testimonials9({
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`h-2 rounded-full transition-all ${
-                index === currentIndex
-                  ? 'w-8 bg-primary'
-                  : 'w-2 bg-muted-foreground/30'
+                index === currentIndex ? 'w-8 bg-primary' : 'w-2 bg-muted-foreground/30'
               }`}
               aria-label={`Go to testimonial ${index + 1}`}
             />

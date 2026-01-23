@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 interface About6Props {
   title: string;
@@ -27,9 +27,7 @@ export function About6({ title, subtitle, content, image, features = [] }: About
           {title}
         </h2>
         {subtitle && (
-          <p className="text-xl md:text-2xl text-muted-foreground mt-6 max-w-3xl">
-            {subtitle}
-          </p>
+          <p className="text-xl md:text-2xl text-muted-foreground mt-6 max-w-3xl">{subtitle}</p>
         )}
       </div>
 
@@ -39,23 +37,14 @@ export function About6({ title, subtitle, content, image, features = [] }: About
         <div className="lg:col-span-3">
           {image && (
             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
-              <OptimizedImage
-                src={image}
-                alt={title}
-                fill
-                className="object-cover"
-              />
+              <OptimizedImage src={image} alt={title} fill className="object-cover" />
             </div>
           )}
         </div>
 
         {/* Right: Content + Stacked Features */}
         <div className="lg:col-span-2 space-y-8">
-          {content && (
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {content}
-            </p>
-          )}
+          {content && <p className="text-lg text-muted-foreground leading-relaxed">{content}</p>}
 
           {/* Features - Stacked with dividers */}
           {features.length > 0 && (
@@ -76,9 +65,7 @@ export function About6({ title, subtitle, content, image, features = [] }: About
                     <div>
                       <h3 className="font-semibold text-foreground">{feature.title}</h3>
                       {feature.description && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {feature.description}
-                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
                       )}
                     </div>
                   </div>
