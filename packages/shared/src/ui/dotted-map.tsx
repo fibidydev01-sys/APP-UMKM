@@ -1,3 +1,4 @@
+'use client';
 import * as React from "react"
 import { createMap } from "svg-dotted-map"
 
@@ -62,7 +63,7 @@ export function DottedMap({
     }
 
     return { xStep: step || 1, yToRowIndex: rowMap }
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
+  
   }, [points])
 
   return (
