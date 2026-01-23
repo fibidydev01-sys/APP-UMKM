@@ -724,7 +724,10 @@ export class TenantsService {
             lowStock: products.lowStock,
             pendingOrders: Number(orderStats[0]?.pending ?? 0),
           },
-          recentOrders,
+          recentOrders: recentOrders.map((order) => ({
+            ...order,
+            createdAt: order.createdAt.toISOString(),
+          })),
           lowStockItems,
         };
       },
