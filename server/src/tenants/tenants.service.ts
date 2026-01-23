@@ -10,7 +10,12 @@ import { SeoService } from '../seo/seo.service';
 import { Prisma } from '@prisma/client';
 import { UpdateTenantDto, ChangePasswordDto } from './dto';
 import * as bcrypt from 'bcrypt';
-import type { TenantLandingConfig, DashboardStats } from '@umkm/shared/types';
+import type {
+  TenantLandingConfig,
+  DashboardStats,
+  RecentOrder,
+  LowStockItem,
+} from '@umkm/shared/types';
 
 // 🔥 Import validator
 import { validateAndSanitizeLandingConfig } from '../validators/landing-config.validator';
@@ -699,6 +704,35 @@ export class TenantsService {
         const thisMonthRevenue = Number(revenueStats[0]?.this_month ?? 0);
         const lastMonthRevenue = Number(revenueStats[0]?.last_month ?? 0);
 
+        // Map recentOrders to convert Date to ISO string
+        const mappedRecentOrders: RecentOrder[] = recentOrders.map((order) => ({
+          id: order.id,
+          orderNumber: order.orderNumber,
+          total: order.total,
+          status: order.status,
+          paymentStatus: order.paymentStatus,
+          createdAt: order.createdAt.toISOString(),
+          customer: order.customer
+            ? {
+                id: order.customer.id,
+                name: order.customer.name,
+                phone: order.customer.phone,
+              }
+            : null,
+          customerName: order.customerName ?? undefined,
+          customerPhone: order.customerPhone ?? undefined,
+        }));
+
+        // Map lowStockItems to ensure type compatibility
+        const mappedLowStockItems: LowStockItem[] = lowStockItems.map(
+          (item) => ({
+            id: item.id,
+            name: item.name,
+            stock: item.stock,
+            sku: item.sku,
+          }),
+        );
+
         return {
           products,
           customers: {
@@ -724,8 +758,8 @@ export class TenantsService {
             lowStock: products.lowStock,
             pendingOrders: Number(orderStats[0]?.pending ?? 0),
           },
-          recentOrders,
-          lowStockItems,
+          recentOrders: mappedRecentOrders,
+          lowStockItems: mappedLowStockItems,
         };
       },
       CACHE_TTL.DASHBOARD_STATS,
