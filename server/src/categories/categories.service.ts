@@ -1,10 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { type PrismaService } from '../prisma/prisma.service';
-import {
-  type RedisService,
-  CACHE_TTL,
-  CACHE_KEYS,
-} from '../redis/redis.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { RedisService, CACHE_TTL, CACHE_KEYS } from '../redis/redis.service';
 
 // ==========================================
 // CATEGORIES SERVICE
