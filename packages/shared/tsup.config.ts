@@ -17,8 +17,8 @@ export default defineConfig({
   // Generate TypeScript declaration files
   dts: true,
 
-  // Code splitting for better tree-shaking
-  splitting: true,
+  // Disable code splitting to preserve 'use client' directives
+  splitting: false,
 
   // Clean dist folder before build
   clean: true,
@@ -51,4 +51,9 @@ export default defineConfig({
 
   // Keep names for better debugging
   keepNames: true,
+
+  // Add 'use client' directive to all output files for Next.js App Router compatibility
+  banner: {
+    js: '"use client";',
+  },
 });
