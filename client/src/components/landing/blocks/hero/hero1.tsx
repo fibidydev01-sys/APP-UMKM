@@ -3,12 +3,14 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles, ChevronRight, Box, Layers, Zap, Package, Grid3x3, Blocks } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
-import { Button } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import LiquidEther from '@umkm/shared/ui';
+import {
+  InteractiveHoverButton,
+  OptimizedImage,
+  Badge,
+  Button,
+  Card,
+  LiquidEther,
+} from '@umkm/shared/ui';
 
 interface Hero1Props {
   title: string;
@@ -63,7 +65,7 @@ export function Hero1({
             initial={{ opacity: 0, scale: 0.5, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{
-              delay: delay,
+              delay,
               duration: 0.6,
               repeat: Infinity,
               repeatType: 'reverse',
@@ -93,7 +95,10 @@ export function Hero1({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.1, duration: 0.5 }}
           >
-            <Badge variant="outline" className="px-4 py-2 text-sm font-medium bg-primary/5 border-primary/20">
+            <Badge
+              variant="outline"
+              className="px-4 py-2 text-sm font-medium bg-primary/5 border-primary/20"
+            >
               <Sparkles className="h-4 w-4 mr-2 text-primary" />
               {storeName || 'Welcome'}
             </Badge>
@@ -108,7 +113,12 @@ export function Hero1({
               className="flex justify-center"
             >
               <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shadow-xl ring-2 ring-border">
-                <OptimizedImage src={logo} alt={storeName || 'Logo'} fill className="object-cover" />
+                <OptimizedImage
+                  src={logo}
+                  alt={storeName || 'Logo'}
+                  fill
+                  className="object-cover"
+                />
               </div>
             </motion.div>
           )}
@@ -148,7 +158,12 @@ export function Hero1({
                   {ctaText}
                 </InteractiveHoverButton>
               </Link>
-              <Button variant="outline" size="lg" className="min-w-[200px] text-base md:text-lg px-8 py-5 h-auto gap-2" asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="min-w-[200px] text-base md:text-lg px-8 py-5 h-auto gap-2"
+                asChild
+              >
                 <Link href="#products">
                   Lihat Produk
                   <ChevronRight className="h-5 w-5" />

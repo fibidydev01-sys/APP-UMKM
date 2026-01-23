@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
+import { InteractiveHoverButton, OptimizedImage, Badge } from '@umkm/shared/ui';
 
 /**
  * Hero2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
@@ -81,7 +79,10 @@ export function Hero11({
               transition={{ delay: 0.3, duration: 0.5 }}
               className="flex justify-center lg:justify-start"
             >
-              <Badge variant="secondary" className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm md:text-base">
+              <Badge
+                variant="secondary"
+                className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm md:text-base"
+              >
                 <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                 {storeName || 'Featured'}
               </Badge>

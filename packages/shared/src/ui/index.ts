@@ -3,12 +3,12 @@
 // Auto-generated exports for all shadcn/ui components
 // ==========================================
 
+// Standard shadcn/ui components (named exports)
 export * from './accordion';
 export * from './alert';
 export * from './alert-dialog';
 export * from './animated-theme-toggler';
 export * from './aspect-ratio';
-export * from './aurora/Aurora';
 export * from './avatar';
 export * from './badge';
 export * from './bento-grid';
@@ -20,17 +20,14 @@ export * from './carousel';
 export * from './chart';
 export * from './checkbox';
 export * from './collapsible';
-export * from './color-blends/ColorBends';
 export * from './command';
 export * from './context-menu';
-export * from './dark-veil/DarkVeil';
 export * from './dialog';
 export * from './dot-pattern';
 export * from './dotted-map';
 export * from './drawer';
 export * from './dropdown-menu';
 export * from './empty';
-export * from './floating-lines/FloatingLines';
 export * from './form';
 export * from './globe';
 export * from './hero-video-dialog';
@@ -40,17 +37,12 @@ export * from './input';
 export * from './input-otp';
 export * from './interactive-hover-button';
 export * from './label';
-export * from './light-pillar/LightPillar';
 export * from './light-rays';
-export * from './light-rays/LightRays';
-export * from './liquid-ether/LiquidEther';
 export * from './marquee';
 export * from './menubar';
 export * from './navigation-menu';
 export * from './pagination';
-export * from './pixel-blast/PixelBlast';
 export * from './popover';
-export * from './prism/Prism';
 export * from './progress';
 export * from './radio-group';
 export * from './resizable';
@@ -59,7 +51,6 @@ export * from './select';
 export * from './separator';
 export * from './sheet';
 export * from './sidebar';
-export * from './silk/silk';
 export * from './skeleton';
 export * from './slider';
 export * from './sonner';
@@ -71,3 +62,25 @@ export * from './toggle';
 export * from './toggle-group';
 export * from './tooltip';
 export * from './word-rotate';
+
+// Optimized Image component
+export * from './optimized-image';
+
+// ==========================================
+// EFFECT COMPONENTS - Default exports as named exports
+// These components use default export, so we re-export them as named
+// ==========================================
+export { default as Aurora } from './aurora/Aurora';
+export { default as ColorBlends } from './color-blends/ColorBends';
+export { default as DarkVeil } from './dark-veil/DarkVeil';
+export { default as FloatingLines } from './floating-lines/FloatingLines';
+export { default as LightPillar } from './light-pillar/LightPillar';
+export { default as LightRays } from './light-rays/LightRays';
+export { default as LiquidEther } from './liquid-ether/LiquidEther';
+export { default as PixelBlast } from './pixel-blast/PixelBlast';
+export { default as Prism } from './prism/Prism';
+export { default as Silk } from './silk/silk';
+
+// Re-export types for effect components
+export type { LiquidEtherProps } from './liquid-ether/LiquidEther';
+export type { SilkProps } from './silk/silk';

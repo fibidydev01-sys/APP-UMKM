@@ -3,10 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-
-import { Avatar, AvatarFallback } from '@umkm/shared/ui';
-import LightPillar from '@umkm/shared/ui';
+import { InteractiveHoverButton, Avatar, AvatarFallback, LightPillar } from '@umkm/shared/ui';
 
 interface Hero4Props {
   title: string;

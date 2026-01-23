@@ -2,11 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Button } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import PixelBlast from '@umkm/shared/ui';
+import { InteractiveHoverButton, OptimizedImage, Button, Card, PixelBlast } from '@umkm/shared/ui';
 
 interface Hero10Props {
   title: string;
@@ -32,12 +28,7 @@ export function Hero10({
     <section className="relative min-h-screen overflow-hidden bg-background py-20">
       {/* Background - PixelBlast */}
       <div className="absolute inset-0 opacity-30">
-        <PixelBlast
-          particleColor="#5227FF"
-          particleCount={100}
-          speed={2}
-          spread={1.5}
-        />
+        <PixelBlast color="#5227FF" pixelSize={8} patternDensity={100} />
       </div>
 
       <div className="container relative z-10 px-4 sm:px-6 lg:px-8">
@@ -83,7 +74,12 @@ export function Hero10({
                   {ctaText}
                 </InteractiveHoverButton>
               </Link>
-              <Button variant="outline" size="lg" className="min-w-[180px] text-base px-8 py-5 h-auto" asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="min-w-[180px] text-base px-8 py-5 h-auto"
+                asChild
+              >
                 <Link href="#about">Secondary</Link>
               </Button>
             </motion.div>

@@ -3,11 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Zap, Shield, ArrowRight } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import { Button } from '@umkm/shared/ui';
-import DarkVeil from '@umkm/shared/ui';
+import { InteractiveHoverButton, OptimizedImage, Card, Button, DarkVeil } from '@umkm/shared/ui';
 
 interface Hero3Props {
   title: string;
@@ -94,7 +90,12 @@ export function Hero3({
                   <ChevronRight className="h-5 w-5" />
                 </InteractiveHoverButton>
               </Link>
-              <Button variant="outline" size="lg" className="min-w-[180px] text-base px-8 py-5 h-auto" asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="min-w-[180px] text-base px-8 py-5 h-auto"
+                asChild
+              >
                 <Link href="#about">Learn more</Link>
               </Button>
             </motion.div>
@@ -112,7 +113,12 @@ export function Hero3({
           <Card className="relative h-[300px] md:h-[350px] overflow-hidden group bg-muted/50 backdrop-blur-sm border-primary/10 hover:border-primary/30 transition-all">
             <div className="absolute inset-0 flex items-center justify-center">
               {backgroundImage ? (
-                <OptimizedImage src={backgroundImage} alt="Feature 1" fill className="object-cover opacity-20" />
+                <OptimizedImage
+                  src={backgroundImage}
+                  alt="Feature 1"
+                  fill
+                  className="object-cover opacity-20"
+                />
               ) : (
                 <Zap className="h-32 w-32 text-primary/20" />
               )}
@@ -131,7 +137,12 @@ export function Hero3({
           <Card className="relative h-[300px] md:h-[350px] overflow-hidden group bg-muted/50 backdrop-blur-sm border-primary/10 hover:border-primary/30 transition-all">
             <div className="absolute inset-0 flex items-center justify-center">
               {logo ? (
-                <OptimizedImage src={logo} alt="Feature 2" fill className="object-contain p-20 opacity-50" />
+                <OptimizedImage
+                  src={logo}
+                  alt="Feature 2"
+                  fill
+                  className="object-contain p-20 opacity-50"
+                />
               ) : (
                 <Shield className="h-32 w-32 text-primary/20" />
               )}

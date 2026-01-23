@@ -3,12 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ExternalLink, Slash, Type, Settings, Layers } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-
-import { Button } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import Aurora from '@umkm/shared/ui';
+import { InteractiveHoverButton, OptimizedImage, Button, Card, Aurora } from '@umkm/shared/ui';
 
 interface Hero6Props {
   title: string;
@@ -40,12 +35,7 @@ export function Hero6({
     <section className="relative min-h-screen overflow-hidden bg-background">
       {/* Background - Aurora */}
       <div className="absolute inset-0 opacity-40">
-        <Aurora
-          colors={['#5227FF', '#FF9FFC', '#B19EEF', '#8B5CF6']}
-          blur={60}
-          speed={3}
-          scale={1}
-        />
+        <Aurora colorStops={['#5227FF', '#FF9FFC', '#B19EEF']} amplitude={1.2} speed={1} />
       </div>
 
       {/* Grid Pattern Overlay */}
@@ -109,7 +99,12 @@ export function Hero6({
                   {ctaText}
                 </InteractiveHoverButton>
               </Link>
-              <Button variant="outline" size="lg" className="min-w-[180px] text-base px-8 py-5 h-auto gap-2" asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                className="min-w-[180px] text-base px-8 py-5 h-auto gap-2"
+                asChild
+              >
                 <Link href="#about">
                   Learn more
                   <ExternalLink className="h-4 w-4" />
@@ -125,7 +120,9 @@ export function Hero6({
             transition={{ delay: 0.6, duration: 0.6 }}
             className="pt-8"
           >
-            <p className="text-sm text-muted-foreground mb-6">Built with open-source technologies</p>
+            <p className="text-sm text-muted-foreground mb-6">
+              Built with open-source technologies
+            </p>
             <div className="flex items-center justify-center gap-6">
               {techIcons.map(({ Icon, label }, index) => (
                 <motion.div

@@ -3,10 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Circle } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import ColorBlends from '@umkm/shared/ui';
+import { InteractiveHoverButton, OptimizedImage, Card, ColorBlends } from '@umkm/shared/ui';
 
 interface Hero7Props {
   title: string;
@@ -33,7 +30,7 @@ export function Hero7({
       <div className="absolute inset-0 opacity-30">
         <ColorBlends
           colors={['#5227FF', '#FF9FFC', '#B19EEF', '#8B5CF6', '#EC4899']}
-          blur={80}
+          warpStrength={0.8}
           speed={2}
         />
       </div>
@@ -122,7 +119,7 @@ export function Hero7({
                         key={i}
                         initial={{ opacity: 0, scale: 0 }}
                         animate={{ opacity: size * 0.6, scale: size }}
-                        transition={{ delay: 0.6 + (i * 0.002), duration: 0.3 }}
+                        transition={{ delay: 0.6 + i * 0.002, duration: 0.3 }}
                       >
                         <Circle
                           className="text-foreground fill-foreground"

@@ -3,10 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Circle } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import Silk from '@umkm/shared/ui';
+import { InteractiveHoverButton, OptimizedImage, Card, Silk } from '@umkm/shared/ui';
 
 interface Hero5Props {
   title: string;
@@ -121,7 +118,7 @@ export function Hero5({
                       key={i}
                       initial={{ opacity: 0, scale: 0 }}
                       animate={{ opacity: 0.3, scale: 1 }}
-                      transition={{ delay: 0.6 + (i * 0.005), duration: 0.3 }}
+                      transition={{ delay: 0.6 + i * 0.005, duration: 0.3 }}
                     >
                       <Circle className="h-2 w-2 md:h-3 md:w-3 fill-foreground text-foreground" />
                     </motion.div>

@@ -3,10 +3,13 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Bell, Play } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { Button } from '@umkm/shared/ui';
-import { Alert, AlertDescription } from '@umkm/shared/ui';
-import LightRays from '@umkm/shared/ui';
+import {
+  InteractiveHoverButton,
+  Button,
+  Alert,
+  AlertDescription,
+  LightRays,
+} from '@umkm/shared/ui';
 
 interface Hero9Props {
   title: string;
@@ -30,13 +33,7 @@ export function Hero9({
     <section className="relative min-h-screen overflow-hidden bg-background flex items-center">
       {/* Background - LightRays */}
       <div className="absolute inset-0 opacity-20">
-        <LightRays
-          rayCount={12}
-          rayColor="#5227FF"
-          speed={1.5}
-          spread={0.3}
-          opacity={0.4}
-        />
+        <LightRays raysColor="#5227FF" raysSpeed={1.5} lightSpread={0.3} />
       </div>
 
       <div className="container relative z-10 px-4 sm:px-6 lg:px-8 py-20">
@@ -51,7 +48,8 @@ export function Hero9({
             <Alert className="bg-primary/5 border-primary/20">
               <Bell className="h-4 w-4 text-primary" />
               <AlertDescription className="text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi eaque distinctio iusto voluptas voluptatum sed!
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi eaque distinctio
+                iusto voluptas voluptatum sed!
               </AlertDescription>
             </Alert>
           </motion.div>
@@ -97,7 +95,11 @@ export function Hero9({
                     {ctaText}
                   </InteractiveHoverButton>
                 </Link>
-                <Button variant="outline" size="lg" className="min-w-[180px] text-base px-8 py-5 h-auto gap-2">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="min-w-[180px] text-base px-8 py-5 h-auto gap-2"
+                >
                   <Play className="h-5 w-5" />
                   Watch video
                 </Button>

@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import {  Code, Database, Cpu, Zap } from 'lucide-react';
-import { InteractiveHoverButton } from '@umkm/shared/ui';
-import { OptimizedImage } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
-import { Card } from '@umkm/shared/ui';
-import FloatingLines from '@umkm/shared/ui';
+import { Code, Database, Cpu, Zap } from 'lucide-react';
+import {
+  InteractiveHoverButton,
+  OptimizedImage,
+  Badge,
+  Card,
+  FloatingLines,
+} from '@umkm/shared/ui';
 
 interface Hero8Props {
   title: string;
@@ -40,11 +42,9 @@ export function Hero8({
       {/* Background - FloatingLines */}
       <div className="absolute inset-0 opacity-25">
         <FloatingLines
-          lineColor="#5227FF"
-          particleColor="#FF9FFC"
-          particleCount={50}
+          linesGradient={['#5227FF', '#FF9FFC', '#B19EEF']}
           lineCount={8}
-          speed={1}
+          animationSpeed={1}
         />
       </div>
 
@@ -129,7 +129,9 @@ export function Hero8({
             transition={{ delay: 0.6, duration: 0.6 }}
             className="pt-6"
           >
-            <p className="text-sm text-muted-foreground mb-6">Built with open-source technologies</p>
+            <p className="text-sm text-muted-foreground mb-6">
+              Built with open-source technologies
+            </p>
             <div className="flex flex-wrap items-center justify-center gap-3">
               {techBadges.map(({ Icon, label }, index) => (
                 <motion.div
@@ -138,7 +140,10 @@ export function Hero8({
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 + index * 0.1, duration: 0.3 }}
                 >
-                  <Badge variant="secondary" className="px-4 py-2 text-sm gap-2 bg-muted/50 hover:bg-muted transition-colors">
+                  <Badge
+                    variant="secondary"
+                    className="px-4 py-2 text-sm gap-2 bg-muted/50 hover:bg-muted transition-colors"
+                  >
                     <Icon className="h-4 w-4" />
                     {label}
                   </Badge>
