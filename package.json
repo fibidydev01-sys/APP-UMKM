@@ -1,0 +1,33 @@
+{
+  "name": "@umkm/root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "UMKM Multi-Tenant Monorepo",
+  "author": "Fibidy",
+  "license": "MIT",
+  "scripts": {
+    "dev": "pnpm --parallel --stream dev",
+    "dev:client": "pnpm --filter @umkm/client dev",
+    "dev:client-web": "pnpm --filter @umkm/client-web dev",
+    "dev:server": "pnpm --filter @umkm/server start:dev",
+    "build": "pnpm --recursive build",
+    "build:client": "pnpm --filter @umkm/client build",
+    "build:client-web": "pnpm --filter @umkm/client-web build",
+    "build:server": "pnpm --filter @umkm/server build",
+    "clean": "pnpm --recursive exec rm -rf node_modules dist .next",
+    "clean:install": "pnpm clean && rm -rf node_modules pnpm-lock.yaml && pnpm install",
+    "lint": "pnpm --recursive lint",
+    "test": "pnpm --recursive test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
+    "typecheck": "pnpm --recursive --parallel exec tsc --noEmit"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.4"
+}

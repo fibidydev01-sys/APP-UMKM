@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "@umkm/server",
   "version": "0.0.1",
   "description": "UMKM Multi-Tenant Backend API",
   "author": "Fibidy",
