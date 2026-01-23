@@ -19,7 +19,7 @@ import {
 import { CartSheet } from './cart-sheet';
 import { useStoreUrls } from '@/lib/store-url';
 import { cn } from '@/lib/utils';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // STORE HEADER

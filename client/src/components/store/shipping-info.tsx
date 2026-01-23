@@ -3,7 +3,7 @@
 import { Truck } from 'lucide-react';
 import { Card, CardContent } from '@umkm/shared/ui';
 import { formatPrice } from '@/lib/format';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 interface ShippingInfoProps {
   tenant: PublicTenant;

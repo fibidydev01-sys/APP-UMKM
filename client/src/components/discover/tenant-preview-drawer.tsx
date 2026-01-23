@@ -27,7 +27,7 @@ import {
 import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
-import type { ShowcaseTenant } from '@/types/discover';
+import type { ShowcaseTenant } from '@umkm/shared/types';
 import { getCategoryInfo, getInitials, formatWhatsAppUrl } from '@/lib/discover';
 
 // ══════════════════════════════════════════════════════════════

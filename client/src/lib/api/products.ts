@@ -6,7 +6,7 @@ import type {
   ProductQueryParams,
   PaginatedResponse,
   LowStockProduct,
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCTS API SERVICE

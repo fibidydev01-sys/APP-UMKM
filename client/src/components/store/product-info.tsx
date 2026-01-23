@@ -1,7 +1,7 @@
 import { Badge } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { formatPrice } from '@/lib/format';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCT INFO COMPONENT

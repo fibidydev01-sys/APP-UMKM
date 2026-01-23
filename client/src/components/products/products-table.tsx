@@ -44,7 +44,7 @@ import { ProductDeleteDialog } from './product-delete-dialog';
 import { ProductPreviewDrawer } from './product-preview-drawer';
 import { productsApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 interface ProductsTableProps {
   products: Product[];

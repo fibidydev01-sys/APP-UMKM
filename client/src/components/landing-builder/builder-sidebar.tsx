@@ -35,7 +35,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import type { SectionKey } from '@/types';
+import type { SectionKey } from '@umkm/shared/types';
 
 // 🚀 Re-export as SectionType for backward compatibility
 export type SectionType = SectionKey;

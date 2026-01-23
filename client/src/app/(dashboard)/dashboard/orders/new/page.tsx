@@ -12,7 +12,7 @@ import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { productsApi, customersApi, getErrorMessage } from '@/lib/api';
-import type { Product, Customer } from '@/types';
+import type { Product, Customer } from '@umkm/shared/types';
 
 // ==========================================
 // CREATE ORDER PAGE (Client Component)

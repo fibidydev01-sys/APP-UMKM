@@ -7,7 +7,7 @@ import { Input } from '@umkm/shared/ui';
 import { Label } from '@umkm/shared/ui';
 import { Textarea } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
-import type { SocialLinks } from '@/types';
+import type { SocialLinks } from '@umkm/shared/types';
 
 // ============================================================================
 // TYPES

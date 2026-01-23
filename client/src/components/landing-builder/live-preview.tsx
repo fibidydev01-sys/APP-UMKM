@@ -18,7 +18,7 @@ import {
   TenantContact,
   TenantCta,
 } from '@/components/landing';
-import type { TenantLandingConfig, Product, Tenant, SectionKey } from '@/types';
+import type { TenantLandingConfig, Product, Tenant, SectionKey } from '@umkm/shared/types';
 
 // ==========================================
 // TYPES

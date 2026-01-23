@@ -41,7 +41,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { useCreateOrder } from '@/hooks';
 import { formatPrice } from '@/lib/format';
-import type { Product, Customer } from '@/types';
+import type { Product, Customer } from '@umkm/shared/types';
 
 // ==========================================
 // ZOD SCHEMA

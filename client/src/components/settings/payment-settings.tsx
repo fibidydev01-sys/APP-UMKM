@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
-import type { BankAccount, EWallet, PaymentMethods } from '@/types';
+import type { BankAccount, EWallet, PaymentMethods } from '@umkm/shared/types';
 
 // ============================================================================
 // TYPES

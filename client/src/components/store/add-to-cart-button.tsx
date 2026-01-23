@@ -5,7 +5,7 @@ import { Plus, Minus, ShoppingCart, Check } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { useCartStore, useItemQty } from '@/stores';
 import { cn } from '@/lib/utils';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 interface AddToCartButtonProps {
   product: Product;

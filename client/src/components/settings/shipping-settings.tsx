@@ -9,7 +9,7 @@ import { Switch } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
-import type { ShippingMethods } from '@/types';
+import type { ShippingMethods } from '@umkm/shared/types';
 
 // ============================================================================
 // TYPES

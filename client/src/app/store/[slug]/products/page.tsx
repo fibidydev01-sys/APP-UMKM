@@ -8,7 +8,7 @@ import {
   ProductGridSkeleton,
 } from '@/components/store';
 import type { Metadata } from 'next';
-import type { Product, PaginatedResponse } from '@/types';
+import type { Product, PaginatedResponse } from '@umkm/shared/types';
 
 // ==========================================
 // STORE PRODUCTS PAGE

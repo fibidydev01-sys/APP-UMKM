@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCT DELETE DIALOG

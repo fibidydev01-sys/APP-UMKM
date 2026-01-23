@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig } from '@umkm/shared/types';
 import { LANDING_CONSTANTS, HERO_LAYOUTS, PRODUCT_DISPLAY_MODES, CTA_STYLES } from './constants';
 
 // ============================================================================

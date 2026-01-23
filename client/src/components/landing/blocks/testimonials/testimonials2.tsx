@@ -7,7 +7,7 @@ import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { OptimizedImage } from '@umkm/shared/ui';
 import { getImageSource } from '@/lib/cloudinary';
-import type { Testimonial } from '@/types';
+import type { Testimonial } from '@umkm/shared/types';
 
 interface Testimonials2Props {
   items: Testimonial[];

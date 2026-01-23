@@ -30,7 +30,7 @@ import { CustomerPreviewDrawer } from './customer-preview-drawer';
 import { customersApi, getErrorMessage } from '@/lib/api';
 import { generateWhatsAppLink } from '@/lib/format';
 import { toast } from '@/providers';
-import type { Customer } from '@/types';
+import type { Customer } from '@umkm/shared/types';
 
 // ==========================================
 // CUSTOMERS TABLE COMPONENT - MINIMAL VIEW

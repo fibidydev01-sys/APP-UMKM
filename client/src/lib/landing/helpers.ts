@@ -20,7 +20,7 @@ import type {
   PublicTenant,
   FeatureItem,
   Testimonial
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ============================================================================
 // EXTRACT SECTION TEXT - Reduce duplication in display components

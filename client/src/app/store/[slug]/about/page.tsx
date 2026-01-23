@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { tenantsApi } from '@/lib/api';
 import { TenantAbout } from '@/components/landing';
 import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/components/seo';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // ABOUT PAGE

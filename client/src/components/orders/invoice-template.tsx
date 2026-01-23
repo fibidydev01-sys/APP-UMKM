@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 import Image from 'next/image';
 import { formatPrice, formatDate } from '@/lib/format';
 import { getLogoUrl } from '@/lib/cloudinary';
-import type { Order, Tenant } from '@/types';
+import type { Order, Tenant } from '@umkm/shared/types';
 
 // ==========================================
 // INVOICE TEMPLATE - HTML2CANVAS COMPATIBLE

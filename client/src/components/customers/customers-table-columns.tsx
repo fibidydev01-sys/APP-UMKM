@@ -6,7 +6,7 @@ import { Button } from '@umkm/shared/ui';
 import { Checkbox } from '@umkm/shared/ui';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { formatPhone, formatDateShort, getInitials } from '@/lib/format';
-import type { Customer } from '@/types';
+import type { Customer } from '@umkm/shared/types';
 
 // ==========================================
 // CUSTOMERS TABLE COLUMNS - MINIMAL VIEW

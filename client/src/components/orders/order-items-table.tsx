@@ -9,7 +9,7 @@ import {
   TableFooter,
 } from '@umkm/shared/ui';
 import { formatPrice } from '@/lib/format';
-import type { OrderItem } from '@/types';
+import type { OrderItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDER ITEMS TABLE

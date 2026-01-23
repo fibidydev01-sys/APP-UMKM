@@ -47,7 +47,7 @@ import { Card } from '@umkm/shared/ui';
 import { TestimonialEditor } from './testimonial-editor';
 import { normalizeTestimonials } from '@/lib/landing';
 import { cn } from '@/lib/utils';
-import type { TenantLandingConfig, Testimonial } from '@/types';
+import type { TenantLandingConfig, Testimonial } from '@umkm/shared/types';
 
 // ============================================================================
 // TYPES

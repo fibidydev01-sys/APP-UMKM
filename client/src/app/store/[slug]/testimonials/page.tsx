@@ -5,7 +5,7 @@ import { normalizeTestimonials } from '@/lib/landing';
 import { TenantTestimonials } from '@/components/landing';
 import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/components/seo';
 import { Star } from 'lucide-react';
-import type { PublicTenant, Testimonial } from '@/types';
+import type { PublicTenant, Testimonial } from '@umkm/shared/types';
 
 // ==========================================
 // TESTIMONIALS PAGE

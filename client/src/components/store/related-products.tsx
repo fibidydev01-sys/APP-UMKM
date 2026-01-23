@@ -1,5 +1,5 @@
 import { ProductGrid } from './product-grid';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // RELATED PRODUCTS COMPONENT

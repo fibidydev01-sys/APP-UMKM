@@ -10,7 +10,7 @@ import type {
   UpdatePaymentStatusInput,
   OrderQueryParams,
   OrderStatus,
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ==========================================
 // USE ORDERS HOOK

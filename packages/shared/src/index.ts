@@ -9,11 +9,11 @@ export * from './ui';
 // Utilities
 export * from './utils';
 
-// Types (to be added)
-// export * from './types';
+// Types
+export * from './types';
 
-// Hooks (to be added)
-// export * from './hooks';
+// Hooks
+export * from './hooks';
 
 // Config (to be added)
 // export * from './config';

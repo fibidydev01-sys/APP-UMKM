@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from '@umkm/shared/ui';
 import { toast } from '@/providers';
-import type { Product, PublicTenant } from '@/types';
+import type { Product, PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCT SHARE COMPONENT

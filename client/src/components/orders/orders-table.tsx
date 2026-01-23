@@ -39,7 +39,7 @@ import { OrderPreviewDrawer } from './order-preview-drawer';
 import { useCancelOrder } from '@/hooks';
 import { ordersApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { OrderListItem } from '@/types';
+import type { OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDERS TABLE COMPONENT - MINIMAL VIEW

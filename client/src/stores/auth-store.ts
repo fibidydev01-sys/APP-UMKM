@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 import { useSyncExternalStore } from 'react';
-import type { Tenant } from '@/types';
+import type { Tenant } from '@umkm/shared/types';
 
 // ==========================================
 // AUTH STORE TYPES

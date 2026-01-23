@@ -5,7 +5,7 @@ import { TemplateProvider } from '@/lib/landing';
 import { generateThemeCSS } from '@/lib/theme';
 import { createTenantMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // STORE LAYOUT

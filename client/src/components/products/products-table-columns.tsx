@@ -11,7 +11,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Checkbox } from '@umkm/shared/ui';
 import { formatDateShort } from '@/lib/format';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

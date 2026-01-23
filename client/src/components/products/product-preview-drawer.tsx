@@ -28,7 +28,7 @@ import { Badge } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import { formatPrice, formatDateShort } from '@/lib/format';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

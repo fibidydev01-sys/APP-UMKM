@@ -24,7 +24,7 @@ import {
 import { formatPrice } from '@/lib/format';
 import { getThumbnailUrl } from '@/lib/cloudinary';
 import { WhatsAppCheckoutDialog } from './whatsapp-checkout-dialog';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 interface CartSheetProps {
   tenant: PublicTenant;

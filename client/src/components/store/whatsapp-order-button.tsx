@@ -16,7 +16,7 @@ import { Input } from '@umkm/shared/ui';
 import { Label } from '@umkm/shared/ui';
 import { Textarea } from '@umkm/shared/ui';
 import { formatPrice, generateWhatsAppLink } from '@/lib/format';
-import type { PublicTenant, PaymentMethods } from '@/types';
+import type { PublicTenant, PaymentMethods } from '@umkm/shared/types';
 
 interface Product {
   id: string;

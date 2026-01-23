@@ -12,7 +12,7 @@ import {
 } from '@umkm/shared/ui';
 import { ordersApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { OrderStatus, PaymentStatus } from '@/types';
+import type { OrderStatus, PaymentStatus } from '@umkm/shared/types';
 
 // ==========================================
 // STATUS OPTIONS

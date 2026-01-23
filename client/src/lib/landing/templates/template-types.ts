@@ -10,7 +10,7 @@ import type {
   TestimonialsBlock,
   ContactBlock,
   CtaBlock,
-} from '@/types/landing';
+} from '@umkm/shared/types';
 
 /**
  * Template ID (from backend)

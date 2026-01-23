@@ -1,4 +1,4 @@
-import { Tenant } from '@/types/tenant';
+import { Tenant } from '@umkm/shared/types';
 import { OnboardingProgress, OnboardingStepStatus } from './types';
 import { ONBOARDING_STEPS } from './steps-config';
 

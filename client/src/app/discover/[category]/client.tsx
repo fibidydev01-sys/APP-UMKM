@@ -21,7 +21,7 @@ import {
   MinimalFooter,
   TenantPreviewDrawer,
 } from '@/components/discover';
-import type { ShowcaseTenant } from '@/types/discover';
+import type { ShowcaseTenant } from '@umkm/shared/types';
 import { CATEGORY_CONFIG } from '@/config/categories';
 import {
   fetchTenantsByCategory,

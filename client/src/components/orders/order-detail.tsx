@@ -21,7 +21,7 @@ import { InvoiceModal } from './invoice-modal';
 import { formatPhone, formatDateTime, formatPrice, generateWhatsAppLink } from '@/lib/format';
 import { useCancelOrder } from '@/hooks';
 import { useCurrentTenant } from '@/stores';
-import type { Order } from '@/types';
+import type { Order } from '@umkm/shared/types';
 
 // ==========================================
 // ORDER DETAIL COMPONENT (WITH INVOICE)

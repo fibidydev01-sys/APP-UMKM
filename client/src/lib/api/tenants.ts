@@ -4,7 +4,7 @@ import type {
   PublicTenant,
   UpdateTenantInput,
   TenantStats,
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ==========================================
 // TENANTS API

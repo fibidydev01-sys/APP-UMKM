@@ -14,7 +14,7 @@ import { formatPrice } from '@/lib/format';
 import { cn } from '@/lib/utils';
 import { productUrl } from '@/lib/store-url';
 // ❌ REMOVE: import { getThumbnailUrl } from '@/lib/cloudinary';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 interface ProductCardProps {
   product: Product;

@@ -5,7 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { ProductGrid } from './product-grid';
 import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // FEATURED PRODUCTS SECTION

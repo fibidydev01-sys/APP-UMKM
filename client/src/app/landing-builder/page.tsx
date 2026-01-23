@@ -27,7 +27,7 @@ import { productsApi } from '@/lib/api';
 import { mergeWithTemplateDefaults, type TemplateId } from '@/lib/landing';
 import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
-import type { TenantLandingConfig, Product } from '@/types';
+import type { TenantLandingConfig, Product } from '@umkm/shared/types';
 
 // ============================================================================
 // MAIN COMPONENT

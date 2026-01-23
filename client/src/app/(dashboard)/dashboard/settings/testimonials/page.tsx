@@ -16,7 +16,7 @@ import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { Testimonial, Tenant } from '@/types';
+import type { Testimonial, Tenant } from '@umkm/shared/types';
 
 export default function TestimonialsPage() {
   const router = useRouter();

@@ -25,7 +25,7 @@ import {
 } from '@umkm/shared/ui';
 import { useCreateCustomer, useUpdateCustomer } from '@/hooks';
 import { customerSchema, type CustomerFormData } from '@/lib/validations';
-import type { Customer } from '@/types';
+import type { Customer } from '@umkm/shared/types';
 
 // ==========================================
 // CUSTOMER FORM COMPONENT

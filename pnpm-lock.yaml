@@ -701,6 +701,9 @@ importers:
       '@types/compression':
         specifier: ^1.8.1
         version: 1.8.1
+      '@umkm/shared':
+        specifier: workspace:^
+        version: link:../packages/shared
       '@upstash/redis':
         specifier: ^1.36.0
         version: 1.36.1

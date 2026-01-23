@@ -11,7 +11,7 @@ import {
   AlertDialogTitle,
 } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
-import type { OrderListItem } from '@/types';
+import type { OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDER CANCEL DIALOG

@@ -29,7 +29,7 @@ import {
   formatPrice,
   generateWhatsAppLink,
 } from '@/lib/format';
-import type { Order, OrderListItem } from '@/types';
+import type { Order, OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDER PREVIEW DRAWER

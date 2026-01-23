@@ -4,7 +4,7 @@ import type {
   PredefinedCategory,
   DynamicCategory,
   CategoryStatsResponse,
-} from '@/types/category';
+} from '@umkm/shared/types';
 
 // ==========================================
 // CONFIG

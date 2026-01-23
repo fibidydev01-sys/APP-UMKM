@@ -5,7 +5,7 @@ import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { ProductCard } from '@/components/store/product-card';
 import { useRef, useState } from 'react';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 interface Products4Props {
   products: Product[];

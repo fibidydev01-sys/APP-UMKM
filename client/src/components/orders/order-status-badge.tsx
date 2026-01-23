@@ -1,6 +1,6 @@
 import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
-import type { OrderStatus, PaymentStatus } from '@/types';
+import type { OrderStatus, PaymentStatus } from '@umkm/shared/types';
 
 // ==========================================
 // ✅ FIX: Use UPPERCASE enum values from backend

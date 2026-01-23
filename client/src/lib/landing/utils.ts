@@ -5,7 +5,7 @@
  * ============================================================================
  */
 
-import type { TenantLandingConfig, Testimonial } from '@/types';
+import type { TenantLandingConfig, Testimonial } from '@umkm/shared/types';
 import { DEFAULT_LANDING_CONFIG } from './defaults';
 import { LANDING_CONSTANTS } from './constants';
 

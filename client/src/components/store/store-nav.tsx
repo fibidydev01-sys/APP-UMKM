@@ -10,7 +10,7 @@ import { formatPhone } from '@/lib/format';
 import { useStoreUrls } from '@/lib/store-url';
 import { normalizeTestimonials } from '@/lib/landing';
 import { cn } from '@/lib/utils';
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // STORE NAVIGATION (Mobile Sidebar)

@@ -14,7 +14,7 @@ import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { ordersApi, getErrorMessage } from '@/lib/api';
-import type { Order } from '@/types';
+import type { Order } from '@umkm/shared/types';
 
 // ==========================================
 // ORDER DETAIL PAGE (Client Component)

@@ -15,7 +15,7 @@ import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { Tenant } from '@/types';
+import type { Tenant } from '@umkm/shared/types';
 
 export default function CTAPage() {
   const router = useRouter();

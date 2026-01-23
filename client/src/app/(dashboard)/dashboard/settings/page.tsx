@@ -34,7 +34,7 @@ import type {
   ShippingMethods,
   SocialLinks,
   CourierName,
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ============================================================================
 // CONSTANTS

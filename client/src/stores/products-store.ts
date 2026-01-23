@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import type { Product, ProductQueryParams } from '@/types';
+import type { Product, ProductQueryParams } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCTS STORE TYPES

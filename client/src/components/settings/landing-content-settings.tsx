@@ -44,7 +44,7 @@ import {
 } from '@umkm/shared/ui';
 import { Card, CardContent } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
-import type { FeatureItem, Testimonial } from '@/types';
+import type { FeatureItem, Testimonial } from '@umkm/shared/types';
 
 // ============================================================================
 // TYPES

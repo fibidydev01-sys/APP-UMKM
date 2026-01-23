@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@umkm/shared/ui';
 import { toast } from 'sonner';
-import type { EWallet, EWalletProvider } from '@/types';
+import type { EWallet, EWalletProvider } from '@umkm/shared/types';
 
 // ============================================================================
 // CONSTANTS

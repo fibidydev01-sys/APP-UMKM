@@ -20,7 +20,7 @@ import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { Input } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
-import type { ShowcaseTenant } from '@/types/discover';
+import type { ShowcaseTenant } from '@umkm/shared/types';
 import {
   fetchAllTenants,
   getCategoryLabel,

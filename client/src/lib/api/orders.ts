@@ -8,7 +8,7 @@ import type {
   UpdatePaymentStatusInput,
   OrderQueryParams,
   PaginatedResponse,
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ==========================================
 // ORDERS API SERVICE

@@ -18,7 +18,7 @@ import {
   openWhatsAppWithInvoice,
 } from '@/lib/invoice';
 import { normalizePhone } from '@/lib/format';
-import type { Order, Tenant } from '@/types';
+import type { Order, Tenant } from '@umkm/shared/types';
 
 export interface InvoiceModalProps {
   order: Order;

@@ -7,7 +7,7 @@ import { Separator } from '@umkm/shared/ui';
 import { formatPhone } from '@/lib/format';
 import { siteConfig } from '@/config/site';
 import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
-import type { PublicTenant } from '@/types';
+import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // STORE FOOTER COMPONENT

@@ -11,7 +11,7 @@ import { PageHeader } from '@/components/dashboard';
 import { CustomersTable } from '@/components/customers';
 import { Skeleton } from '@umkm/shared/ui';
 import { customersApi, getErrorMessage } from '@/lib/api';
-import type { Customer } from '@/types';
+import type { Customer } from '@umkm/shared/types';
 
 // ==========================================
 // CUSTOMERS LIST PAGE (Client Component)

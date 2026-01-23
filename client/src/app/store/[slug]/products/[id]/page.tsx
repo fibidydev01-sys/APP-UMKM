@@ -19,7 +19,7 @@ import {
 import { createProductMetadata, getTenantUrl } from '@/lib/seo';
 import { Separator } from '@umkm/shared/ui';
 import type { Metadata } from 'next';
-import type { PublicTenant, Product } from '@/types';
+import type { PublicTenant, Product } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCT DETAIL PAGE

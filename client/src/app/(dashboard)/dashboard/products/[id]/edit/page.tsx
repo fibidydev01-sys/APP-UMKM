@@ -13,7 +13,7 @@ import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { productsApi, getErrorMessage } from '@/lib/api';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // EDIT PRODUCT PAGE (Client Component)

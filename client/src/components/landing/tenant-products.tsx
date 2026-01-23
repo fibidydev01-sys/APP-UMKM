@@ -4,7 +4,7 @@ import { lazy, Suspense } from 'react';
 import { useStoreUrls } from '@/lib/store-url';
 import { extractSectionText, getProductsConfig } from '@/lib/landing';
 import { LANDING_CONSTANTS, useProductsBlock } from '@/lib/landing';
-import type { Product, TenantLandingConfig } from '@/types';
+import type { Product, TenantLandingConfig } from '@umkm/shared/types';
 
 // ==========================================
 // TENANT PRODUCTS COMPONENT - Decoupled

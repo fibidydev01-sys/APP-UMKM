@@ -9,7 +9,7 @@ import type {
   ShowcaseTenant,
   TenantSitemapResponse,
   TenantCacheEntry,
-} from '@/types/discover';
+} from '@umkm/shared/types';
 import { getTenantFullUrl } from '@/lib/store-url';
 import { API_URL, CACHE_DURATION, MAX_TENANTS } from './constants';
 

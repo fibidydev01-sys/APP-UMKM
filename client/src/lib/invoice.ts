@@ -3,7 +3,7 @@
 // ==========================================
 
 import { formatPrice, formatDate, generateWhatsAppLink } from './format';
-import type { Order } from '@/types';
+import type { Order } from '@umkm/shared/types';
 
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'fibidy_unsigned';

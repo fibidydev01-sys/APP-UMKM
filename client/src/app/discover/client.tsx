@@ -20,7 +20,7 @@ import {
   SearchResultsHeader,
   NoResults,
 } from '@/components/discover';
-import type { ShowcaseTenant } from '@/types/discover';
+import type { ShowcaseTenant } from '@umkm/shared/types';
 import {
   fetchAllTenants,
   getCategoryLabel,

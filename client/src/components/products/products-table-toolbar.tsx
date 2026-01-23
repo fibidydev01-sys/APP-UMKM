@@ -4,7 +4,7 @@ import { Table } from '@tanstack/react-table';
 import { X, Search, Trash2, Loader2, RefreshCw } from 'lucide-react';
 import { Input } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCTS TABLE TOOLBAR

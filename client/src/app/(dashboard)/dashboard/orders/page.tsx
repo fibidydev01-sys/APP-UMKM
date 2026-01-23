@@ -10,7 +10,7 @@ import { PageHeader } from '@/components/dashboard';
 import { OrdersTable } from '@/components/orders';
 import { Skeleton } from '@umkm/shared/ui';
 import { ordersApi, getErrorMessage } from '@/lib/api';
-import type { OrderListItem } from '@/types';
+import type { OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDERS LIST PAGE (Client Component)

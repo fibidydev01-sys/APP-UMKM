@@ -14,7 +14,7 @@ import {
   mergeLandingConfig,
   prepareConfigForSave,
 } from '@/lib/landing';
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig } from '@umkm/shared/types';
 
 // ============================================================================
 // TYPES

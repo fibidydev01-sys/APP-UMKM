@@ -1,5 +1,5 @@
 import { api } from './client';
-import type { LoginInput, RegisterInput, Tenant } from '@/types';
+import type { LoginInput, RegisterInput, Tenant } from '@umkm/shared/types';
 
 // ==========================================
 // AUTH RESPONSE TYPES

@@ -5,7 +5,7 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { ProductCard } from '@/components/store/product-card';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 interface Products7Props {
   products: Product[];

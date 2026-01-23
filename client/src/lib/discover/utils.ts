@@ -92,7 +92,7 @@ export function formatWhatsAppUrl(whatsapp: string): string {
 // SORT HELPERS
 // ══════════════════════════════════════════════════════════════
 
-import type { ShowcaseTenant, SortOption } from '@/types/discover';
+import type { ShowcaseTenant, SortOption } from '@umkm/shared/types';
 
 /**
  * Sort tenants by sort option

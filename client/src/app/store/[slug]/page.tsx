@@ -14,7 +14,7 @@ import {
   ProductListSchema,
   generateTenantBreadcrumbs,
 } from '@/components/seo';
-import type { PublicTenant, Product, Testimonial, SectionKey } from '@/types';
+import type { PublicTenant, Product, Testimonial, SectionKey } from '@umkm/shared/types';
 
 // ==========================================
 // STORE HOMEPAGE - CUSTOM LANDING ONLY

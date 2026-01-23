@@ -2,7 +2,7 @@
 
 import { lazy, Suspense } from 'react';
 import { extractAboutData, useAboutBlock } from '@/lib/landing';
-import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
 
 interface TenantAboutProps {
   config?: TenantLandingConfig['about'];

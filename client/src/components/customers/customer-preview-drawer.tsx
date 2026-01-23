@@ -29,7 +29,7 @@ import {
   getInitials,
   generateWhatsAppLink,
 } from '@/lib/format';
-import type { Customer, OrderListItem } from '@/types';
+import type { Customer, OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // CUSTOMER PREVIEW DRAWER

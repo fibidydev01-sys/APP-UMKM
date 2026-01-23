@@ -16,7 +16,7 @@ import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import type { Tenant } from '@/types';
+import type { Tenant } from '@umkm/shared/types';
 
 const THEME_COLORS = [
   { name: 'Sky', value: '#0ea5e9', class: 'bg-sky-500' },

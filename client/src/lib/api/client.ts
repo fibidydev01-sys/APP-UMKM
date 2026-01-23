@@ -1,5 +1,5 @@
 import { API_URL } from '@/config/constants';
-import type { ApiError } from '@/types';
+import type { ApiError } from '@umkm/shared/types';
 
 // ==========================================
 // API CLIENT CONFIGURATION

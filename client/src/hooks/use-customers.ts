@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { customersApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { Customer, CreateCustomerInput, UpdateCustomerInput, CustomerQueryParams } from '@/types';
+import type { Customer, CreateCustomerInput, UpdateCustomerInput, CustomerQueryParams } from '@umkm/shared/types';
 
 // ==========================================
 // USE CUSTOMERS HOOK

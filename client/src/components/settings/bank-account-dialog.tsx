@@ -20,7 +20,7 @@ import {
   SelectValue,
 } from '@umkm/shared/ui';
 import { toast } from 'sonner';
-import type { BankAccount, BankName } from '@/types';
+import type { BankAccount, BankName } from '@umkm/shared/types';
 
 // ============================================================================
 // CONSTANTS

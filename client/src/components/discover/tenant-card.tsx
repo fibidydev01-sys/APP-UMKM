@@ -9,11 +9,11 @@ import Image from 'next/image';
 import { Store, Package, ArrowRight } from 'lucide-react';
 import { Badge } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
-import type { ShowcaseTenant } from '@/types/discover';
+import type { ShowcaseTenant } from '@umkm/shared/types';
 import { getCategoryLabel, getCategoryColor, getInitials } from '@/lib/discover';
 
 // Re-export for backward compatibility
-export type { ShowcaseTenant } from '@/types/discover';
+export type { ShowcaseTenant } from '@umkm/shared/types';
 
 // ══════════════════════════════════════════════════════════════
 // SKELETON LOADER

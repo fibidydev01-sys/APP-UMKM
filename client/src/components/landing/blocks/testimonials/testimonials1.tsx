@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star, Quote } from 'lucide-react';
 import { OptimizedImage } from '@umkm/shared/ui';
 import { getImageSource } from '@/lib/cloudinary';
-import type { Testimonial } from '@/types';
+import type { Testimonial } from '@umkm/shared/types';
 
 interface Testimonials1Props {
   items: Testimonial[];

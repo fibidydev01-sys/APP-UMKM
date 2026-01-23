@@ -30,7 +30,7 @@ import { ImageUpload } from '@/components/upload';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { LANDING_CONSTANTS } from '@/lib/landing';
-import type { Testimonial } from '@/types';
+import type { Testimonial } from '@umkm/shared/types';
 
 // ==========================================
 // TYPES

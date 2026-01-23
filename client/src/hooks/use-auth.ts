@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuthStore } from '@/stores';
 import { authApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { LoginInput, RegisterInput } from '@/types';
+import type { LoginInput, RegisterInput } from '@umkm/shared/types';
 
 // ==========================================
 // USE AUTH HOOK

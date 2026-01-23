@@ -51,7 +51,7 @@ import { useCreateProduct, useUpdateProduct } from '@/hooks';
 import { productSchema, type ProductFormData } from '@/lib/validations';
 import { UNIT_OPTIONS } from '@/config/constants';
 import { MultiImageUpload } from '@/components/upload';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCT FORM COMPONENT

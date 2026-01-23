@@ -16,7 +16,7 @@ import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { FeatureItem, Tenant } from '@/types';
+import type { FeatureItem, Tenant } from '@umkm/shared/types';
 
 export default function AboutPage() {
   const router = useRouter();

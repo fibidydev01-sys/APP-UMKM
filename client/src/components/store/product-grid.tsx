@@ -3,7 +3,7 @@
 import { useMemo } from 'react';
 import { ProductCard } from './product-card';
 import { ProductGridSkeleton } from './store-skeleton';
-import type { Product } from '@/types';
+import type { Product } from '@umkm/shared/types';
 
 interface ProductGridProps {
   products: Product[];

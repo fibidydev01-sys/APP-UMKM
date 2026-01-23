@@ -5,7 +5,7 @@ import type {
   UpdateCustomerInput,
   CustomerQueryParams,
   PaginatedResponse,
-} from '@/types';
+} from '@umkm/shared/types';
 
 // ==========================================
 // CUSTOMERS API SERVICE

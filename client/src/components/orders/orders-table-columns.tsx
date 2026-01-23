@@ -5,7 +5,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Checkbox } from '@umkm/shared/ui';
 import { formatDateTime } from '@/lib/format';
-import type { OrderListItem } from '@/types';
+import type { OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDERS TABLE COLUMNS - MINIMAL VIEW

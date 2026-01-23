@@ -56,7 +56,7 @@ import { Alert, AlertDescription } from '@umkm/shared/ui';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';
-import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
 import {
   extractHeroData,
   extractAboutData,

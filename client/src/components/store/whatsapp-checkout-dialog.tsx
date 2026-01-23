@@ -19,7 +19,7 @@ import { Separator } from '@umkm/shared/ui';
 import { RadioGroup, RadioGroupItem } from '@umkm/shared/ui';
 import { formatPrice, generateWhatsAppLink } from '@/lib/format';
 import { useCartStore, useCartItems, useCartTotalPrice } from '@/stores';
-import type { PublicTenant, PaymentMethods, ShippingMethods } from '@/types';
+import type { PublicTenant, PaymentMethods, ShippingMethods } from '@umkm/shared/types';
 
 interface WhatsAppCheckoutDialogProps {
   open: boolean;

@@ -4,7 +4,7 @@ import { Table } from '@tanstack/react-table';
 import { X, Search } from 'lucide-react';
 import { Input } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
-import type { OrderListItem } from '@/types';
+import type { OrderListItem } from '@umkm/shared/types';
 
 // ==========================================
 // ORDERS TABLE TOOLBAR - MINIMAL VIEW

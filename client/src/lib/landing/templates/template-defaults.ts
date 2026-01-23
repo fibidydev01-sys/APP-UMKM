@@ -5,7 +5,7 @@
 // When user selects a template, they get pre-filled content
 // so they can immediately see how it looks!
 
-import type { TenantLandingConfig } from '@/types';
+import type { TenantLandingConfig } from '@umkm/shared/types';
 import type { TemplateId } from './template-types';
 
 /**

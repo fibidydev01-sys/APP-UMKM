@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { useProductsStore } from '@/stores';
 import { productsApi, getErrorMessage, isApiError } from '@/lib/api';
 import { toast } from '@/providers';
-import type { Product, CreateProductInput, UpdateProductInput, ProductQueryParams } from '@/types';
+import type { Product, CreateProductInput, UpdateProductInput, ProductQueryParams } from '@umkm/shared/types';
 
 // ==========================================
 // USE PRODUCTS HOOK - FIXED

@@ -7,7 +7,7 @@ import { Button } from '@umkm/shared/ui';
 import { OptimizedImage } from '@umkm/shared/ui';
 import { getImageSource } from '@/lib/cloudinary';
 import { useState } from 'react';
-import type { Testimonial } from '@/types';
+import type { Testimonial } from '@umkm/shared/types';
 
 /**
  * Testimonials2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)

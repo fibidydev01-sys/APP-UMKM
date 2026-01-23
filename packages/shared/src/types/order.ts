@@ -1,27 +1,13 @@
 import type { Customer } from './customer';
 import type { Product } from './product';
+import { OrderStatus, PaymentStatus } from './enums';
 
 // ==========================================
 // ORDER TYPES
 // ==========================================
 
-/**
- * Order status enum
- */
-export type OrderStatus =
-  | 'PENDING'
-  | 'PROCESSING'
-  | 'COMPLETED'
-  | 'CANCELLED';
-
-/**
- * Payment status enum
- */
-export type PaymentStatus =
-  | 'PENDING'
-  | 'PAID'
-  | 'PARTIAL'
-  | 'FAILED';
+// Note: OrderStatus and PaymentStatus are imported from './enums'
+// for consistency with database schema
 
 /**
  * Order item entity

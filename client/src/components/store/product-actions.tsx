@@ -4,7 +4,7 @@ import { Separator } from '@umkm/shared/ui';
 import { AddToCartButton } from './add-to-cart-button';
 import { WhatsAppOrderButton } from './whatsapp-order-button';
 import { ProductShare } from './product-share';
-import type { Product, PublicTenant } from '@/types';
+import type { Product, PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
 // PRODUCT ACTIONS COMPONENT
