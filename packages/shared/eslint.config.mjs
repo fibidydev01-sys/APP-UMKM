@@ -16,6 +16,9 @@ export default tseslint.config(
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
+        // Fix for monorepo: use projectService and set tsconfigRootDir
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     rules: {
