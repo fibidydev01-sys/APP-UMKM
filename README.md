@@ -11,6 +11,8 @@ APP-UMKM/
 ├── client/          # Dashboard Admin Next.js (port 3000)
 ├── client-web/      # Landing Page Builder Next.js (port 3001)
 ├── server/          # Backend API NestJS
+├── packages/
+│   └── shared/      # Shared utilities, components & types ⭐
 ├── docs/            # Dokumentasi
 └── script/          # Utility scripts
 ```
@@ -111,6 +113,29 @@ pnpm clean:install
 
 ## 📚 Workspace Packages
 
+### @umkm/shared ⭐ **NEW**
+
+**Single Source of Truth** untuk shared code - UI components, utilities, types & hooks.
+
+**Contains:**
+- 🎨 UI Components (Button, Card, Dialog, dll)
+- 🛠️ Utilities (cn, formatPrice, formatDate, dll)
+- 📝 TypeScript types & interfaces
+- 🎣 Custom React hooks
+
+**Usage:**
+```tsx
+import { Button, cn, formatPrice } from '@umkm/shared';
+```
+
+**Benefits:**
+- ✅ No code duplication
+- ✅ Single source of truth
+- ✅ Consistent UI & logic
+- ✅ Smaller bundle sizes
+
+[📖 Full Documentation](packages/shared/README.md)
+
 ### @umkm/client
 
 Dashboard admin untuk mengelola tenant, products, dan settings.
@@ -122,6 +147,7 @@ Dashboard admin untuk mengelola tenant, products, dan settings.
 - Radix UI
 - Framer Motion
 - Zustand
+- **@umkm/shared** ⭐
 
 **Commands:**
 ```bash
@@ -142,6 +168,7 @@ Landing page builder dengan live preview dan customization.
 - Radix UI
 - Drag & Drop Kit
 - Three.js
+- **@umkm/shared** ⭐
 
 **Commands:**
 ```bash

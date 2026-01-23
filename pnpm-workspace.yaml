@@ -2,6 +2,4 @@ packages:
   - 'client'
   - 'client-web'
   - 'server'
-  # Future packages
-  # - 'packages/*'
-  # - 'shared/*'
+  - 'packages/*'
