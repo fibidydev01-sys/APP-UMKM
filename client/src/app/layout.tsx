@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
+// import { Inter } from 'next/font/google';
 import { Providers } from '@/providers';
 import { Toaster } from '@umkm/shared/ui';
 import { seoConfig } from '@/config/seo.config';
@@ -11,11 +11,12 @@ import './globals.css';
 // FONT CONFIGURATION
 // ==========================================
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
+// Temporarily disabled due to network issues
+// const inter = Inter({
+//   subsets: ['latin'],
+//   display: 'swap',
+//   variable: '--font-inter',
+// });
 
 // ==========================================
 // VIEWPORT CONFIGURATION
@@ -217,7 +218,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         {/* Organization + WebSite Schema (JSON-LD) */}
         <OrganizationSchema />
       </head>
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         {/* Unified Providers (Theme + Hydration + PWA) */}
         <Providers>
           {children}

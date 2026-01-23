@@ -29,6 +29,11 @@ const nextConfig: NextConfig = {
   },
 
   // ==========================================
+  // TRANSPILE PACKAGES (Compile source from monorepo)
+  // ==========================================
+  transpilePackages: ['@umkm/shared'],
+
+  // ==========================================
   // EXPERIMENTAL FEATURES
   // ==========================================
   experimental: {

@@ -13,9 +13,9 @@
       "require": "./dist/index.js"
     },
     "./ui": {
-      "types": "./dist/ui/index.d.ts",
-      "import": "./dist/ui/index.mjs",
-      "require": "./dist/ui/index.js"
+      "types": "./src/ui/index.ts",
+      "import": "./src/ui/index.ts",
+      "default": "./src/ui/index.ts"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
