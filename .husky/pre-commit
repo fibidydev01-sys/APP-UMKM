@@ -1,8 +1,2 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-# Run lint-staged
 pnpm exec lint-staged
-
-# Show status
 echo "✅ Pre-commit checks passed!"
