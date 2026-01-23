@@ -2,7 +2,7 @@
 // TENANT TYPES
 // ==========================================
 
-import type { TenantLandingConfig, Testimonial } from './landing';
+import type { TenantLandingConfig, Testimonial, FeatureItem } from './landing';
 
 // ==========================================
 // SOCIAL LINKS TYPE
@@ -16,21 +16,32 @@ export interface SocialLinks {
 }
 
 // ==========================================
-// FEATURE ITEM TYPE (for About section)
-// ==========================================
-export interface FeatureItem {
-  icon?: string;
-  title: string;
-  description: string;
-}
-
-// ==========================================
 // PAYMENT SETTINGS TYPES (NEW)
 // ==========================================
 
-export type BankName = 'BCA' | 'Mandiri' | 'BNI' | 'BRI' | 'BSI' | 'CIMB' | 'Permata' | 'Danamon' | 'Other';
+export type BankName =
+  | 'BCA'
+  | 'Mandiri'
+  | 'BNI'
+  | 'BRI'
+  | 'BSI'
+  | 'CIMB'
+  | 'Permata'
+  | 'Danamon'
+  | 'Other';
 export type EWalletProvider = 'GoPay' | 'OVO' | 'DANA' | 'ShopeePay' | 'LinkAja' | 'Other';
-export type CourierName = 'JNE' | 'J&T Express' | 'SiCepat' | 'AnterAja' | 'Ninja Express' | 'ID Express' | 'SAP Express' | 'Lion Parcel' | 'Pos Indonesia' | 'TIKI' | 'Other';
+export type CourierName =
+  | 'JNE'
+  | 'J&T Express'
+  | 'SiCepat'
+  | 'AnterAja'
+  | 'Ninja Express'
+  | 'ID Express'
+  | 'SAP Express'
+  | 'Lion Parcel'
+  | 'Pos Indonesia'
+  | 'TIKI'
+  | 'Other';
 
 export interface BankAccount {
   id: string;

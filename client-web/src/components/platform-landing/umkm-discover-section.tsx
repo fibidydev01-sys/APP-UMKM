@@ -8,46 +8,14 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import {
-  Store,
-  Package,
-  ArrowRight,
-  AlertCircle,
-  Search,
-  Sparkles,
-} from 'lucide-react';
+import { Store, Package, ArrowRight, AlertCircle, Search, Sparkles } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { Input } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
+import type { TenantSitemapItem, TenantDetail, ShowcaseTenant } from '@umkm/shared/types';
 import { getTenantFullUrl } from '@/lib/store-url';
 import { tenantsApi } from '@/lib/api';
-
-// ══════════════════════════════════════════════════════════════
-// TYPES
-// ══════════════════════════════════════════════════════════════
-
-interface TenantSitemapItem {
-  slug: string;
-  updatedAt: string;
-}
-
-interface TenantDetail {
-  id: string;
-  slug: string;
-  name: string;
-  category: string;
-  description: string | null;
-  logo: string | null;
-  banner: string | null;
-  _count?: {
-    products: number;
-  };
-}
-
-interface ShowcaseTenant extends TenantDetail {
-  url: string;
-}
 
 // ══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -57,25 +25,25 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 const MAX_TENANTS = 24;
 
 const CATEGORY_LABELS: Record<string, string> = {
-  'WARUNG_KELONTONG': 'Warung Kelontong',
-  'TOKO_BANGUNAN': 'Toko Bangunan',
-  'TOKO_ELEKTRONIK': 'Elektronik',
-  'BENGKEL': 'Bengkel',
-  'SALON_KECANTIKAN': 'Salon',
-  'LAUNDRY': 'Laundry',
-  'WARUNG_MAKAN': 'Warung Makan',
-  'CATERING': 'Catering',
-  'KEDAI_KOPI': 'Kedai Kopi',
-  'TOKO_KUE': 'Bakery',
-  'APOTEK': 'Apotek',
-  'KONTER_HP': 'Konter HP',
-  'RENTAL_KENDARAAN': 'Rental',
-  'STUDIO_FOTO': 'Studio Foto',
-  'PRINTING': 'Printing',
-  'PET_SHOP': 'Pet Shop',
-  'AC_SERVICE': 'Service AC',
-  'RESTORAN': 'Restoran',
-  'OTHER': 'Lainnya',
+  WARUNG_KELONTONG: 'Warung Kelontong',
+  TOKO_BANGUNAN: 'Toko Bangunan',
+  TOKO_ELEKTRONIK: 'Elektronik',
+  BENGKEL: 'Bengkel',
+  SALON_KECANTIKAN: 'Salon',
+  LAUNDRY: 'Laundry',
+  WARUNG_MAKAN: 'Warung Makan',
+  CATERING: 'Catering',
+  KEDAI_KOPI: 'Kedai Kopi',
+  TOKO_KUE: 'Bakery',
+  APOTEK: 'Apotek',
+  KONTER_HP: 'Konter HP',
+  RENTAL_KENDARAAN: 'Rental',
+  STUDIO_FOTO: 'Studio Foto',
+  PRINTING: 'Printing',
+  PET_SHOP: 'Pet Shop',
+  AC_SERVICE: 'Service AC',
+  RESTORAN: 'Restoran',
+  OTHER: 'Lainnya',
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -130,18 +98,13 @@ function TenantCard({ tenant }: TenantCardProps) {
   const productCount = tenant._count?.products || 0;
 
   return (
-    <Link
-      href={tenant.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group block"
-    >
+    <Link href={tenant.url} target="_blank" rel="noopener noreferrer" className="group block">
       {/* Image Container - Dribbble Style */}
       <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-muted">
-        {/* Banner Image */}
-        {tenant.banner ? (
+        {/* Hero Background Image */}
+        {tenant.heroBackgroundImage ? (
           <Image
-            src={tenant.banner}
+            src={tenant.heroBackgroundImage}
             alt={tenant.name || 'Store'}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -158,9 +121,7 @@ function TenantCard({ tenant }: TenantCardProps) {
           <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
             {/* Description */}
             {tenant.description && (
-              <p className="text-white/90 text-sm line-clamp-2 mb-3">
-                {tenant.description}
-              </p>
+              <p className="text-white/90 text-sm line-clamp-2 mb-3">{tenant.description}</p>
             )}
 
             {/* Stats Row */}
@@ -211,9 +172,7 @@ function TenantCard({ tenant }: TenantCardProps) {
         </h3>
 
         {/* Product Count - subtle */}
-        <span className="text-xs text-muted-foreground shrink-0">
-          {productCount} items
-        </span>
+        <span className="text-xs text-muted-foreground shrink-0">{productCount} items</span>
       </div>
     </Link>
   );
@@ -266,7 +225,7 @@ export function UMKMDiscoverSection() {
 
         // Step 3: Filter and add URLs
         const validTenants: ShowcaseTenant[] = tenantDetails
-          .filter((t): t is TenantDetail => t !== null && t.id)
+          .filter((t): t is TenantDetail => t !== null && !!t.id)
           .map((t) => ({
             ...t,
             url: getTenantFullUrl(t.slug),
@@ -338,7 +297,9 @@ export function UMKMDiscoverSection() {
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
               <span>{tenants.length} UMKM terdaftar</span>
               <span>•</span>
-              <span>{tenants.reduce((acc, t) => acc + (t._count?.products || 0), 0)} total produk</span>
+              <span>
+                {tenants.reduce((acc, t) => acc + (t._count?.products || 0), 0)} total produk
+              </span>
             </div>
           )}
         </div>
@@ -363,10 +324,7 @@ export function UMKMDiscoverSection() {
               <AlertCircle className="h-8 w-8 text-destructive" />
             </div>
             <p className="text-muted-foreground mb-4">{error}</p>
-            <Button
-              variant="outline"
-              onClick={() => window.location.reload()}
-            >
+            <Button variant="outline" onClick={() => window.location.reload()}>
               Coba Lagi
             </Button>
           </div>
@@ -384,8 +342,7 @@ export function UMKMDiscoverSection() {
             <p className="text-muted-foreground mb-6">
               {searchQuery
                 ? `Tidak ditemukan toko dengan kata kunci "${searchQuery}"`
-                : 'Jadilah yang pertama membuat toko di Fibidy!'
-              }
+                : 'Jadilah yang pertama membuat toko di Fibidy!'}
             </p>
             {searchQuery ? (
               <Button variant="outline" onClick={() => setSearchQuery('')}>
@@ -428,9 +385,7 @@ export function UMKMDiscoverSection() {
 
                 <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                   <div className="text-white">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-2">
-                      Punya Usaha?
-                    </h3>
+                    <h3 className="text-2xl md:text-3xl font-bold mb-2">Punya Usaha?</h3>
                     <p className="text-white/80 text-lg">
                       Buat toko online kamu dan tampil di sini. Gratis!
                     </p>

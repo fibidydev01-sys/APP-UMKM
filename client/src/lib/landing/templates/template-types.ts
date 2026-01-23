@@ -1,6 +1,6 @@
 // ==========================================
 // TEMPLATE SYSTEM TYPE DEFINITIONS
-// 🚀 SYNCED WITH BACKEND VALIDATOR
+// Uses shared types as single source of truth
 // ==========================================
 
 import type {
@@ -10,28 +10,9 @@ import type {
   TestimonialsBlock,
   ContactBlock,
   CtaBlock,
+  TemplateId,
+  TemplateCategory,
 } from '@umkm/shared/types';
-
-/**
- * Template ID (from backend)
- */
-export type TemplateId =
-  | 'suspended-minimalist'
-  | 'modern-starter'
-  | 'bold-starter'
-  | 'classic-starter'
-  | 'brand-starter'
-  | 'catalog-starter'
-  | 'fresh-starter'
-  | 'elegant-starter'
-  | 'dynamic-starter'
-  | 'professional-starter'
-  | 'custom';
-
-/**
- * Template category
- */
-export type TemplateCategory = 'modern' | 'classic' | 'minimal' | 'creative' | 'professional' | 'catalog';
 
 /**
  * A template is a combination of section blocks
@@ -67,7 +48,7 @@ export interface TemplateContextValue {
   getCtaBlock: () => CtaBlock;
 }
 
-// Re-export block types for convenience
+// Re-export shared types for convenience
 export type {
   HeroBlock,
   AboutBlock,
@@ -75,4 +56,6 @@ export type {
   TestimonialsBlock,
   ContactBlock,
   CtaBlock,
+  TemplateId,
+  TemplateCategory,
 };

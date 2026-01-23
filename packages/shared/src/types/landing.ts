@@ -1,14 +1,39 @@
 // ==========================================
 // LANDING PAGE TYPE DEFINITIONS
-// 🚀 SYNCED WITH BACKEND VALIDATOR
+// Single Source of Truth for FE & BE
 // ==========================================
+
+// ==========================================
+// TEMPLATE TYPES (shared between FE & BE)
+// ==========================================
+
+export type TemplateId =
+  | 'suspended-minimalist'
+  | 'modern-starter'
+  | 'bold-starter'
+  | 'classic-starter'
+  | 'brand-starter'
+  | 'catalog-starter'
+  | 'fresh-starter'
+  | 'elegant-starter'
+  | 'dynamic-starter'
+  | 'professional-starter'
+  | 'custom';
+
+export type TemplateCategory =
+  | 'modern'
+  | 'classic'
+  | 'minimal'
+  | 'creative'
+  | 'professional'
+  | 'catalog';
 
 // ==========================================
 // BLOCK TYPES (from backend)
 // ==========================================
 
 /**
- * v3.0 NUMBERING SYSTEM - AUTO-DISCOVERY ENABLED! 🚀
+ * v3.0 NUMBERING SYSTEM - AUTO-DISCOVERY ENABLED!
  * Blocks are auto-discovered from filesystem
  * No manual type updates needed when adding new blocks!
  */
@@ -31,17 +56,25 @@ export type ContactBlock = `contact${number}`;
 // Auto-accepts any number: cta1, cta2, cta201, etc.
 export type CtaBlock = `cta${number}`;
 
-
 // ==========================================
 // SECTION BASE INTERFACE
 // ==========================================
 
-export interface LandingSection<V = string> {
+export interface LandingSection<T = Record<string, unknown>, V = string> {
   enabled?: boolean;
   title?: string;
   subtitle?: string;
   block?: V;
-  config?: Record<string, unknown>;
+  config?: T;
+}
+
+// ==========================================
+// FEATURE ITEM TYPE (for About section)
+// ==========================================
+export interface FeatureItem {
+  icon?: string;
+  title: string;
+  description: string;
 }
 
 // ==========================================
@@ -61,11 +94,7 @@ export interface AboutSectionConfig {
   content?: string;
   showImage?: boolean;
   image?: string;
-  features?: Array<{
-    icon?: string;
-    title: string;
-    description: string;
-  }>;
+  features?: FeatureItem[];
 }
 
 export interface ProductsSectionConfig {
@@ -114,22 +143,12 @@ export type SectionKey = 'hero' | 'about' | 'products' | 'testimonials' | 'conta
 
 export interface TenantLandingConfig {
   enabled: boolean;
-  template?: string; // Template ID
-  sectionOrder?: SectionKey[]; // 🚀 NEW: Drag & drop section ordering
-  hero?: LandingSection<HeroBlock> & { config?: HeroSectionConfig };
-  about?: LandingSection<AboutBlock> & { config?: AboutSectionConfig };
-  products?: LandingSection<ProductsBlock> & { config?: ProductsSectionConfig };
-  testimonials?: LandingSection<TestimonialsBlock> & { config?: TestimonialsSectionConfig };
-  contact?: LandingSection<ContactBlock> & { config?: ContactSectionConfig };
-  cta?: LandingSection<CtaBlock> & { config?: CtaSectionConfig };
+  template?: TemplateId;
+  sectionOrder?: SectionKey[];
+  hero?: LandingSection<HeroSectionConfig, HeroBlock>;
+  about?: LandingSection<AboutSectionConfig, AboutBlock>;
+  products?: LandingSection<ProductsSectionConfig, ProductsBlock>;
+  testimonials?: LandingSection<TestimonialsSectionConfig, TestimonialsBlock>;
+  contact?: LandingSection<ContactSectionConfig, ContactBlock>;
+  cta?: LandingSection<CtaSectionConfig, CtaBlock>;
 }
-
-// ==========================================
-// DEFAULT CONFIG - Imported from @/lib/landing
-// ==========================================
-// DEFAULT_LANDING_CONFIG is now defined in @/lib/landing/defaults.ts
-// Import it from there to avoid duplication!
-//
-// Example:
-// import { DEFAULT_LANDING_CONFIG } from '@/lib/landing';
-// ==========================================

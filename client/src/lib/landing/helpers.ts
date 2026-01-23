@@ -19,7 +19,7 @@ import type {
   Tenant,
   PublicTenant,
   FeatureItem,
-  Testimonial
+  Testimonial,
 } from '@umkm/shared/types';
 
 // ============================================================================
@@ -40,8 +40,8 @@ export interface SectionText {
  * Extract title and subtitle from section config with fallbacks
  * Used in all TenantXxx display components to avoid code duplication
  */
-export function extractSectionText(
-  config: LandingSection | undefined,
+export function extractSectionText<T, V extends string>(
+  config: LandingSection<T, V> | undefined,
   fallbacks: SectionTextFallbacks = {}
 ): SectionText {
   return {
@@ -53,41 +53,51 @@ export function extractSectionText(
 /**
  * Check if a section is enabled
  */
-export function isSectionEnabled(section: LandingSection | undefined): boolean {
+export function isSectionEnabled<T, V extends string>(
+  section: LandingSection<T, V> | undefined
+): boolean {
   return section?.enabled === true;
 }
 
 /**
  * Get section config with type safety
  */
-export function getSectionConfig<T = Record<string, unknown>>(
-  section: LandingSection | undefined
-): T | undefined {
-  return section?.config as T | undefined;
+export function getSectionConfig<T>(section: LandingSection<T, string> | undefined): T | undefined {
+  return section?.config;
 }
 
 // ============================================================================
 // TYPE-SAFE CONFIG EXTRACTORS - For each section type
 // ============================================================================
 
-export function getHeroConfig(section: LandingSection | undefined): HeroSectionConfig | undefined {
-  return getSectionConfig<HeroSectionConfig>(section);
+export function getHeroConfig(
+  section: LandingSection<HeroSectionConfig, string> | undefined
+): HeroSectionConfig | undefined {
+  return getSectionConfig(section);
 }
 
-export function getAboutConfig(section: LandingSection | undefined): AboutSectionConfig | undefined {
-  return getSectionConfig<AboutSectionConfig>(section);
+export function getAboutConfig(
+  section: LandingSection<AboutSectionConfig, string> | undefined
+): AboutSectionConfig | undefined {
+  return getSectionConfig(section);
 }
 
-export function getProductsConfig(section: LandingSection | undefined): ProductsSectionConfig | undefined {
-  return getSectionConfig<ProductsSectionConfig>(section);
+export function getProductsConfig(
+  section: LandingSection<ProductsSectionConfig, string> | undefined
+): ProductsSectionConfig | undefined {
+  return getSectionConfig(section);
 }
 
-export function getContactConfig(section: LandingSection | undefined): ContactSectionConfig | undefined {
-  return getSectionConfig<ContactSectionConfig>(section);
+export function getContactConfig(
+  section: LandingSection<ContactSectionConfig, string> | undefined
+): ContactSectionConfig | undefined {
+  return getSectionConfig(section);
 }
 
-export function getCtaConfig(section: LandingSection | undefined): CtaSectionConfig | undefined {
-  return getSectionConfig<CtaSectionConfig>(section);
+export function getCtaConfig(
+  section: LandingSection<CtaSectionConfig, string> | undefined
+): CtaSectionConfig | undefined {
+  return getSectionConfig(section);
 }
 
 // ============================================================================
@@ -176,7 +186,7 @@ export interface HeroData {
  */
 export function extractHeroData(
   tenant: TenantData,
-  landingConfig?: { hero?: LandingSection & { config?: HeroSectionConfig } }
+  landingConfig?: { hero?: LandingSection<HeroSectionConfig, string> }
 ): HeroData {
   const heroConfig = landingConfig?.hero;
   const config = heroConfig?.config;
@@ -210,7 +220,7 @@ export interface AboutData {
  */
 export function extractAboutData(
   tenant: TenantData,
-  landingConfig?: { about?: LandingSection & { config?: AboutSectionConfig } }
+  landingConfig?: { about?: LandingSection<AboutSectionConfig, string> }
 ): AboutData {
   const aboutConfig = landingConfig?.about;
   const config = aboutConfig?.config;
@@ -242,14 +252,15 @@ export interface TestimonialsData {
  */
 export function extractTestimonialsData(
   tenant: TenantData,
-  landingConfig?: { testimonials?: LandingSection & { config?: { items?: Testimonial[] } } }
+  landingConfig?: { testimonials?: LandingSection<{ items?: Testimonial[] }, string> }
 ): TestimonialsData {
   const testimonialsConfig = landingConfig?.testimonials;
   const config = testimonialsConfig?.config;
 
   return {
     title: tenant.testimonialsTitle || testimonialsConfig?.title || 'Testimoni',
-    subtitle: tenant.testimonialsSubtitle || testimonialsConfig?.subtitle || 'Apa kata pelanggan kami',
+    subtitle:
+      tenant.testimonialsSubtitle || testimonialsConfig?.subtitle || 'Apa kata pelanggan kami',
     items: (tenant.testimonials as Testimonial[] | undefined) || config?.items || [],
   };
 }
@@ -279,7 +290,7 @@ export interface ContactData {
  */
 export function extractContactData(
   tenant: TenantData,
-  landingConfig?: { contact?: LandingSection & { config?: ContactSectionConfig } }
+  landingConfig?: { contact?: LandingSection<ContactSectionConfig, string> }
 ): ContactData {
   const contactConfig = landingConfig?.contact;
   const config = contactConfig?.config;
@@ -318,7 +329,7 @@ export interface CtaData {
  */
 export function extractCtaData(
   tenant: TenantData,
-  landingConfig?: { cta?: LandingSection & { config?: CtaSectionConfig } }
+  landingConfig?: { cta?: LandingSection<CtaSectionConfig, string> }
 ): CtaData {
   const ctaConfig = landingConfig?.cta;
   const config = ctaConfig?.config;

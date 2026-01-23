@@ -7,42 +7,33 @@
 
 import Ajv, { type ErrorObject } from 'ajv';
 import addFormats from 'ajv-formats';
+import type {
+  Testimonial,
+  FeatureItem,
+  TemplateId,
+  SectionKey,
+  LandingSection,
+  HeroSectionConfig,
+  AboutSectionConfig,
+  ProductsSectionConfig,
+  TestimonialsSectionConfig,
+  ContactSectionConfig,
+  CtaSectionConfig,
+} from '@umkm/shared/types';
 
-// ==========================================
-// TYPE DEFINITIONS
-// ==========================================
+// Re-export shared types used externally
+export type { TemplateId, FeatureItem, SectionKey };
 
-export interface TestimonialItem {
-  id: string;
-  name: string;
-  role?: string;
-  avatar?: string;
-  content: string;
-  rating?: number;
-}
+// Alias for backward compatibility within this file
+export type TestimonialItem = Testimonial;
 
-export interface FeatureItem {
-  icon?: string;
-  title: string;
-  description: string;
-}
-
-// ==========================================
-// 🚀 NEW: Template System Types
-// ==========================================
-
-export type TemplateId =
-  | 'suspended-minimalist'
-  | 'modern-starter'
-  | 'bold-starter'
-  | 'classic-starter'
-  | 'brand-starter'
-  | 'catalog-starter'
-  | 'fresh-starter'
-  | 'elegant-starter'
-  | 'dynamic-starter'
-  | 'professional-starter'
-  | 'custom';
+// Type aliases for section configs (server uses shorter names internally)
+type HeroConfig = HeroSectionConfig;
+type AboutConfig = AboutSectionConfig;
+type ProductsConfig = ProductsSectionConfig;
+type TestimonialsConfig = TestimonialsSectionConfig;
+type ContactConfig = ContactSectionConfig;
+type CtaConfig = CtaSectionConfig;
 
 /**
  * v3.0 NUMBERING SYSTEM
@@ -1262,73 +1253,7 @@ export type CtaBlock =
   | 'cta200';
 
 // ==========================================
-// CONFIG INTERFACES (Updated with block)
-// ==========================================
-
-export interface HeroConfig {
-  layout?: 'centered' | 'left' | 'right';
-  showCta?: boolean;
-  ctaText?: string;
-  ctaLink?: string;
-  backgroundImage?: string;
-  overlayOpacity?: number;
-}
-
-export interface AboutConfig {
-  content?: string;
-  showImage?: boolean;
-  image?: string;
-  features?: FeatureItem[];
-}
-
-export interface ProductsConfig {
-  displayMode?: 'featured' | 'latest' | 'all';
-  limit?: number;
-  showViewAll?: boolean;
-}
-
-export interface TestimonialsConfig {
-  items?: TestimonialItem[];
-}
-
-export interface ContactConfig {
-  showMap?: boolean;
-  showForm?: boolean;
-  showSocialMedia?: boolean;
-}
-
-export interface CtaConfig {
-  buttonText?: string;
-  buttonLink?: string;
-  style?: 'primary' | 'secondary' | 'outline';
-}
-
-// ==========================================
-// 🚀 UPDATED: Landing Section with Block
-// ==========================================
-
-export interface LandingSection<T = Record<string, unknown>, V = string> {
-  enabled?: boolean;
-  title?: string;
-  subtitle?: string;
-  block?: V; // 🚀 Block field (renamed from variant)
-  config?: T;
-}
-
-// ==========================================
-// 🚀 SECTION KEY TYPE
-// ==========================================
-
-export type SectionKey =
-  | 'hero'
-  | 'about'
-  | 'products'
-  | 'testimonials'
-  | 'contact'
-  | 'cta';
-
-// ==========================================
-// 🚀 UPDATED: Landing Config with Template & Section Order
+// LANDING CONFIG (server-specific, uses exhaustive block types)
 // ==========================================
 
 export interface LandingConfig {
