@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { Store } from 'lucide-react';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +12,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
+} from '@umkm/shared/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@umkm/shared/ui';
+import { AnimatedThemeToggler } from '@umkm/shared/ui';
 import { useAuth, useLogout } from '@/hooks';
 import { getInitials } from '@/lib/format';
 import { OnboardingDropdown } from '@/components/onboarding';

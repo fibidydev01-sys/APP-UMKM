@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Store, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 
 // ==========================================
 // STORE NOT FOUND COMPONENT

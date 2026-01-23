@@ -15,10 +15,10 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { Drawer } from 'vaul';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/orders';
 import { ordersApi } from '@/lib/api';
 import {

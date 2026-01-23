@@ -1,8 +1,8 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { Button } from '@umkm/shared/ui';
+import { ScrollArea, ScrollBar } from '@umkm/shared/ui';
 import { productsUrl } from '@/lib/store-url'; // ✅ NEW IMPORT
 
 // ==========================================

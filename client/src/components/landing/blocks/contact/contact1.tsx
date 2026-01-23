@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
 import { Phone, MapPin, MessageCircle } from 'lucide-react';
 
 interface Contact1Props {

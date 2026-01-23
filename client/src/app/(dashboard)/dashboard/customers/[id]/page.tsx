@@ -8,9 +8,9 @@
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import { CustomerDetail } from '@/components/customers';
 import { useCustomer } from '@/hooks';
 

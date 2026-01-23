@@ -8,8 +8,8 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Store, ArrowRight, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
 import { useAuth } from '@/hooks';
 
 // ==========================================

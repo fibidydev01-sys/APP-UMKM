@@ -8,8 +8,8 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@umkm/shared/ui';
+import { Checkbox } from '@umkm/shared/ui';
 import { formatDateShort } from '@/lib/format';
 import type { Product } from '@/types';
 

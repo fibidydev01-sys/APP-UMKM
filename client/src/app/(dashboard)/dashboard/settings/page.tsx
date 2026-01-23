@@ -12,9 +12,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, Save, ChevronRight, Megaphone, Info, MessageSquareQuote, Phone, Zap, Paintbrush } from 'lucide-react';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
 import { PageHeader } from '@/components/dashboard';
 import {
   SettingsNav,

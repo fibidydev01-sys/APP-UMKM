@@ -3,12 +3,12 @@
 import { useState, useMemo, useCallback } from 'react';
 // ❌ REMOVE: import Image from 'next/image';
 // ❌ REMOVE: import { CldImage } from 'next-cloudinary';
-import { OptimizedImage } from '@/components/ui/optimized-image'; // ✅ ADD
+import { OptimizedImage } from '@umkm/shared/ui'; // ✅ ADD
 import Link from 'next/link';
 import { ShoppingCart, Plus, Check } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { useCartStore, useItemQty } from '@/stores';
 import { formatPrice } from '@/lib/format';
 import { cn } from '@/lib/utils';

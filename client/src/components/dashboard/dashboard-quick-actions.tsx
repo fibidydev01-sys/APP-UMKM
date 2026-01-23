@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks';
-import { BentoGrid, BentoActionCard } from '@/components/ui/bento-grid';
+import { BentoGrid, BentoActionCard } from '@umkm/shared/ui';
 
 // ==========================================
 // DASHBOARD QUICK ACTIONS

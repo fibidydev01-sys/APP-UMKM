@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+import { Badge } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import { formatPrice } from '@/lib/format';
 import type { Product } from '@/types';
 

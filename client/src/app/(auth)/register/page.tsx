@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { AuthLayout, RegisterForm } from '@/components/auth';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@umkm/shared/ui';
 
 // ==========================================
 // REGISTER PAGE

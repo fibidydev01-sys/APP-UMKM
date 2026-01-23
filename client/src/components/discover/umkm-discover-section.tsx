@@ -16,10 +16,10 @@ import {
   Search,
   Sparkles,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import type { ShowcaseTenant } from '@/types/discover';
 import {
   fetchAllTenants,

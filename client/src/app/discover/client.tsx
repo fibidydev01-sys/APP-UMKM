@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Store, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import {
   DiscoverHeader,
   DiscoverHero,

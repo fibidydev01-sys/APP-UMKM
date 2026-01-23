@@ -5,8 +5,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, Store, Users, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
+import { Button } from '@umkm/shared/ui';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@umkm/shared/ui';
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -15,7 +15,7 @@ import {
   NavigationMenuTrigger,
   NavigationMenuContent,
   navigationMenuTriggerStyle,
-} from '@/components/ui/navigation-menu';
+} from '@umkm/shared/ui';
 import { CartSheet } from './cart-sheet';
 import { useStoreUrls } from '@/lib/store-url';
 import { cn } from '@/lib/utils';

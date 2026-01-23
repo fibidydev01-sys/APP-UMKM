@@ -5,10 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Save, ArrowLeft, Check, ChevronsUpDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Switch } from '@umkm/shared/ui';
 import {
   Form,
   FormControl,
@@ -17,26 +17,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@umkm/shared/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@umkm/shared/ui';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@umkm/shared/ui';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
+} from '@umkm/shared/ui';
 import {
   Command,
   CommandEmpty,
@@ -44,8 +44,8 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
-import { Separator } from '@/components/ui/separator';
+} from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import { useCreateProduct, useUpdateProduct } from '@/hooks';
 import { productSchema, type ProductFormData } from '@/lib/validations';

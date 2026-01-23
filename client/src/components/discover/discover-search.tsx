@@ -17,9 +17,9 @@ import {
   Store,
   type LucideIcon,
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Input } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import { getCategoryList } from '@/config/categories';
 

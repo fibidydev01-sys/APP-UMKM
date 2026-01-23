@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '@umkm/shared/ui';
+import { Card } from '@umkm/shared/ui';
 import { getCategoryConfig } from '@/config/categories';
 import { Store, Mail, Lock, Phone, Edit2, Loader2 } from 'lucide-react';
 

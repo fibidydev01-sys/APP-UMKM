@@ -15,9 +15,9 @@ import {
   RefreshCw,
   FileX,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════

@@ -7,7 +7,7 @@
 
 import Link from 'next/link';
 import { ArrowRight, X, Check, Frown, Smile, Lightbulb } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting

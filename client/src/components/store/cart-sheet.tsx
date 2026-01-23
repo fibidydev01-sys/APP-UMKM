@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { ShoppingCart, Plus, Minus, Trash2, ShoppingBag } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import {
   Sheet,
   SheetContent,
@@ -11,9 +11,9 @@ import {
   SheetTitle,
   SheetTrigger,
   SheetFooter,
-} from '@/components/ui/sheet';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+} from '@umkm/shared/ui';
+import { ScrollArea } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import {
   useCartStore,
   useCartItems,

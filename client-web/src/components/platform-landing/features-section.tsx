@@ -14,7 +14,7 @@ import {
   Settings,
   Ban,
 } from 'lucide-react';
-import { BentoCard, BentoGrid } from '@/components/ui/bento-grid';
+import { BentoCard, BentoGrid } from '@umkm/shared/ui';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting (8 Features)

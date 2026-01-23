@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { CldUploadWidget } from 'next-cloudinary';
 import Image from 'next/image';
 import { X, ImagePlus, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import type { CloudinaryUploadWidgetResults } from 'next-cloudinary';
 import type { MultiImageUploadProps } from '@/types/cloudinary';

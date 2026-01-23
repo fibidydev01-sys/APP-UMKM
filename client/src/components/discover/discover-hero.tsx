@@ -20,8 +20,8 @@ import {
   ChevronDown,
   Check,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { DiscoverSearch } from './discover-search';
 import { cn } from '@/lib/utils';
 import { CATEGORY_CONFIG, CATEGORY_GROUPS, getCategoriesByGroup } from '@/config/categories';
@@ -30,7 +30,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@umkm/shared/ui';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

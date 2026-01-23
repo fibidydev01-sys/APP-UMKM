@@ -12,7 +12,7 @@ import { useState, useMemo, useCallback, memo, useEffect, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Drawer } from 'vaul';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
-import { Input } from '@/components/ui/input';
+import { Input } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import { Check, Minimize2, Grid3x3, Search, Loader2 } from 'lucide-react';
 import type { SectionType } from './builder-sidebar';

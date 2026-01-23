@@ -8,15 +8,15 @@ import {
   Menu,
   type LucideIcon,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@umkm/shared/ui';
+import { TabsList, TabsTrigger } from '@umkm/shared/ui';
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet';
+} from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 
 // ============================================================================

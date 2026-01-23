@@ -7,8 +7,8 @@
 
 import Image from 'next/image';
 import { Store, Package, ArrowRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Badge } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import type { ShowcaseTenant } from '@/types/discover';
 import { getCategoryLabel, getCategoryColor, getInitials } from '@/lib/discover';
 

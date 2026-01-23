@@ -11,9 +11,9 @@ import {
   XCircle,
   StickyNote,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import { OrderStatusSelect, PaymentStatusSelect } from './order-status-select';
 import { OrderItemsTable } from './order-items-table';
 import { OrderCancelDialog } from './order-cancel-dialog';

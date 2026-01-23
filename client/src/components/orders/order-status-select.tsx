@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@umkm/shared/ui';
 import { ordersApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import type { OrderStatus, PaymentStatus } from '@/types';

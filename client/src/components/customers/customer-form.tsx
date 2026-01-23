@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Save, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
 import {
   Form,
   FormControl,
@@ -15,14 +15,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@umkm/shared/ui';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@umkm/shared/ui';
 import { useCreateCustomer, useUpdateCustomer } from '@/hooks';
 import { customerSchema, type CustomerFormData } from '@/lib/validations';
 import type { Customer } from '@/types';

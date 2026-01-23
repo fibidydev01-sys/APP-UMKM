@@ -1,6 +1,6 @@
 'use client';
 
-import { Separator } from '@/components/ui/separator';
+import { Separator } from '@umkm/shared/ui';
 import { AddToCartButton } from './add-to-cart-button';
 import { WhatsAppOrderButton } from './whatsapp-order-button';
 import { ProductShare } from './product-share';

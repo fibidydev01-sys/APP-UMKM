@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '@umkm/shared/ui';
 
 interface About6Props {
   title: string;

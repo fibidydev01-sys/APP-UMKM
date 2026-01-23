@@ -6,10 +6,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import { PageHeader } from '@/components/dashboard';
 import { CustomersTable } from '@/components/customers';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@umkm/shared/ui';
 import { customersApi, getErrorMessage } from '@/lib/api';
 import type { Customer } from '@/types';
 

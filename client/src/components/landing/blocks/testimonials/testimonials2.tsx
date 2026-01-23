@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Button } from '@umkm/shared/ui';
+import { OptimizedImage } from '@umkm/shared/ui';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@/types';
 

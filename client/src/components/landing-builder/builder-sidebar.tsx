@@ -8,7 +8,7 @@
 'use client';
 
 // Button removed - using div to avoid nested button issue with Switch
-import { Switch } from '@/components/ui/switch';
+import { Switch } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import {
   Sparkles,

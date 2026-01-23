@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import {  Code, Database, Cpu, Zap } from 'lucide-react';
-import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import FloatingLines from '@/components/ui/floating-lines/FloatingLines';
+import { InteractiveHoverButton } from '@umkm/shared/ui';
+import { OptimizedImage } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
+import { Card } from '@umkm/shared/ui';
+import FloatingLines from '@umkm/shared/ui';
 
 interface Hero8Props {
   title: string;

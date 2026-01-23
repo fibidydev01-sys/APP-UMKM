@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Download, Smartphone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 
 // ==========================================

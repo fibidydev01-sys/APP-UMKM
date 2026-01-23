@@ -1,7 +1,7 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
 import { Check, Palette } from 'lucide-react';
 import { getAllTemplates, useTemplate } from '@/lib/landing';
 import type { LandingTemplate } from '@/lib/landing';

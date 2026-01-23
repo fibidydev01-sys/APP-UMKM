@@ -20,7 +20,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@umkm/shared/ui';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

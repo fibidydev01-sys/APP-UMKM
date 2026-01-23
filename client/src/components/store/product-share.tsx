@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { Share2, Link2, Check, Facebook, Twitter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@umkm/shared/ui';
 import { toast } from '@/providers';
 import type { Product, PublicTenant } from '@/types';
 

@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Bell, Play } from 'lucide-react';
-import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import LightRays from '@/components/ui/light-rays/LightRays';
+import { InteractiveHoverButton } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Alert, AlertDescription } from '@umkm/shared/ui';
+import LightRays from '@umkm/shared/ui';
 
 interface Hero9Props {
   title: string;

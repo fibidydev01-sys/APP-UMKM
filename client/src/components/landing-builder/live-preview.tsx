@@ -5,8 +5,8 @@
 // Real-time preview of landing page
 // ==========================================
 
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { Smartphone, Monitor, Tablet, ExternalLink, Loader2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { TemplateProvider } from '@/lib/landing';

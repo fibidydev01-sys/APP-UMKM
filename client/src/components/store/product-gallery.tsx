@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, ZoomIn, Package, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@umkm/shared/ui';
+import { Dialog, DialogTitle } from '@umkm/shared/ui';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { cn } from '@/lib/utils';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '@umkm/shared/ui';
 
 interface ProductGalleryProps {
   images: string[];

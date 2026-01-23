@@ -15,14 +15,14 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from '@/components/ui/sheet';
+} from '@umkm/shared/ui';
 import {
   Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-} from '@/components/ui/drawer';
+} from '@umkm/shared/ui';
 import type { SectionType } from './builder-sidebar';
 
 interface SectionSheetProps {

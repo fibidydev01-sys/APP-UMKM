@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
 import { useCheckSlug, useDebounce } from '@/hooks';
 import { Loader2, Check, X, Info } from 'lucide-react';
 

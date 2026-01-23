@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Zap, Shield, ArrowRight } from 'lucide-react';
-import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import DarkVeil from '@/components/ui/dark-veil/DarkVeil';
+import { InteractiveHoverButton } from '@umkm/shared/ui';
+import { OptimizedImage } from '@umkm/shared/ui';
+import { Card } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import DarkVeil from '@umkm/shared/ui';
 
 interface Hero3Props {
   title: string;

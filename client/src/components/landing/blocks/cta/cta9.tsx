@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 
 /**
  * Cta2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)

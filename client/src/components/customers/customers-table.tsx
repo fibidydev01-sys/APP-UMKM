@@ -21,9 +21,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+} from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
 import { getCustomerColumns } from './customers-table-columns';
 import { CustomerDeleteDialog } from './customer-delete-dialog';
 import { CustomerPreviewDrawer } from './customer-preview-drawer';

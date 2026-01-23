@@ -6,8 +6,8 @@
 import { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/dashboard';
 import { ProductForm } from '@/components/products';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { productsApi } from '@/lib/api';
 
 // ==========================================

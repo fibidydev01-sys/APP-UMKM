@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/components/dashboard';
 import { Cta1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';

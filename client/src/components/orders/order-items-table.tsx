@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
   TableFooter,
-} from '@/components/ui/table';
+} from '@umkm/shared/ui';
 import { formatPrice } from '@/lib/format';
 import type { OrderItem } from '@/types';
 

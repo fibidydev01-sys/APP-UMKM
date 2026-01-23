@@ -29,21 +29,21 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+} from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Switch } from '@umkm/shared/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+} from '@umkm/shared/ui';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import type { FeatureItem, Testimonial } from '@/types';
 
 // ============================================================================

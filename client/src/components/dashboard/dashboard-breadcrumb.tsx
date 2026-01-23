@@ -11,7 +11,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from '@umkm/shared/ui';
 
 // ==========================================
 // DASHBOARD BREADCRUMB

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
 import { Phone, MapPin, MessageCircle, Mail, Send } from 'lucide-react';
 
 /**

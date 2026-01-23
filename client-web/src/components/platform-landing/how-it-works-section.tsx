@@ -10,8 +10,8 @@ import {
   Sparkles,
   Star,
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { InteractiveHoverButton } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════

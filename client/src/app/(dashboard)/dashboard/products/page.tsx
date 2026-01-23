@@ -4,8 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/components/dashboard';
 import { ProductsTable } from '@/components/products';
 import { productsApi, getErrorMessage } from '@/lib/api';

@@ -6,8 +6,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+} from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
 import { Loader2, Download, Share2, Printer } from 'lucide-react';
 import { toast } from '@/providers';
 import { InvoiceTemplate } from './invoice-template';

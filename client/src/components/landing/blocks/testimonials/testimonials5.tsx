@@ -1,9 +1,9 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Star } from 'lucide-react';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '@umkm/shared/ui';
 import { getImageSource } from '@/lib/cloudinary';
 import type { Testimonial } from '@/types';
 

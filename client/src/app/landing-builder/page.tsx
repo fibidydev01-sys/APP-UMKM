@@ -11,8 +11,8 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import {
   LivePreview,
   LandingErrorBoundary,

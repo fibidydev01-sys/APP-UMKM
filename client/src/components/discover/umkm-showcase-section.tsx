@@ -15,10 +15,10 @@ import {
   AlertCircle,
   ExternalLink,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import type { ShowcaseTenant } from '@/types/discover';
 import { fetchAllTenants, getCategoryLabel, getInitials } from '@/lib/discover';
 

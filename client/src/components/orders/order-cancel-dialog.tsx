@@ -9,8 +9,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+} from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
 import type { OrderListItem } from '@/types';
 
 // ==========================================

@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
+} from '@umkm/shared/ui';
 import { Fragment } from 'react';
 import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
 

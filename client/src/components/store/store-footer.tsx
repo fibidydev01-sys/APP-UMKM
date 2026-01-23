@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { Phone, MapPin, MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
+import { Button } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import { formatPhone } from '@/lib/format';
 import { siteConfig } from '@/config/site';
 import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT

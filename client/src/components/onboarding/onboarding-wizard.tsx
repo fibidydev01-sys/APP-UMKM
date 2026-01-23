@@ -9,14 +9,14 @@ import {
   IconTrophy,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@umkm/shared/ui';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { useTenant } from '@/hooks/use-tenant';
 import { CircularProgress } from './circular-progress';

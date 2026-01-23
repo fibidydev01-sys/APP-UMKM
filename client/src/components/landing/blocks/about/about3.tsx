@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '@umkm/shared/ui';
 import { CheckCircle } from 'lucide-react';
 
 interface About3Props {

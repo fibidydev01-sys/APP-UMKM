@@ -15,11 +15,11 @@ import {
   ArrowLeft,
   ExternalLink,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import { CustomerDeleteDialog } from './customer-delete-dialog';
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/orders';
 import { useDeleteCustomer } from '@/hooks';

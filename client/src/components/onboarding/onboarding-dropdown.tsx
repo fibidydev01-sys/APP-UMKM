@@ -13,14 +13,14 @@ import {
   IconChevronDown,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
+} from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
+import { ScrollArea } from '@umkm/shared/ui';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { CircularProgress } from './circular-progress';
 import { OnboardingStepStatus } from '@/lib/onboarding';

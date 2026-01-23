@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { CategoryCard } from '../category-card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
 import { getCategoryList } from '@/config/categories';
 import { Package, Check, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';

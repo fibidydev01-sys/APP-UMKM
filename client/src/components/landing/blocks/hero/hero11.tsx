@@ -3,9 +3,9 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
-import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Badge } from '@/components/ui/badge';
+import { InteractiveHoverButton } from '@umkm/shared/ui';
+import { OptimizedImage } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 
 /**
  * Hero2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)

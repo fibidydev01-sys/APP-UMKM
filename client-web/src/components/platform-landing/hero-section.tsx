@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Store } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { WordRotate } from '@/components/ui/word-rotate';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
+import { WordRotate } from '@umkm/shared/ui';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting

@@ -1,12 +1,12 @@
 'use client';
 
 import { Loader2, Save, Search, Globe } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import type { SocialLinks } from '@/types';
 
 // ============================================================================

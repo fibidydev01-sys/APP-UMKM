@@ -1,15 +1,15 @@
 'use client';
 
 import { Store } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from '@umkm/shared/ui';
 
 // ============================================================================
 // TYPES

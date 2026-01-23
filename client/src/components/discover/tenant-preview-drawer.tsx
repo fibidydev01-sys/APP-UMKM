@@ -24,8 +24,8 @@ import {
   Copy,
   Check,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import type { ShowcaseTenant } from '@/types/discover';
 import { getCategoryInfo, getInitials, formatWhatsAppUrl } from '@/lib/discover';

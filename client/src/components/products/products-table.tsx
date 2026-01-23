@@ -25,7 +25,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@umkm/shared/ui';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -34,8 +34,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+} from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 
 import { getProductColumns } from './products-table-columns';

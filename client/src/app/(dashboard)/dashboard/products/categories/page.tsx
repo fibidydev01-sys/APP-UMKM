@@ -9,21 +9,21 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Tag, Package, ArrowRight, Info } from 'lucide-react';
 import { PageHeader } from '@/components/dashboard';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from '@umkm/shared/ui';
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
+} from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { productsApi, getErrorMessage } from '@/lib/api';
 
 // ==========================================

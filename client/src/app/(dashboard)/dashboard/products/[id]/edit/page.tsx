@@ -9,9 +9,9 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { PageHeader } from '@/components/dashboard';
 import { ProductForm } from '@/components/products';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { productsApi, getErrorMessage } from '@/lib/api';
 import type { Product } from '@/types';
 

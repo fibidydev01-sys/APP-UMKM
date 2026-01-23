@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { MessageCircle, Truck, CreditCard, Banknote, Wallet } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import {
   Dialog,
   DialogContent,
@@ -10,13 +10,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+} from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { ScrollArea } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
+import { RadioGroup, RadioGroupItem } from '@umkm/shared/ui';
 import { formatPrice, generateWhatsAppLink } from '@/lib/format';
 import { useCartStore, useCartItems, useCartTotalPrice } from '@/stores';
 import type { PublicTenant, PaymentMethods, ShippingMethods } from '@/types';

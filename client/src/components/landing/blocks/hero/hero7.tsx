@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Circle } from 'lucide-react';
-import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Card } from '@/components/ui/card';
-import ColorBlends from '@/components/ui/color-blends/ColorBends';
+import { InteractiveHoverButton } from '@umkm/shared/ui';
+import { OptimizedImage } from '@umkm/shared/ui';
+import { Card } from '@umkm/shared/ui';
+import ColorBlends from '@umkm/shared/ui';
 
 interface Hero7Props {
   title: string;

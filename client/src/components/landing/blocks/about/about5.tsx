@@ -1,7 +1,7 @@
 'use client';
 
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { Card, CardContent } from '@/components/ui/card';
+import { OptimizedImage } from '@umkm/shared/ui';
+import { Card, CardContent } from '@umkm/shared/ui';
 
 interface About5Props {
   title: string;

@@ -1,13 +1,13 @@
 'use client';
 
 import { Loader2, Save, Truck } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Switch } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import type { ShippingMethods } from '@/types';
 

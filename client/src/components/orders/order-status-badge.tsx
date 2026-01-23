@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import type { OrderStatus, PaymentStatus } from '@/types';
 

@@ -6,8 +6,8 @@
 'use client';
 
 import { Star, Quote, MapPin } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════

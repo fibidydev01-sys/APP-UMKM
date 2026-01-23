@@ -8,7 +8,7 @@ import {
   IconAlertTriangle,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import { OnboardingStepStatus } from '@/lib/onboarding';
 
 // ============================================

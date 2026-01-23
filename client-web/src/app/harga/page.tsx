@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Wallet } from 'lucide-react';
 import { LandingHeader, LandingFooter } from '@/components/platform-landing';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@umkm/shared/ui';
 
 // Lazy load sections
 const PricingSection = dynamic(() =>

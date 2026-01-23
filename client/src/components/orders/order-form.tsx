@@ -6,9 +6,9 @@ import { useForm, SubmitHandler, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Save, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
 import {
   Form,
   FormControl,
@@ -16,14 +16,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from '@umkm/shared/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@umkm/shared/ui';
 import {
   Command,
   CommandEmpty,
@@ -31,14 +31,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command';
+} from '@umkm/shared/ui';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+} from '@umkm/shared/ui';
+import { Card, CardContent, CardHeader, CardTitle } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
 import { useCreateOrder } from '@/hooks';
 import { formatPrice } from '@/lib/format';
 import type { Product, Customer } from '@/types';

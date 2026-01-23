@@ -2,8 +2,8 @@
 
 import { Table } from '@tanstack/react-table';
 import { X, Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '@umkm/shared/ui';
+import { Button } from '@umkm/shared/ui';
 import type { OrderListItem } from '@/types';
 
 // ==========================================

@@ -9,7 +9,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from '@/components/ui/pagination';
+} from '@umkm/shared/ui';
 import { productsUrl } from '@/lib/store-url'; // ✅ NEW IMPORT
 
 // ==========================================

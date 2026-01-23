@@ -6,7 +6,7 @@
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { DiscoverPageClient } from './client';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@umkm/shared/ui';
 
 // ══════════════════════════════════════════════════════════════
 // METADATA

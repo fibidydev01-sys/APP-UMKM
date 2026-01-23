@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import { ProductGrid } from './product-grid';
 import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
 import type { Product } from '@/types';

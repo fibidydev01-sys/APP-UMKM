@@ -2,12 +2,12 @@
 
 import { useState } from 'react';
 import { Plus, Trash2, Edit2, Star, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@umkm/shared/ui';
+import { Input } from '@umkm/shared/ui';
+import { Label } from '@umkm/shared/ui';
+import { Textarea } from '@umkm/shared/ui';
+import { Card, CardContent } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@umkm/shared/ui';
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@umkm/shared/ui';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +25,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@umkm/shared/ui';
 import { ImageUpload } from '@/components/upload';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';

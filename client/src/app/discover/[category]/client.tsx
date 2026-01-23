@@ -12,9 +12,9 @@ import {
   Loader2,
   ArrowLeft,
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
+import { Skeleton } from '@umkm/shared/ui';
 import {
   DiscoverHeader,
   CategoryFilterBar,

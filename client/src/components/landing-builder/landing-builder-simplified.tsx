@@ -30,16 +30,16 @@ import {
   ExternalLink,
 } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@umkm/shared/ui';
+import { Switch } from '@umkm/shared/ui';
+import { Badge } from '@umkm/shared/ui';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@umkm/shared/ui';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,10 +49,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+} from '@umkm/shared/ui';
+import { Card } from '@umkm/shared/ui';
+import { Separator } from '@umkm/shared/ui';
+import { Alert, AlertDescription } from '@umkm/shared/ui';
 import Link from 'next/link';
 
 import { cn } from '@/lib/utils';

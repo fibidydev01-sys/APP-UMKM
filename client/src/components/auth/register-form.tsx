@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRegisterWizard } from '@/hooks';
 import { useRegister } from '@/hooks';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@umkm/shared/ui';
 import {
   StepWelcome,
   StepCategory,

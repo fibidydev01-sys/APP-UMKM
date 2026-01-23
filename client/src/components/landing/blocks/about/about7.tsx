@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '@umkm/shared/ui';
 import { Quote } from 'lucide-react';
 
 interface About7Props {

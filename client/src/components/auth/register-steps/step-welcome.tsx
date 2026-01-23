@@ -1,7 +1,7 @@
 'use client';
 
 import { Store, Sparkles, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 
 // ==========================================
 // TYPES

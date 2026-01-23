@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Plus, Minus, ShoppingCart, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@umkm/shared/ui';
 import { useCartStore, useItemQty } from '@/stores';
 import { cn } from '@/lib/utils';
 import type { Product } from '@/types';
