@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ExternalLink, Slash, Type, Settings, Layers } from 'lucide-react';
-import { InteractiveHoverButton, OptimizedImage, Button, Card, Aurora } from '@umkm/shared/ui';
+import { InteractiveHoverButton, Button, Card, Aurora } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 interface Hero6Props {
   title: string;

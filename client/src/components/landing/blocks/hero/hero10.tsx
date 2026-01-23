@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { InteractiveHoverButton, OptimizedImage, Button, Card, PixelBlast } from '@umkm/shared/ui';
+import { InteractiveHoverButton, Button, Card, PixelBlast } from '@umkm/shared/ui';
+import { OptimizedImage } from '@/components/ui/optimized-image';
 
 interface Hero10Props {
   title: string;

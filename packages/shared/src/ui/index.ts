@@ -63,9 +63,6 @@ export * from './toggle-group';
 export * from './tooltip';
 export * from './word-rotate';
 
-// Optimized Image component
-export * from './optimized-image';
-
 // ==========================================
 // EFFECT COMPONENTS - Default exports as named exports
 // These components use default export, so we re-export them as named
