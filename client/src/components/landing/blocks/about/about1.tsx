@@ -17,24 +17,23 @@ interface About1Props {
 
 /**
  * About Block: about1
- * Design: Grid
- *
- * Classic grid layout with image and content side by side
- * Features displayed as a list with checkmarks
+ * Design: GRID - Image left, Content right
  */
 export function About1({ title, subtitle, content, image, features = [] }: About1Props) {
   return (
-    <section id="about" className="py-12">
+    <section id="about" className="py-16 md:py-24">
       {/* Section Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-        {subtitle && <p className="text-muted-foreground mt-2">{subtitle}</p>}
+      <div className="text-center mb-12 md:mb-16">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
+        {subtitle && (
+          <p className="text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">{subtitle}</p>
+        )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-8 items-center">
+      <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
         {/* Image */}
         {image && (
-          <div className="relative aspect-video rounded-xl overflow-hidden">
+          <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
             <Image
               src={image}
               alt={title}
@@ -42,23 +41,33 @@ export function About1({ title, subtitle, content, image, features = [] }: About
               className="object-cover"
               unoptimized={image.startsWith('http')}
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
           </div>
         )}
 
         {/* Content */}
         <div className="space-y-6">
-          {content && <p className="text-muted-foreground leading-relaxed">{content}</p>}
+          {content && (
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+              {content}
+            </p>
+          )}
 
-          {/* Features */}
+          {/* Features List */}
           {features.length > 0 && (
-            <div className="grid gap-4">
+            <div className="space-y-4 pt-4">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                <div
+                  key={index}
+                  className="flex items-start gap-4 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-colors"
+                >
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-primary" />
+                  </div>
                   <div>
-                    <p className="font-medium">{feature.title}</p>
+                    <h3 className="font-semibold text-foreground">{feature.title}</h3>
                     {feature.description && (
-                      <p className="text-sm text-muted-foreground">{feature.description}</p>
+                      <p className="text-sm text-muted-foreground mt-1">{feature.description}</p>
                     )}
                   </div>
                 </div>

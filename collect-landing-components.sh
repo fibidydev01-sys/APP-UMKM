@@ -1,50 +1,259 @@
 #!/bin/bash
 
 # ============================================
-# LANDING COMPONENTS COLLECTOR
+# ULTRA SMART LANDING COMPONENTS COLLECTOR
 # Path: src/components/landing/
 # ============================================
 #
-# SCOPE:
-# - Landing page components (tenant-*.tsx)
-# - Block variants (hero, about, products, etc.)
-# - Index files
+# FEATURES:
+# - Interactive OR command-line mode
+# - Smart range selection (1-10, 20-30, etc.)
+# - TXT output format
+# - Preset options (quick collection)
+# - 6 sections: hero, about, products, testimonials, contact, cta
 #
-# Usage:
-# chmod +x collect-landing-components.sh
-# ./collect-landing-components.sh
+# Usage (Interactive):
+#   chmod +x collect-landing-ultra.sh
+#   ./collect-landing-ultra.sh
+#
+# Usage (Command-line):
+#   ./collect-landing-ultra.sh --hero 1-10 --about 1-20 --products all --skip-testimonials
+#   ./collect-landing-ultra.sh --all 1-50          # All blocks 1-50
+#   ./collect-landing-ultra.sh --preset small      # Preset: 1-10
+#   ./collect-landing-ultra.sh --preset medium     # Preset: 1-50
+#   ./collect-landing-ultra.sh --preset large      # Preset: 1-100
+#   ./collect-landing-ultra.sh --preset full       # All files
 #
 # ============================================
 
 OUTPUT_DIR="collections"
-OUTPUT_FILE="$OUTPUT_DIR/landing-components-$(date +%Y%m%d-%H%M%S).md"
+OUTPUT_FILE="$OUTPUT_DIR/landing-components-$(date +%Y%m%d-%H%M%S).txt"
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "🎨 Landing Components Collector"
-echo "=============================================="
-echo ""
-echo "📍 Working directory: $(pwd)"
-echo "📄 Output file: $OUTPUT_FILE"
-echo ""
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+NC='\033[0m'
 
+# Variables
 FOUND_COUNT=0
 NOT_FOUND_COUNT=0
 TOTAL_LINES=0
+INTERACTIVE_MODE=true
 
-cat > "$OUTPUT_FILE" << EOF
-# LANDING COMPONENTS - COMPLETE COLLECTION
-> Generated on: $(date)
-> Working Directory: $(pwd)
+# Range configurations for each block
+declare -A BLOCK_RANGES
+BLOCK_RANGES["hero"]=""
+BLOCK_RANGES["about"]=""
+BLOCK_RANGES["products"]=""
+BLOCK_RANGES["testimonials"]=""
+BLOCK_RANGES["contact"]=""
+BLOCK_RANGES["cta"]=""
 
-## SCOPE:
-- Landing Page Components (tenant-*.tsx)
-- Block Variants (hero, about, products, testimonials, contact, cta)
-- Index files & Mapping
+# ============================================
+# PARSE COMMAND LINE ARGUMENTS
+# ============================================
 
----
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --hero)
+                BLOCK_RANGES["hero"]="$2"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --about)
+                BLOCK_RANGES["about"]="$2"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --products)
+                BLOCK_RANGES["products"]="$2"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --testimonials)
+                BLOCK_RANGES["testimonials"]="$2"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --contact)
+                BLOCK_RANGES["contact"]="$2"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --cta)
+                BLOCK_RANGES["cta"]="$2"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --all)
+                local range="$2"
+                BLOCK_RANGES["hero"]="$range"
+                BLOCK_RANGES["about"]="$range"
+                BLOCK_RANGES["products"]="$range"
+                BLOCK_RANGES["testimonials"]="$range"
+                BLOCK_RANGES["contact"]="$range"
+                BLOCK_RANGES["cta"]="$range"
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --skip-hero)
+                BLOCK_RANGES["hero"]="skip"
+                INTERACTIVE_MODE=false
+                shift
+                ;;
+            --skip-about)
+                BLOCK_RANGES["about"]="skip"
+                INTERACTIVE_MODE=false
+                shift
+                ;;
+            --skip-products)
+                BLOCK_RANGES["products"]="skip"
+                INTERACTIVE_MODE=false
+                shift
+                ;;
+            --skip-testimonials)
+                BLOCK_RANGES["testimonials"]="skip"
+                INTERACTIVE_MODE=false
+                shift
+                ;;
+            --skip-contact)
+                BLOCK_RANGES["contact"]="skip"
+                INTERACTIVE_MODE=false
+                shift
+                ;;
+            --skip-cta)
+                BLOCK_RANGES["cta"]="skip"
+                INTERACTIVE_MODE=false
+                shift
+                ;;
+            --preset)
+                local preset="$2"
+                case $preset in
+                    small)
+                        BLOCK_RANGES["hero"]="1-10"
+                        BLOCK_RANGES["about"]="1-10"
+                        BLOCK_RANGES["products"]="1-10"
+                        BLOCK_RANGES["testimonials"]="1-10"
+                        BLOCK_RANGES["contact"]="1-10"
+                        BLOCK_RANGES["cta"]="1-10"
+                        ;;
+                    medium)
+                        BLOCK_RANGES["hero"]="1-50"
+                        BLOCK_RANGES["about"]="1-50"
+                        BLOCK_RANGES["products"]="1-50"
+                        BLOCK_RANGES["testimonials"]="1-50"
+                        BLOCK_RANGES["contact"]="1-50"
+                        BLOCK_RANGES["cta"]="1-50"
+                        ;;
+                    large)
+                        BLOCK_RANGES["hero"]="1-100"
+                        BLOCK_RANGES["about"]="1-100"
+                        BLOCK_RANGES["products"]="1-100"
+                        BLOCK_RANGES["testimonials"]="1-100"
+                        BLOCK_RANGES["contact"]="1-100"
+                        BLOCK_RANGES["cta"]="1-100"
+                        ;;
+                    full)
+                        BLOCK_RANGES["hero"]="all"
+                        BLOCK_RANGES["about"]="all"
+                        BLOCK_RANGES["products"]="all"
+                        BLOCK_RANGES["testimonials"]="all"
+                        BLOCK_RANGES["contact"]="all"
+                        BLOCK_RANGES["cta"]="all"
+                        ;;
+                    *)
+                        echo -e "${RED}Unknown preset: $preset${NC}"
+                        echo "Available presets: small, medium, large, full"
+                        exit 1
+                        ;;
+                esac
+                INTERACTIVE_MODE=false
+                shift 2
+                ;;
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            *)
+                echo -e "${RED}Unknown option: $1${NC}"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
+
+show_help() {
+    cat << EOF
+${CYAN}╔════════════════════════════════════════════╗${NC}
+${CYAN}║   🎨 ULTRA SMART COMPONENTS COLLECTOR      ║${NC}
+${CYAN}╚════════════════════════════════════════════╝${NC}
+
+${YELLOW}USAGE:${NC}
+  Interactive Mode:
+    ./collect-landing-ultra.sh
+
+  Command-line Mode:
+    ./collect-landing-ultra.sh [OPTIONS]
+
+${YELLOW}OPTIONS:${NC}
+  --hero <range>           Collect hero blocks
+  --about <range>          Collect about blocks
+  --products <range>       Collect products blocks
+  --testimonials <range>   Collect testimonials blocks
+  --contact <range>        Collect contact blocks
+  --cta <range>            Collect cta blocks
+  --all <range>            Collect all blocks with same range
+  
+  --skip-hero              Skip hero blocks
+  --skip-about             Skip about blocks
+  --skip-products          Skip products blocks
+  --skip-testimonials      Skip testimonials blocks
+  --skip-contact           Skip contact blocks
+  --skip-cta               Skip cta blocks
+  
+  --preset <name>          Use preset configuration
+  --help, -h               Show this help
+
+${YELLOW}RANGE FORMATS:${NC}
+  1-10                     Files 1 to 10
+  1-10,20-30               Files 1-10 and 20-30
+  5,15,25                  Files 5, 15, and 25
+  all                      All available files
+  skip                     Skip this section
+
+${YELLOW}PRESETS:${NC}
+  small                    Files 1-10 (all blocks)
+  medium                   Files 1-50 (all blocks)
+  large                    Files 1-100 (all blocks)
+  full                     All files (all blocks)
+
+${YELLOW}EXAMPLES:${NC}
+  ${GREEN}# Collect hero 1-10, about 1-20, skip products${NC}
+  ./collect-landing-ultra.sh --hero 1-10 --about 1-20 --skip-products
+
+  ${GREEN}# Collect all blocks 1-50${NC}
+  ./collect-landing-ultra.sh --all 1-50
+
+  ${GREEN}# Use medium preset${NC}
+  ./collect-landing-ultra.sh --preset medium
+
+  ${GREEN}# Interactive mode${NC}
+  ./collect-landing-ultra.sh
 
 EOF
+}
+
+# ============================================
+# HELPER FUNCTIONS
+# ============================================
 
 collect_file() {
     local file=$1
@@ -54,48 +263,115 @@ collect_file() {
         local line_count=$(wc -l < "$file")
         TOTAL_LINES=$((TOTAL_LINES + line_count))
         FOUND_COUNT=$((FOUND_COUNT + 1))
-        echo "✅ $relative_path (${line_count} lines)"
-        
-        # Detect file extension for syntax highlighting
-        local ext="${file##*.}"
-        local syntax="typescript"
-        if [ "$ext" = "md" ]; then
-            syntax="markdown"
-        fi
+        echo -e "  ${GREEN}✅ $relative_path${NC} (${line_count} lines)"
         
         cat >> "$OUTPUT_FILE" << EOF
 
----
+--------------------------------------------------------------------------------
+FILE: $relative_path
+Lines: $line_count
+--------------------------------------------------------------------------------
 
-## FILE: \`$relative_path\`
-> Lines: $line_count
-
-\`\`\`$syntax
 $(cat "$file")
-\`\`\`
 
 EOF
     else
         NOT_FOUND_COUNT=$((NOT_FOUND_COUNT + 1))
-        echo "❌ NOT FOUND: $relative_path"
+        echo -e "  ${RED}❌ NOT FOUND: $relative_path${NC}"
+    fi
+}
+
+parse_range() {
+    local input=$1
+    local numbers=()
+    
+    IFS=',' read -ra RANGES <<< "$input"
+    
+    for range in "${RANGES[@]}"; do
+        if [[ $range =~ ^([0-9]+)-([0-9]+)$ ]]; then
+            start=${BASH_REMATCH[1]}
+            end=${BASH_REMATCH[2]}
+            for ((i=start; i<=end; i++)); do
+                numbers+=($i)
+            done
+        elif [[ $range =~ ^[0-9]+$ ]]; then
+            numbers+=($range)
+        fi
+    done
+    
+    printf '%s\n' "${numbers[@]}" | sort -n | uniq
+}
+
+collect_block_files() {
+    local block_type=$1
+    local range_input=$2
+    local base_path="client/src/components/landing/blocks/$block_type"
+    
+    if [ "$range_input" = "all" ] || [ "$range_input" = "a" ]; then
+        for file in "$base_path"/${block_type}*.tsx; do
+            if [ -f "$file" ]; then
+                local filename=$(basename "$file")
+                collect_file "$file" "src/components/landing/blocks/$block_type/$filename"
+            fi
+        done
+    else
+        local numbers=($(parse_range "$range_input"))
+        for num in "${numbers[@]}"; do
+            local file="$base_path/${block_type}${num}.tsx"
+            collect_file "$file" "src/components/landing/blocks/$block_type/${block_type}${num}.tsx"
+        done
     fi
 }
 
 # ============================================
-# SECTION 1: ROOT LANDING COMPONENTS
+# MAIN SCRIPT
+# ============================================
+
+# Parse arguments
+parse_arguments "$@"
+
+echo -e "${CYAN}╔════════════════════════════════════════════╗${NC}"
+echo -e "${CYAN}║   🎨 ULTRA SMART COMPONENTS COLLECTOR      ║${NC}"
+echo -e "${CYAN}╚════════════════════════════════════════════╝${NC}"
+echo ""
+echo -e "${BLUE}📍 Working directory: $(pwd)${NC}"
+echo -e "${BLUE}📄 Output file: $OUTPUT_FILE${NC}"
+echo -e "${BLUE}🎮 Mode: $([ "$INTERACTIVE_MODE" = true ] && echo "Interactive" || echo "Command-line")${NC}"
+echo ""
+
+# Initialize output file
+cat > "$OUTPUT_FILE" << EOF
+================================================================================
+LANDING COMPONENTS - ULTRA SMART COLLECTION
+================================================================================
+Generated on: $(date)
+Working Directory: $(pwd)
+Mode: $([ "$INTERACTIVE_MODE" = true ] && echo "Interactive" || echo "Command-line")
+
+SCOPE:
+- Landing Page Components (tenant-*.tsx)
+- Block Variants (hero, about, products, testimonials, contact, cta)
+- Index files & Mapping
+
+================================================================================
+
+EOF
+
+# ============================================
+# ROOT COMPONENTS
 # ============================================
 
 echo ""
-echo "═══════════════════════════════════════════"
-echo "📄 ROOT LANDING COMPONENTS (7 files)"
-echo "═══════════════════════════════════════════"
+echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
+echo -e "${PURPLE}📄 ROOT LANDING COMPONENTS${NC}"
+echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
 echo ""
 
 cat >> "$OUTPUT_FILE" << EOF
 
----
-
-# 📄 ROOT LANDING COMPONENTS
+================================================================================
+📄 ROOT LANDING COMPONENTS
+================================================================================
 
 EOF
 
@@ -108,20 +384,20 @@ collect_file "client/src/components/landing/tenant-contact.tsx" "src/components/
 collect_file "client/src/components/landing/tenant-cta.tsx" "src/components/landing/tenant-cta.tsx"
 
 # ============================================
-# SECTION 2: BLOCKS INDEX & MAPPING
+# BLOCKS INDEX & MAPPING
 # ============================================
 
 echo ""
-echo "═══════════════════════════════════════════"
-echo "📁 BLOCKS INDEX & MAPPING (2 files)"
-echo "═══════════════════════════════════════════"
+echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
+echo -e "${PURPLE}📁 BLOCKS INDEX & MAPPING${NC}"
+echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
 echo ""
 
 cat >> "$OUTPUT_FILE" << EOF
 
----
-
-# 📁 BLOCKS INDEX & MAPPING
+================================================================================
+📁 BLOCKS INDEX & MAPPING
+================================================================================
 
 EOF
 
@@ -129,212 +405,105 @@ collect_file "client/src/components/landing/blocks/index.ts" "src/components/lan
 collect_file "client/src/components/landing/blocks/MAPPING.md" "src/components/landing/blocks/MAPPING.md"
 
 # ============================================
-# SECTION 3: HERO BLOCKS
+# BLOCK SECTIONS
 # ============================================
 
-echo ""
-echo "═══════════════════════════════════════════"
-echo "🦸 HERO BLOCKS (8 files)"
-echo "═══════════════════════════════════════════"
-echo ""
+declare -A BLOCK_TYPES=(
+    ["hero"]="🦸 HERO BLOCKS"
+    ["about"]="ℹ️  ABOUT BLOCKS"
+    ["products"]="🛍️  PRODUCTS BLOCKS"
+    ["testimonials"]="💬 TESTIMONIALS BLOCKS"
+    ["contact"]="📞 CONTACT BLOCKS"
+    ["cta"]="🚀 CTA BLOCKS"
+)
 
-cat >> "$OUTPUT_FILE" << EOF
+BLOCK_ORDER=("hero" "about" "products" "testimonials" "contact" "cta")
 
----
+for block in "${BLOCK_ORDER[@]}"; do
+    echo ""
+    echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
+    echo -e "${PURPLE}${BLOCK_TYPES[$block]}${NC}"
+    echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
+    echo ""
+    
+    local range_input="${BLOCK_RANGES[$block]}"
+    
+    if [ "$INTERACTIVE_MODE" = true ]; then
+        echo -e "${YELLOW}Enter range for $block blocks:${NC}"
+        echo -e "${CYAN}  Examples:${NC}"
+        echo -e "    ${GREEN}1-10${NC}       → Files 1 to 10"
+        echo -e "    ${GREEN}1-10,20-30${NC} → Files 1-10 and 20-30"
+        echo -e "    ${GREEN}5,15,25${NC}    → Files 5, 15, and 25"
+        echo -e "    ${GREEN}all${NC} or ${GREEN}a${NC}   → All files"
+        echo -e "    ${GREEN}skip${NC} or ${GREEN}s${NC}  → Skip this section"
+        echo ""
+        read -p "Range: " range_input
+    fi
+    
+    if [ "$range_input" = "skip" ] || [ "$range_input" = "s" ] || [ -z "$range_input" ]; then
+        echo -e "${YELLOW}⏭️  Skipping $block blocks${NC}"
+        continue
+    fi
+    
+    cat >> "$OUTPUT_FILE" << EOF
 
-# 🦸 HERO BLOCKS
+================================================================================
+${BLOCK_TYPES[$block]}
+Range: $range_input
+================================================================================
 
 EOF
-
-collect_file "client/src/components/landing/blocks/hero/index.ts" "src/components/landing/blocks/hero/index.ts"
-collect_file "client/src/components/landing/blocks/hero/hero1.tsx" "src/components/landing/blocks/hero/hero1.tsx"
-collect_file "client/src/components/landing/blocks/hero/hero2.tsx" "src/components/landing/blocks/hero/hero2.tsx"
-collect_file "client/src/components/landing/blocks/hero/hero3.tsx" "src/components/landing/blocks/hero/hero3.tsx"
-collect_file "client/src/components/landing/blocks/hero/hero4.tsx" "src/components/landing/blocks/hero/hero4.tsx"
-collect_file "client/src/components/landing/blocks/hero/hero5.tsx" "src/components/landing/blocks/hero/hero5.tsx"
-collect_file "client/src/components/landing/blocks/hero/hero6.tsx" "src/components/landing/blocks/hero/hero6.tsx"
-collect_file "client/src/components/landing/blocks/hero/hero7.tsx" "src/components/landing/blocks/hero/hero7.tsx"
-
-# ============================================
-# SECTION 4: ABOUT BLOCKS
-# ============================================
-
-echo ""
-echo "═══════════════════════════════════════════"
-echo "ℹ️ ABOUT BLOCKS (8 files)"
-echo "═══════════════════════════════════════════"
-echo ""
-
-cat >> "$OUTPUT_FILE" << EOF
-
----
-
-# ℹ️ ABOUT BLOCKS
-
-EOF
-
-collect_file "client/src/components/landing/blocks/about/index.ts" "src/components/landing/blocks/about/index.ts"
-collect_file "client/src/components/landing/blocks/about/about1.tsx" "src/components/landing/blocks/about/about1.tsx"
-collect_file "client/src/components/landing/blocks/about/about2.tsx" "src/components/landing/blocks/about/about2.tsx"
-collect_file "client/src/components/landing/blocks/about/about3.tsx" "src/components/landing/blocks/about/about3.tsx"
-collect_file "client/src/components/landing/blocks/about/about4.tsx" "src/components/landing/blocks/about/about4.tsx"
-collect_file "client/src/components/landing/blocks/about/about5.tsx" "src/components/landing/blocks/about/about5.tsx"
-collect_file "client/src/components/landing/blocks/about/about6.tsx" "src/components/landing/blocks/about/about6.tsx"
-collect_file "client/src/components/landing/blocks/about/about7.tsx" "src/components/landing/blocks/about/about7.tsx"
-
-# ============================================
-# SECTION 5: PRODUCTS BLOCKS
-# ============================================
-
-echo ""
-echo "═══════════════════════════════════════════"
-echo "🛍️ PRODUCTS BLOCKS (8 files)"
-echo "═══════════════════════════════════════════"
-echo ""
-
-cat >> "$OUTPUT_FILE" << EOF
-
----
-
-# 🛍️ PRODUCTS BLOCKS
-
-EOF
-
-collect_file "client/src/components/landing/blocks/products/index.ts" "src/components/landing/blocks/products/index.ts"
-collect_file "client/src/components/landing/blocks/products/products1.tsx" "src/components/landing/blocks/products/products1.tsx"
-collect_file "client/src/components/landing/blocks/products/products2.tsx" "src/components/landing/blocks/products/products2.tsx"
-collect_file "client/src/components/landing/blocks/products/products3.tsx" "src/components/landing/blocks/products/products3.tsx"
-collect_file "client/src/components/landing/blocks/products/products4.tsx" "src/components/landing/blocks/products/products4.tsx"
-collect_file "client/src/components/landing/blocks/products/products5.tsx" "src/components/landing/blocks/products/products5.tsx"
-collect_file "client/src/components/landing/blocks/products/products6.tsx" "src/components/landing/blocks/products/products6.tsx"
-collect_file "client/src/components/landing/blocks/products/products7.tsx" "src/components/landing/blocks/products/products7.tsx"
-
-# ============================================
-# SECTION 6: TESTIMONIALS BLOCKS
-# ============================================
-
-echo ""
-echo "═══════════════════════════════════════════"
-echo "💬 TESTIMONIALS BLOCKS (8 files)"
-echo "═══════════════════════════════════════════"
-echo ""
-
-cat >> "$OUTPUT_FILE" << EOF
-
----
-
-# 💬 TESTIMONIALS BLOCKS
-
-EOF
-
-collect_file "client/src/components/landing/blocks/testimonials/index.ts" "src/components/landing/blocks/testimonials/index.ts"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials1.tsx" "src/components/landing/blocks/testimonials/testimonials1.tsx"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials2.tsx" "src/components/landing/blocks/testimonials/testimonials2.tsx"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials3.tsx" "src/components/landing/blocks/testimonials/testimonials3.tsx"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials4.tsx" "src/components/landing/blocks/testimonials/testimonials4.tsx"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials5.tsx" "src/components/landing/blocks/testimonials/testimonials5.tsx"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials6.tsx" "src/components/landing/blocks/testimonials/testimonials6.tsx"
-collect_file "client/src/components/landing/blocks/testimonials/testimonials7.tsx" "src/components/landing/blocks/testimonials/testimonials7.tsx"
-
-# ============================================
-# SECTION 7: CONTACT BLOCKS
-# ============================================
-
-echo ""
-echo "═══════════════════════════════════════════"
-echo "📞 CONTACT BLOCKS (8 files)"
-echo "═══════════════════════════════════════════"
-echo ""
-
-cat >> "$OUTPUT_FILE" << EOF
-
----
-
-# 📞 CONTACT BLOCKS
-
-EOF
-
-collect_file "client/src/components/landing/blocks/contact/index.ts" "src/components/landing/blocks/contact/index.ts"
-collect_file "client/src/components/landing/blocks/contact/contact1.tsx" "src/components/landing/blocks/contact/contact1.tsx"
-collect_file "client/src/components/landing/blocks/contact/contact2.tsx" "src/components/landing/blocks/contact/contact2.tsx"
-collect_file "client/src/components/landing/blocks/contact/contact3.tsx" "src/components/landing/blocks/contact/contact3.tsx"
-collect_file "client/src/components/landing/blocks/contact/contact4.tsx" "src/components/landing/blocks/contact/contact4.tsx"
-collect_file "client/src/components/landing/blocks/contact/contact5.tsx" "src/components/landing/blocks/contact/contact5.tsx"
-collect_file "client/src/components/landing/blocks/contact/contact6.tsx" "src/components/landing/blocks/contact/contact6.tsx"
-collect_file "client/src/components/landing/blocks/contact/contact7.tsx" "src/components/landing/blocks/contact/contact7.tsx"
-
-# ============================================
-# SECTION 8: CTA BLOCKS
-# ============================================
-
-echo ""
-echo "═══════════════════════════════════════════"
-echo "🚀 CTA BLOCKS (8 files)"
-echo "═══════════════════════════════════════════"
-echo ""
-
-cat >> "$OUTPUT_FILE" << EOF
-
----
-
-# 🚀 CTA BLOCKS
-
-EOF
-
-collect_file "client/src/components/landing/blocks/cta/index.ts" "src/components/landing/blocks/cta/index.ts"
-collect_file "client/src/components/landing/blocks/cta/cta1.tsx" "src/components/landing/blocks/cta/cta1.tsx"
-collect_file "client/src/components/landing/blocks/cta/cta2.tsx" "src/components/landing/blocks/cta/cta2.tsx"
-collect_file "client/src/components/landing/blocks/cta/cta3.tsx" "src/components/landing/blocks/cta/cta3.tsx"
-collect_file "client/src/components/landing/blocks/cta/cta4.tsx" "src/components/landing/blocks/cta/cta4.tsx"
-collect_file "client/src/components/landing/blocks/cta/cta5.tsx" "src/components/landing/blocks/cta/cta5.tsx"
-collect_file "client/src/components/landing/blocks/cta/cta6.tsx" "src/components/landing/blocks/cta/cta6.tsx"
-collect_file "client/src/components/landing/blocks/cta/cta7.tsx" "src/components/landing/blocks/cta/cta7.tsx"
+    
+    collect_file "client/src/components/landing/blocks/$block/index.ts" "src/components/landing/blocks/$block/index.ts"
+    collect_block_files "$block" "$range_input"
+done
 
 # ============================================
 # SUMMARY
 # ============================================
 
 echo ""
-echo "═══════════════════════════════════════════"
-echo "📊 COLLECTION SUMMARY"
-echo "═══════════════════════════════════════════"
+echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
+echo -e "${PURPLE}📊 COLLECTION SUMMARY${NC}"
+echo -e "${PURPLE}═══════════════════════════════════════════${NC}"
 echo ""
 
 cat >> "$OUTPUT_FILE" << EOF
 
----
+================================================================================
+📊 COLLECTION SUMMARY
+================================================================================
 
-# 📊 COLLECTION SUMMARY
+Landing Components Module:
 
-## 📦 Landing Components Module:
+┌─────────────────────────┬────────────────┐
+│ Section                 │ Configuration  │
+├─────────────────────────┼────────────────┤
+│ 📄 Root Components      │ All (7 files)  │
+│ 📁 Blocks Index/Mapping │ All (2 files)  │
+│ 🦸 Hero Blocks          │ ${BLOCK_RANGES["hero"]:-Interactive}  │
+│ ℹ️  About Blocks         │ ${BLOCK_RANGES["about"]:-Interactive}  │
+│ 🛍️  Products Blocks      │ ${BLOCK_RANGES["products"]:-Interactive}  │
+│ 💬 Testimonials Blocks  │ ${BLOCK_RANGES["testimonials"]:-Interactive}  │
+│ 📞 Contact Blocks       │ ${BLOCK_RANGES["contact"]:-Interactive}  │
+│ 🚀 CTA Blocks           │ ${BLOCK_RANGES["cta"]:-Interactive}  │
+└─────────────────────────┴────────────────┘
 
-| Section | Files |
-|---------|-------|
-| 📄 Root Components | 7 files |
-| 📁 Blocks Index/Mapping | 2 files |
-| 🦸 Hero Blocks | 8 files |
-| ℹ️ About Blocks | 8 files |
-| 🛍️ Products Blocks | 8 files |
-| 💬 Testimonials Blocks | 8 files |
-| 📞 Contact Blocks | 8 files |
-| 🚀 CTA Blocks | 8 files |
-| **Total** | **57 files** |
-
-## 📝 Stats:
+Stats:
 - ✅ Found: $FOUND_COUNT files
 - ❌ Missing: $NOT_FOUND_COUNT files
 - 📝 Total lines: $TOTAL_LINES
 
-## 📍 Output:
-\`$(pwd)/$OUTPUT_FILE\`
+Output:
+$(pwd)/$OUTPUT_FILE
 
----
-
-> END OF COLLECTION
+================================================================================
+END OF COLLECTION
+================================================================================
 EOF
 
 echo ""
-echo "✅ Landing components collected!"
-echo "📄 Output: $OUTPUT_FILE"
-echo "📊 Found: $FOUND_COUNT | Missing: $NOT_FOUND_COUNT | Lines: $TOTAL_LINES"
+echo -e "${GREEN}✅ Landing components collected successfully!${NC}"
+echo -e "${BLUE}📄 Output: $OUTPUT_FILE${NC}"
+echo -e "${CYAN}📊 Found: ${FOUND_COUNT} | Missing: ${NOT_FOUND_COUNT} | Lines: ${TOTAL_LINES}${NC}"
 echo ""

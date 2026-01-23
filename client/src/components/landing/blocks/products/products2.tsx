@@ -6,16 +6,6 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/store/product-card';
 import type { Product } from '@/types';
 
-/**
- * Products2 Props - Products from database catalog
- * Note: Products section uses database products, not landing config fields
- *
- * @prop products - Product[] from database
- * @prop title - Section title
- * @prop subtitle - Section subtitle
- * @prop storeSlug - Store slug for product links
- * @prop limit - Max products to display
- */
 interface Products2Props {
   products: Product[];
   title: string;
@@ -28,7 +18,7 @@ interface Products2Props {
 
 /**
  * Products Block: products2
- * Design: Grid Hover
+ * Design: GRID HOVER - Scale effect on hover
  */
 export function Products2({
   products,
@@ -44,33 +34,40 @@ export function Products2({
   if (displayProducts.length === 0) return null;
 
   return (
-    <section id="products" className="py-12">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <div>
-          <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
-        </div>
-        {showViewAll && (
-          <Link href={productsLink}>
-            <Button variant="outline" className="gap-2">
-              Lihat Semua <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+    <section id="products" className="py-16 md:py-24">
+      {/* Centered Header */}
+      <div className="text-center mb-10 md:mb-12">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
+        {subtitle && (
+          <p className="text-lg text-muted-foreground mt-3 max-w-2xl mx-auto">{subtitle}</p>
         )}
       </div>
 
-      {/* Products Grid with Enhanced Hover Effects */}
+      {/* Products Grid with Hover Effects */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {displayProducts.map((product) => (
           <div
             key={product.id}
-            className="group transition-all duration-300 hover:scale-105 hover:z-10"
+            className="group transition-all duration-300 hover:scale-[1.02] hover:z-10"
           >
-            <ProductCard product={product} storeSlug={storeSlug} />
+            <div className="transition-shadow duration-300 group-hover:shadow-xl rounded-xl">
+              <ProductCard product={product} storeSlug={storeSlug} />
+            </div>
           </div>
         ))}
       </div>
+
+      {/* View All Button */}
+      {showViewAll && (
+        <div className="text-center mt-10 md:mt-12">
+          <Link href={productsLink}>
+            <Button size="lg" className="gap-2">
+              Lihat Semua Produk
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

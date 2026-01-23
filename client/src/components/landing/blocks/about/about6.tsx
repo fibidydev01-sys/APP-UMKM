@@ -2,15 +2,6 @@
 
 import { OptimizedImage } from '@/components/ui/optimized-image';
 
-/**
- * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
- *
- * @prop title - aboutTitle: Section heading
- * @prop subtitle - aboutSubtitle: Section subheading
- * @prop content - aboutContent: Main description text
- * @prop image - aboutImage: Cloudinary URL (800x600px)
- * @prop features - aboutFeatures: Array<{icon (Cloudinary URL), title, description}>
- */
 interface About6Props {
   title: string;
   subtitle?: string;
@@ -25,22 +16,29 @@ interface About6Props {
 
 /**
  * About Block: about6
- * Design: Side by Side with Feature Gallery
+ * Design: MAGAZINE - Bold editorial style
  */
 export function About6({ title, subtitle, content, image, features = [] }: About6Props) {
   return (
-    <section id="about" className="py-12">
-      {/* Section Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-        {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
+    <section id="about" className="py-16 md:py-24">
+      {/* Large Editorial Header */}
+      <div className="mb-12 md:mb-16">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-foreground leading-[1.1]">
+          {title}
+        </h2>
+        {subtitle && (
+          <p className="text-xl md:text-2xl text-muted-foreground mt-6 max-w-3xl">
+            {subtitle}
+          </p>
+        )}
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        {/* Left: Main Image */}
-        {image && (
-          <div>
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
+      {/* Two Column Layout */}
+      <div className="grid lg:grid-cols-5 gap-10 lg:gap-16">
+        {/* Left: Large Image */}
+        <div className="lg:col-span-3">
+          {image && (
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl">
               <OptimizedImage
                 src={image}
                 alt={title}
@@ -48,42 +46,42 @@ export function About6({ title, subtitle, content, image, features = [] }: About
                 className="object-cover"
               />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
-        {/* Right: Content */}
-        <div className="space-y-6">
+        {/* Right: Content + Stacked Features */}
+        <div className="lg:col-span-2 space-y-8">
           {content && (
-            <p className="text-muted-foreground leading-relaxed text-lg">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               {content}
             </p>
           )}
 
-          {/* Features Gallery - Display as image cards */}
+          {/* Features - Stacked with dividers */}
           {features.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 pt-4">
+            <div className="space-y-0 divide-y divide-border">
               {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="group rounded-xl border bg-card p-4 hover:shadow-lg transition-all"
-                >
-                  {/* Feature Image */}
-                  {feature.icon && (
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-muted">
-                      <OptimizedImage
-                        src={feature.icon}
-                        alt={feature.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
+                <div key={index} className="py-5 first:pt-0 last:pb-0">
+                  <div className="flex items-start gap-4">
+                    {feature.icon && (
+                      <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                        <OptimizedImage
+                          src={feature.icon}
+                          alt={feature.title}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-semibold text-foreground">{feature.title}</h3>
+                      {feature.description && (
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {feature.description}
+                        </p>
+                      )}
                     </div>
-                  )}
-                  <h3 className="font-semibold mb-1">{feature.title}</h3>
-                  {feature.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {feature.description}
-                    </p>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>

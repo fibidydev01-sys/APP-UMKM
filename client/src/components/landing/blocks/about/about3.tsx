@@ -1,16 +1,8 @@
 'use client';
 
 import { OptimizedImage } from '@/components/ui/optimized-image';
+import { CheckCircle } from 'lucide-react';
 
-/**
- * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
- *
- * @prop title - aboutTitle: Section heading
- * @prop subtitle - aboutSubtitle: Section subheading
- * @prop content - aboutContent: Main description text
- * @prop image - aboutImage: Cloudinary URL (800x600px)
- * @prop features - aboutFeatures: Array<{icon (Cloudinary URL), title, description}>
- */
 interface About3Props {
   title: string;
   subtitle?: string;
@@ -25,70 +17,54 @@ interface About3Props {
 
 /**
  * About Block: about3
- * Design: Side by Side with Feature Gallery
+ * Design: CENTERED - Content focused, image below
  */
 export function About3({ title, subtitle, content, image, features = [] }: About3Props) {
   return (
-    <section id="about" className="py-12">
-      {/* Section Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-        {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
-      </div>
+    <section id="about" className="py-16 md:py-24">
+      <div className="max-w-4xl mx-auto">
+        {/* Centered Header */}
+        <div className="text-center mb-10">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
+          {subtitle && (
+            <p className="text-lg md:text-xl text-muted-foreground mt-4">{subtitle}</p>
+          )}
+        </div>
 
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        {/* Left: Main Image */}
-        {image && (
-          <div>
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-              <OptimizedImage
-                src={image}
-                alt={title}
-                fill
-                className="object-cover"
-              />
-            </div>
+        {/* Content */}
+        {content && (
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed text-center mb-10">
+            {content}
+          </p>
+        )}
+
+        {/* Features - Horizontal Pills */}
+        {features.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-3 mb-12">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-foreground"
+              >
+                <CheckCircle className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">{feature.title}</span>
+              </div>
+            ))}
           </div>
         )}
 
-        {/* Right: Content */}
-        <div className="space-y-6">
-          {content && (
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              {content}
-            </p>
-          )}
-
-          {/* Features Gallery - Display as image cards */}
-          {features.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="group rounded-xl border bg-card p-4 hover:shadow-lg transition-all"
-                >
-                  {/* Feature Image */}
-                  {feature.icon && (
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-muted">
-                      <OptimizedImage
-                        src={feature.icon}
-                        alt={feature.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-                  )}
-                  <h3 className="font-semibold mb-1">{feature.title}</h3>
-                  {feature.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {feature.description}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Image Below */}
+        {image && (
+          <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-2xl ring-1 ring-border">
+            <OptimizedImage
+              src={image}
+              alt={title}
+              fill
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+          </div>
+        )}
       </div>
     </section>
   );

@@ -15,59 +15,57 @@ interface Testimonials1Props {
 
 /**
  * Testimonials Block: testimonials1
- * Design: Grid Cards
- *
- * Enhanced grid layout with hover animations and shadows
- * Modern card design with smooth transitions
+ * Design: GRID CARDS - 3 column with hover effects
  */
-export function Testimonials1({
-  items,
-  title,
-  subtitle,
-}: Testimonials1Props) {
+export function Testimonials1({ items, title, subtitle }: Testimonials1Props) {
   if (items.length === 0) return null;
 
   return (
-    <section id="testimonials" className="py-12">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-        {subtitle && <p className="text-muted-foreground mt-2">{subtitle}</p>}
+    <section id="testimonials" className="py-16 md:py-24">
+      {/* Header */}
+      <div className="text-center mb-12 md:mb-16">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
+        {subtitle && (
+          <p className="text-lg text-muted-foreground mt-4 max-w-2xl mx-auto">{subtitle}</p>
+        )}
       </div>
 
+      {/* Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {items.map((item, index) => {
-          const key = item.id || `testimonial-${index}-${item.name.replace(/\s+/g, '-')}`;
+          const key = item.id || `testimonial-${index}`;
           const { type: avatarType } = getImageSource(item.avatar);
 
           return (
             <Card
               key={key}
-              className="relative group hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+              className="group relative hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-border/50"
             >
-              <CardContent className="pt-6">
-                <Quote className="h-8 w-8 text-primary/20 absolute top-4 right-4 group-hover:text-primary/40 transition-colors" />
+              <CardContent className="p-6">
+                {/* Quote Icon */}
+                <Quote className="h-8 w-8 text-primary/20 mb-4" />
 
+                {/* Rating */}
                 {typeof item.rating === 'number' && item.rating > 0 && (
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: 5 }).map((_, i) => (
                       <Star
                         key={`${key}-star-${i}`}
-                        className={`h-4 w-4 transition-all ${
-                          i < item.rating!
-                            ? 'text-yellow-500 fill-yellow-500'
-                            : 'text-muted'
-                        }`}
+                        className={`h-4 w-4 ${i < item.rating! ? 'text-yellow-500 fill-yellow-500' : 'text-muted'
+                          }`}
                       />
                     ))}
                   </div>
                 )}
 
-                <p className="text-muted-foreground mb-4 italic">
+                {/* Content */}
+                <p className="text-foreground leading-relaxed mb-6">
                   &quot;{item.content}&quot;
                 </p>
 
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 overflow-hidden group-hover:ring-2 group-hover:ring-primary/50 transition-all">
+                {/* Author */}
+                <div className="flex items-center gap-3 pt-4 border-t border-border/50">
+                  <Avatar className="h-10 w-10 ring-2 ring-background shadow">
                     {avatarType !== 'none' ? (
                       <OptimizedImage
                         src={item.avatar}
@@ -76,16 +74,16 @@ export function Testimonials1({
                         height={40}
                         crop="thumb"
                         gravity="face"
-                        className="object-cover w-full h-full"
+                        className="object-cover"
                       />
                     ) : (
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                         {item.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     )}
                   </Avatar>
                   <div>
-                    <p className="font-medium">{item.name}</p>
+                    <p className="font-semibold text-foreground">{item.name}</p>
                     {item.role && (
                       <p className="text-sm text-muted-foreground">{item.role}</p>
                     )}

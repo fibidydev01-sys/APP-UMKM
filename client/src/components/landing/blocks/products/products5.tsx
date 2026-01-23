@@ -6,16 +6,6 @@ import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/store/product-card';
 import type { Product } from '@/types';
 
-/**
- * Products2 Props - Products from database catalog
- * Note: Products section uses database products, not landing config fields
- *
- * @prop products - Product[] from database
- * @prop title - Section title
- * @prop subtitle - Section subtitle
- * @prop storeSlug - Store slug for product links
- * @prop limit - Max products to display
- */
 interface Products5Props {
   products: Product[];
   title: string;
@@ -28,7 +18,7 @@ interface Products5Props {
 
 /**
  * Products Block: products5
- * Design: Grid Hover
+ * Design: CATALOG - Featured large card + smaller grid
  */
 export function Products5({
   products,
@@ -40,37 +30,58 @@ export function Products5({
   limit = 8,
 }: Products5Props) {
   const displayProducts = products.slice(0, limit);
+  const featuredProduct = displayProducts[0];
+  const otherProducts = displayProducts.slice(1);
 
   if (displayProducts.length === 0) return null;
 
   return (
-    <section id="products" className="py-12">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <section id="products" className="py-16 md:py-24">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 md:mb-12">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground mt-2">{subtitle}</p>
+          )}
         </div>
         {showViewAll && (
           <Link href={productsLink}>
-            <Button variant="outline" className="gap-2">
-              Lihat Semua <ArrowRight className="h-4 w-4" />
+            <Button variant="outline" size="lg" className="gap-2">
+              Lihat Semua
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         )}
       </div>
 
-      {/* Products Grid with Enhanced Hover Effects */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-        {displayProducts.map((product) => (
-          <div
-            key={product.id}
-            className="group transition-all duration-300 hover:scale-105 hover:z-10"
-          >
-            <ProductCard product={product} storeSlug={storeSlug} />
+      {/* Featured + Grid Layout */}
+      <div className="grid lg:grid-cols-2 gap-6 md:gap-8">
+        {/* Featured Product - Large */}
+        {featuredProduct && (
+          <div className="lg:row-span-2">
+            <div className="h-full">
+              <ProductCard product={featuredProduct} storeSlug={storeSlug} />
+            </div>
           </div>
-        ))}
+        )}
+
+        {/* Other Products - Grid */}
+        <div className="grid grid-cols-2 gap-4 md:gap-6">
+          {otherProducts.slice(0, 4).map((product) => (
+            <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
+          ))}
+        </div>
       </div>
+
+      {/* Additional Products Below */}
+      {otherProducts.length > 4 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mt-6 md:mt-8">
+          {otherProducts.slice(4).map((product) => (
+            <ProductCard key={product.id} product={product} storeSlug={storeSlug} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

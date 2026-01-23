@@ -18,10 +18,7 @@ interface Products1Props {
 
 /**
  * Products Block: products1
- * Design: Grid
- *
- * Classic grid layout for products
- * Responsive columns: 2 (mobile) → 3 (tablet) → 4 (desktop)
+ * Design: CLASSIC GRID - 4 columns responsive
  */
 export function Products1({
   products,
@@ -37,17 +34,20 @@ export function Products1({
   if (displayProducts.length === 0) return null;
 
   return (
-    <section id="products" className="py-12">
+    <section id="products" className="py-16 md:py-24">
       {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 md:mb-12">
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-          {subtitle && <p className="text-muted-foreground mt-1">{subtitle}</p>}
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{title}</h2>
+          {subtitle && (
+            <p className="text-lg text-muted-foreground mt-2 max-w-2xl">{subtitle}</p>
+          )}
         </div>
         {showViewAll && (
           <Link href={productsLink}>
-            <Button variant="outline" className="gap-2">
-              Lihat Semua <ArrowRight className="h-4 w-4" />
+            <Button variant="outline" size="lg" className="gap-2 shrink-0">
+              Lihat Semua
+              <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
         )}

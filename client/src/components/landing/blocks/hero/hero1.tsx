@@ -2,23 +2,14 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, ChevronRight, Box, Layers, Zap, Package, Grid3x3, Blocks } from 'lucide-react';
 import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
 import { OptimizedImage } from '@/components/ui/optimized-image';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import LiquidEther from '@/components/ui/liquid-ether/LiquidEther';
 
-/**
- * Hero1 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
- *
- * @prop title - heroTitle: Marketing headline
- * @prop subtitle - heroSubtitle: Value proposition
- * @prop ctaText - heroCtaText: CTA button text
- * @prop ctaLink - heroCtaLink: CTA button link
- * @prop backgroundImage - heroBackgroundImage: Cloudinary URL (1920x800px)
- * @prop logo - logo: Cloudinary URL (200x200px)
- * @prop storeName - name: Store name
- */
 interface Hero1Props {
   title: string;
   subtitle?: string;
@@ -26,101 +17,108 @@ interface Hero1Props {
   ctaLink?: string;
   showCta?: boolean;
   backgroundImage?: string;
-  overlayOpacity?: number;
   logo?: string;
   storeName?: string;
 }
 
-/**
- * Hero Block: hero1
- * Design: Centered
- * Mobile-first responsive with proper touch targets
- */
+const floatingIcons = [
+  { Icon: Box, position: { top: '15%', left: '8%' }, delay: 0 },
+  { Icon: Layers, position: { top: '25%', right: '12%' }, delay: 0.2 },
+  { Icon: Zap, position: { top: '45%', left: '5%' }, delay: 0.4 },
+  { Icon: Package, position: { bottom: '30%', left: '15%' }, delay: 0.6 },
+  { Icon: Grid3x3, position: { bottom: '20%', right: '18%' }, delay: 0.8 },
+  { Icon: Blocks, position: { top: '60%', right: '8%' }, delay: 1.0 },
+  { Icon: Box, position: { top: '35%', left: '25%' }, delay: 0.3 },
+  { Icon: Package, position: { bottom: '45%', right: '25%' }, delay: 0.7 },
+];
+
 export function Hero1({
   title,
   subtitle,
   ctaText,
   ctaLink = '/products',
   showCta = true,
-  backgroundImage,
-  overlayOpacity = 0.5,
   logo,
   storeName,
 }: Hero1Props) {
   return (
-    <section className="relative min-h-[600px] md:min-h-[700px] lg:min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      {backgroundImage && (
-        <>
-          <OptimizedImage
-            src={backgroundImage}
-            alt="Hero Background"
-            fill
-            priority
-            className="object-cover"
-          />
-          <div
-            className="absolute inset-0 bg-black transition-opacity"
-            style={{ opacity: overlayOpacity }}
-          />
-        </>
-      )}
+    <section className="relative min-h-screen overflow-hidden bg-background">
+      {/* Background - LiquidEther */}
+      <div className="absolute inset-0 opacity-40">
+        <LiquidEther
+          mouseForce={20}
+          cursorSize={100}
+          colors={['#5227FF', '#FF9FFC', '#B19EEF']}
+          autoDemo={true}
+          autoSpeed={0.3}
+          resolution={0.5}
+        />
+      </div>
 
-      {/* Gradient Background (fallback) */}
-      {!backgroundImage && (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-primary/5" />
-      )}
+      {/* Floating Icons */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
+        {floatingIcons.map(({ Icon, position, delay }, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0.5, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{
+              delay: delay,
+              duration: 0.6,
+              repeat: Infinity,
+              repeatType: 'reverse',
+              repeatDelay: 3,
+            }}
+            className="absolute"
+            style={position}
+          >
+            <Card className="p-4 bg-background/80 backdrop-blur-sm border-primary/20 shadow-lg">
+              <Icon className="h-8 w-8 text-primary" />
+            </Card>
+          </motion.div>
+        ))}
+      </div>
 
-      {/* Content Container */}
-      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
+      {/* Content */}
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto text-center"
+          transition={{ duration: 0.7 }}
+          className="max-w-4xl mx-auto text-center space-y-8"
         >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.5 }}
+          >
+            <Badge variant="outline" className="px-4 py-2 text-sm font-medium bg-primary/5 border-primary/20">
+              <Sparkles className="h-4 w-4 mr-2 text-primary" />
+              {storeName || 'Welcome'}
+            </Badge>
+          </motion.div>
+
           {/* Logo */}
           {logo && (
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex justify-center mb-6 md:mb-8"
+              className="flex justify-center"
             >
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/20">
-                <OptimizedImage
-                  src={logo}
-                  alt={storeName || 'Logo'}
-                  fill
-                  className="object-cover"
-                />
+              <div className="relative w-20 h-20 md:w-24 md:h-24 rounded-2xl overflow-hidden shadow-xl ring-2 ring-border">
+                <OptimizedImage src={logo} alt={storeName || 'Logo'} fill className="object-cover" />
               </div>
             </motion.div>
           )}
-
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="inline-block mb-4 md:mb-6"
-          >
-            <Badge variant="secondary" className="px-3 sm:px-4 py-1.5 sm:py-2 text-sm md:text-base shadow-lg">
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-              {storeName || 'Welcome'}
-            </Badge>
-          </motion.div>
 
           {/* Title */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className={cn(
-              'text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 md:mb-8',
-              'leading-tight',
-              backgroundImage ? 'text-white drop-shadow-lg' : 'text-foreground'
-            )}
+            transition={{ delay: 0.3, duration: 0.6 }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-foreground leading-tight tracking-tight"
           >
             {title}
           </motion.h1>
@@ -130,30 +128,32 @@ export function Hero1({
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.6 }}
-              className={cn(
-                'text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10',
-                'max-w-2xl mx-auto leading-relaxed px-2',
-                backgroundImage ? 'text-white/90 drop-shadow' : 'text-muted-foreground'
-              )}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed"
             >
               {subtitle}
             </motion.p>
           )}
 
-          {/* CTA Button */}
+          {/* Dual CTA */}
           {showCta && ctaText && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6, duration: 0.6 }}
-              className="flex justify-center"
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
             >
-              <Link href={ctaLink} className="w-full sm:w-auto">
-                <InteractiveHoverButton className="w-full sm:w-auto min-w-[200px] text-base md:text-lg px-6 md:px-8 py-4 md:py-5 shadow-xl">
+              <Link href={ctaLink}>
+                <InteractiveHoverButton className="min-w-[200px] text-base md:text-lg px-8 py-5 font-semibold">
                   {ctaText}
                 </InteractiveHoverButton>
               </Link>
+              <Button variant="outline" size="lg" className="min-w-[200px] text-base md:text-lg px-8 py-5 h-auto gap-2" asChild>
+                <Link href="#products">
+                  Lihat Produk
+                  <ChevronRight className="h-5 w-5" />
+                </Link>
+              </Button>
             </motion.div>
           )}
         </motion.div>

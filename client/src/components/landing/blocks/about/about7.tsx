@@ -1,16 +1,8 @@
 'use client';
 
 import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Quote } from 'lucide-react';
 
-/**
- * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)
- *
- * @prop title - aboutTitle: Section heading
- * @prop subtitle - aboutSubtitle: Section subheading
- * @prop content - aboutContent: Main description text
- * @prop image - aboutImage: Cloudinary URL (800x600px)
- * @prop features - aboutFeatures: Array<{icon (Cloudinary URL), title, description}>
- */
 interface About7Props {
   title: string;
   subtitle?: string;
@@ -25,70 +17,79 @@ interface About7Props {
 
 /**
  * About Block: about7
- * Design: Side by Side with Feature Gallery
+ * Design: STORYTELLING - Narrative emotional layout
  */
 export function About7({ title, subtitle, content, image, features = [] }: About7Props) {
   return (
-    <section id="about" className="py-12">
-      {/* Section Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
-        {subtitle && <p className="text-muted-foreground mt-2 text-lg">{subtitle}</p>}
+    <section id="about" className="py-16 md:py-24">
+      {/* Storytelling Header */}
+      <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16">
+        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground leading-tight">
+          {title}
+        </h2>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-12 items-start">
-        {/* Left: Main Image */}
-        {image && (
-          <div>
-            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-              <OptimizedImage
-                src={image}
-                alt={title}
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        )}
+      {/* Full Width Image with Overlay Quote */}
+      {image && (
+        <div className="relative aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl mb-12 md:mb-16">
+          <OptimizedImage
+            src={image}
+            alt={title}
+            fill
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent" />
 
-        {/* Right: Content */}
-        <div className="space-y-6">
-          {content && (
-            <p className="text-muted-foreground leading-relaxed text-lg">
-              {content}
-            </p>
-          )}
-
-          {/* Features Gallery - Display as image cards */}
-          {features.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 pt-4">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="group rounded-xl border bg-card p-4 hover:shadow-lg transition-all"
-                >
-                  {/* Feature Image */}
-                  {feature.icon && (
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3 bg-muted">
-                      <OptimizedImage
-                        src={feature.icon}
-                        alt={feature.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-                  )}
-                  <h3 className="font-semibold mb-1">{feature.title}</h3>
-                  {feature.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-2">
-                      {feature.description}
-                    </p>
-                  )}
-                </div>
-              ))}
+          {/* Quote Overlay */}
+          {subtitle && (
+            <div className="absolute inset-0 flex items-center">
+              <div className="max-w-xl px-8 md:px-12">
+                <Quote className="h-10 w-10 text-white/40 mb-4" />
+                <p className="text-xl md:text-2xl lg:text-3xl text-white font-medium leading-relaxed">
+                  {subtitle}
+                </p>
+              </div>
             </div>
           )}
         </div>
+      )}
+
+      {/* Content + Features */}
+      <div className="max-w-5xl mx-auto">
+        {content && (
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed text-center mb-12">
+            {content}
+          </p>
+        )}
+
+        {/* Features - Horizontal scroll on mobile, grid on desktop */}
+        {features.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="relative p-6 rounded-2xl bg-gradient-to-br from-muted/50 to-muted/20 border border-border/50 hover:border-primary/20 transition-colors"
+              >
+                {feature.icon && (
+                  <div className="relative w-14 h-14 rounded-xl overflow-hidden mb-4 shadow-md">
+                    <OptimizedImage
+                      src={feature.icon}
+                      alt={feature.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+                <h3 className="font-semibold text-foreground text-lg mb-2">{feature.title}</h3>
+                {feature.description && (
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
