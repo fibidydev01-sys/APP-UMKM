@@ -4,23 +4,34 @@ import { useState, useEffect } from 'react';
 
 const MOBILE_BREAKPOINT = 768;
 
+/**
+ * Hook to detect if the current viewport is mobile.
+ * Returns `undefined` during SSR/initial hydration, then the actual value.
+ * This prevents hydration mismatch errors.
+ */
 export function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
+  // Initialize with undefined to prevent hydration mismatch
+  // The first render on client will match server (both treat as desktop)
+  const [isMobile, setIsMobile] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    // Use matchMedia for better performance
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+
+    const onChange = () => {
+      setIsMobile(mql.matches);
     };
 
-    // Initial check
-    checkMobile();
+    // Set initial value
+    setIsMobile(mql.matches);
 
-    // Listen for resize
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    // Listen for changes
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
   }, []);
 
-  return isMobile;
+  // Return false when undefined (SSR/initial) to match desktop-first rendering
+  return isMobile ?? false;
 }
 
 export function useMobileProductLimit(products: unknown[], limit: number = 12): unknown[] {

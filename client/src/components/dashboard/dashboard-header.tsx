@@ -26,7 +26,7 @@ export function DashboardHeader() {
   return (
     <header className="sticky top-0 z-40 flex h-14 shrink-0 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
       <div className="flex items-center gap-2">
-        <SidebarTrigger className="-ml-1 hidden md:flex" />
+        <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="h-4 hidden md:block" />
         <span className="font-semibold text-sm">Dashboard</span>
       </div>
@@ -41,9 +41,7 @@ export function DashboardHeader() {
 
         <OnboardingDropdown />
 
-        <AnimatedThemeToggler
-          className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors [&_svg]:h-5 [&_svg]:w-5"
-        />
+        <AnimatedThemeToggler className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground transition-colors [&_svg]:h-5 [&_svg]:w-5" />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -70,9 +68,7 @@ export function DashboardHeader() {
               <Link href="/dashboard/settings">Pengaturan</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href={`/store/${tenant?.slug}`}>
-                Lihat Toko
-              </Link>
+              <Link href={`/store/${tenant?.slug}`}>Lihat Toko</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout} className="text-destructive">
