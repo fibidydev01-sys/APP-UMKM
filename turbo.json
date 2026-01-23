@@ -36,6 +36,14 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$"],
       "outputs": ["coverage/**"]
+    },
+    "prisma:generate": {
+      "cache": false,
+      "inputs": ["prisma/schema.prisma"]
+    },
+    "prisma:seed": {
+      "cache": false,
+      "dependsOn": ["prisma:generate"]
     }
   }
 }

@@ -31,6 +31,9 @@
     "test:coverage": "turbo test:coverage",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck",
     "check:fix": "pnpm format && pnpm lint:fix && pnpm typecheck",
+    "db:generate": "cd server && pnpm exec prisma generate",
+    "db:push": "cd server && pnpm exec prisma db push --skip-generate",
+    "db:seed": "cd server && pnpm run prisma:seed",
     "clean": "pnpm --recursive exec rm -rf node_modules dist .next build coverage",
     "clean:install": "pnpm clean && rm -rf node_modules pnpm-lock.yaml && pnpm install",
     "validate": "pnpm install --frozen-lockfile && pnpm check && pnpm test"

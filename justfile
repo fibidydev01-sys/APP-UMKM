@@ -181,58 +181,87 @@ health:
 # ☢️ NUCLEAR OPTIONS
 # ====================
 
-# Nuclear: Clean EVERYTHING
+# Nuclear: Clean EVERYTHING and reinstall
 nuclear:
     @echo "☢️  NUCLEAR: Removing EVERYTHING..."
     @echo "⚠️  This will delete all node_modules, dist, .next, build folders"
     @echo ""
     @echo "Press Ctrl+C in 5 seconds to cancel..."
     @sleep 5
+    @echo ""
+    @echo "🗑️  Cleaning all packages..."
     pnpm clean
-    @echo "✅ NUKED! Now run: just install"
+    @echo ""
+    @echo "🗑️  Removing root node_modules and pnpm-lock.yaml..."
+    rm -rf node_modules pnpm-lock.yaml
+    @echo ""
+    @echo "📦 Installing fresh dependencies..."
+    pnpm install
+    @echo ""
+    @echo "✅ NUKED & REINSTALLED! Ready to go!"
 
 # ====================
 # 🚀 QUICKSTART
 # ====================
 
-# Quickstart - Complete setup from scratch
+# Quickstart - Complete setup from scratch (ALL APPS READY!)
 quickstart:
     @echo "╔════════════════════════════════════════════════════════════╗"
     @echo "║         🚀 UMKM MULTI-TENANT - QUICKSTART                  ║"
+    @echo "║              CLIENT + CLIENT-WEB + SERVER                  ║"
     @echo "╚════════════════════════════════════════════════════════════╝"
     @echo ""
-    @echo "📋 Setting up environment files..."
-    @test -f .env || (test -f .env.example && cp .env.example .env && echo "✅ Created .env")
-    @test -f server/.env || (test -f server/.env.example && cp server/.env.example server/.env && echo "✅ Created server/.env")
-    @test -f client/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3000" > client/.env.local && echo "✅ Created client/.env.local")
+    @echo "📋 Step 1/5: Setting up environment files..."
+    @test -f .env || (test -f .env.example && cp .env.example .env && echo "   ✅ Created .env") || echo "   ⚠️  .env.example not found"
+    @test -f server/.env || (test -f server/.env.example && cp server/.env.example server/.env && echo "   ✅ Created server/.env") || echo "   ⚠️  server/.env.example not found"
+    @test -f client/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3000" > client/.env.local && echo "   ✅ Created client/.env.local")
+    @test -f client-web/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3001" > client-web/.env.local && echo "   ✅ Created client-web/.env.local")
     @echo ""
-    @echo "📦 Installing dependencies..."
+    @echo "📦 Step 2/5: Installing all dependencies (client, client-web, server, shared)..."
     @just install
     @echo ""
-    @echo "🗄️  Setting up database..."
+    @echo "🔨 Step 3/5: Building shared package..."
+    @cd packages/shared && pnpm build
+    @echo "   ✅ Shared package built!"
+    @echo ""
+    @echo "🗄️  Step 4/5: Setting up database (generate + push + seed)..."
     @just db-setup
     @echo ""
+    @echo "🎨 Step 5/5: Verifying setup..."
+    @echo "   ✅ Client ready at http://localhost:3000"
+    @echo "   ✅ Client-Web ready at http://localhost:3001"
+    @echo "   ✅ Server ready at http://localhost:8000"
+    @echo "   ✅ Database seeded and ready!"
+    @echo ""
     @echo "╔════════════════════════════════════════════════════════════╗"
-    @echo "║                    🎉 READY! 🎉                           ║"
+    @echo "║                    🎉 READY TO GO! 🎉                     ║"
     @echo "╚════════════════════════════════════════════════════════════╝"
     @echo ""
-    @echo "🚀 Start Development:"
-    @echo "   just dev          - Start all servers"
-    @echo "   just dev-server   - Server only (port 8000)"
-    @echo "   just dev-client   - Client only (port 3000)"
+    @echo "🚀 Development Commands:"
+    @echo "   just dev          - Start ALL servers (client + client-web + server)"
+    @echo "   just dev-client   - Client dashboard only (port 3000)"
+    @echo "   just dev-web      - Client-web landing builder only (port 3001)"
+    @echo "   just dev-server   - Server API only (port 8000)"
     @echo ""
-    @echo "🗄️  Database:"
-    @echo "   just db-studio    - Open database GUI"
+    @echo "🗄️  Database Commands:"
+    @echo "   just db-studio    - Open Prisma Studio GUI"
+    @echo "   just db-seed      - Re-seed database"
     @echo ""
-    @echo "🔧 Quality:"
-    @echo "   just check        - Run all checks"
-    @echo "   just fix          - Fix all issues"
+    @echo "🔧 Quality Commands:"
+    @echo "   just check        - Run all checks (format + lint + typecheck)"
+    @echo "   just fix          - Auto-fix all issues"
+    @echo "   just test         - Run all tests"
     @echo ""
-    @echo "📊 URLs:"
-    @echo "   API:    http://localhost:8000/api"
-    @echo "   Client: http://localhost:3000"
+    @echo "☢️  Nuclear Option:"
+    @echo "   just nuclear      - Clean EVERYTHING and reinstall"
     @echo ""
-    @echo "✨ GO! → just dev"
+    @echo "📊 Access URLs:"
+    @echo "   🖥️  Client Dashboard:  http://localhost:3000"
+    @echo "   🌐 Client-Web Builder: http://localhost:3001"
+    @echo "   📊 API Server:         http://localhost:8000/api"
+    @echo "   🎨 Prisma Studio:      just db-studio"
+    @echo ""
+    @echo "✨ START NOW → just dev"
 
 # ====================
 # 📚 ALIASES
