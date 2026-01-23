@@ -1,4 +1,5 @@
 import { defineConfig } from 'tsup';
+import { execSync } from 'child_process';
 
 export default defineConfig({
   // Entry points for all exports
@@ -55,5 +56,10 @@ export default defineConfig({
   // Add 'use client' directive to all output files for Next.js App Router compatibility
   banner: {
     js: '"use client";',
+  },
+
+  // Run post-build script after each build (including watch mode)
+  onSuccess: async () => {
+    execSync('node scripts/add-use-client.mjs', { stdio: 'inherit' });
   },
 });
