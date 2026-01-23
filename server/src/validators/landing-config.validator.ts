@@ -5,7 +5,7 @@
 // 🚀 UPDATED: Added template & block support for Landing Page Template System
 // ==========================================
 
-import Ajv, { ErrorObject } from 'ajv';
+import Ajv, { type ErrorObject } from 'ajv';
 import addFormats from 'ajv-formats';
 
 // ==========================================
@@ -1319,7 +1319,13 @@ export interface LandingSection<T = Record<string, unknown>, V = string> {
 // 🚀 SECTION KEY TYPE
 // ==========================================
 
-export type SectionKey = 'hero' | 'about' | 'products' | 'testimonials' | 'contact' | 'cta';
+export type SectionKey =
+  | 'hero'
+  | 'about'
+  | 'products'
+  | 'testimonials'
+  | 'contact'
+  | 'cta';
 
 // ==========================================
 // 🚀 UPDATED: Landing Config with Template & Section Order
@@ -1689,7 +1695,7 @@ function sanitizeTestimonials(
 
 function sanitizeFeatures(
   features: FeatureItem[] | undefined,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   _warningsList: string[],
 ): FeatureItem[] {
   if (!features) return [];
@@ -1963,7 +1969,14 @@ export function getDefaultLandingConfig(): LandingConfig {
   return {
     enabled: false,
     template: 'suspended-minimalist', // 🚀 Default template
-    sectionOrder: ['hero', 'about', 'products', 'testimonials', 'cta', 'contact'], // 🚀 Default order
+    sectionOrder: [
+      'hero',
+      'about',
+      'products',
+      'testimonials',
+      'cta',
+      'contact',
+    ], // 🚀 Default order
     hero: {
       enabled: false,
       title: '',
