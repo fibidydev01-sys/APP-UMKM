@@ -8,10 +8,9 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { PageHeader } from '@/components/dashboard';
-import { CustomersTable } from '@/components/customers';
+import { CustomersTable, customersApi, Customer } from '@/features/customers';
 import { Skeleton } from '@umkm/shared/ui';
-import { customersApi, getErrorMessage } from '@/lib/api';
-import type { Customer } from '@umkm/shared/types';
+import { getErrorMessage } from '@/lib/api';
 
 // ==========================================
 // CUSTOMERS LIST PAGE (Client Component)

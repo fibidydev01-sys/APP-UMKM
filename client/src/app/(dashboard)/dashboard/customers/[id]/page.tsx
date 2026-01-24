@@ -11,8 +11,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
-import { CustomerDetail } from '@/components/customers';
-import { useCustomer } from '@/hooks';
+import { CustomerDetail, useCustomer } from '@/features/customers';
 
 // ==========================================
 // CUSTOMER DETAIL PAGE (Client Component)

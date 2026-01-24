@@ -3,7 +3,7 @@
 // Purpose: Create new customer form
 
 import { PageHeader } from '@/components/dashboard';
-import { CustomerForm } from '@/components/customers';
+import { CustomerForm } from '@/features/customers';
 import type { Metadata } from 'next';
 
 // ==========================================
