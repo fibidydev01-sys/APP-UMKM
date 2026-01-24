@@ -8,12 +8,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { PageHeader } from '@/components/dashboard';
-import { ProductForm } from '@/components/products';
+import { ProductForm, productsApi, Product } from '@/features/products';
 import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
-import { productsApi, getErrorMessage } from '@/lib/api';
-import type { Product } from '@umkm/shared/types';
+import { getErrorMessage } from '@/lib/api';
 
 // ==========================================
 // EDIT PRODUCT PAGE (Client Component)
