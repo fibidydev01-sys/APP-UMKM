@@ -23,7 +23,7 @@ import {
   SeoSettings,
   BankAccountDialog,
   EwalletDialog,
-} from '@/components/settings';
+} from '@/features/settings';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
