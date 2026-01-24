@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
-import { tenantsApi, productsApi } from '@/lib/api';
-import { normalizeTestimonials } from '@/lib/landing';
+import { tenantsApi } from '@/lib/api';
+import { productsApi } from '@/features/products';
+import { normalizeTestimonials } from '@/features/landing-builder';
 import {
   TenantHero,
   TenantAbout,

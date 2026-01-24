@@ -19,12 +19,12 @@ import {
   BuilderSidebar,
   BlockDrawer,
   BuilderLoadingSteps,
-} from '@/components/landing-builder';
-import type { SectionType, DrawerState } from '@/components/landing-builder';
+  useLandingConfig,
+  mergeWithTemplateDefaults,
+} from '@/features/landing-builder';
+import type { SectionType, DrawerState, TemplateId } from '@/features/landing-builder';
 import { useTenant } from '@/hooks';
-import { useLandingConfig } from '@/hooks/use-landing-config';
-import { productsApi } from '@/lib/api';
-import { mergeWithTemplateDefaults, type TemplateId } from '@/lib/landing';
+import { productsApi } from '@/features/products';
 import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
 import type { TenantLandingConfig, Product } from '@umkm/shared/types';
