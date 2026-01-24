@@ -7,12 +7,13 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { PageHeader } from '@/components/dashboard';
-import { OrderForm } from '@/components/orders';
+import { OrderForm } from '@/features/orders';
 import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
-import { productsApi, customersApi, getErrorMessage } from '@/lib/api';
-import type { Product, Customer } from '@umkm/shared/types';
+import { productsApi, Product } from '@/features/products';
+import { customersApi, Customer } from '@/features/customers';
+import { getErrorMessage } from '@/lib/api';
 
 // ==========================================
 // CREATE ORDER PAGE (Client Component)

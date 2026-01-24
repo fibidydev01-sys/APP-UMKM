@@ -9,12 +9,11 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { PageHeader } from '@/components/dashboard';
-import { OrderDetail } from '@/components/orders';
+import { OrderDetail, ordersApi, Order } from '@/features/orders';
 import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
-import { ordersApi, getErrorMessage } from '@/lib/api';
-import type { Order } from '@umkm/shared/types';
+import { getErrorMessage } from '@/lib/api';
 
 // ==========================================
 // ORDER DETAIL PAGE (Client Component)

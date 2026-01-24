@@ -7,10 +7,9 @@ import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { PageHeader } from '@/components/dashboard';
-import { OrdersTable } from '@/components/orders';
+import { OrdersTable, ordersApi, OrderListItem } from '@/features/orders';
 import { Skeleton } from '@umkm/shared/ui';
-import { ordersApi, getErrorMessage } from '@/lib/api';
-import type { OrderListItem } from '@umkm/shared/types';
+import { getErrorMessage } from '@/lib/api';
 
 // ==========================================
 // ORDERS LIST PAGE (Client Component)
