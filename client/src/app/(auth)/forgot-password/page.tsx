@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { AuthLayout, ForgotPasswordForm } from '@/components/auth';
+import { AuthLayout, ForgotPasswordForm } from '@/features/auth';
 import { Skeleton } from '@umkm/shared/ui';
 
 // ==========================================
