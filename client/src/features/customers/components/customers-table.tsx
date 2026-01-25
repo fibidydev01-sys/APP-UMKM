@@ -29,7 +29,7 @@ import { CustomerDeleteDialog } from './customer-delete-dialog';
 import { CustomerPreviewDrawer } from './customer-preview-drawer';
 import { customersApi } from '@/features/customers';
 import { getErrorMessage } from '@/lib/api';
-import { generateWhatsAppLink } from '@/lib/format';
+import { generateWhatsAppLink } from '@/lib/formatters';
 import { toast } from '@/providers';
 import type { Customer } from '@umkm/shared/types';
 

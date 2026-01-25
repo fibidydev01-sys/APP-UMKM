@@ -11,7 +11,7 @@ import {
   BreadcrumbSeparator,
 } from '@umkm/shared/ui';
 import { Fragment } from 'react';
-import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
+import { useStoreUrls } from '@/lib/seo'; // ✅ NEW IMPORT
 
 // ==========================================
 // STORE BREADCRUMB COMPONENT

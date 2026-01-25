@@ -17,7 +17,7 @@ import {
 } from '@umkm/shared/ui';
 import { Alert, AlertDescription } from '@umkm/shared/ui';
 import { useLogin } from '@/features/auth';
-import { loginSchema, type LoginFormData } from '@/lib/validations';
+import { loginSchema, type LoginFormData } from '@/lib/validation';
 
 // ==========================================
 // LOGIN FORM COMPONENT

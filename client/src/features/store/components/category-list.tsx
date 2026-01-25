@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@umkm/shared/ui';
 import { ScrollArea, ScrollBar } from '@umkm/shared/ui';
-import { productsUrl } from '@/lib/store-url'; // ✅ NEW IMPORT
+import { productsUrl } from '@/lib/seo'; // ✅ NEW IMPORT
 
 // ==========================================
 // CATEGORY LIST COMPONENT

@@ -4,7 +4,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Checkbox } from '@umkm/shared/ui';
-import { formatDateTime } from '@/lib/format';
+import { formatDateTime } from '@/lib/formatters';
 import type { OrderListItem } from '@umkm/shared/types';
 
 // ==========================================

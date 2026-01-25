@@ -10,9 +10,9 @@ import { Card, CardContent } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { useCartStore, useItemQty } from '@/stores';
-import { formatPrice } from '@/lib/format';
+import { formatPrice } from '@/lib/formatters';
 import { cn } from '@/lib/utils';
-import { productUrl } from '@/lib/store-url';
+import { productUrl } from '@/lib/seo';
 // ❌ REMOVE: import { getThumbnailUrl } from '@/lib/cloudinary';
 import type { Product } from '@umkm/shared/types';
 

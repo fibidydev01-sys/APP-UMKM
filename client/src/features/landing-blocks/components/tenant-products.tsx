@@ -1,7 +1,7 @@
 'use client';
 
 import { lazy, Suspense, type ComponentType } from 'react';
-import { useStoreUrls } from '@/lib/store-url';
+import { useStoreUrls } from '@/lib/seo';
 import { extractSectionText, getProductsConfig } from '@/lib/landing-templates';
 import { LANDING_CONSTANTS, useProductsBlock } from '@/lib/landing-templates';
 import type { Product, TenantLandingConfig } from '@umkm/shared/types';

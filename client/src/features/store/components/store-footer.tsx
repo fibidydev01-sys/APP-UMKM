@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { Phone, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
-import { formatPhone } from '@/lib/format';
+import { formatPhone } from '@/lib/formatters';
 import { siteConfig } from '@/config/site';
-import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
+import { useStoreUrls } from '@/lib/seo'; // ✅ NEW IMPORT
 import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================

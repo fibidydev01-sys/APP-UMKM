@@ -17,7 +17,7 @@ import { Textarea } from '@umkm/shared/ui';
 import { ScrollArea } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { RadioGroup, RadioGroupItem } from '@umkm/shared/ui';
-import { formatPrice, generateWhatsAppLink } from '@/lib/format';
+import { formatPrice, generateWhatsAppLink } from '@/lib/formatters';
 import { useCartStore, useCartItems, useCartTotalPrice } from '@/stores';
 import type { PublicTenant, PaymentMethods, ShippingMethods } from '@umkm/shared/types';
 

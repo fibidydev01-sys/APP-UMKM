@@ -5,7 +5,7 @@
 
 import { CATEGORY_CONFIG } from '@/config/categories';
 import { Store } from 'lucide-react';
-import { getInitials } from '@/lib/format'; // Use from format.ts
+import { getInitials } from '@/lib/formatters'; // Use from format.ts
 
 // Re-export for convenience
 export { getInitials };

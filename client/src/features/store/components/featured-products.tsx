@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { ProductGrid } from './product-grid';
-import { useStoreUrls } from '@/lib/store-url'; // ✅ NEW IMPORT
+import { useStoreUrls } from '@/lib/seo'; // ✅ NEW IMPORT
 import type { Product } from '@umkm/shared/types';
 
 // ==========================================

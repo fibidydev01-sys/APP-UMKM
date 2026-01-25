@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { RegisterFormData } from '@/lib/validations';
+import type { RegisterFormData } from '@/lib/validation';
 
 // ==========================================
 // TYPES

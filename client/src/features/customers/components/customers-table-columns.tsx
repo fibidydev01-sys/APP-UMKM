@@ -5,7 +5,7 @@ import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Checkbox } from '@umkm/shared/ui';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
-import { formatPhone, formatDateShort, getInitials } from '@/lib/format';
+import { formatPhone, formatDateShort, getInitials } from '@/lib/formatters';
 import type { Customer } from '@umkm/shared/types';
 
 // ==========================================

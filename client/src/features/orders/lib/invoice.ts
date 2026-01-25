@@ -2,7 +2,7 @@
 // INVOICE UTILITIES - FINAL
 // ==========================================
 
-import { formatPrice, formatDate, generateWhatsAppLink } from '@/lib/format';
+import { formatPrice, formatDate, generateWhatsAppLink } from '@/lib/formatters';
 import type { Order } from '@umkm/shared/types';
 
 const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
