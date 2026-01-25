@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AuthGuard } from '@/components/auth';
+import { AuthGuard } from '@/features/auth';
 import { DashboardLayout } from '@/components/dashboard';
 
 // ==========================================

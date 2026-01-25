@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { GuestGuard } from '@/components/auth';
+import { GuestGuard } from '@/features/auth';
 
 // ==========================================
 // AUTH LAYOUT
