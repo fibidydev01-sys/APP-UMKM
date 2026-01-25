@@ -49,7 +49,7 @@ client/src/
 │   ├── customers/         # Customer Management
 │   ├── dashboard/         # Dashboard UI & Stats
 │   ├── discover/          # Public Discovery Page
-│   ├── tenant-landing/    # Tenant Landing Page Rendering
+│   ├── landing-blocks/    # Reusable Landing Block Components (Hero, About, etc.)
 │   ├── landing-builder/   # Landing Page Builder
 │   ├── onboarding/        # Onboarding Flow
 │   ├── orders/            # Order Management
@@ -140,21 +140,21 @@ features/{module}/
 
 ### Module List
 
-| Module              | Description                   | Key Components                                                                |
-| ------------------- | ----------------------------- | ----------------------------------------------------------------------------- |
-| **auth**            | Authentication & registration | LoginForm, RegisterForm, AuthGuard, useAuth, useRegister, useRegisterWizard   |
-| **customers**       | Customer management           | CustomersTable, CustomerForm, useCustomers, customersApi                      |
-| **dashboard**       | Dashboard UI & stats          | DashboardLayout, DashboardHeader, DashboardStats, useDashboardStats           |
-| **discover**        | Public UMKM discovery         | DiscoverHero, TenantCard, fetchAllTenants, discover utilities                 |
-| **tenant-landing**  | Tenant landing page rendering | TenantHero, TenantAbout, TenantProducts, TenantTestimonials                   |
-| **landing-builder** | Landing page builder          | LandingBuilder, TemplateSelector, LivePreview, useLandingConfig               |
-| **onboarding**      | Onboarding flow               | OnboardingCard, OnboardingDropdown, onboarding lib, useOnboarding             |
-| **orders**          | Order management              | OrdersTable, OrderForm, InvoiceModal, useOrders, ordersApi, invoice utilities |
-| **products**        | Product management            | ProductsTable, ProductForm, useProducts, productsApi, useProductsStore        |
-| **pwa**             | PWA components                | InstallPrompt, PWAProvider, usePWA                                            |
-| **seo**             | SEO & Schema.org              | JsonLd, ProductSchema, LocalBusinessSchema, seo/schema utilities              |
-| **settings**        | Settings management           | SettingsForm, useUpdateTenant                                                 |
-| **store**           | Store frontend                | StoreHeader, StoreFooter, ProductCard, StoreNav                               |
+| Module              | Description                       | Key Components                                                                   |
+| ------------------- | --------------------------------- | -------------------------------------------------------------------------------- |
+| **auth**            | Authentication & registration     | LoginForm, RegisterForm, AuthGuard, useAuth, useRegister, useRegisterWizard      |
+| **customers**       | Customer management               | CustomersTable, CustomerForm, useCustomers, customersApi                         |
+| **dashboard**       | Dashboard UI & stats              | DashboardLayout, DashboardHeader, DashboardStats, useDashboardStats              |
+| **discover**        | Public UMKM discovery             | DiscoverHero, TenantCard, fetchAllTenants, discover utilities                    |
+| **landing-blocks**  | Reusable landing block components | Block variations (hero1-11, about1-11, products1-11, testimonials, contact, cta) |
+| **landing-builder** | Landing page builder              | LandingBuilder, TemplateSelector, LivePreview, useLandingConfig                  |
+| **onboarding**      | Onboarding flow                   | OnboardingCard, OnboardingDropdown, onboarding lib, useOnboarding                |
+| **orders**          | Order management                  | OrdersTable, OrderForm, InvoiceModal, useOrders, ordersApi, invoice utilities    |
+| **products**        | Product management                | ProductsTable, ProductForm, useProducts, productsApi, useProductsStore           |
+| **pwa**             | PWA components                    | InstallPrompt, PWAProvider, usePWA                                               |
+| **seo**             | SEO & Schema.org                  | JsonLd, ProductSchema, LocalBusinessSchema, seo/schema utilities                 |
+| **settings**        | Settings management               | SettingsForm, useUpdateTenant                                                    |
+| **store**           | Store frontend                    | StoreHeader, StoreFooter, ProductCard, StoreNav                                  |
 
 ---
 
@@ -193,7 +193,7 @@ features/{module}/
 | **Validations**       | `validations.ts`                                 | Shared Zod schemas (login, register, etc.)                        |
 | **Formatting**        | `format.ts`                                      | Date, price, phone formatting                                     |
 | **Categories**        | `categories/unified-service.ts`                  | Category service (shared)                                         |
-| **Landing Templates** | `landing-templates/*`                            | Template system (shared between landing-builder & tenant-landing) |
+| **Landing Templates** | `landing-templates/*`                            | Template system (shared between landing-builder & landing-blocks) |
 | **Theme**             | `theme/*`                                        | Theme color utilities                                             |
 | **Cloudinary**        | `cloudinary.ts`                                  | Cloudinary upload utilities                                       |
 | **Utils**             | `utils.ts`, `cn.ts`, `og-utils.ts`               | General utilities                                                 |

@@ -9,7 +9,7 @@ import {
   TenantTestimonials,
   TenantContact,
   TenantCta,
-} from '@/features/tenant-landing';
+} from '@/features/landing-blocks';
 import { BreadcrumbSchema, ProductListSchema, generateTenantBreadcrumbs } from '@/features/seo';
 import type { PublicTenant, Product, Testimonial, SectionKey } from '@umkm/shared/types';
 

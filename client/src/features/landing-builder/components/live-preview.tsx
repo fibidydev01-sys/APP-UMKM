@@ -17,7 +17,7 @@ import {
   TenantTestimonials,
   TenantContact,
   TenantCta,
-} from '@/features/tenant-landing';
+} from '@/features/landing-blocks';
 import type { TenantLandingConfig, Product, Tenant, SectionKey } from '@umkm/shared/types';
 
 // ==========================================

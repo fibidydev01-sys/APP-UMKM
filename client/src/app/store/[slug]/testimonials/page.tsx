@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@/lib/api';
 import { normalizeTestimonials } from '@/features/landing-builder';
-import { TenantTestimonials } from '@/features/tenant-landing';
+import { TenantTestimonials } from '@/features/landing-blocks';
 import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/features/seo';
 import { Star } from 'lucide-react';
 import type { PublicTenant, Testimonial } from '@umkm/shared/types';

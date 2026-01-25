@@ -10,7 +10,7 @@ import { Label } from '@umkm/shared/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
-import { Cta1 } from '@/features/tenant-landing/components/blocks';
+import { Cta1 } from '@/features/landing-blocks/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';

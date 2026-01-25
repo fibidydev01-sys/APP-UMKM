@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@/lib/api';
-import { TenantContact } from '@/features/tenant-landing';
+import { TenantContact } from '@/features/landing-blocks';
 import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/features/seo';
 import type { PublicTenant } from '@umkm/shared/types';
 

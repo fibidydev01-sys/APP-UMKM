@@ -10,7 +10,7 @@ import { Label } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { Hero1 } from '@/features/tenant-landing/components/blocks';
+import { Hero1 } from '@/features/landing-blocks/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
