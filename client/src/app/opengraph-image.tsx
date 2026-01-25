@@ -1,5 +1,5 @@
 import { ImageResponse } from 'next/og';
-import { OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT, OG_COLORS } from '@/lib/og-utils';
+import { OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT, OG_COLORS } from '@/lib/seo';
 
 // ==========================================
 // DEFAULT PLATFORM OPEN GRAPH IMAGE

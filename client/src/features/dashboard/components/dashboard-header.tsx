@@ -16,7 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@umkm/shared/ui';
 import { AnimatedThemeToggler } from '@umkm/shared/ui';
 import { useAuth, useLogout } from '@/hooks';
-import { getInitials } from '@/lib/format';
+import { getInitials } from '@/lib/formatters';
 import { OnboardingDropdown } from '@/features/onboarding';
 
 export function DashboardHeader() {

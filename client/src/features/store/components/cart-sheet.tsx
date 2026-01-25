@@ -21,7 +21,7 @@ import {
   useCartIsEmpty,
   useCartHydrated,
 } from '@/stores';
-import { formatPrice } from '@/lib/format';
+import { formatPrice } from '@/lib/formatters';
 import { getThumbnailUrl } from '@/lib/cloudinary';
 import { WhatsAppCheckoutDialog } from './whatsapp-checkout-dialog';
 import type { PublicTenant } from '@umkm/shared/types';

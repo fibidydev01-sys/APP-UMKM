@@ -8,7 +8,7 @@ import {
   TableRow,
   TableFooter,
 } from '@umkm/shared/ui';
-import { formatPrice } from '@/lib/format';
+import { formatPrice } from '@/lib/formatters';
 import type { OrderItem } from '@umkm/shared/types';
 
 // ==========================================

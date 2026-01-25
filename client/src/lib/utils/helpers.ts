@@ -5,6 +5,3 @@
 
 // Core utilities from shared package
 export * from '@umkm/shared/utils';
-
-// Validation schemas (client-specific)
-export * from './validations';

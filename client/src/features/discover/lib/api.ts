@@ -10,7 +10,7 @@ import type {
   TenantSitemapResponse,
   TenantCacheEntry,
 } from '@umkm/shared/types';
-import { getTenantFullUrl } from '@/lib/store-url';
+import { getTenantFullUrl } from '@/lib/seo';
 import { API_URL, CACHE_DURATION, MAX_TENANTS } from './constants';
 
 // ══════════════════════════════════════════════════════════════

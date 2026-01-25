@@ -21,7 +21,7 @@ import {
 } from '@umkm/shared/ui';
 import { useDebounce } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { productsUrl } from '@/lib/store-url'; // ✅ NEW IMPORT
+import { productsUrl } from '@/lib/seo'; // ✅ NEW IMPORT
 
 // ==========================================
 // PRODUCT FILTERS COMPONENT

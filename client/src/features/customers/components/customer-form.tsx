@@ -24,7 +24,7 @@ import {
   CardTitle,
 } from '@umkm/shared/ui';
 import { useCreateCustomer, useUpdateCustomer } from '@/features/customers';
-import { customerSchema, type CustomerFormData } from '@/lib/validations';
+import { customerSchema, type CustomerFormData } from '@/lib/validation';
 import type { Customer } from '@umkm/shared/types';
 
 // ==========================================

@@ -5,7 +5,7 @@ import {
   OG_COLORS,
   getOgInitials,
   truncateOgText,
-} from '@/lib/og-utils';
+} from '@/lib/seo';
 
 // ==========================================
 // TENANT STORE OPEN GRAPH IMAGE

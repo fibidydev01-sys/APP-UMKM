@@ -2,7 +2,7 @@
 
 import { forwardRef } from 'react';
 import Image from 'next/image';
-import { formatPrice, formatDate } from '@/lib/format';
+import { formatPrice, formatDate } from '@/lib/formatters';
 import { getLogoUrl } from '@/lib/cloudinary';
 import type { Order, Tenant } from '@umkm/shared/types';
 

@@ -17,7 +17,7 @@ import {
   navigationMenuTriggerStyle,
 } from '@umkm/shared/ui';
 import { CartSheet } from './cart-sheet';
-import { useStoreUrls } from '@/lib/store-url';
+import { useStoreUrls } from '@/lib/seo';
 import { cn } from '@/lib/utils';
 import type { PublicTenant } from '@umkm/shared/types';
 

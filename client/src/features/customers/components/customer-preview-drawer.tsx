@@ -28,7 +28,7 @@ import {
   formatDateShort,
   getInitials,
   generateWhatsAppLink,
-} from '@/lib/format';
+} from '@/lib/formatters';
 import type { Customer, OrderListItem } from '@umkm/shared/types';
 
 // ==========================================

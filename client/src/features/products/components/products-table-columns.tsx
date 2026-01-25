@@ -10,7 +10,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
 import { Checkbox } from '@umkm/shared/ui';
-import { formatDateShort } from '@/lib/format';
+import { formatDateShort } from '@/lib/formatters';
 import type { Product } from '@umkm/shared/types';
 
 // ══════════════════════════════════════════════════════════════
