@@ -9,7 +9,7 @@ import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { Smartphone, Monitor, Tablet, ExternalLink, Loader2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { TemplateProvider } from '@/lib/landing';
+import { TemplateProvider } from '@/lib/landing-templates';
 import {
   TenantHero,
   TenantAbout,
@@ -17,7 +17,7 @@ import {
   TenantTestimonials,
   TenantContact,
   TenantCta,
-} from '@/features/landing';
+} from '@/features/tenant-landing';
 import type { TenantLandingConfig, Product, Tenant, SectionKey } from '@umkm/shared/types';
 
 // ==========================================

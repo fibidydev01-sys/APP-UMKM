@@ -10,7 +10,7 @@ import { Label } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { Hero1 } from '@/features/landing/components/blocks';
+import { Hero1 } from '@/features/tenant-landing/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
@@ -139,11 +139,7 @@ export default function HeroSectionPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -158,7 +154,8 @@ export default function HeroSectionPage() {
         <CardHeader>
           <CardTitle>Pengaturan Hero Section</CardTitle>
           <CardDescription>
-            Hero section adalah bagian pertama yang dilihat pengunjung. Pastikan kontennya menarik dan informatif.
+            Hero section adalah bagian pertama yang dilihat pengunjung. Pastikan kontennya menarik
+            dan informatif.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -341,7 +338,9 @@ export default function HeroSectionPage() {
                   Pratinjau real-time dari Hero Section Anda
                 </p>
                 {/* Inject Theme CSS for Real-time Preview */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Hero1
                     title={formData.heroTitle || formData.name || ''}

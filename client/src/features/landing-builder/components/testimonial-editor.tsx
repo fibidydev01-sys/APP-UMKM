@@ -29,7 +29,7 @@ import {
 import { ImageUpload } from '@/components/upload';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-import { LANDING_CONSTANTS } from '@/lib/landing';
+import { LANDING_CONSTANTS } from '@/lib/landing-templates';
 import type { Testimonial } from '@umkm/shared/types';
 
 // ==========================================
@@ -74,7 +74,7 @@ export function TestimonialEditor({ items, onChange }: TestimonialEditorProps) {
     setEditingItem(null);
     setFormData({
       id: generateId(),
-      ...DEFAULT_TESTIMONIAL
+      ...DEFAULT_TESTIMONIAL,
     });
     setDialogOpen(true);
   };
@@ -126,9 +126,7 @@ export function TestimonialEditor({ items, onChange }: TestimonialEditorProps) {
 
     if (editingItem) {
       // Update existing
-      newItems = items.map((item) =>
-        item.id === editingItem.id ? savedItem : item
-      );
+      newItems = items.map((item) => (item.id === editingItem.id ? savedItem : item));
       toast.success('Testimonial berhasil diperbarui');
     } else {
       // Add new
@@ -164,9 +162,7 @@ export function TestimonialEditor({ items, onChange }: TestimonialEditorProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-muted-foreground">
-            {items.length} testimonial
-          </p>
+          <p className="text-sm text-muted-foreground">{items.length} testimonial</p>
         </div>
         <Button size="sm" onClick={handleAdd}>
           <Plus className="h-4 w-4 mr-1" />
@@ -209,11 +205,7 @@ export function TestimonialEditor({ items, onChange }: TestimonialEditorProps) {
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <p className="font-medium">{item.name || 'Tanpa Nama'}</p>
-                        {item.role && (
-                          <p className="text-sm text-muted-foreground">
-                            {item.role}
-                          </p>
-                        )}
+                        {item.role && <p className="text-sm text-muted-foreground">{item.role}</p>}
                       </div>
                       {/* Rating */}
                       {typeof item.rating === 'number' && item.rating > 0 && (
@@ -267,12 +259,8 @@ export function TestimonialEditor({ items, onChange }: TestimonialEditorProps) {
       <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {editingItem ? 'Edit Testimonial' : 'Tambah Testimonial'}
-            </DialogTitle>
-            <DialogDescription>
-              Masukkan detail testimonial dari pelanggan Anda
-            </DialogDescription>
+            <DialogTitle>{editingItem ? 'Edit Testimonial' : 'Tambah Testimonial'}</DialogTitle>
+            <DialogDescription>Masukkan detail testimonial dari pelanggan Anda</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">

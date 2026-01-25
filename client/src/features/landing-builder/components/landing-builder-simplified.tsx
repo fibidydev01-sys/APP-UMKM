@@ -33,13 +33,7 @@ import {
 import { Button } from '@umkm/shared/ui';
 import { Switch } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@umkm/shared/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -63,7 +57,7 @@ import {
   extractTestimonialsData,
   extractContactData,
   extractCtaData,
-} from '@/lib/landing/helpers';
+} from '@/lib/landing-templates/helpers';
 
 // ============================================================================
 // TYPES
@@ -237,9 +231,8 @@ export function LandingBuilderSimplified({
         <Info className="h-4 w-4" />
         <AlertDescription className="flex items-center justify-between">
           <span>
-            Konten landing page dikelola di{' '}
-            <strong>Pengaturan &gt; Landing</strong>. Di sini Anda hanya memilih
-            tampilan (block) yang ingin digunakan.
+            Konten landing page dikelola di <strong>Pengaturan &gt; Landing</strong>. Di sini Anda
+            hanya memilih tampilan (block) yang ingin digunakan.
           </span>
           <Link href="/dashboard/settings" className="ml-2">
             <Button variant="outline" size="sm">
@@ -308,8 +301,7 @@ export function LandingBuilderSimplified({
           const IconComponent = section.icon;
           const sectionConfig = config[section.key];
           const isEnabled = sectionConfig?.enabled ?? false;
-          const currentBlock =
-            (sectionConfig?.block as string) || `${section.blockPrefix}1`;
+          const currentBlock = (sectionConfig?.block as string) || `${section.blockPrefix}1`;
 
           // Get preview data for this section
           let previewTitle = '';
@@ -350,9 +342,7 @@ export function LandingBuilderSimplified({
                   <div
                     className={cn(
                       'p-2 rounded-lg',
-                      isEnabled
-                        ? 'bg-primary/10 text-primary'
-                        : 'bg-muted text-muted-foreground'
+                      isEnabled ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                     )}
                   >
                     <IconComponent className="h-5 w-5" />
@@ -369,16 +359,12 @@ export function LandingBuilderSimplified({
                         </Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {section.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{section.description}</p>
                   </div>
                 </div>
                 <Switch
                   checked={isEnabled}
-                  onCheckedChange={(enabled) =>
-                    handleToggleSection(section.key, enabled)
-                  }
+                  onCheckedChange={(enabled) => handleToggleSection(section.key, enabled)}
                 />
               </div>
 
@@ -390,27 +376,22 @@ export function LandingBuilderSimplified({
                   <div className="grid gap-4 md:grid-cols-2">
                     {/* Block Selector */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">
-                        Pilih Desain Block
-                      </label>
+                      <label className="text-sm font-medium">Pilih Desain Block</label>
                       <Select
                         value={currentBlock}
-                        onValueChange={(value) =>
-                          handleBlockChange(section.key, value)
-                        }
+                        onValueChange={(value) => handleBlockChange(section.key, value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Pilih block..." />
                         </SelectTrigger>
                         <SelectContent className="max-h-60">
-                          {generateBlockOptions(
-                            section.blockPrefix,
-                            section.blockCount
-                          ).map((block) => (
-                            <SelectItem key={block} value={block}>
-                              {block.charAt(0).toUpperCase() + block.slice(1)}
-                            </SelectItem>
-                          ))}
+                          {generateBlockOptions(section.blockPrefix, section.blockCount).map(
+                            (block) => (
+                              <SelectItem key={block} value={block}>
+                                {block.charAt(0).toUpperCase() + block.slice(1)}
+                              </SelectItem>
+                            )
+                          )}
                         </SelectContent>
                       </Select>
                       <p className="text-xs text-muted-foreground">
@@ -420,15 +401,11 @@ export function LandingBuilderSimplified({
 
                     {/* Data Preview */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium">
-                        Preview Konten
-                      </label>
+                      <label className="text-sm font-medium">Preview Konten</label>
                       <div className="p-3 bg-muted/50 rounded-lg space-y-1">
                         <p className="text-sm font-medium truncate">
                           {previewTitle || (
-                            <span className="text-muted-foreground italic">
-                              Belum diisi
-                            </span>
+                            <span className="text-muted-foreground italic">Belum diisi</span>
                           )}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
@@ -437,10 +414,7 @@ export function LandingBuilderSimplified({
                       </div>
                       <p className="text-xs text-muted-foreground">
                         Edit konten di{' '}
-                        <Link
-                          href="/dashboard/settings"
-                          className="text-primary hover:underline"
-                        >
+                        <Link href="/dashboard/settings" className="text-primary hover:underline">
                           Pengaturan &gt; Landing
                         </Link>
                       </p>
@@ -459,15 +433,13 @@ export function LandingBuilderSimplified({
           <AlertDialogHeader>
             <AlertDialogTitle>Reset Landing Page?</AlertDialogTitle>
             <AlertDialogDescription>
-              Semua konfigurasi landing page akan direset ke default. Perubahan
-              ini akan langsung dipublish. Lanjutkan?
+              Semua konfigurasi landing page akan direset ke default. Perubahan ini akan langsung
+              dipublish. Lanjutkan?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmReset}>
-              Ya, Reset
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmReset}>Ya, Reset</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -483,9 +455,7 @@ export function LandingBuilderSimplified({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Kembali</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDiscard}>
-              Ya, Batalkan
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmDiscard}>Ya, Batalkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

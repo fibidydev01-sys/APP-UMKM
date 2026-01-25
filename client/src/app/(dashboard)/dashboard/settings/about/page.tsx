@@ -11,7 +11,7 @@ import { Textarea } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { About1 } from '@/features/landing/components/blocks';
+import { About1 } from '@/features/tenant-landing/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
@@ -97,11 +97,7 @@ export default function AboutPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -213,7 +209,9 @@ export default function AboutPage() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => {
-                                  const updated = formData.aboutFeatures.filter((_, i) => i !== index);
+                                  const updated = formData.aboutFeatures.filter(
+                                    (_, i) => i !== index
+                                  );
                                   updateFormData('aboutFeatures', updated);
                                 }}
                               >
@@ -265,7 +263,10 @@ export default function AboutPage() {
                                     value={feature.description}
                                     onChange={(e) => {
                                       const updated = [...formData.aboutFeatures];
-                                      updated[index] = { ...updated[index], description: e.target.value };
+                                      updated[index] = {
+                                        ...updated[index],
+                                        description: e.target.value,
+                                      };
                                       updateFormData('aboutFeatures', updated);
                                     }}
                                   />
@@ -287,7 +288,11 @@ export default function AboutPage() {
                   Pratinjau real-time dari About Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <About1
                     title={formData.aboutTitle || 'Tentang Kami'}

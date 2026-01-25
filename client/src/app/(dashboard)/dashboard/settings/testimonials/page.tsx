@@ -11,7 +11,7 @@ import { Textarea } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { Testimonials1 } from '@/features/landing/components/blocks';
+import { Testimonials1 } from '@/features/tenant-landing/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';

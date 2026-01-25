@@ -10,7 +10,7 @@ import { Label } from '@umkm/shared/ui';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
-import { Cta1 } from '@/features/landing/components/blocks';
+import { Cta1 } from '@/features/tenant-landing/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
@@ -78,11 +78,7 @@ export default function CTAPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -97,7 +93,8 @@ export default function CTAPage() {
         <CardHeader>
           <CardTitle>Pengaturan CTA Section</CardTitle>
           <CardDescription>
-            Call to Action adalah ajakan untuk pengunjung melakukan aksi tertentu (pesan, daftar, dll).
+            Call to Action adalah ajakan untuk pengunjung melakukan aksi tertentu (pesan, daftar,
+            dll).
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -178,7 +175,11 @@ export default function CTAPage() {
                   <Label>Preview Tombol</Label>
                   <div className="flex items-center gap-3 p-6 bg-muted/50 rounded-lg">
                     <Button
-                      variant={formData.ctaButtonStyle === 'primary' ? 'default' : formData.ctaButtonStyle as 'secondary' | 'outline'}
+                      variant={
+                        formData.ctaButtonStyle === 'primary'
+                          ? 'default'
+                          : (formData.ctaButtonStyle as 'secondary' | 'outline')
+                      }
                       disabled
                     >
                       {formData.ctaButtonText || 'Mulai Sekarang'}
@@ -197,14 +198,24 @@ export default function CTAPage() {
                   Pratinjau real-time dari CTA Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Cta1
                     title={formData.ctaTitle || 'Siap Memulai?'}
                     subtitle={formData.ctaSubtitle}
                     buttonText={formData.ctaButtonText || 'Mulai Sekarang'}
                     buttonLink={formData.ctaButtonLink || '/products'}
-                    buttonVariant={formData.ctaButtonStyle === 'outline' ? 'outline' : formData.ctaButtonStyle === 'secondary' ? 'secondary' : 'default'}
+                    buttonVariant={
+                      formData.ctaButtonStyle === 'outline'
+                        ? 'outline'
+                        : formData.ctaButtonStyle === 'secondary'
+                          ? 'secondary'
+                          : 'default'
+                    }
                   />
                 </div>
               </div>

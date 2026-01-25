@@ -8,7 +8,7 @@ import { SheetHeader, SheetTitle } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { formatPhone } from '@/lib/format';
 import { useStoreUrls } from '@/lib/store-url';
-import { normalizeTestimonials } from '@/lib/landing';
+import { normalizeTestimonials } from '@/lib/landing-templates';
 import { cn } from '@/lib/utils';
 import type { PublicTenant } from '@umkm/shared/types';
 
@@ -30,9 +30,8 @@ export function StoreNav({ tenant }: StoreNavProps) {
   // Check what data exists
   const hasAbout = !!landingConfig?.about?.config?.content || !!tenant.description;
   const hasContact = !!tenant.address || !!tenant.whatsapp || !!tenant.phone;
-  const hasTestimonials = normalizeTestimonials(
-    landingConfig?.testimonials?.config?.items
-  ).length > 0;
+  const hasTestimonials =
+    normalizeTestimonials(landingConfig?.testimonials?.config?.items).length > 0;
 
   // Build nav items based on available data
   const navItems = [
@@ -41,7 +40,7 @@ export function StoreNav({ tenant }: StoreNavProps) {
     { href: urls.products(), label: 'Semua Produk', icon: Package, show: true },
     { href: urls.path('/testimonials'), label: 'Testimoni', icon: Users, show: hasTestimonials },
     { href: urls.path('/contact'), label: 'Kontak', icon: MessageSquare, show: hasContact },
-  ].filter(item => item.show);
+  ].filter((item) => item.show);
 
   return (
     <div className="flex flex-col h-full">
@@ -63,9 +62,7 @@ export function StoreNav({ tenant }: StoreNavProps) {
           )}
           <div>
             <SheetTitle className="text-left">{tenant.name}</SheetTitle>
-            <p className="text-xs text-muted-foreground">
-              {tenant.category.replace(/_/g, ' ')}
-            </p>
+            <p className="text-xs text-muted-foreground">{tenant.category.replace(/_/g, ' ')}</p>
           </div>
         </div>
       </SheetHeader>
@@ -74,8 +71,8 @@ export function StoreNav({ tenant }: StoreNavProps) {
       <nav className="flex-1 p-4">
         <ul className="space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== urls.home && pathname.startsWith(item.href));
+            const isActive =
+              pathname === item.href || (item.href !== urls.home && pathname.startsWith(item.href));
             const Icon = item.icon;
 
             return (

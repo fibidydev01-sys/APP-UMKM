@@ -13,7 +13,7 @@ import {
   DEFAULT_LANDING_CONFIG,
   mergeLandingConfig,
   prepareConfigForSave,
-} from '@/lib/landing';
+} from '@/lib/landing-templates';
 import type { TenantLandingConfig } from '@umkm/shared/types';
 
 // ============================================================================
@@ -213,9 +213,7 @@ export function useLandingConfig({
 
     try {
       // Use DEFAULT_LANDING_CONFIG (all sections disabled)
-      const resetConfig: TenantLandingConfig = JSON.parse(
-        JSON.stringify(DEFAULT_LANDING_CONFIG)
-      );
+      const resetConfig: TenantLandingConfig = JSON.parse(JSON.stringify(DEFAULT_LANDING_CONFIG));
 
       // Save to server
       await tenantsApi.update({ landingConfig: resetConfig });

@@ -11,7 +11,7 @@ import { Textarea } from '@umkm/shared/ui';
 import { Switch } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { PageHeader } from '@/features/dashboard';
-import { Contact1 } from '@/features/landing/components/blocks';
+import { Contact1 } from '@/features/tenant-landing/components/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
@@ -88,11 +88,7 @@ export default function ContactPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -172,14 +168,8 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="store-email">Email</Label>
-                      <Input
-                        id="store-email"
-                        value={tenant?.email || ''}
-                        disabled
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Email tidak dapat diubah
-                      </p>
+                      <Input id="store-email" value={tenant?.email || ''} disabled />
+                      <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="store-domain">Domain Toko</Label>
@@ -260,7 +250,11 @@ export default function ContactPage() {
                   Pratinjau real-time dari Contact Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Contact1
                     title={formData.contactTitle || 'Hubungi Kami'}

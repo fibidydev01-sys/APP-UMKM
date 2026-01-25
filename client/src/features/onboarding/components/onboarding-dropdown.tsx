@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -14,16 +14,12 @@ import {
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@umkm/shared/ui';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@umkm/shared/ui';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { ScrollArea } from '@umkm/shared/ui';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import { CircularProgress } from './circular-progress';
-import { OnboardingStepStatus } from '@/lib/onboarding';
+import { type OnboardingStepStatus } from '@/features/onboarding';
 
 // ============================================
 // ONBOARDING DROPDOWN COMPONENT (Header)
@@ -48,15 +44,9 @@ function CompactStep({ step }: CompactStepProps) {
         {/* Step Indicator */}
         <div className="shrink-0 mt-0.5">
           {step.completed ? (
-            <IconCircleCheckFilled
-              className="size-4 text-primary"
-              aria-hidden="true"
-            />
+            <IconCircleCheckFilled className="size-4 text-primary" aria-hidden="true" />
           ) : step.isCritical ? (
-            <IconAlertTriangle
-              className="size-4 text-amber-500"
-              aria-hidden="true"
-            />
+            <IconAlertTriangle className="size-4 text-amber-500" aria-hidden="true" />
           ) : (
             <IconCircleDashed
               className="size-4 stroke-muted-foreground/40"
@@ -78,14 +68,15 @@ function CompactStep({ step }: CompactStepProps) {
               {step.title}
             </p>
             {step.isCritical && !step.completed && (
-              <Badge variant="outline" className="shrink-0 text-xs border-amber-500 text-amber-600 dark:text-amber-400">
+              <Badge
+                variant="outline"
+                className="shrink-0 text-xs border-amber-500 text-amber-600 dark:text-amber-400"
+              >
                 Wajib
               </Badge>
             )}
           </div>
-          <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
-            {step.description}
-          </p>
+          <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{step.description}</p>
         </div>
       </div>
     </Link>
@@ -93,13 +84,8 @@ function CompactStep({ step }: CompactStepProps) {
 }
 
 export function OnboardingDropdown() {
-  const {
-    progress,
-    isLoading,
-    isDismissed,
-    dismissOnboarding,
-    restoreOnboarding,
-  } = useOnboarding();
+  const { progress, isLoading, isDismissed, dismissOnboarding, restoreOnboarding } =
+    useOnboarding();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -130,11 +116,7 @@ export function OnboardingDropdown() {
     return (
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-9 gap-2 px-2.5"
-          >
+          <Button variant="ghost" size="sm" className="h-9 gap-2 px-2.5">
             <IconRocket className="h-5 w-5 animate-pulse" />
             <span className="hidden sm:inline text-sm font-medium">Setup</span>
             <IconChevronDown className="h-3.5 w-3.5 transition-transform duration-200 hidden sm:inline" />
@@ -172,11 +154,7 @@ export function OnboardingDropdown() {
     return (
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-9 gap-2 px-2.5"
-          >
+          <Button variant="ghost" size="sm" className="h-9 gap-2 px-2.5">
             <IconTrophy className="h-5 w-5 text-primary" />
             <span className="hidden sm:inline text-sm font-medium text-primary">Complete!</span>
           </Button>
@@ -224,9 +202,7 @@ export function OnboardingDropdown() {
           </div>
 
           {/* Desktop Text */}
-          <span className="hidden sm:inline text-sm font-medium">
-            Setup
-          </span>
+          <span className="hidden sm:inline text-sm font-medium">Setup</span>
 
           <IconChevronDown
             className={cn(

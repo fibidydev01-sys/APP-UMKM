@@ -24,13 +24,7 @@ import { Input } from '@umkm/shared/ui';
 import { Label } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { Textarea } from '@umkm/shared/ui';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@umkm/shared/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,7 +39,7 @@ import { Separator } from '@umkm/shared/ui';
 import { Card } from '@umkm/shared/ui';
 
 import { TestimonialEditor } from './testimonial-editor';
-import { normalizeTestimonials } from '@/lib/landing';
+import { normalizeTestimonials } from '@/lib/landing-templates';
 import { cn } from '@/lib/utils';
 import type { TenantLandingConfig, Testimonial } from '@umkm/shared/types';
 
@@ -76,37 +70,37 @@ const SECTIONS = [
     key: 'hero',
     title: 'Hero Section',
     description: 'Banner utama di bagian atas halaman',
-    icon: Target
+    icon: Target,
   },
   {
     key: 'about',
     title: 'Tentang Kami',
     description: 'Informasi tentang toko Anda',
-    icon: BookOpen
+    icon: BookOpen,
   },
   {
     key: 'products',
     title: 'Produk Unggulan',
     description: 'Tampilkan produk terbaik Anda',
-    icon: ShoppingBag
+    icon: ShoppingBag,
   },
   {
     key: 'testimonials',
     title: 'Testimoni',
     description: 'Ulasan dari pelanggan',
-    icon: Star
+    icon: Star,
   },
   {
     key: 'contact',
     title: 'Kontak',
     description: 'Informasi kontak toko',
-    icon: Phone
+    icon: Phone,
   },
   {
     key: 'cta',
     title: 'Call to Action',
     description: 'Ajakan untuk berbelanja',
-    icon: Rocket
+    icon: Rocket,
   },
 ] as const;
 
@@ -137,59 +131,64 @@ export function LandingBuilder({
   // ==========================================================================
   // TOGGLE SECTION - LOCAL ONLY, NO AUTO-SAVE!
   // ==========================================================================
-  const handleToggleSection = useCallback((key: SectionKey, enabled: boolean) => {
-    const currentSection = config[key] || {};
-    onConfigChange({
-      ...config,
-      [key]: {
-        ...currentSection,
-        enabled,
-      },
-    });
-  }, [config, onConfigChange]);
+  const handleToggleSection = useCallback(
+    (key: SectionKey, enabled: boolean) => {
+      const currentSection = config[key] || {};
+      onConfigChange({
+        ...config,
+        [key]: {
+          ...currentSection,
+          enabled,
+        },
+      });
+    },
+    [config, onConfigChange]
+  );
 
   // ==========================================================================
   // UPDATE HANDLERS
   // ==========================================================================
-  const handleUpdateSection = useCallback((
-    key: SectionKey,
-    field: string,
-    value: string
-  ) => {
-    const currentSection = config[key] || {};
-    onConfigChange({
-      ...config,
-      [key]: {
-        ...currentSection,
-        [field]: value,
-      },
-    });
-  }, [config, onConfigChange]);
+  const handleUpdateSection = useCallback(
+    (key: SectionKey, field: string, value: string) => {
+      const currentSection = config[key] || {};
+      onConfigChange({
+        ...config,
+        [key]: {
+          ...currentSection,
+          [field]: value,
+        },
+      });
+    },
+    [config, onConfigChange]
+  );
 
-  const handleUpdateSectionConfig = useCallback((
-    key: SectionKey,
-    configUpdates: Record<string, unknown>
-  ) => {
-    const currentSection = config[key] || {};
-    const currentConfig = (currentSection as Record<string, unknown>).config || {};
-    onConfigChange({
-      ...config,
-      [key]: {
-        ...currentSection,
-        config: { ...currentConfig, ...configUpdates },
-      },
-    });
-  }, [config, onConfigChange]);
+  const handleUpdateSectionConfig = useCallback(
+    (key: SectionKey, configUpdates: Record<string, unknown>) => {
+      const currentSection = config[key] || {};
+      const currentConfig = (currentSection as Record<string, unknown>).config || {};
+      onConfigChange({
+        ...config,
+        [key]: {
+          ...currentSection,
+          config: { ...currentConfig, ...configUpdates },
+        },
+      });
+    },
+    [config, onConfigChange]
+  );
 
-  const handleTestimonialsChange = useCallback((items: Testimonial[]) => {
-    onConfigChange({
-      ...config,
-      testimonials: {
-        ...config.testimonials,
-        config: { items: normalizeTestimonials(items) },
-      },
-    });
-  }, [config, onConfigChange]);
+  const handleTestimonialsChange = useCallback(
+    (items: Testimonial[]) => {
+      onConfigChange({
+        ...config,
+        testimonials: {
+          ...config.testimonials,
+          config: { items: normalizeTestimonials(items) },
+        },
+      });
+    },
+    [config, onConfigChange]
+  );
 
   // ==========================================================================
   // ACTION HANDLERS
@@ -230,7 +229,10 @@ export function LandingBuilder({
               </div>
               <ul className="mt-2 space-y-1">
                 {validationErrors.map((error, index) => (
-                  <li key={index} className="text-xs text-red-700 dark:text-red-300 flex items-start gap-1">
+                  <li
+                    key={index}
+                    className="text-xs text-red-700 dark:text-red-300 flex items-start gap-1"
+                  >
                     <span className="text-red-500">•</span>
                     <span>{error}</span>
                   </li>
@@ -270,24 +272,27 @@ export function LandingBuilder({
               {/* Section Header */}
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className={cn(
-                    'p-2 rounded-lg',
-                    isEnabled ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-                  )}>
+                  <div
+                    className={cn(
+                      'p-2 rounded-lg',
+                      isEnabled ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
+                    )}
+                  >
                     <IconComponent className="h-5 w-5" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-lg">{section.title}</h3>
                       {isEnabled && (
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                        <Badge
+                          variant="secondary"
+                          className="text-xs bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                        >
                           Aktif
                         </Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {section.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{section.description}</p>
                   </div>
                 </div>
                 <Switch
@@ -302,7 +307,9 @@ export function LandingBuilder({
                   <TestimonialsSection
                     config={config.testimonials}
                     onTitleChange={(value) => handleUpdateSection('testimonials', 'title', value)}
-                    onSubtitleChange={(value) => handleUpdateSection('testimonials', 'subtitle', value)}
+                    onSubtitleChange={(value) =>
+                      handleUpdateSection('testimonials', 'subtitle', value)
+                    }
                     onItemsChange={handleTestimonialsChange}
                   />
                 ) : (
@@ -310,7 +317,9 @@ export function LandingBuilder({
                     sectionKey={section.key}
                     config={sectionConfig}
                     onTitleChange={(value) => handleUpdateSection(section.key, 'title', value)}
-                    onSubtitleChange={(value) => handleUpdateSection(section.key, 'subtitle', value)}
+                    onSubtitleChange={(value) =>
+                      handleUpdateSection(section.key, 'subtitle', value)
+                    }
                     onConfigChange={(updates) => handleUpdateSectionConfig(section.key, updates)}
                   />
                 )}
@@ -326,15 +335,13 @@ export function LandingBuilder({
           <AlertDialogHeader>
             <AlertDialogTitle>Reset Landing Page?</AlertDialogTitle>
             <AlertDialogDescription>
-              Semua konfigurasi landing page akan direset ke default.
-              Perubahan ini akan langsung dipublish. Lanjutkan?
+              Semua konfigurasi landing page akan direset ke default. Perubahan ini akan langsung
+              dipublish. Lanjutkan?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmReset}>
-              Ya, Reset
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmReset}>Ya, Reset</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -350,9 +357,7 @@ export function LandingBuilder({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Kembali</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmDiscard}>
-              Ya, Batalkan
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleConfirmDiscard}>Ya, Batalkan</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -381,7 +386,6 @@ function TestimonialsSection({
 
   return (
     <div className="space-y-4">
-
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="testimonials-title">Judul Section</Label>
@@ -405,10 +409,7 @@ function TestimonialsSection({
       <Separator />
       <div>
         <Label className="mb-3 block">Daftar Testimoni ({items.length})</Label>
-        <TestimonialEditor
-          items={items}
-          onChange={onItemsChange}
-        />
+        <TestimonialEditor items={items} onChange={onItemsChange} />
       </div>
     </div>
   );
@@ -437,7 +438,6 @@ function GenericSection({
 
   return (
     <div className="space-y-4">
-
       {/* Common Fields */}
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
@@ -459,21 +459,15 @@ function GenericSection({
       </div>
 
       {/* Section-specific Fields */}
-      {sectionKey === 'hero' && (
-        <HeroFields config={sectionConfig} onChange={onConfigChange} />
-      )}
-      {sectionKey === 'about' && (
-        <AboutFields config={sectionConfig} onChange={onConfigChange} />
-      )}
+      {sectionKey === 'hero' && <HeroFields config={sectionConfig} onChange={onConfigChange} />}
+      {sectionKey === 'about' && <AboutFields config={sectionConfig} onChange={onConfigChange} />}
       {sectionKey === 'products' && (
         <ProductsFields config={sectionConfig} onChange={onConfigChange} />
       )}
       {sectionKey === 'contact' && (
         <ContactFields config={sectionConfig} onChange={onConfigChange} />
       )}
-      {sectionKey === 'cta' && (
-        <CtaFields config={sectionConfig} onChange={onConfigChange} />
-      )}
+      {sectionKey === 'cta' && <CtaFields config={sectionConfig} onChange={onConfigChange} />}
     </div>
   );
 }

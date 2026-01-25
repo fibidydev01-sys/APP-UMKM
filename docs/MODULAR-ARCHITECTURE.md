@@ -49,7 +49,7 @@ client/src/
 │   ├── customers/         # Customer Management
 │   ├── dashboard/         # Dashboard UI & Stats
 │   ├── discover/          # Public Discovery Page
-│   ├── landing/           # Landing Page Rendering
+│   ├── tenant-landing/    # Tenant Landing Page Rendering
 │   ├── landing-builder/   # Landing Page Builder
 │   ├── onboarding/        # Onboarding Flow
 │   ├── orders/            # Order Management
@@ -74,11 +74,10 @@ client/src/
 │   ├── ui-store.ts      # UI state (sidebar, modals, loading)
 │   └── index.ts         # Barrel exports
 │
-├── lib/                  # ✅ Shared Utilities (28 files)
+├── lib/                  # ✅ Shared Utilities (26 files)
 │   ├── api/             # HTTP client & shared APIs
 │   ├── categories/      # Category service
-│   ├── landing/         # Landing utilities (shared)
-│   ├── onboarding/      # Onboarding utilities (shared)
+│   ├── landing-templates/ # Landing template system (shared)
 │   ├── theme/           # Theme utilities
 │   ├── validations.ts   # Shared Zod schemas
 │   ├── format.ts        # Format utilities
@@ -147,9 +146,9 @@ features/{module}/
 | **customers**       | Customer management           | CustomersTable, CustomerForm, useCustomers, customersApi                      |
 | **dashboard**       | Dashboard UI & stats          | DashboardLayout, DashboardHeader, DashboardStats, useDashboardStats           |
 | **discover**        | Public UMKM discovery         | DiscoverHero, TenantCard, fetchAllTenants, discover utilities                 |
-| **landing**         | Landing page rendering        | TenantHero, TenantAbout, TenantProducts, TenantTestimonials                   |
+| **tenant-landing**  | Tenant landing page rendering | TenantHero, TenantAbout, TenantProducts, TenantTestimonials                   |
 | **landing-builder** | Landing page builder          | LandingBuilder, TemplateSelector, LivePreview, useLandingConfig               |
-| **onboarding**      | Onboarding flow               | OnboardingCard, OnboardingDropdown, useOnboarding                             |
+| **onboarding**      | Onboarding flow               | OnboardingCard, OnboardingDropdown, onboarding lib, useOnboarding             |
 | **orders**          | Order management              | OrdersTable, OrderForm, InvoiceModal, useOrders, ordersApi, invoice utilities |
 | **products**        | Product management            | ProductsTable, ProductForm, useProducts, productsApi, useProductsStore        |
 | **pwa**             | PWA components                | InstallPrompt, PWAProvider, usePWA                                            |
@@ -188,17 +187,16 @@ features/{module}/
 
 **Purpose:** Pure functions and utilities used across features
 
-| Category        | Files                                            | Purpose                                                      |
-| --------------- | ------------------------------------------------ | ------------------------------------------------------------ |
-| **API**         | `api/client.ts`, `api/auth.ts`, `api/tenants.ts` | HTTP client, auth API, tenants API                           |
-| **Validations** | `validations.ts`                                 | Shared Zod schemas (login, register, etc.)                   |
-| **Formatting**  | `format.ts`                                      | Date, price, phone formatting                                |
-| **Categories**  | `categories/unified-service.ts`                  | Category service (shared)                                    |
-| **Landing**     | `landing/*`                                      | Landing utilities (shared between landing-builder & landing) |
-| **Onboarding**  | `onboarding/*`                                   | Onboarding utilities (shared)                                |
-| **Theme**       | `theme/*`                                        | Theme color utilities                                        |
-| **Cloudinary**  | `cloudinary.ts`                                  | Cloudinary upload utilities                                  |
-| **Utils**       | `utils.ts`, `cn.ts`, `og-utils.ts`               | General utilities                                            |
+| Category              | Files                                            | Purpose                                                           |
+| --------------------- | ------------------------------------------------ | ----------------------------------------------------------------- |
+| **API**               | `api/client.ts`, `api/auth.ts`, `api/tenants.ts` | HTTP client, auth API, tenants API                                |
+| **Validations**       | `validations.ts`                                 | Shared Zod schemas (login, register, etc.)                        |
+| **Formatting**        | `format.ts`                                      | Date, price, phone formatting                                     |
+| **Categories**        | `categories/unified-service.ts`                  | Category service (shared)                                         |
+| **Landing Templates** | `landing-templates/*`                            | Template system (shared between landing-builder & tenant-landing) |
+| **Theme**             | `theme/*`                                        | Theme color utilities                                             |
+| **Cloudinary**        | `cloudinary.ts`                                  | Cloudinary upload utilities                                       |
+| **Utils**             | `utils.ts`, `cn.ts`, `og-utils.ts`               | General utilities                                                 |
 
 ### 📁 `providers/` - React Context Providers
 
@@ -347,7 +345,7 @@ import { generateInvoiceImage } from '@/features/orders';
 Total Feature Modules: 13
 Total Shared Hooks: 10
 Total Shared Stores: 2
-Total Shared Libs: 28
+Total Shared Libs: 26
 Total Config Files: 6
 Total Routes: 38
 

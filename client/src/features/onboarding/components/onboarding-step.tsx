@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Link from 'next/link';
 import {
@@ -9,7 +9,7 @@ import {
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@umkm/shared/ui';
-import { OnboardingStepStatus } from '@/lib/onboarding';
+import { type OnboardingStepStatus } from '@/features/onboarding';
 
 // ============================================
 // ONBOARDING STEP COMPONENT
@@ -26,19 +26,13 @@ interface OnboardingStepProps {
 function StepIndicator({ completed, isCritical }: { completed: boolean; isCritical: boolean }) {
   if (completed) {
     return (
-      <IconCircleCheckFilled
-        className="mt-0.5 size-5 shrink-0 text-primary"
-        aria-hidden="true"
-      />
+      <IconCircleCheckFilled className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden="true" />
     );
   }
 
   if (isCritical) {
     return (
-      <IconAlertTriangle
-        className="mt-0.5 size-5 shrink-0 text-amber-500"
-        aria-hidden="true"
-      />
+      <IconAlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" aria-hidden="true" />
     );
   }
 
@@ -61,13 +55,7 @@ export function OnboardingStep({
   const showBorderTop = !isFirst && !isOpen && !isPrevOpen;
 
   return (
-    <div
-      className={cn(
-        'group',
-        isOpen && 'rounded-lg',
-        showBorderTop && 'border-t border-border'
-      )}
-    >
+    <div className={cn('group', isOpen && 'rounded-lg', showBorderTop && 'border-t border-border')}>
       <div
         role="button"
         tabIndex={0}
@@ -106,9 +94,7 @@ export function OnboardingStep({
                 >
                   {step.title}
                   {step.isCritical && !step.completed && (
-                    <span className="ml-2 text-xs text-amber-600 dark:text-amber-400">
-                      (Wajib)
-                    </span>
+                    <span className="ml-2 text-xs text-amber-600 dark:text-amber-400">(Wajib)</span>
                   )}
                 </h4>
 
@@ -119,27 +105,16 @@ export function OnboardingStep({
                     isOpen ? 'mt-2 h-auto opacity-100' : 'h-0 opacity-0'
                   )}
                 >
-                  <p className="text-sm text-muted-foreground">
-                    {step.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{step.description}</p>
 
                   {!step.completed && (
-                    <Button
-                      size="sm"
-                      className="mt-3"
-                      onClick={(e) => e.stopPropagation()}
-                      asChild
-                    >
-                      <Link href={step.actionHref}>
-                        {step.actionLabel}
-                      </Link>
+                    <Button size="sm" className="mt-3" onClick={(e) => e.stopPropagation()} asChild>
+                      <Link href={step.actionHref}>{step.actionLabel}</Link>
                     </Button>
                   )}
 
                   {step.completed && (
-                    <p className="mt-2 text-xs text-green-600 dark:text-green-400">
-                      ✓ Selesai
-                    </p>
+                    <p className="mt-2 text-xs text-green-600 dark:text-green-400">✓ Selesai</p>
                   )}
                 </div>
               </div>

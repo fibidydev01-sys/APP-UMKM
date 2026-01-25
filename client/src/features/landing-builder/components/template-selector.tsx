@@ -3,8 +3,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Check, Palette } from 'lucide-react';
-import { getAllTemplates, useTemplate } from '@/lib/landing';
-import type { LandingTemplate } from '@/lib/landing';
+import { getAllTemplates, useTemplate } from '@/lib/landing-templates';
+import type { LandingTemplate } from '@/lib/landing-templates';
 
 /**
  * Template Selector Component
@@ -40,7 +40,9 @@ export function TemplateSelector() {
               <Card
                 key={template.id}
                 className={`cursor-pointer transition-all hover:shadow-md ${
-                  isSelected ? 'border-2 border-primary bg-primary/5' : 'border hover:border-primary/50'
+                  isSelected
+                    ? 'border-2 border-primary bg-primary/5'
+                    : 'border hover:border-primary/50'
                 }`}
                 onClick={() => handleSelectTemplate(template)}
               >
@@ -93,8 +95,8 @@ export function TemplateSelector() {
         {/* Info Box */}
         <div className="mt-6 p-4 bg-muted/50 rounded-lg">
           <p className="text-sm text-muted-foreground">
-            <strong>Template aktif:</strong> {currentTemplate.name} • Template ini mengubah layout dan
-            style dari setiap section tanpa mengubah konten yang sudah ada.
+            <strong>Template aktif:</strong> {currentTemplate.name} • Template ini mengubah layout
+            dan style dari setiap section tanpa mengubah konten yang sudah ada.
           </p>
         </div>
       </CardContent>

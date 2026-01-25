@@ -17,11 +17,8 @@ export * from './api';
 // Cloudinary utilities
 export * from './cloudinary';
 
-// Landing page utilities (shared between landing-builder and landing features)
-export * from './landing';
-
-// Onboarding utilities (shared)
-export * from './onboarding';
+// Landing page templates (shared between landing-builder and tenant-landing features)
+export * from './landing-templates';
 
 // Theme utilities
 export * from './theme';
