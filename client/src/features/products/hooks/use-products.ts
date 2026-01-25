@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useProductsStore } from '@/stores';
-import { productsApi, getErrorMessage, isApiError } from '@/lib/api';
+import { useProductsStore } from '@/features/products';
+import { productsApi } from '@/features/products';
+import { getErrorMessage, isApiError } from '@/lib/api';
 import { toast } from '@/providers';
 import type { Product, CreateProductInput, UpdateProductInput, ProductQueryParams } from '@umkm/shared/types';
 

@@ -21,8 +21,8 @@ import { OrderStatusBadge, PaymentStatusBadge } from './order-status-badge';
 import { OrderStatusSelect, PaymentStatusSelect } from './order-status-select';
 import { OrderItemsTable } from './order-items-table';
 import { InvoiceModal } from './invoice-modal';
-import { ordersApi } from '@/lib/api';
-import { useCurrentTenant } from '@/stores';
+import { ordersApi } from '@/features/orders';
+import { useCurrentTenant } from '@/features/auth';
 import {
   formatPhone,
   formatDateTime,

@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from './theme-provider';
 import { HydrationProvider } from './hydration-provider';
-import { PWAProvider } from '@/components/pwa';
+import { PWAProvider } from '@/features/pwa';
 
 // ==========================================
 // MAIN PROVIDERS WRAPPER

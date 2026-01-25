@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { ordersApi, getErrorMessage } from '@/lib/api';
+import { ordersApi } from '@/features/orders';
+import { getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import type {
   Order,

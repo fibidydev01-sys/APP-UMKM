@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { AuthGuard } from '@/features/auth';
-import { DashboardLayout } from '@/components/dashboard';
+import { DashboardLayout } from '@/features/dashboard';
 
 // ==========================================
 // DASHBOARD LAYOUT

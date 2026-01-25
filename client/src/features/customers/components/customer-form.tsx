@@ -23,7 +23,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@umkm/shared/ui';
-import { useCreateCustomer, useUpdateCustomer } from '@/hooks';
+import { useCreateCustomer, useUpdateCustomer } from '@/features/customers';
 import { customerSchema, type CustomerFormData } from '@/lib/validations';
 import type { Customer } from '@umkm/shared/types';
 

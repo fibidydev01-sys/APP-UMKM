@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@umkm/shared/ui';
-import { ordersApi, getErrorMessage } from '@/lib/api';
+import { ordersApi } from '@/features/orders';
+import { getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import { OrderStatus, PaymentStatus } from '@umkm/shared/types';
 

@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { PageHeader } from '@/components/dashboard';
+import { PageHeader } from '@/features/dashboard';
 import { OrderForm } from '@/features/orders';
 import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';

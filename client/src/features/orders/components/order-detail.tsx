@@ -19,8 +19,8 @@ import { OrderItemsTable } from './order-items-table';
 import { OrderCancelDialog } from './order-cancel-dialog';
 import { InvoiceModal } from './invoice-modal';
 import { formatPhone, formatDateTime, formatPrice, generateWhatsAppLink } from '@/lib/format';
-import { useCancelOrder } from '@/hooks';
-import { useCurrentTenant } from '@/stores';
+import { useCancelOrder } from '@/features/orders';
+import { useCurrentTenant } from '@/features/auth';
 import type { Order } from '@umkm/shared/types';
 
 // ==========================================

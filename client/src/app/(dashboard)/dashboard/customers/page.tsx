@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 import { Button } from '@umkm/shared/ui';
-import { PageHeader } from '@/components/dashboard';
+import { PageHeader } from '@/features/dashboard';
 import { CustomersTable, customersApi, Customer } from '@/features/customers';
 import { Skeleton } from '@umkm/shared/ui';
 import { getErrorMessage } from '@/lib/api';

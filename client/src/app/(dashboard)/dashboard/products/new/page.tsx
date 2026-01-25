@@ -4,7 +4,7 @@
 // Route: /dashboard/products/new
 
 import { useState, useEffect } from 'react';
-import { PageHeader } from '@/components/dashboard';
+import { PageHeader } from '@/features/dashboard';
 import { ProductForm, productsApi } from '@/features/products';
 import { Skeleton } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader } from '@umkm/shared/ui';

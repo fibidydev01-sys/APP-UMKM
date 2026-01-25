@@ -1,6 +1,6 @@
 import { tenantsApi } from '@/lib/api';
-import { StoreHeader, StoreFooter, StoreNotFound } from '@/components/store';
-import { LocalBusinessSchema } from '@/components/seo';
+import { StoreHeader, StoreFooter, StoreNotFound } from '@/features/store';
+import { LocalBusinessSchema } from '@/features/seo';
 import { TemplateProvider } from '@/features/landing-builder';
 import { generateThemeCSS } from '@/lib/theme';
 import { createTenantMetadata } from '@/lib/seo';

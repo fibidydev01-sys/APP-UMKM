@@ -2,19 +2,6 @@
 // STORES INDEX - Export all stores
 // ==========================================
 
-// Auth Store
-export {
-  useAuthStore,
-  useIsAuthenticated,
-  useAuthChecked,
-  useAuthHydrated,
-  useCurrentTenant,
-  useAuthLoading,
-  selectTenant,
-  selectIsLoading,
-  selectIsChecked,
-} from './auth-store';
-
 // Cart Store
 export {
   useCartStore,
@@ -35,29 +22,6 @@ export {
   useCartActions,
   type CartItem,
 } from './cart-store';
-
-// Products Store
-export {
-  useProductsStore,
-  selectProducts,
-  selectCategories,
-  selectFilters,
-  selectPagination,
-  selectProductsLoading,
-  selectProductsError,
-  selectProductById,
-  selectActiveProducts,
-  selectFeaturedProducts,
-  useProducts,
-  useProductCategories,
-  useProductFilters,
-  useProductPagination,
-  useProductsLoading,
-  useProductsError,
-  useProductById,
-  useActiveProducts,
-  useFeaturedProducts,
-} from './products-store';
 
 // UI Store
 export {

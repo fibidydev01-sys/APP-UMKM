@@ -42,7 +42,8 @@ import { getProductColumns } from './products-table-columns';
 import { ProductsTableToolbar } from './products-table-toolbar';
 import { ProductDeleteDialog } from './product-delete-dialog';
 import { ProductPreviewDrawer } from './product-preview-drawer';
-import { productsApi, getErrorMessage } from '@/lib/api';
+import { productsApi } from '@/features/products';
+import { getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import type { Product } from '@umkm/shared/types';
 

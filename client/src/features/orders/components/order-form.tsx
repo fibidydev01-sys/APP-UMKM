@@ -39,7 +39,7 @@ import {
 } from '@umkm/shared/ui';
 import { Card, CardContent, CardHeader, CardTitle } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
-import { useCreateOrder } from '@/hooks';
+import { useCreateOrder } from '@/features/orders';
 import { formatPrice } from '@/lib/format';
 import type { Product, Customer } from '@umkm/shared/types';
 

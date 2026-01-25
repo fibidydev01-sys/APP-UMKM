@@ -47,7 +47,7 @@ import {
 } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
-import { useCreateProduct, useUpdateProduct } from '@/hooks';
+import { useCreateProduct, useUpdateProduct } from '@/features/products';
 import { productSchema, type ProductFormData } from '@/lib/validations';
 import { UNIT_OPTIONS } from '@/config/constants';
 import { MultiImageUpload } from '@/components/upload';

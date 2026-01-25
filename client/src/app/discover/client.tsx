@@ -19,7 +19,7 @@ import {
   TenantCardSkeleton,
   SearchResultsHeader,
   NoResults,
-} from '@/components/discover';
+} from '@/features/discover';
 import type { ShowcaseTenant } from '@umkm/shared/types';
 import {
   fetchAllTenants,

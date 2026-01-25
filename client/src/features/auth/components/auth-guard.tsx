@@ -7,7 +7,7 @@ import {
   useIsAuthenticated,
   useAuthChecked,
   useAuthStore,
-} from '@/stores';
+} from '@/features/auth';
 import { authApi } from '@/lib/api';
 
 // ==========================================

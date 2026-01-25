@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { PageHeader } from '@/components/dashboard';
+import { PageHeader } from '@/features/dashboard';
 import { ProductForm, productsApi, Product } from '@/features/products';
 import { Skeleton } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { DashboardQuickActions } from '@/components/dashboard';
+import { DashboardQuickActions } from '@/features/dashboard';
 
 // ==========================================
 // METADATA

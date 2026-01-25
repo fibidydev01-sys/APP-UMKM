@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { customersApi, getErrorMessage } from '@/lib/api';
+import { customersApi } from '@/features/customers';
+import { getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import type { Customer, CreateCustomerInput, UpdateCustomerInput, CustomerQueryParams } from '@umkm/shared/types';
 

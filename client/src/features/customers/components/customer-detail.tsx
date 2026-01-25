@@ -21,9 +21,9 @@ import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import { CustomerDeleteDialog } from './customer-delete-dialog';
-import { OrderStatusBadge, PaymentStatusBadge } from '@/components/orders';
-import { useDeleteCustomer } from '@/hooks';
-import { ordersApi } from '@/lib/api';
+import { OrderStatusBadge, PaymentStatusBadge } from '@/features/orders';
+import { useDeleteCustomer } from '@/features/customers';
+import { ordersApi } from '@/features/orders';
 import {
   formatPhone,
   formatPrice,

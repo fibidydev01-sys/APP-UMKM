@@ -9,12 +9,12 @@ import {
   TenantTestimonials,
   TenantContact,
   TenantCta,
-} from '@/components/landing';
+} from '@/features/landing';
 import {
   BreadcrumbSchema,
   ProductListSchema,
   generateTenantBreadcrumbs,
-} from '@/components/seo';
+} from '@/features/seo';
 import type { PublicTenant, Product, Testimonial, SectionKey } from '@umkm/shared/types';
 
 // ==========================================

@@ -15,7 +15,7 @@ import { Loader2, Save, ChevronRight, Megaphone, Info, MessageSquareQuote, Phone
 import { Tabs, TabsContent } from '@umkm/shared/ui';
 import { Button } from '@umkm/shared/ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
-import { PageHeader } from '@/components/dashboard';
+import { PageHeader } from '@/features/dashboard';
 import {
   SettingsNav,
   PaymentSettings,

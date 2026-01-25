@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/features/auth';
 import { authApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import type { LoginInput, RegisterInput } from '@umkm/shared/types';

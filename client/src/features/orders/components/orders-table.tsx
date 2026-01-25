@@ -36,8 +36,9 @@ import { getOrderColumns } from './orders-table-columns';
 import { OrdersTableToolbar } from './orders-table-toolbar';
 import { OrderCancelDialog } from './order-cancel-dialog';
 import { OrderPreviewDrawer } from './order-preview-drawer';
-import { useCancelOrder } from '@/hooks';
-import { ordersApi, getErrorMessage } from '@/lib/api';
+import { useCancelOrder } from '@/features/orders';
+import { ordersApi } from '@/features/orders';
+import { getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
 import type { OrderListItem } from '@umkm/shared/types';
 

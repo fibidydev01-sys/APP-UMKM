@@ -19,8 +19,8 @@ import { Button } from '@umkm/shared/ui';
 import { Avatar, AvatarFallback } from '@umkm/shared/ui';
 import { Separator } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
-import { OrderStatusBadge, PaymentStatusBadge } from '@/components/orders';
-import { ordersApi } from '@/lib/api';
+import { OrderStatusBadge, PaymentStatusBadge } from '@/features/orders';
+import { ordersApi } from '@/features/orders';
 import {
   formatPhone,
   formatPrice,

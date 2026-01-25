@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTenant } from './use-tenant';
-import { useProducts } from './use-products';
+import { useProducts } from '@/features/products';
 import {
   calculateOnboardingProgress,
   OnboardingProgress

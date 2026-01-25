@@ -4,7 +4,7 @@ import { Providers } from '@/providers';
 import { Toaster } from '@umkm/shared/ui';
 import { seoConfig } from '@/config/seo.config';
 import { getFullUrl } from '@/lib/seo';
-import { OrganizationSchema } from '@/components/seo';
+import { OrganizationSchema } from '@/features/seo';
 import './globals.css';
 
 // ==========================================

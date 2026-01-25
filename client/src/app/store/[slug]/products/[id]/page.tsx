@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { tenantsApi, productsApi } from '@/lib/api';
+import { tenantsApi } from '@/lib/api';
+import { productsApi } from '@/features/products';
 import {
   StoreBreadcrumb,
   ProductGallery,
@@ -9,13 +10,13 @@ import {
   ShippingInfo,
   RelatedProducts,
   ProductGridSkeleton,
-} from '@/components/store';
+} from '@/features/store';
 import {
   ProductSchema,
   BreadcrumbSchema,
   SocialShare,
   generateProductBreadcrumbs,
-} from '@/components/seo';
+} from '@/features/seo';
 import { createProductMetadata, getTenantUrl } from '@/lib/seo';
 import { Separator } from '@umkm/shared/ui';
 import type { Metadata } from 'next';

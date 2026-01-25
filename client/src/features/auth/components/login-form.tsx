@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from '@umkm/shared/ui';
 import { Alert, AlertDescription } from '@umkm/shared/ui';
-import { useLogin } from '@/hooks';
+import { useLogin } from '@/features/auth';
 import { loginSchema, type LoginFormData } from '@/lib/validations';
 
 // ==========================================

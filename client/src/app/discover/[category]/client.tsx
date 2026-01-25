@@ -20,7 +20,7 @@ import {
   CategoryFilterBar,
   MinimalFooter,
   TenantPreviewDrawer,
-} from '@/components/discover';
+} from '@/features/discover';
 import type { ShowcaseTenant } from '@umkm/shared/types';
 import { CATEGORY_CONFIG } from '@/config/categories';
 import {
