@@ -15,6 +15,12 @@ export * from './types';
 // Hooks
 export * from './hooks';
 
+// Providers
+export * from './providers';
+
+// Lib
+export * from './lib';
+
 // Config (import from '@umkm/shared/config' directly to avoid conflicts)
 // export * from './config';
 

@@ -12,11 +12,19 @@ const __dirname = dirname(__filename);
 const distPath = path.join(__dirname, '..', 'dist');
 
 // Files that need 'use client' directive
-// Only add to hooks bundle - UI components should NOT have blanket 'use client'
-// because individual source files already have their own 'use client' directives
+// Add to main index, hooks, landing-blocks, and store features
+// UI components have their own directives in source, but bundled output needs top-level directive
 const filesToModify = [
+  'index.js',
+  'index.mjs',
   'hooks/index.js',
   'hooks/index.mjs',
+  'features/seo/index.js',
+  'features/seo/index.mjs',
+  'features/landing-blocks/index.js',
+  'features/landing-blocks/index.mjs',
+  'features/store/index.js',
+  'features/store/index.mjs',
 ];
 
 filesToModify.forEach((file) => {

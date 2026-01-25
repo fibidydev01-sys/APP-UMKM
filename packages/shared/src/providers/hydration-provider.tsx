@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import React, { useSyncExternalStore } from 'react';
 
 // ==========================================
 // HYDRATION HOOKS (using useSyncExternalStore)

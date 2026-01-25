@@ -51,6 +51,11 @@
       "types": "./dist/features/landing-blocks/index.d.ts",
       "import": "./dist/features/landing-blocks/index.mjs",
       "require": "./dist/features/landing-blocks/index.js"
+    },
+    "./features/store": {
+      "types": "./dist/features/store/index.d.ts",
+      "import": "./dist/features/store/index.mjs",
+      "require": "./dist/features/store/index.js"
     }
   },
   "scripts": {

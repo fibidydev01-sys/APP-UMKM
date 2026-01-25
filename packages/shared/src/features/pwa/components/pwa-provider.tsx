@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { InstallPrompt } from './install-prompt';

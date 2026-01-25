@@ -55,7 +55,7 @@ export function ProductCard({ product, storeSlug, showAddToCart = true }: Produc
         name: product.name,
         price: product.price,
         image: product.images?.[0],
-        unit: product.unit || undefined,
+        unit: product.unit ?? undefined,
         maxStock: product.trackStock ? (product.stock ?? undefined) : undefined,
       });
 

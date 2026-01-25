@@ -18,7 +18,7 @@ import { ScrollArea } from '@/ui';
 import { Separator } from '@/ui';
 import { RadioGroup, RadioGroupItem } from '@/ui';
 import { formatPrice, generateWhatsAppLink } from '../../../lib/formatters';
-import { useCartStore, useCartItems, useCartTotalPrice } from '../../../stores';
+import { useCartStore, useCartItems, useCartTotalPrice, type CartItem } from '../../../stores';
 import type { PublicTenant, PaymentMethods, ShippingMethods } from '@/types';
 
 interface WhatsAppCheckoutDialogProps {
@@ -40,7 +40,7 @@ export function WhatsAppCheckoutDialog({
 
   const items = useCartItems();
   const subtotal = useCartTotalPrice();
-  const clearCart = useCartStore((state) => state.clearCart);
+  const clearCart = useCartStore((state: { clearCart: () => void }) => state.clearCart);
 
   // ✅ FIXED: Add null safety checks and memoization
   // Get payment methods with safe access
@@ -124,7 +124,7 @@ export function WhatsAppCheckoutDialog({
   const handleOrder = () => {
     // Build items list
     const itemsList = items
-      .map((item) => `• ${item.name} x${item.qty} = ${formatPrice(item.price * item.qty)}`)
+      .map((item: CartItem) => `• ${item.name} x${item.qty} = ${formatPrice(item.price * item.qty)}`)
       .join('\n');
 
     // Get selected payment info
@@ -200,7 +200,7 @@ Terima kasih! 🙏`;
                 Ringkasan Pesanan
               </h4>
               <div className="space-y-2 text-sm">
-                {items.map((item) => (
+                {items.map((item: CartItem) => (
                   <div key={item.id} className="flex justify-between">
                     <span className="text-muted-foreground">
                       {item.name} x{item.qty}

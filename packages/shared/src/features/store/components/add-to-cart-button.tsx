@@ -23,9 +23,9 @@ export function AddToCartButton({
   const [showAdded, setShowAdded] = useState(false);
 
   // Get actions directly from store (stable references)
-  const addItem = useCartStore((state) => state.addItem);
-  const incrementQty = useCartStore((state) => state.incrementQty);
-  const decrementQty = useCartStore((state) => state.decrementQty);
+  const addItem = useCartStore((state: { addItem: (item: any, qty?: number) => void }) => state.addItem);
+  const incrementQty = useCartStore((state: { incrementQty: (id: string) => void }) => state.incrementQty);
+  const decrementQty = useCartStore((state: { decrementQty: (id: string) => void }) => state.decrementQty);
 
   // Get qty with memoized selector
   const qty = useItemQty(product.id);

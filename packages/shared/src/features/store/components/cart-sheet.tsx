@@ -20,6 +20,7 @@ import {
   useCartTotalPrice,
   useCartIsEmpty,
   useCartHydrated,
+  type CartItem,
 } from '../../../stores';
 import { formatPrice } from '../../../lib/formatters';
 import { getThumbnailUrl } from '../../../lib/cloudinary';
@@ -42,14 +43,14 @@ export function CartSheet({ tenant }: CartSheetProps) {
   const isHydrated = useCartHydrated();
 
   // Get actions directly
-  const incrementQty = useCartStore((state) => state.incrementQty);
-  const decrementQty = useCartStore((state) => state.decrementQty);
-  const removeItem = useCartStore((state) => state.removeItem);
-  const clearCart = useCartStore((state) => state.clearCart);
+  const incrementQty = useCartStore((state: { incrementQty: (id: string) => void }) => state.incrementQty);
+  const decrementQty = useCartStore((state: { decrementQty: (id: string) => void }) => state.decrementQty);
+  const removeItem = useCartStore((state: { removeItem: (id: string) => void }) => state.removeItem);
+  const clearCart = useCartStore((state: { clearCart: () => void }) => state.clearCart);
 
   // Calculate total items
   const totalItems = useMemo(
-    () => items.reduce((sum, item) => sum + item.qty, 0),
+    () => items.reduce((sum: number, item: { qty: number }) => sum + item.qty, 0),
     [items]
   );
 
@@ -124,7 +125,7 @@ export function CartSheet({ tenant }: CartSheetProps) {
               {/* Cart Items */}
               <ScrollArea className="flex-1 -mx-6 px-6">
                 <div className="space-y-4 py-4">
-                  {items.map((item) => (
+                  {items.map((item: CartItem) => (
                     <div key={item.id} className="flex gap-3">
                       {/* Image */}
                       <div className="relative h-16 w-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
