@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from 'next';
 import { Providers } from '@/providers';
 import { Toaster } from '@umkm/shared/ui';
 import { seoConfig } from '@/config/seo.config';
-import { getFullUrl } from '@/lib/seo';
+import { getFullUrl } from '@/features/seo';
 import { OrganizationSchema } from '@/features/seo';
 import './globals.css';
 

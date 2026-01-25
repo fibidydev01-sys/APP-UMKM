@@ -17,11 +17,20 @@ export * from './api';
 // Cloudinary utilities
 export * from './cloudinary';
 
-// Invoice utilities (NEW)
-export * from './invoice';
-
-// Landing page utilities
+// Landing page utilities (shared between landing-builder and landing features)
 export * from './landing';
 
-// Discover utilities
-export * from './discover';
+// Onboarding utilities (shared)
+export * from './onboarding';
+
+// Theme utilities
+export * from './theme';
+
+// Category utilities (shared)
+export * from './categories/unified-service';
+
+// Store URL utilities
+export * from './store-url';
+
+// OG utilities
+export * from './og-utils';

@@ -1,5 +1,5 @@
 import { JsonLd } from './json-ld';
-import { generateProductListSchema } from '@/lib/schema';
+import { generateProductListSchema } from '@/features/seo';
 
 // ==========================================
 // PRODUCT LIST SCHEMA (ItemList)

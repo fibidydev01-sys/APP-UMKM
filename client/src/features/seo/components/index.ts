@@ -20,4 +20,4 @@ export { SocialShare } from './social-share';
 export {
   generateTenantBreadcrumbs,
   generateProductBreadcrumbs,
-} from '@/lib/seo';
+} from '../lib';

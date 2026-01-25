@@ -1,5 +1,5 @@
 import { JsonLd } from './json-ld';
-import { generateBreadcrumbSchema } from '@/lib/schema';
+import { generateBreadcrumbSchema } from '@/features/seo';
 
 // ==========================================
 // BREADCRUMB SCHEMA

@@ -28,7 +28,7 @@ import { Button } from '@umkm/shared/ui';
 import { Badge } from '@umkm/shared/ui';
 import { cn } from '@/lib/utils';
 import type { ShowcaseTenant } from '@umkm/shared/types';
-import { getCategoryInfo, getInitials, formatWhatsAppUrl } from '@/lib/discover';
+import { getCategoryInfo, getInitials, formatWhatsAppUrl } from '@/features/discover';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES
@@ -194,7 +194,7 @@ export function TenantPreviewDrawer({
   const prevOpenRef = useRef(open);
   useEffect(() => {
     if (prevOpenRef.current && !open) {
-      setIsHeaderSticky(false); // eslint-disable-line react-hooks/set-state-in-effect
+      setIsHeaderSticky(false);
       setCopied(false);
     }
     prevOpenRef.current = open;
@@ -222,7 +222,7 @@ export function TenantPreviewDrawer({
         setTimeout(() => setCopied(false), 2000);
       }
     } catch {
-      console.log('Share cancelled or failed');
+      // Share cancelled or failed - no action needed
     }
   }, [tenant, tenantUrl]);
 

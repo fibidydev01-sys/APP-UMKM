@@ -1,5 +1,5 @@
 import { JsonLd } from './json-ld';
-import { generateLocalBusinessSchema } from '@/lib/schema';
+import { generateLocalBusinessSchema } from '@/features/seo';
 
 // ==========================================
 // LOCAL BUSINESS SCHEMA

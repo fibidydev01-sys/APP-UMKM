@@ -16,7 +16,7 @@ import {
   uploadInvoiceToCloudinary,
   downloadInvoiceImage,
   openWhatsAppWithInvoice,
-} from '@/lib/invoice';
+} from '@/features/orders';
 import { normalizePhone } from '@/lib/format';
 import type { Order, Tenant } from '@umkm/shared/types';
 

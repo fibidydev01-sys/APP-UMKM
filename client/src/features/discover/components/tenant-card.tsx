@@ -10,7 +10,7 @@ import { Store, Package, ArrowRight } from 'lucide-react';
 import { Badge } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import type { ShowcaseTenant } from '@umkm/shared/types';
-import { getCategoryLabel, getCategoryColor, getInitials } from '@/lib/discover';
+import { getCategoryLabel, getCategoryColor, getInitials } from '@/features/discover';
 
 // Re-export for backward compatibility
 export type { ShowcaseTenant } from '@umkm/shared/types';

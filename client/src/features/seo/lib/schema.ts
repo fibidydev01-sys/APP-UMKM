@@ -1,5 +1,5 @@
 import { seoConfig } from '@/config/seo.config';
-import { getFullUrl, getTenantUrl } from '@/lib/seo';
+import { getFullUrl, getTenantUrl } from './seo';
 
 // ==========================================
 // SCHEMA.ORG GENERATORS

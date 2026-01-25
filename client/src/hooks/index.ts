@@ -26,6 +26,6 @@ export { useDebounce, useDebouncedCallback } from './use-debounce';
 export { useMediaQuery, useIsMobile, useIsTablet, useIsDesktop, useIsLargeDesktop, breakpoints } from './use-media-query';
 export { useMounted, useIsClient } from './use-mounted';
 
-export { useLandingConfig } from './use-landing-config';
-export { useRegisterWizard } from './use-register-wizard';
+// Feature Hooks (shared)
+export { useOnboarding } from './use-onboarding';
 

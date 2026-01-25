@@ -25,7 +25,7 @@ import {
   fetchAllTenants,
   getCategoryLabel,
   getInitials,
-} from '@/lib/discover';
+} from '@/features/discover';
 
 // ══════════════════════════════════════════════════════════════
 // SKELETON LOADER - Dribbble Style

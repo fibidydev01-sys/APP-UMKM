@@ -2,7 +2,7 @@ import { MultiJsonLd } from './json-ld';
 import {
   generateOrganizationSchema,
   generateWebSiteSchema,
-} from '@/lib/schema';
+} from '@/features/seo';
 
 // ==========================================
 // ORGANIZATION + WEBSITE SCHEMA

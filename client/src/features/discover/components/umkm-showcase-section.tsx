@@ -20,7 +20,7 @@ import { Badge } from '@umkm/shared/ui';
 import { Card, CardContent } from '@umkm/shared/ui';
 import { Skeleton } from '@umkm/shared/ui';
 import type { ShowcaseTenant } from '@umkm/shared/types';
-import { fetchAllTenants, getCategoryLabel, getInitials } from '@/lib/discover';
+import { fetchAllTenants, getCategoryLabel, getInitials } from '@/features/discover';
 
 // ══════════════════════════════════════════════════════════════
 // SKELETON LOADER

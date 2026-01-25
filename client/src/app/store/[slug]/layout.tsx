@@ -3,7 +3,7 @@ import { StoreHeader, StoreFooter, StoreNotFound } from '@/features/store';
 import { LocalBusinessSchema } from '@/features/seo';
 import { TemplateProvider } from '@/features/landing-builder';
 import { generateThemeCSS } from '@/lib/theme';
-import { createTenantMetadata } from '@/lib/seo';
+import { createTenantMetadata } from '@/features/seo';
 import type { Metadata } from 'next';
 import type { PublicTenant } from '@umkm/shared/types';
 

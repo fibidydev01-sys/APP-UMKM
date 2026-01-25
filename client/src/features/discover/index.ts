@@ -1,8 +1,8 @@
 /**
  * Discover Feature Module
  * 
- * Public discovery/explore pages for finding UMKM businesses
- * Isolated from platform-landing
+ * Public discovery page for browsing all UMKM tenants
  */
 
 export * from './components';
+export * from './lib';

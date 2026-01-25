@@ -1,6 +1,6 @@
 // ==========================================
-// AUTH HOOKS - Exports
+// SEO LIB - Exports
 // ==========================================
 
-export * from './use-auth';
-export * from './use-register-wizard';
+export * from './seo';
+export * from './schema';

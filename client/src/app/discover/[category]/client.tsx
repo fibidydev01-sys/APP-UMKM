@@ -30,7 +30,7 @@ import {
   categoryKeyToSlug,
   sortTenants,
   MAX_TENANTS_CATEGORY,
-} from '@/lib/discover';
+} from '@/features/discover';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

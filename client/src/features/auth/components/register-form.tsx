@@ -1,8 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRegisterWizard } from '@/hooks';
-import { useRegister } from '@/features/auth';
+import { useRegisterWizard, useRegister } from '@/features/auth';
 import { Alert, AlertDescription } from '@umkm/shared/ui';
 import {
   StepWelcome,

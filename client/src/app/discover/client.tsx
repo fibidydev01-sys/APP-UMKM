@@ -26,7 +26,7 @@ import {
   getCategoryLabel,
   sortTenants,
   CACHE_DURATION,
-} from '@/lib/discover';
+} from '@/features/discover';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

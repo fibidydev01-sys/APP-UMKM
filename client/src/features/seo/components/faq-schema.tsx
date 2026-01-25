@@ -1,5 +1,5 @@
 import { JsonLd } from './json-ld';
-import { generateFAQSchema } from '@/lib/schema';
+import { generateFAQSchema } from '@/features/seo';
 
 // ==========================================
 // FAQ PAGE SCHEMA
