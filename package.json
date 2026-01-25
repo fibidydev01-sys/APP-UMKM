@@ -63,5 +63,10 @@
     "*.{json,md,yml,yaml}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "framer-motion": "^12.27.0",
+    "next-cloudinary": "^6.17.5",
+    "zustand": "^5.0.10"
   }
 }
