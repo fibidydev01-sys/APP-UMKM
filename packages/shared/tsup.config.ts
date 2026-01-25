@@ -10,6 +10,9 @@ export default defineConfig({
     'src/types/index.ts',
     'src/hooks/index.ts',
     'src/config/index.ts',
+    'src/api/index.ts',
+    'src/features/seo/index.ts',
+    'src/features/landing-blocks/index.ts',
   ],
 
   // Output formats: ESM (.mjs) and CommonJS (.js)

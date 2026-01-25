@@ -36,6 +36,21 @@
       "types": "./dist/config/index.d.ts",
       "import": "./dist/config/index.mjs",
       "require": "./dist/config/index.js"
+    },
+    "./api": {
+      "types": "./dist/api/index.d.ts",
+      "import": "./dist/api/index.mjs",
+      "require": "./dist/api/index.js"
+    },
+    "./features/seo": {
+      "types": "./dist/features/seo/index.d.ts",
+      "import": "./dist/features/seo/index.mjs",
+      "require": "./dist/features/seo/index.js"
+    },
+    "./features/landing-blocks": {
+      "types": "./dist/features/landing-blocks/index.d.ts",
+      "import": "./dist/features/landing-blocks/index.mjs",
+      "require": "./dist/features/landing-blocks/index.js"
     }
   },
   "scripts": {
