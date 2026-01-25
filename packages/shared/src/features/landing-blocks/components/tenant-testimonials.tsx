@@ -5,8 +5,8 @@ import {
   extractTestimonialsData,
   normalizeTestimonials,
   useTestimonialsBlock,
-} from '@/lib/landing-templates';
-import type { TenantLandingConfig, Tenant, PublicTenant, Testimonial } from '@umkm/shared/types';
+} from '../../../lib/landing-templates';
+import type { TenantLandingConfig, Tenant, PublicTenant, Testimonial } from '@/types';
 
 interface TenantTestimonialsProps {
   config?: TenantLandingConfig['testimonials'];

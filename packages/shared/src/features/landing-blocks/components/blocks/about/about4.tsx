@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
 
 interface About4Props {
   title: string;

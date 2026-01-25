@@ -1,8 +1,8 @@
 'use client';
 
 import { lazy, Suspense, type ComponentType } from 'react';
-import { extractAboutData, useAboutBlock } from '@/lib/landing-templates';
-import type { TenantLandingConfig, Tenant, PublicTenant, FeatureItem } from '@umkm/shared/types';
+import { extractAboutData, useAboutBlock } from '../../../lib/landing-templates';
+import type { TenantLandingConfig, Tenant, PublicTenant, FeatureItem } from '@/types';
 
 interface TenantAboutProps {
   config?: TenantLandingConfig['about'];

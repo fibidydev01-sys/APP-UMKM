@@ -10,13 +10,13 @@ import {
   MessageCircle,
   Check,
 } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
+import { Button } from '@/ui';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@umkm/shared/ui';
+} from '@/ui';
 import { toast } from 'sonner';
 
 // ==========================================

@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Code, Database, Cpu, Zap } from 'lucide-react';
-import { InteractiveHoverButton, Badge, Card, FloatingLines } from '@umkm/shared/ui';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { InteractiveHoverButton, Badge, Card, FloatingLines } from '@/ui';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
 
 interface Hero8Props {
   title: string;

@@ -1,10 +1,10 @@
 'use client';
 
-import { Avatar, AvatarFallback } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback } from '@/ui';
 import { Star, Quote } from 'lucide-react';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { getImageSource } from '@/lib/cloudinary';
-import type { Testimonial } from '@umkm/shared/types';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
+import { getImageSource } from '../../../../../lib/cloudinary';
+import type { Testimonial } from '@/types';
 
 interface Testimonials3Props {
   items: Testimonial[];

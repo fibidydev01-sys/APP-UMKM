@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Sparkles, ChevronRight, Box, Layers, Zap, Package, Grid3x3, Blocks } from 'lucide-react';
-import { InteractiveHoverButton, Badge, Button, Card, LiquidEther } from '@umkm/shared/ui';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { InteractiveHoverButton, Badge, Button, Card, LiquidEther } from '@/ui';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
 
 interface Hero1Props {
   title: string;

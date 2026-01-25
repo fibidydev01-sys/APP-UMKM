@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { ProductCard } from '@/features/store';
+import { Button } from '@/ui';
+import { ProductCard } from '../../../../store';
 import { useRef, useState } from 'react';
-import type { Product } from '@umkm/shared/types';
+import type { Product } from '@/types';
 
 interface Products4Props {
   products: Product[];

@@ -15,12 +15,12 @@ export * from './types';
 // Hooks
 export * from './hooks';
 
-// Config
-export * from './config';
+// Config (import from '@umkm/shared/config' directly to avoid conflicts)
+// export * from './config';
 
-// API Clients
-export * from './api';
+// API Clients (import from '@umkm/shared/api' directly)
+// export * from './api';
 
-// Features
-export * from './features/seo';
-export * from './features/landing-blocks';
+// Features (import from '@umkm/shared/features/*' directly)
+// export * from './features/seo';
+// export * from './features/landing-blocks';

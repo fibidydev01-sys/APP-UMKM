@@ -1,8 +1,8 @@
 'use client';
 
 import { lazy, Suspense, type ComponentType } from 'react';
-import { extractContactData, useContactBlock } from '@/lib/landing-templates';
-import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
+import { extractContactData, useContactBlock } from '../../../lib/landing-templates';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantContactProps {
   config?: TenantLandingConfig['contact'];

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { ProductCard } from '@/features/store';
-import type { Product } from '@umkm/shared/types';
+import { Button } from '@/ui';
+import { ProductCard } from '../../../../store';
+import type { Product } from '@/types';
 
 interface Products5Props {
   products: Product[];

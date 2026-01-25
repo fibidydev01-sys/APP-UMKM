@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Zap, Shield, ArrowRight } from 'lucide-react';
-import { InteractiveHoverButton, Card, Button, DarkVeil } from '@umkm/shared/ui';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { InteractiveHoverButton, Card, Button, DarkVeil } from '@/ui';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
 
 interface Hero3Props {
   title: string;

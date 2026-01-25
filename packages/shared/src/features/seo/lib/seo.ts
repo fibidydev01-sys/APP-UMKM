@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { seoConfig } from '@/config/seo.config';
+import { seoConfig } from '../../../config/seo.config';
 
 // ==========================================
 // URL UTILITIES

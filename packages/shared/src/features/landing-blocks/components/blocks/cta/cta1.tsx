@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
+import { Button } from '@/ui';
 
 interface Cta1Props {
   title: string;

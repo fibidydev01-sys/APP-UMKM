@@ -1,4 +1,4 @@
-import { seoConfig } from '@/config/seo.config';
+import { seoConfig } from '../../../config/seo.config';
 import { getFullUrl, getTenantUrl } from './seo';
 
 // ==========================================

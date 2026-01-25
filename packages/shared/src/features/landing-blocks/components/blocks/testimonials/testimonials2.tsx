@@ -1,13 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@umkm/shared/ui';
-import { Avatar, AvatarFallback } from '@umkm/shared/ui';
+import { Card, CardContent } from '@/ui';
+import { Avatar, AvatarFallback } from '@/ui';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { getImageSource } from '@/lib/cloudinary';
-import type { Testimonial } from '@umkm/shared/types';
+import { Button } from '@/ui';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
+import { getImageSource } from '../../../../../lib/cloudinary';
+import type { Testimonial } from '@/types';
 
 interface Testimonials2Props {
   items: Testimonial[];

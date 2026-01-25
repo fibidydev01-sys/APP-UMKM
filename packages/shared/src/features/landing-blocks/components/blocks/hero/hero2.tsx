@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Download, Package } from 'lucide-react';
-import { InteractiveHoverButton, Prism, Card } from '@umkm/shared/ui';
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { InteractiveHoverButton, Prism, Card } from '@/ui';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
 
 interface Hero2Props {
   title: string;

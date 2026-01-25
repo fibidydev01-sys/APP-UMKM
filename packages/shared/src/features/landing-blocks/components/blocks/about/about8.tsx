@@ -1,6 +1,6 @@
 'use client';
 
-import { OptimizedImage } from '@/components/ui/optimized-image';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
 
 /**
  * About2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)

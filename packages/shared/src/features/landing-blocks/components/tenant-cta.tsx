@@ -1,8 +1,8 @@
 'use client';
 
 import { lazy, Suspense, type ComponentType } from 'react';
-import { extractCtaData, useCtaBlock } from '@/lib/landing-templates';
-import type { TenantLandingConfig, Tenant, PublicTenant } from '@umkm/shared/types';
+import { extractCtaData, useCtaBlock } from '../../../lib/landing-templates';
+import type { TenantLandingConfig, Tenant, PublicTenant } from '@/types';
 
 interface TenantCtaProps {
   config?: TenantLandingConfig['cta'];

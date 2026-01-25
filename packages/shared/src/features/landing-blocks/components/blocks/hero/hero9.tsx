@@ -9,7 +9,7 @@ import {
   Alert,
   AlertDescription,
   LightRays,
-} from '@umkm/shared/ui';
+} from '@/ui';
 
 interface Hero9Props {
   title: string;

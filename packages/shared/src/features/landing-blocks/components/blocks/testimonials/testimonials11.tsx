@@ -1,13 +1,13 @@
 'use client';
 
-import { Card, CardContent } from '@umkm/shared/ui';
-import { Avatar, AvatarFallback } from '@umkm/shared/ui';
+import { Card, CardContent } from '@/ui';
+import { Avatar, AvatarFallback } from '@/ui';
 import { Star, Quote, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { OptimizedImage } from '@/components/ui/optimized-image';
-import { getImageSource } from '@/lib/cloudinary';
+import { Button } from '@/ui';
+import { OptimizedImage } from '../../../../../components/ui/optimized-image';
+import { getImageSource } from '../../../../../lib/cloudinary';
 import { useState } from 'react';
-import type { Testimonial } from '@umkm/shared/types';
+import type { Testimonial } from '@/types';
 
 /**
  * Testimonials2 Props - Mapped from Data Contract (LANDING-DATA-CONTRACT.md)

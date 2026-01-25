@@ -1,4 +1,4 @@
-import { api } from '@/lib/api/client';
+import { api } from './client';
 import type {
   Product,
   CreateProductInput,
@@ -6,7 +6,7 @@ import type {
   ProductQueryParams,
   PaginatedResponse,
   LowStockProduct,
-} from '@umkm/shared/types';
+} from '../types';
 
 // ==========================================
 // PRODUCTS API SERVICE
