@@ -36,8 +36,8 @@
     "db:generate": "cd server && pnpm exec prisma generate",
     "db:push": "cd server && pnpm exec prisma db push --skip-generate",
     "db:seed": "cd server && pnpm run prisma:seed",
-    "clean": "pnpm --recursive exec rm -rf node_modules dist .next build coverage",
-    "clean:install": "pnpm clean && rm -rf node_modules pnpm-lock.yaml && pnpm install",
+    "clean": "pnpm --recursive exec rm -rf node_modules dist .next build coverage .turbo && rm -rf .turbo",
+    "clean:install": "pnpm clean && rm -rf node_modules pnpm-lock.yaml .turbo && pnpm install",
     "validate": "pnpm install --frozen-lockfile && pnpm check && pnpm test"
   },
   "devDependencies": {

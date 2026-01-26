@@ -121,10 +121,22 @@ build-client:
     pnpm build:client
     @echo "✅ Done!"
 
+# Build client-web only
+build-web:
+    @echo "🔨 Building client-web..."
+    pnpm build:client-web
+    @echo "✅ Done!"
+
 # Build catalog only
 build-catalog:
     @echo "🔨 Building catalog..."
     pnpm build:catalog
+    @echo "✅ Done!"
+
+# Build shared only
+build-shared:
+    @echo "🔨 Building shared..."
+    cd packages/shared && pnpm build
     @echo "✅ Done!"
 
 # ====================
@@ -198,21 +210,52 @@ health:
 # Nuclear: Clean EVERYTHING and reinstall
 nuclear:
     @echo "☢️  NUCLEAR: Removing EVERYTHING..."
-    @echo "⚠️  This will delete all node_modules, dist, .next, build folders"
+    @echo "⚠️  This will delete all node_modules, dist, .next, .turbo, build folders"
     @echo ""
-    @echo "Press Ctrl+C in 5 seconds to cancel..."
-    @sleep 5
+    @echo "Press Ctrl+C in 3 seconds to cancel..."
+    @sleep 3
     @echo ""
-    @echo "🗑️  Cleaning all packages..."
-    pnpm clean
+    @echo "🗑️  Cleaning root..."
+    rm -rf node_modules .turbo pnpm-lock.yaml
+    @echo "   ✅ Root cleaned"
     @echo ""
-    @echo "🗑️  Removing root node_modules and pnpm-lock.yaml..."
-    rm -rf node_modules pnpm-lock.yaml
+    @echo "🗑️  Cleaning client..."
+    rm -rf client/node_modules client/.next client/dist client/.turbo
+    @echo "   ✅ Client cleaned"
+    @echo ""
+    @echo "🗑️  Cleaning client-web..."
+    rm -rf client-web/node_modules client-web/.next client-web/dist client-web/.turbo
+    @echo "   ✅ Client-web cleaned"
+    @echo ""
+    @echo "🗑️  Cleaning catalog..."
+    rm -rf catalog/node_modules catalog/.next catalog/dist catalog/.turbo
+    @echo "   ✅ Catalog cleaned"
+    @echo ""
+    @echo "🗑️  Cleaning server..."
+    rm -rf server/node_modules server/dist server/build server/.turbo
+    @echo "   ✅ Server cleaned"
+    @echo ""
+    @echo "🗑️  Cleaning packages/shared..."
+    rm -rf packages/shared/node_modules packages/shared/dist packages/shared/.turbo
+    @echo "   ✅ Shared cleaned"
+    @echo ""
+    @echo "✅ NUKED! All 5 workspaces cleaned."
     @echo ""
     @echo "📦 Installing fresh dependencies..."
     pnpm install
     @echo ""
-    @echo "✅ NUKED & REINSTALLED! Ready to go!"
+    @echo "✅ REINSTALLED! Ready to go!"
+
+# Clean only (no reinstall)
+clean-all:
+    @echo "🗑️  Cleaning all workspaces..."
+    rm -rf node_modules .turbo pnpm-lock.yaml
+    rm -rf client/node_modules client/.next client/dist client/.turbo
+    rm -rf client-web/node_modules client-web/.next client-web/dist client-web/.turbo
+    rm -rf catalog/node_modules catalog/.next catalog/dist catalog/.turbo
+    rm -rf server/node_modules server/dist server/build server/.turbo
+    rm -rf packages/shared/node_modules packages/shared/dist packages/shared/.turbo
+    @echo "✅ All 5 workspaces cleaned!"
 
 # ====================
 # 🚀 QUICKSTART
@@ -292,5 +335,4 @@ alias catalog := dev-catalog
 alias web := dev-web
 alias studio := db-studio
 alias nuke := nuclear
-alias clean := nuclear
 alias qs := quickstart

@@ -91,11 +91,17 @@ jobs:
       - name: Generate Prisma Client
         run: cd server && pnpm exec prisma generate
 
-      - name: Build
+      - name: Build all 5 workspaces
         run: pnpm build
         env:
+          # Shared env for all Next.js apps
           NEXT_PUBLIC_API_URL: http://localhost:8000/api
+          # Client (port 3000)
           NEXT_PUBLIC_APP_URL: http://localhost:3000
+          # Client-web (port 3001)
+          NEXT_PUBLIC_CLIENT_WEB_URL: http://localhost:3001
+          # Catalog (port 3002)
+          NEXT_PUBLIC_CATALOG_URL: http://localhost:3002
 
   test:
     name: Test
