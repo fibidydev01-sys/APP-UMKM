@@ -10,11 +10,13 @@ default:
 # 🚀 DEVELOPMENT
 # ====================
 
-# Start ALL dev servers (client + server)
+# Start ALL dev servers (client + client-web + catalog + server)
 dev:
     @echo "🚀 Starting all development servers..."
-    @echo "📊 API:    http://localhost:8000/api"
-    @echo "🖥️  Client: http://localhost:3000"
+    @echo "📊 API:     http://localhost:8000/api"
+    @echo "🖥️  Client:  http://localhost:3000"
+    @echo "🌐 Web:     http://localhost:3001"
+    @echo "📚 Catalog: http://localhost:3002"
     @echo ""
     pnpm dev
 
@@ -34,6 +36,12 @@ dev-client:
 dev-web:
     @echo "🌐 Starting client-web..."
     pnpm dev:client-web
+
+# Start catalog (public catalog)
+dev-catalog:
+    @echo "📚 Starting catalog..."
+    @echo "🌐 URL: http://localhost:3002"
+    pnpm dev:catalog
 
 # ====================
 # 📦 DEPENDENCIES
@@ -111,6 +119,12 @@ build-server:
 build-client:
     @echo "🔨 Building client..."
     pnpm build:client
+    @echo "✅ Done!"
+
+# Build catalog only
+build-catalog:
+    @echo "🔨 Building catalog..."
+    pnpm build:catalog
     @echo "✅ Done!"
 
 # ====================
@@ -208,7 +222,7 @@ nuclear:
 quickstart:
     @echo "╔════════════════════════════════════════════════════════════╗"
     @echo "║         🚀 UMKM MULTI-TENANT - QUICKSTART                  ║"
-    @echo "║              CLIENT + CLIENT-WEB + SERVER                  ║"
+    @echo "║         CLIENT + CLIENT-WEB + CATALOG + SERVER             ║"
     @echo "╚════════════════════════════════════════════════════════════╝"
     @echo ""
     @echo "📋 Step 1/5: Setting up environment files..."
@@ -216,8 +230,9 @@ quickstart:
     @test -f server/.env || (test -f server/.env.example && cp server/.env.example server/.env && echo "   ✅ Created server/.env") || echo "   ⚠️  server/.env.example not found"
     @test -f client/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3000" > client/.env.local && echo "   ✅ Created client/.env.local")
     @test -f client-web/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3001" > client-web/.env.local && echo "   ✅ Created client-web/.env.local")
+    @test -f catalog/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3002" > catalog/.env.local && echo "   ✅ Created catalog/.env.local")
     @echo ""
-    @echo "📦 Step 2/5: Installing all dependencies (client, client-web, server, shared)..."
+    @echo "📦 Step 2/5: Installing all dependencies (client, client-web, catalog, server, shared)..."
     @just install
     @echo ""
     @echo "🔨 Step 3/5: Building shared package..."
@@ -230,6 +245,7 @@ quickstart:
     @echo "🎨 Step 5/5: Verifying setup..."
     @echo "   ✅ Client ready at http://localhost:3000"
     @echo "   ✅ Client-Web ready at http://localhost:3001"
+    @echo "   ✅ Catalog ready at http://localhost:3002"
     @echo "   ✅ Server ready at http://localhost:8000"
     @echo "   ✅ Database seeded and ready!"
     @echo ""
@@ -238,9 +254,10 @@ quickstart:
     @echo "╚════════════════════════════════════════════════════════════╝"
     @echo ""
     @echo "🚀 Development Commands:"
-    @echo "   just dev          - Start ALL servers (client + client-web + server)"
+    @echo "   just dev          - Start ALL servers (client + client-web + catalog + server)"
     @echo "   just dev-client   - Client dashboard only (port 3000)"
     @echo "   just dev-web      - Client-web landing builder only (port 3001)"
+    @echo "   just dev-catalog  - Catalog public app only (port 3002)"
     @echo "   just dev-server   - Server API only (port 8000)"
     @echo ""
     @echo "🗄️  Database Commands:"
@@ -258,6 +275,7 @@ quickstart:
     @echo "📊 Access URLs:"
     @echo "   🖥️  Client Dashboard:  http://localhost:3000"
     @echo "   🌐 Client-Web Builder: http://localhost:3001"
+    @echo "   📚 Catalog Public:     http://localhost:3002"
     @echo "   📊 API Server:         http://localhost:8000/api"
     @echo "   🎨 Prisma Studio:      just db-studio"
     @echo ""
@@ -270,6 +288,8 @@ quickstart:
 alias up := dev
 alias server := dev-server
 alias client := dev-client
+alias catalog := dev-catalog
+alias web := dev-web
 alias studio := db-studio
 alias nuke := nuclear
 alias clean := nuclear
