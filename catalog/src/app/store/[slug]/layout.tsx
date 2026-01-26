@@ -1,8 +1,6 @@
 import { tenantsApi } from '@umkm/shared/api';
 import { StoreHeader, StoreFooter, StoreNotFound } from '@umkm/shared/features/store';
 import { LocalBusinessSchema } from '@umkm/shared/features/seo';
-import { TemplateProvider } from '@umkm/shared';
-import { createTenantMetadata } from '@umkm/shared/features/seo';
 import type { Metadata } from 'next';
 import type { PublicTenant } from '@umkm/shared/types';
 
@@ -96,18 +94,26 @@ export async function generateMetadata({
     };
   }
 
-  // Use enhanced metadata generator from lib/seo.ts
-  return createTenantMetadata({
-    tenant: {
-      name: tenant.name,
-      slug: tenant.slug,
-      description: tenant.description,
-      logo: tenant.logo,
-      heroBackgroundImage: tenant.heroBackgroundImage,
-      metaTitle: tenant.metaTitle,
-      metaDescription: tenant.metaDescription,
+  // Inline metadata (avoid client function import in server component)
+  const title = tenant.metaTitle || `${tenant.name} | Toko Online`;
+  const description =
+    tenant.metaDescription ||
+    tenant.description ||
+    `${tenant.name} - Belanja mudah dan pesan langsung via WhatsApp.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: tenant.heroBackgroundImage
+        ? [tenant.heroBackgroundImage]
+        : tenant.logo
+          ? [tenant.logo]
+          : [],
     },
-  });
+  };
 }
 
 // ==========================================
@@ -125,10 +131,6 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
 
   // Get theme color from tenant
   const primaryHex = tenant.theme?.primaryColor || '';
-
-  // Get template ID from tenant config (if available)
-  const landingConfig = tenant.landingConfig as { template?: string } | null;
-  const templateId = landingConfig?.template || 'suspended-minimalist';
 
   return (
     <>
@@ -160,10 +162,7 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
 
         <StoreHeader tenant={tenant} />
 
-        {/* 🚀 WRAP CHILDREN WITH TEMPLATE PROVIDER */}
-        <main className="flex-1">
-          <TemplateProvider initialTemplateId={templateId}>{children}</TemplateProvider>
-        </main>
+        <main className="flex-1">{children}</main>
 
         <StoreFooter tenant={tenant} />
       </div>

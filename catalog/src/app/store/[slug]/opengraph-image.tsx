@@ -1,16 +1,34 @@
 import { ImageResponse } from 'next/og';
-import {
-  OG_IMAGE_WIDTH,
-  OG_IMAGE_HEIGHT,
-  OG_COLORS,
-  getOgInitials,
-  truncateOgText,
-} from '@umkm/shared';
 
 // ==========================================
 // TENANT STORE OPEN GRAPH IMAGE
 // Route: /store/[slug]/opengraph-image
 // ==========================================
+
+// Inline OG constants (avoid client module import in edge runtime)
+const OG_IMAGE_WIDTH = 1200;
+const OG_IMAGE_HEIGHT = 630;
+const OG_COLORS = {
+  primary: '#e11d48',
+  primaryDark: '#be123c',
+  text: '#1f2937',
+  textLight: '#6b7280',
+  backgroundGray: '#f3f4f6',
+};
+
+function getOgInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function truncateOgText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 3)}...`;
+}
 
 export const runtime = 'edge';
 export const alt = 'Toko Online';

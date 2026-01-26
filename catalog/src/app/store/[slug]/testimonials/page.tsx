@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@umkm/shared/api';
-import { normalizeTestimonials } from '@umkm/shared';
 import { TenantTestimonials } from '@umkm/shared/features/landing-blocks';
 import { BreadcrumbSchema } from '@umkm/shared/features/seo';
 import { Star } from 'lucide-react';
@@ -10,6 +9,16 @@ import type { PublicTenant, Testimonial } from '@umkm/shared/types';
 // ==========================================
 // TESTIMONIALS PAGE
 // ==========================================
+
+// Inline normalizeTestimonials (avoid client function import in server component)
+function normalizeTestimonials(items: unknown): Testimonial[] {
+  if (!items) return [];
+  let normalized = items;
+  while (Array.isArray(normalized) && normalized.length > 0 && Array.isArray(normalized[0])) {
+    normalized = normalized[0];
+  }
+  return Array.isArray(normalized) ? (normalized as Testimonial[]) : [];
+}
 
 interface TestimonialsPageProps {
   params: Promise<{ slug: string }>;

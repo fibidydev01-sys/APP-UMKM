@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { tenantsApi } from '@umkm/shared/api';
 import { productsApi } from '@umkm/shared/api';
-import { normalizeTestimonials } from '@umkm/shared';
 import {
   TenantHero,
   TenantAbout,
@@ -16,6 +15,17 @@ import type { PublicTenant, Product, Testimonial, SectionKey } from '@umkm/share
 // ==========================================
 // STORE HOMEPAGE - CUSTOM LANDING ONLY
 // ==========================================
+
+// Inline normalizeTestimonials (avoid client function import in server component)
+function normalizeTestimonials(items: unknown): Testimonial[] {
+  if (!items) return [];
+  let normalized = items;
+  // Handle nested array bug [[item]] -> [item]
+  while (Array.isArray(normalized) && normalized.length > 0 && Array.isArray(normalized[0])) {
+    normalized = normalized[0];
+  }
+  return Array.isArray(normalized) ? (normalized as Testimonial[]) : [];
+}
 
 // ✅ FIX: Force dynamic rendering to prevent stale landing config cache
 export const dynamic = 'force-dynamic';

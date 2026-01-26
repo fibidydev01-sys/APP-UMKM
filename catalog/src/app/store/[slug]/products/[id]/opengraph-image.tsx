@@ -1,17 +1,43 @@
 import { ImageResponse } from 'next/og';
-import {
-  OG_IMAGE_WIDTH,
-  OG_IMAGE_HEIGHT,
-  OG_COLORS,
-  formatOgPrice,
-  truncateOgText,
-  getOgInitials,
-} from '@umkm/shared';
 
 // ==========================================
 // PRODUCT OPEN GRAPH IMAGE
 // Route: /store/[slug]/product/[id]/opengraph-image
 // ==========================================
+
+// Inline OG constants (avoid client module import in edge runtime)
+const OG_IMAGE_WIDTH = 1200;
+const OG_IMAGE_HEIGHT = 630;
+const OG_COLORS = {
+  primary: '#e11d48',
+  primaryDark: '#be123c',
+  text: '#1f2937',
+  textLight: '#6b7280',
+  backgroundGray: '#f3f4f6',
+  error: '#dc2626',
+};
+
+function formatOgPrice(price: number): string {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(price);
+}
+
+function truncateOgText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength - 3)}...`;
+}
+
+function getOgInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((word) => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
 
 export const runtime = 'edge';
 export const alt = 'Product';
