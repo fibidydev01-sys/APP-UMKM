@@ -1,6 +1,9 @@
 import { tenantsApi } from '@umkm/shared/api';
 import { StoreHeader, StoreFooter, StoreNotFound } from '@umkm/shared/features/store';
 import { LocalBusinessSchema } from '@umkm/shared/features/seo';
+// CRITICAL: Import TemplateProvider from same bundle as landing-blocks components
+// to ensure they share the same Context instance
+import { TemplateProvider } from '@umkm/shared/features/landing-blocks';
 import type { Metadata } from 'next';
 import type { PublicTenant } from '@umkm/shared/types';
 
@@ -132,6 +135,10 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
   // Get theme color from tenant
   const primaryHex = tenant.theme?.primaryColor || '';
 
+  // Get template ID from tenant config (like client does)
+  const landingConfig = tenant.landingConfig as { template?: string } | null;
+  const templateId = landingConfig?.template || 'suspended-minimalist';
+
   return (
     <>
       {/* ==========================================
@@ -162,7 +169,10 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
 
         <StoreHeader tenant={tenant} />
 
-        <main className="flex-1">{children}</main>
+        {/* 🚀 WRAP CHILDREN WITH TEMPLATE PROVIDER (like client) */}
+        <main className="flex-1">
+          <TemplateProvider initialTemplateId={templateId}>{children}</TemplateProvider>
+        </main>
 
         <StoreFooter tenant={tenant} />
       </div>
