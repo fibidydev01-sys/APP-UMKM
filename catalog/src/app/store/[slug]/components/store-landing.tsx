@@ -1,5 +1,7 @@
 'use client';
 
+// CRITICAL: Import TemplateProvider from the SAME entry point as TenantHero
+// to ensure they share the same Context instance (tsup bundles with splitting: false)
 import {
   TenantHero,
   TenantAbout,
@@ -7,8 +9,8 @@ import {
   TenantTestimonials,
   TenantContact,
   TenantCta,
+  TemplateProvider,
 } from '@umkm/shared/features/landing-blocks';
-import { TemplateProvider } from '@umkm/shared';
 import type { PublicTenant, Product, SectionKey, TenantLandingConfig } from '@umkm/shared/types';
 
 // ==========================================
