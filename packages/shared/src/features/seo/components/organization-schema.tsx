@@ -1,8 +1,6 @@
+import React from 'react';
 import { MultiJsonLd } from './json-ld';
-import {
-  generateOrganizationSchema,
-  generateWebSiteSchema,
-} from '@/features/seo';
+import { generateOrganizationSchema, generateWebSiteSchema } from '@/features/seo';
 
 // ==========================================
 // ORGANIZATION + WEBSITE SCHEMA
@@ -10,10 +8,7 @@ import {
 // ==========================================
 
 export function OrganizationSchema() {
-  const schemas = [
-    generateOrganizationSchema(),
-    generateWebSiteSchema(),
-  ];
+  const schemas = [generateOrganizationSchema(), generateWebSiteSchema()];
 
   return <MultiJsonLd data={schemas} />;
 }

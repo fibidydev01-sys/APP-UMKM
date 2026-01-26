@@ -1,3 +1,4 @@
+import React from 'react';
 import { JsonLd } from './json-ld';
 import { generateProductListSchema } from '@/features/seo';
 
@@ -21,21 +22,13 @@ interface ProductListSchemaProps {
   listName?: string;
 }
 
-export function ProductListSchema({
-  products,
-  tenant,
-  listName,
-}: ProductListSchemaProps) {
+export function ProductListSchema({ products, tenant, listName }: ProductListSchemaProps) {
   // Only generate if there are products
   if (!products || products.length === 0) {
     return null;
   }
 
-  const schema = generateProductListSchema(
-    products,
-    tenant,
-    listName || `Produk ${tenant.name}`
-  );
+  const schema = generateProductListSchema(products, tenant, listName || `Produk ${tenant.name}`);
 
   return <JsonLd data={schema} />;
 }

@@ -1,3 +1,4 @@
+import React from 'react';
 import { JsonLd } from './json-ld';
 import { generateBreadcrumbSchema } from '@/features/seo';
 

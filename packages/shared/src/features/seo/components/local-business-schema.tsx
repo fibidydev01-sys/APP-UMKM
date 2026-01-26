@@ -1,3 +1,4 @@
+import React from 'react';
 import { JsonLd } from './json-ld';
 import { generateLocalBusinessSchema } from '@/features/seo';
 

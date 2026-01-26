@@ -1,3 +1,4 @@
+import React from 'react';
 import { JsonLd } from './json-ld';
 import { generateProductSchema } from '@/features/seo';
 
