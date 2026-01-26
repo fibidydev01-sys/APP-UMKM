@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
-import { productsApi } from '@umkm/shared/api';
+// LOCAL API - reads ENV at runtime
+import { productsApi } from '@/lib/api';
 import {
   ProductGrid,
   ProductFilters,

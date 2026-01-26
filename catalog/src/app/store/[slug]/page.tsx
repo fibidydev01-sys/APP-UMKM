@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { tenantsApi } from '@umkm/shared/api';
-import { productsApi } from '@umkm/shared/api';
+// LOCAL API - reads ENV at runtime (not bundled shared package!)
+import { tenantsApi, productsApi } from '@/lib/api';
 import { BreadcrumbSchema, ProductListSchema } from '@umkm/shared/features/seo';
 // Import components from same bundle as TemplateProvider in layout.tsx
 import {

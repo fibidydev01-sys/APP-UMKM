@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { tenantsApi } from '@umkm/shared/api';
+// LOCAL API - reads ENV at runtime
+import { tenantsApi } from '@/lib/api';
 import { TenantContact } from '@umkm/shared/features/landing-blocks';
 import { BreadcrumbSchema } from '@umkm/shared/features/seo';
 import type { PublicTenant } from '@umkm/shared/types';

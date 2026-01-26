@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { tenantsApi } from '@umkm/shared/api';
-import { productsApi } from '@umkm/shared/api';
+// LOCAL API - reads ENV at runtime
+import { tenantsApi, productsApi } from '@/lib/api';
 import {
   StoreBreadcrumb,
   ProductGallery,

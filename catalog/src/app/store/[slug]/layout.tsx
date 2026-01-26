@@ -1,4 +1,5 @@
-import { tenantsApi } from '@umkm/shared/api';
+// LOCAL API - reads ENV at runtime (not bundled shared package!)
+import { tenantsApi } from '@/lib/api';
 import { StoreHeader, StoreFooter, StoreNotFound } from '@umkm/shared/features/store';
 import { LocalBusinessSchema } from '@umkm/shared/features/seo';
 // CRITICAL: Import TemplateProvider from same bundle as landing-blocks components
