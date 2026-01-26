@@ -4,9 +4,9 @@
   "private": true,
   "description": "Public catalog app for UMKM platform - discover stores and products",
   "scripts": {
-    "dev": "next dev -p 3002",
+    "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start -p 3002",
+    "start": "next start -p 3000",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },

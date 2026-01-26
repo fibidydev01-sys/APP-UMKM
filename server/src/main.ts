@@ -25,11 +25,8 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Allowed origins from ENV
-  // Default: localhost:3000 (client/dashboard), localhost:3002 (catalog)
-  const allowedOrigins = (
-    process.env.FRONTEND_URL ||
-    'http://localhost:3000,http://localhost:3002'
-  )
+  // Default: localhost:3000 (client/dashboard + catalog)
+  const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
     .split(',')
     .map((origin) => origin.trim());
 
