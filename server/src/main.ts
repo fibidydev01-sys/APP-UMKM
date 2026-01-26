@@ -39,11 +39,33 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      if (!origin) return callback(null, true);
+      // Allow requests with no origin (like mobile apps or curl)
+      if (!origin) {
+        logger.log(`CORS: Allowing request with no origin`);
+        return callback(null, true);
+      }
+
+      // Log the incoming origin for debugging
+      logger.log(`CORS: Request from origin: ${origin}`);
+
+      // Check if origin is in allowed list
       if (allowedOrigins.includes(origin)) {
+        logger.log(`CORS: ✅ Allowed origin: ${origin}`);
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        // In development, allow localhost on any port
+        const isDevelopment = process.env.NODE_ENV !== 'production';
+        const isLocalhost =
+          origin.startsWith('http://localhost:') ||
+          origin.startsWith('http://127.0.0.1:');
+
+        if (isDevelopment && isLocalhost) {
+          logger.log(`CORS: ✅ Allowed (dev localhost): ${origin}`);
+          callback(null, true);
+        } else {
+          logger.warn(`CORS: ❌ Rejected origin: ${origin}`);
+          callback(new Error('Not allowed by CORS'));
+        }
       }
     },
     credentials: true,
