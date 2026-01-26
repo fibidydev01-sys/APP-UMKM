@@ -1,3 +1,4 @@
+import React from 'react';
 import { Badge } from '@/ui';
 import { Separator } from '@/ui';
 import { formatPrice } from '../../../lib/formatters';
@@ -21,31 +22,24 @@ export function ProductInfo({ product }: ProductInfoProps) {
   return (
     <div className="space-y-4">
       {/* Category */}
-      {product.category && (
-        <p className="text-sm text-muted-foreground">{product.category}</p>
-      )}
+      {product.category && <p className="text-sm text-muted-foreground">{product.category}</p>}
 
       {/* Product Name */}
       <h1 className="text-2xl font-bold md:text-3xl">{product.name}</h1>
 
       {/* Badges */}
       <div className="flex flex-wrap gap-2">
-        {product.isFeatured && (
-          <Badge className="bg-primary">⭐ Produk Unggulan</Badge>
-        )}
-        {isOutOfStock && (
-          <Badge variant="destructive">Stok Habis</Badge>
-        )}
-        {product.trackStock && !isOutOfStock && (product.stock ?? 0) <= (product.minStock ?? 5) && (product.stock ?? 0) > 0 && (
-          <Badge variant="secondary">Stok Terbatas</Badge>
-        )}
+        {product.isFeatured && <Badge className="bg-primary">⭐ Produk Unggulan</Badge>}
+        {isOutOfStock && <Badge variant="destructive">Stok Habis</Badge>}
+        {product.trackStock &&
+          !isOutOfStock &&
+          (product.stock ?? 0) <= (product.minStock ?? 5) &&
+          (product.stock ?? 0) > 0 && <Badge variant="secondary">Stok Terbatas</Badge>}
       </div>
 
       {/* Price */}
       <div className="flex items-baseline gap-3">
-        <span className="text-3xl font-bold text-primary">
-          {formatPrice(product.price)}
-        </span>
+        <span className="text-3xl font-bold text-primary">{formatPrice(product.price)}</span>
         {hasDiscount && (
           <>
             <span className="text-lg text-muted-foreground line-through">
@@ -57,11 +51,7 @@ export function ProductInfo({ product }: ProductInfoProps) {
       </div>
 
       {/* Unit */}
-      {product.unit && (
-        <p className="text-sm text-muted-foreground">
-          Harga per {product.unit}
-        </p>
-      )}
+      {product.unit && <p className="text-sm text-muted-foreground">Harga per {product.unit}</p>}
 
       <Separator />
 

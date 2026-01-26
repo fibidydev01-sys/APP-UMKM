@@ -10,7 +10,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/ui';
-import { Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { useStoreUrls } from '../../../lib/seo'; // ✅ NEW IMPORT
 
 // ==========================================
@@ -29,11 +29,7 @@ interface StoreBreadcrumbProps {
   storeName: string;
 }
 
-export function StoreBreadcrumb({
-  items,
-  storeSlug,
-  storeName,
-}: StoreBreadcrumbProps) {
+export function StoreBreadcrumb({ items, storeSlug, storeName }: StoreBreadcrumbProps) {
   // ✅ Smart URLs
   const urls = useStoreUrls(storeSlug);
 
@@ -62,9 +58,7 @@ export function StoreBreadcrumb({
                   <Link href={item.href}>{item.label}</Link>
                 </BreadcrumbLink>
               ) : (
-                <BreadcrumbPage className="max-w-[200px] truncate">
-                  {item.label}
-                </BreadcrumbPage>
+                <BreadcrumbPage className="max-w-[200px] truncate">{item.label}</BreadcrumbPage>
               )}
             </BreadcrumbItem>
           </Fragment>

@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Separator } from '@/ui';
 import { AddToCartButton } from './add-to-cart-button';
 import { WhatsAppOrderButton } from './whatsapp-order-button';
@@ -23,11 +24,7 @@ export function ProductActions({ product, tenant }: ProductActionsProps) {
       <AddToCartButton product={product} />
 
       {/* WhatsApp Order */}
-      <WhatsAppOrderButton
-        product={product}
-        tenant={tenant}
-        className="w-full"
-      />
+      <WhatsAppOrderButton product={product} tenant={tenant} className="w-full" />
 
       <Separator />
 

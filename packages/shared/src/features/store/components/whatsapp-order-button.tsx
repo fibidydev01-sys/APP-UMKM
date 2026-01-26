@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { MessageCircle, Minus, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/ui';
 import {
@@ -66,8 +66,8 @@ export function WhatsAppOrderButton({
 
   // Get enabled payment options for info
   const paymentMethods = tenant.paymentMethods as PaymentMethods | undefined;
-  const enabledBanks = paymentMethods?.bankAccounts?.filter(b => b.enabled) || [];
-  const enabledEwallets = paymentMethods?.eWallets?.filter(e => e.enabled) || [];
+  const enabledBanks = paymentMethods?.bankAccounts?.filter((b) => b.enabled) || [];
+  const enabledEwallets = paymentMethods?.eWallets?.filter((e) => e.enabled) || [];
   const codEnabled = paymentMethods?.cod?.enabled || false;
 
   // Build payment info string
@@ -76,14 +76,14 @@ export function WhatsAppOrderButton({
 
     if (enabledBanks.length > 0) {
       lines.push('*Transfer Bank:*');
-      enabledBanks.forEach(bank => {
+      enabledBanks.forEach((bank) => {
         lines.push(`${bank.bank}: ${bank.accountNumber} (${bank.accountName})`);
       });
     }
 
     if (enabledEwallets.length > 0) {
       lines.push('*E-Wallet:*');
-      enabledEwallets.forEach(ew => {
+      enabledEwallets.forEach((ew) => {
         lines.push(`${ew.provider}: ${ew.number}${ew.name ? ` (${ew.name})` : ''}`);
       });
     }
@@ -130,12 +130,7 @@ Terima kasih! 🙏`;
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant={variant}
-          size={size}
-          className={className}
-          disabled={isOutOfStock}
-        >
+        <Button variant={variant} size={size} className={className} disabled={isOutOfStock}>
           <MessageCircle className="mr-2 h-4 w-4" />
           {isOutOfStock ? 'Stok Habis' : 'Pesan via WhatsApp'}
         </Button>
@@ -157,9 +152,7 @@ Terima kasih! 🙏`;
               {formatPrice(product.price)} / {product.unit || 'pcs'}
             </p>
             {product.trackStock && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Stok tersedia: {product.stock}
-              </p>
+              <p className="text-xs text-muted-foreground mt-1">Stok tersedia: {product.stock}</p>
             )}
           </div>
 
@@ -196,9 +189,7 @@ Terima kasih! 🙏`;
               >
                 <Plus className="h-4 w-4" />
               </Button>
-              <span className="text-sm text-muted-foreground">
-                {product.unit || 'pcs'}
-              </span>
+              <span className="text-sm text-muted-foreground">{product.unit || 'pcs'}</span>
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { ProductCard } from './product-card';
 import { ProductGridSkeleton } from './store-skeleton';
 import type { Product } from '@/types';
@@ -56,9 +56,7 @@ export function ProductGrid({
   if (products.length === 0) {
     return (
       <div className="text-center py-12 bg-muted/30 rounded-lg">
-        <p className="text-muted-foreground">
-          Tidak ada produk ditemukan
-        </p>
+        <p className="text-muted-foreground">Tidak ada produk ditemukan</p>
       </div>
     );
   }
@@ -80,8 +78,8 @@ export function ProductGrid({
       {isTruncated && (
         <div className="mt-6 text-center md:hidden">
           <p className="text-sm text-muted-foreground">
-            Menampilkan {displayProducts.length} dari {products.length} produk.
-            Gunakan filter atau pagination untuk melihat lebih banyak.
+            Menampilkan {displayProducts.length} dari {products.length} produk. Gunakan filter atau
+            pagination untuk melihat lebih banyak.
           </p>
         </div>
       )}

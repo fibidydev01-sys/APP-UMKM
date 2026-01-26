@@ -1,24 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { Input } from '@/ui';
 import { Button } from '@/ui';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/ui';
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/ui';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/ui';
 import { useDebounce } from '../../../hooks';
 import { cn } from '../../../utils';
 import { productsUrl } from '../../../lib/seo'; // ✅ NEW IMPORT
@@ -34,11 +22,7 @@ interface ProductFiltersProps {
   className?: string;
 }
 
-export function ProductFilters({
-  storeSlug,
-  categories = [],
-  className,
-}: ProductFiltersProps) {
+export function ProductFilters({ storeSlug, categories = [], className }: ProductFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isFirstRender = useRef(true);
@@ -94,8 +78,7 @@ export function ProductFilters({
 
     // ✅ FIXED: Use smart URL helper
     router.push(productsUrl(storeSlug, params));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+  }, [debouncedSearch, router, storeSlug]);
 
   // Handle category change
   const handleCategoryChange = (value: string) => {

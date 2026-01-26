@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 // ❌ REMOVE: import Image from 'next/image';
 // ❌ REMOVE: import { CldImage } from 'next-cloudinary';
 import { OptimizedImage } from '../../../components/ui/optimized-image'; // ✅ ADD

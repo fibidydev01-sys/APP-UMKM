@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { Truck } from 'lucide-react';
 import { Card, CardContent } from '@/ui';
 import { formatPrice } from '../../../lib/formatters';
@@ -28,8 +29,8 @@ export function ShippingInfo({ tenant }: ShippingInfoProps) {
             <h4 className="font-medium text-sm">Informasi Pengiriman</h4>
             {freeShippingThreshold && freeShippingThreshold > 0 ? (
               <p className="text-sm text-muted-foreground">
-                <span className="font-medium text-primary">Gratis ongkir</span> untuk
-                pembelian min. {formatPrice(freeShippingThreshold)}
+                <span className="font-medium text-primary">Gratis ongkir</span> untuk pembelian min.{' '}
+                {formatPrice(freeShippingThreshold)}
               </p>
             ) : null}
             {defaultShippingCost && defaultShippingCost > 0 ? (

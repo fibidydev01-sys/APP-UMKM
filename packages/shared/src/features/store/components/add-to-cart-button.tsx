@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, Minus, ShoppingCart, Check } from 'lucide-react';
 import { Button } from '@/ui';
 import { useCartStore, useItemQty } from '../../../stores';
@@ -23,9 +23,15 @@ export function AddToCartButton({
   const [showAdded, setShowAdded] = useState(false);
 
   // Get actions directly from store (stable references)
-  const addItem = useCartStore((state: { addItem: (item: any, qty?: number) => void }) => state.addItem);
-  const incrementQty = useCartStore((state: { incrementQty: (id: string) => void }) => state.incrementQty);
-  const decrementQty = useCartStore((state: { decrementQty: (id: string) => void }) => state.decrementQty);
+  const addItem = useCartStore(
+    (state: { addItem: (item: any, qty?: number) => void }) => state.addItem
+  );
+  const incrementQty = useCartStore(
+    (state: { incrementQty: (id: string) => void }) => state.incrementQty
+  );
+  const decrementQty = useCartStore(
+    (state: { decrementQty: (id: string) => void }) => state.decrementQty
+  );
 
   // Get qty with memoized selector
   const qty = useItemQty(product.id);
@@ -87,12 +93,7 @@ export function AddToCartButton({
   if (variant === 'full' && qty > 0) {
     return (
       <div className={cn('flex items-center gap-2', className)}>
-        <Button
-          size="icon"
-          variant="outline"
-          onClick={handleDecrement}
-          className="h-9 w-9"
-        >
+        <Button size="icon" variant="outline" onClick={handleDecrement} className="h-9 w-9">
           <Minus className="h-4 w-4" />
         </Button>
         <span className="w-8 text-center font-medium">{qty}</span>

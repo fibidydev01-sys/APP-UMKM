@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { MessageCircle, Truck, CreditCard, Banknote, Wallet } from 'lucide-react';
 import { Button } from '@/ui';
 import {
@@ -44,34 +44,38 @@ export function WhatsAppCheckoutDialog({
 
   // ✅ FIXED: Add null safety checks and memoization
   // Get payment methods with safe access
-  const paymentMethods = useMemo(() =>
-    (tenant?.paymentMethods as PaymentMethods | undefined) ?? {
-      bankAccounts: [],
-      eWallets: [],
-      cod: { enabled: false, note: '' },
-    }, [tenant?.paymentMethods]
+  const paymentMethods = useMemo(
+    () =>
+      (tenant?.paymentMethods as PaymentMethods | undefined) ?? {
+        bankAccounts: [],
+        eWallets: [],
+        cod: { enabled: false, note: '' },
+      },
+    [tenant?.paymentMethods]
   );
 
-  const shippingMethods = useMemo(() =>
-    (tenant?.shippingMethods as ShippingMethods | undefined) ?? {
-      couriers: [],
-    }, [tenant?.shippingMethods]
+  const shippingMethods = useMemo(
+    () =>
+      (tenant?.shippingMethods as ShippingMethods | undefined) ?? {
+        couriers: [],
+      },
+    [tenant?.shippingMethods]
   );
 
   // Get enabled payment options
-  const enabledBanks = useMemo(() =>
-    paymentMethods?.bankAccounts?.filter(b => b.enabled) || [],
+  const enabledBanks = useMemo(
+    () => paymentMethods?.bankAccounts?.filter((b) => b.enabled) || [],
     [paymentMethods]
   );
-  const enabledEwallets = useMemo(() =>
-    paymentMethods?.eWallets?.filter(e => e.enabled) || [],
+  const enabledEwallets = useMemo(
+    () => paymentMethods?.eWallets?.filter((e) => e.enabled) || [],
     [paymentMethods]
   );
   const codEnabled = paymentMethods?.cod?.enabled || false;
 
   // Get enabled couriers
-  const enabledCouriers = useMemo(() =>
-    shippingMethods?.couriers?.filter(c => c.enabled) || [],
+  const enabledCouriers = useMemo(
+    () => shippingMethods?.couriers?.filter((c) => c.enabled) || [],
     [shippingMethods]
   );
 
@@ -81,17 +85,21 @@ export function WhatsAppCheckoutDialog({
 
   const freeShippingThreshold = tenant?.freeShippingThreshold;
   const defaultShippingCost = tenant?.defaultShippingCost || 0;
-  const shipping = (freeShippingThreshold && subtotal >= freeShippingThreshold)
-    ? 0
-    : defaultShippingCost;
+  const shipping =
+    freeShippingThreshold && subtotal >= freeShippingThreshold ? 0 : defaultShippingCost;
 
   const total = subtotal + tax + shipping;
 
   // Build payment options for radio group
   const paymentOptions = useMemo(() => {
-    const options: { id: string; label: string; sublabel: string; type: 'bank' | 'ewallet' | 'cod' }[] = [];
+    const options: {
+      id: string;
+      label: string;
+      sublabel: string;
+      type: 'bank' | 'ewallet' | 'cod';
+    }[] = [];
 
-    enabledBanks.forEach(bank => {
+    enabledBanks.forEach((bank) => {
       options.push({
         id: `bank-${bank.id}`,
         label: bank.bank,
@@ -100,7 +108,7 @@ export function WhatsAppCheckoutDialog({
       });
     });
 
-    enabledEwallets.forEach(ewallet => {
+    enabledEwallets.forEach((ewallet) => {
       options.push({
         id: `ewallet-${ewallet.id}`,
         label: ewallet.provider,
@@ -124,13 +132,15 @@ export function WhatsAppCheckoutDialog({
   const handleOrder = () => {
     // Build items list
     const itemsList = items
-      .map((item: CartItem) => `• ${item.name} x${item.qty} = ${formatPrice(item.price * item.qty)}`)
+      .map(
+        (item: CartItem) => `• ${item.name} x${item.qty} = ${formatPrice(item.price * item.qty)}`
+      )
       .join('\n');
 
     // Get selected payment info
     let paymentInfo = '';
     if (selectedPayment) {
-      const option = paymentOptions.find(o => o.id === selectedPayment);
+      const option = paymentOptions.find((o) => o.id === selectedPayment);
       if (option) {
         if (option.type === 'bank') {
           paymentInfo = `Transfer ${option.label}: ${option.sublabel}`;
@@ -144,7 +154,7 @@ export function WhatsAppCheckoutDialog({
 
     // Get selected courier
     const courierInfo = selectedCourier
-      ? enabledCouriers.find(c => c.id === selectedCourier)?.name || ''
+      ? enabledCouriers.find((c) => c.id === selectedCourier)?.name || ''
       : '';
 
     // Build the WhatsApp message
@@ -250,7 +260,10 @@ Terima kasih! 🙏`;
                       {enabledCouriers.map((courier) => (
                         <div key={courier.id} className="flex items-center space-x-2">
                           <RadioGroupItem value={courier.id} id={`courier-${courier.id}`} />
-                          <Label htmlFor={`courier-${courier.id}`} className="text-sm cursor-pointer">
+                          <Label
+                            htmlFor={`courier-${courier.id}`}
+                            className="text-sm cursor-pointer"
+                          >
                             {courier.name}
                             {courier.note && (
                               <span className="text-xs text-muted-foreground block">
@@ -285,9 +298,15 @@ Terima kasih! 🙏`;
                           <RadioGroupItem value={option.id} id={option.id} className="mt-0.5" />
                           <Label htmlFor={option.id} className="flex-1 cursor-pointer">
                             <div className="flex items-center gap-2">
-                              {option.type === 'bank' && <Banknote className="h-4 w-4 text-muted-foreground" />}
-                              {option.type === 'ewallet' && <Wallet className="h-4 w-4 text-muted-foreground" />}
-                              {option.type === 'cod' && <Truck className="h-4 w-4 text-muted-foreground" />}
+                              {option.type === 'bank' && (
+                                <Banknote className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              {option.type === 'ewallet' && (
+                                <Wallet className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              {option.type === 'cod' && (
+                                <Truck className="h-4 w-4 text-muted-foreground" />
+                              )}
                               <span className="font-medium">{option.label}</span>
                             </div>
                             <span className="text-xs text-muted-foreground">{option.sublabel}</span>

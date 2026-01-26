@@ -1,6 +1,6 @@
 'use client';
 
-import { lazy, Suspense, type ComponentType } from 'react';
+import React, { lazy, Suspense, type ComponentType } from 'react';
 import { useStoreUrls } from '../../../lib/seo';
 import { extractSectionText, getProductsConfig } from '../../../lib/landing-templates';
 import { LANDING_CONSTANTS, useProductsBlock } from '../../../lib/landing-templates';

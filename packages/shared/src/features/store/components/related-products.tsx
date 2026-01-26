@@ -1,3 +1,4 @@
+import React from 'react';
 import { ProductGrid } from './product-grid';
 import type { Product } from '@/types';
 
@@ -18,11 +19,7 @@ export function RelatedProducts({ products, storeSlug }: RelatedProductsProps) {
   return (
     <section className="mt-12">
       <h2 className="text-xl font-semibold mb-6">Produk Terkait</h2>
-      <ProductGrid
-        products={products}
-        storeSlug={storeSlug}
-        columns={4}
-      />
+      <ProductGrid products={products} storeSlug={storeSlug} columns={4} />
     </section>
   );
 }

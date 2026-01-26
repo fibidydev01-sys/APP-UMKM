@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { Phone, MapPin, MessageCircle } from 'lucide-react';
 import { Button } from '@/ui';
@@ -32,9 +33,7 @@ export function StoreFooter({ tenant }: StoreFooterProps) {
           <div className="space-y-4">
             <h3 className="font-semibold text-lg">{tenant.name}</h3>
             {tenant.description && (
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                {tenant.description}
-              </p>
+              <p className="text-sm text-muted-foreground leading-relaxed">{tenant.description}</p>
             )}
 
             <Button asChild className="mt-4">

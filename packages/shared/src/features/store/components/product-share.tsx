@@ -1,14 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Share2, Link2, Check, Facebook, Twitter } from 'lucide-react';
 import { Button } from '@/ui';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/ui';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/ui';
 import { toast } from '../../../providers';
 import type { Product, PublicTenant } from '@/types';
 
@@ -24,9 +19,7 @@ interface ProductShareProps {
 export function ProductShare({ product, tenant }: ProductShareProps) {
   const [copied, setCopied] = useState(false);
 
-  const productUrl = typeof window !== 'undefined'
-    ? window.location.href
-    : '';
+  const productUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   const shareText = `${product.name} - ${tenant.name}`;
 
@@ -75,17 +68,8 @@ export function ProductShare({ product, tenant }: ProductShareProps) {
       <span className="text-sm text-muted-foreground">Bagikan:</span>
 
       {/* Copy Link */}
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={copyLink}
-        title="Salin Link"
-      >
-        {copied ? (
-          <Check className="h-4 w-4 text-green-500" />
-        ) : (
-          <Link2 className="h-4 w-4" />
-        )}
+      <Button variant="outline" size="icon" onClick={copyLink} title="Salin Link">
+        {copied ? <Check className="h-4 w-4 text-green-500" /> : <Link2 className="h-4 w-4" />}
       </Button>
 
       {/* Share Dropdown */}

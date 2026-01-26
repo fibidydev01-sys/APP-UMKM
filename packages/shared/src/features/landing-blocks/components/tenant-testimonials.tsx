@@ -1,6 +1,6 @@
 'use client';
 
-import { lazy, Suspense, type ComponentType } from 'react';
+import React, { lazy, Suspense, type ComponentType } from 'react';
 import {
   extractTestimonialsData,
   normalizeTestimonials,

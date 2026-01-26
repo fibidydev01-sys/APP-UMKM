@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/ui';
 import { ScrollArea, ScrollBar } from '@/ui';
@@ -16,11 +17,7 @@ interface CategoryListProps {
   currentCategory?: string;
 }
 
-export function CategoryList({
-  categories,
-  storeSlug,
-  currentCategory,
-}: CategoryListProps) {
+export function CategoryList({ categories, storeSlug, currentCategory }: CategoryListProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
