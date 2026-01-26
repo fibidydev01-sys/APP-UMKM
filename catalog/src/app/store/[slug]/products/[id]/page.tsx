@@ -11,13 +11,7 @@ import {
   RelatedProducts,
   ProductGridSkeleton,
 } from '@umkm/shared/features/store';
-import {
-  ProductSchema,
-  BreadcrumbSchema,
-  SocialShare,
-  generateProductBreadcrumbs,
-} from '@umkm/shared/features/seo';
-import { createProductMetadata, getTenantUrl } from '@umkm/shared/features/seo';
+import { ProductSchema, BreadcrumbSchema, SocialShare } from '@umkm/shared/features/seo';
 import { Separator } from '@umkm/shared/ui';
 import type { Metadata } from 'next';
 import type { PublicTenant, Product } from '@umkm/shared/types';
@@ -82,22 +76,26 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     };
   }
 
-  // Use enhanced metadata generator from lib/seo.ts
-  return createProductMetadata({
-    product: {
-      id: product.id,
-      name: product.name,
-      slug: product.slug,
-      description: product.description,
-      price: product.price,
-      images: product.images,
-      category: product.category,
+  const priceFormatted = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(product.price);
+
+  const title = `${product.name} - ${tenant.name}`;
+  const description =
+    product.description ||
+    `Beli ${product.name} di ${tenant.name} ${priceFormatted}. Order via WhatsApp!`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: product.images?.[0] ? [product.images[0]] : undefined,
     },
-    tenant: {
-      name: tenant.name,
-      slug: tenant.slug,
-    },
-  });
+  };
 }
 
 // ==========================================
@@ -117,20 +115,24 @@ export default async function ProductPage({ params }: ProductPageProps) {
   // Fetch related products
   const relatedProducts = await getRelatedProducts(slug, id, product.category);
 
-  // Generate breadcrumbs for SEO
-  const breadcrumbs = generateProductBreadcrumbs(
-    { name: tenant.name, slug: tenant.slug },
-    {
-      name: product.name,
-      id: product.id,
-      slug: product.slug,
-      category: product.category,
-    }
-  );
+  // Inline breadcrumbs for SEO (avoid client function import in server component)
+  const productPath = product.slug ? `/p/${product.slug}` : `/products/${product.id}`;
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: tenant.name, url: `/store/${tenant.slug}` },
+    ...(product.category
+      ? [
+          {
+            name: product.category,
+            url: `/store/${tenant.slug}/products?category=${encodeURIComponent(product.category)}`,
+          },
+        ]
+      : []),
+    { name: product.name, url: `/store/${tenant.slug}${productPath}` },
+  ];
 
-  // Generate product URL for sharing
-  const productPath = product.slug ? `/p/${product.slug}` : `/product/${product.id}`;
-  const productUrl = getTenantUrl(tenant.slug, productPath);
+  // Product URL for sharing
+  const productUrl = `/store/${tenant.slug}${productPath}`;
 
   return (
     <>

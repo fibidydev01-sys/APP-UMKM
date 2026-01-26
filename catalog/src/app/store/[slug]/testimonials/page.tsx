@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { tenantsApi } from '@umkm/shared/api';
 import { normalizeTestimonials } from '@umkm/shared';
 import { TenantTestimonials } from '@umkm/shared/features/landing-blocks';
-import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@umkm/shared/features/seo';
+import { BreadcrumbSchema } from '@umkm/shared/features/seo';
 import { Star } from 'lucide-react';
 import type { PublicTenant, Testimonial } from '@umkm/shared/types';
 
@@ -67,8 +67,10 @@ export default async function TestimonialsPage({ params }: TestimonialsPageProps
       ? (testimonialItems.reduce((acc, t) => acc + (t.rating || 5), 0) / totalReviews).toFixed(1)
       : '0';
 
+  // Inline breadcrumbs (avoid client function import in server component)
   const breadcrumbs = [
-    ...generateTenantBreadcrumbs({ name: tenant.name, slug: tenant.slug }),
+    { name: 'Home', url: '/' },
+    { name: tenant.name, url: `/store/${tenant.slug}` },
     { name: 'Testimoni', url: `/store/${slug}/testimonials` },
   ];
 

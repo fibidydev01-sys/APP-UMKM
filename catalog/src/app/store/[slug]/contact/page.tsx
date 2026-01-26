@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@umkm/shared/api';
 import { TenantContact } from '@umkm/shared/features/landing-blocks';
-import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@umkm/shared/features/seo';
+import { BreadcrumbSchema } from '@umkm/shared/features/seo';
 import type { PublicTenant } from '@umkm/shared/types';
 
 // ==========================================
@@ -58,8 +58,10 @@ export default async function ContactPage({ params }: ContactPageProps) {
   const landingConfig = tenant.landingConfig;
   const contactConfig = landingConfig?.contact;
 
+  // Inline breadcrumbs (avoid client function import in server component)
   const breadcrumbs = [
-    ...generateTenantBreadcrumbs({ name: tenant.name, slug: tenant.slug }),
+    { name: 'Home', url: '/' },
+    { name: tenant.name, url: `/store/${tenant.slug}` },
     { name: 'Kontak', url: `/store/${slug}/contact` },
   ];
 

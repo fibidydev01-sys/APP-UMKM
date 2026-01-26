@@ -10,11 +10,7 @@ import {
   TenantContact,
   TenantCta,
 } from '@umkm/shared/features/landing-blocks';
-import {
-  BreadcrumbSchema,
-  ProductListSchema,
-  generateTenantBreadcrumbs,
-} from '@umkm/shared/features/seo';
+import { BreadcrumbSchema, ProductListSchema } from '@umkm/shared/features/seo';
 import type { PublicTenant, Product, Testimonial, SectionKey } from '@umkm/shared/types';
 
 // ==========================================
@@ -73,10 +69,11 @@ export default async function StorePage({ params }: StorePageProps) {
   });
   console.groupEnd();
 
-  const breadcrumbs = generateTenantBreadcrumbs({
-    name: tenant.name,
-    slug: tenant.slug,
-  });
+  // Inline breadcrumbs (avoid client function import in server component)
+  const breadcrumbs = [
+    { name: 'Home', url: '/' },
+    { name: tenant.name, url: `/store/${tenant.slug}` },
+  ];
 
   // Fetch products
   const productLimit = (landingConfig?.products?.config?.limit as number) || 8;
