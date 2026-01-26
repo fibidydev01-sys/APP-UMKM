@@ -1,7 +1,6 @@
 import { tenantsApi } from '@umkm/shared/api';
 import { StoreHeader, StoreFooter, StoreNotFound } from '@umkm/shared/features/store';
 import { LocalBusinessSchema } from '@umkm/shared/features/seo';
-import { TemplateProvider } from '@umkm/shared';
 import type { Metadata } from 'next';
 import type { PublicTenant } from '@umkm/shared/types';
 
@@ -163,9 +162,7 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
 
         <StoreHeader tenant={tenant} />
 
-        <TemplateProvider initialTemplateId={tenant.landingConfig?.template}>
-          <main className="flex-1">{children}</main>
-        </TemplateProvider>
+        <main className="flex-1">{children}</main>
 
         <StoreFooter tenant={tenant} />
       </div>

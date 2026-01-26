@@ -8,6 +8,7 @@ import {
   TenantContact,
   TenantCta,
 } from '@umkm/shared/features/landing-blocks';
+import { TemplateProvider } from '@umkm/shared';
 import type { PublicTenant, Product, SectionKey, TenantLandingConfig } from '@umkm/shared/types';
 
 // ==========================================
@@ -81,19 +82,21 @@ export function StoreLanding({
   };
 
   return (
-    <div className="container px-4 py-8 space-y-8">
-      {/* 🚀 Render sections in custom order (from drag & drop) */}
-      {sectionOrder.map((sectionKey) => sectionComponents[sectionKey]).filter(Boolean)}
+    <TemplateProvider initialTemplateId={landingConfig?.template}>
+      <div className="container px-4 py-8 space-y-8">
+        {/* 🚀 Render sections in custom order (from drag & drop) */}
+        {sectionOrder.map((sectionKey) => sectionComponents[sectionKey]).filter(Boolean)}
 
-      {/* Empty State */}
-      {!hasAnySectionEnabled && (
-        <div className="text-center py-12 bg-muted/30 rounded-lg">
-          <p className="text-muted-foreground mb-2">Landing page belum dikonfigurasi</p>
-          <p className="text-sm text-muted-foreground">
-            Aktifkan section di Dashboard &gt; Settings &gt; Landing
-          </p>
-        </div>
-      )}
-    </div>
+        {/* Empty State */}
+        {!hasAnySectionEnabled && (
+          <div className="text-center py-12 bg-muted/30 rounded-lg">
+            <p className="text-muted-foreground mb-2">Landing page belum dikonfigurasi</p>
+            <p className="text-sm text-muted-foreground">
+              Aktifkan section di Dashboard &gt; Settings &gt; Landing
+            </p>
+          </div>
+        )}
+      </div>
+    </TemplateProvider>
   );
 }
