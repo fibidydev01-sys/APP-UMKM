@@ -244,6 +244,10 @@ nuclear:
     @echo "📦 Installing fresh dependencies..."
     pnpm install
     @echo ""
+    @echo "🔄 Generating Prisma Client..."
+    cd server && pnpm exec prisma generate
+    @echo "   ✅ Prisma Client generated!"
+    @echo ""
     @echo "✅ REINSTALLED! Ready to go!"
 
 # Clean only (no reinstall)
@@ -282,8 +286,13 @@ quickstart:
     @cd packages/shared && pnpm build
     @echo "   ✅ Shared package built!"
     @echo ""
-    @echo "🗄️  Step 4/5: Setting up database (generate + push + seed)..."
-    @just db-setup
+    @echo "🗄️  Step 4/5: Setting up database..."
+    @echo "   🔄 Generating Prisma Client..."
+    @just db-generate
+    @echo "   🔄 Pushing schema to database..."
+    @just db-push
+    @echo "   🌱 Seeding database..."
+    @just db-seed
     @echo ""
     @echo "🎨 Step 5/5: Verifying setup..."
     @echo "   ✅ Client ready at http://localhost:3000"
