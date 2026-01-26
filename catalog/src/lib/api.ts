@@ -10,6 +10,9 @@ import type { PublicTenant, Product } from '@umkm/shared/types';
  */
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+// 🔥 DEBUG: Log API_URL at module load
+console.log('[CATALOG API] API_URL:', API_URL);
+
 // ==========================================
 // RESPONSE TYPES
 // ==========================================
@@ -35,15 +38,23 @@ export const tenantsApi = {
    * Get tenant by slug (public endpoint)
    */
   async getBySlug(slug: string): Promise<PublicTenant> {
-    const res = await fetch(`${API_URL}/tenants/by-slug/${slug}`, {
+    const url = `${API_URL}/tenants/by-slug/${slug}`;
+    console.log('[CATALOG API] Fetching tenant:', url);
+
+    const res = await fetch(url, {
       cache: 'no-store', // Always fresh data
     });
 
+    console.log('[CATALOG API] Response status:', res.status);
+
     if (!res.ok) {
+      console.error('[CATALOG API] Tenant fetch failed:', res.status, res.statusText);
       throw new Error(`Tenant not found: ${slug}`);
     }
 
-    return res.json();
+    const data = await res.json();
+    console.log('[CATALOG API] Tenant data:', data?.slug, data?.status);
+    return data;
   },
 };
 
