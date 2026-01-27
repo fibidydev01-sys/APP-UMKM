@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Menu, Store, Users, Mail, Package } from 'lucide-react';
+import { Menu, Store, Users, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetHeader } from '@/components/ui/sheet';
 import {
@@ -38,7 +38,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
     { label: 'Beranda', href: urls.home },
     { label: 'Tentang', href: urls.path('/about') },
     { label: 'Produk', href: urls.products() },
-    { label: 'Lacak Pesanan', href: urls.path('/track'), icon: Package },
+    { label: 'Lacak Pesanan', href: urls.path('/track') },
     { label: 'Testimoni', href: urls.path('/testimonials') },
     { label: 'Kontak', href: urls.path('/contact') },
   ];
@@ -152,10 +152,7 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                   pathname.startsWith(urls.path('/track')) && 'bg-primary/10 text-primary'
                 )}
               >
-                <Link href={urls.path('/track')}>
-                  <Package className="h-4 w-4 mr-1.5 inline-block" />
-                  Lacak Pesanan
-                </Link>
+                <Link href={urls.path('/track')}>Lacak Pesanan</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
 
@@ -263,7 +260,6 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                 {navItems.map((item) => {
                   const isActive = pathname === item.href ||
                     (item.href !== urls.home && pathname.startsWith(item.href));
-                  const Icon = 'icon' in item ? item.icon : null;
 
                   return (
                     <Link
@@ -271,13 +267,12 @@ export function StoreHeader({ tenant }: StoreHeaderProps) {
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        'px-4 py-3 text-base font-medium rounded-lg transition-colors flex items-center gap-2',
+                        'px-4 py-3 text-base font-medium rounded-lg transition-colors',
                         isActive
                           ? 'bg-primary/10 text-primary'
                           : 'text-foreground hover:bg-muted'
                       )}
                     >
-                      {Icon && <Icon className="h-4 w-4" />}
                       {item.label}
                     </Link>
                   );
