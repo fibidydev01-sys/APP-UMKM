@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { TrackingPage } from '@/components/tracking/tracking-page';
+import { API_URL } from '@/config/constants';
 
 interface PageProps {
   params: {
@@ -10,8 +11,7 @@ interface PageProps {
 
 async function getOrder(orderId: string) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/store/track/${orderId}`, {
+    const res = await fetch(`${API_URL}/store/track/${orderId}`, {
       cache: 'no-store', // Always fetch fresh data
     });
 
