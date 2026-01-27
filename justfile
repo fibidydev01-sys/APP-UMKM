@@ -10,11 +10,12 @@ default:
 # 🚀 DEVELOPMENT
 # ====================
 
-# Start ALL dev servers (client + server)
+# Start ALL dev servers (client, client-web, server) with colored output
 dev:
-    @echo "🚀 Starting all development servers..."
-    @echo "📊 API:    http://localhost:8000/api"
-    @echo "🖥️  Client: http://localhost:3000"
+    @echo "🚀 Starting all development servers (concurrently)..."
+    @echo "🖥️  CLIENT:     http://localhost:3000"
+    @echo "🌐 CLIENT-WEB: http://localhost:3001"
+    @echo "📊 SERVER:     http://localhost:8000/api"
     @echo ""
     pnpm dev
 
