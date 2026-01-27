@@ -14,6 +14,7 @@ import { OrdersModule } from './orders/orders.module';
 import { SitemapModule } from './sitemap/sitemap.module';
 import { SeoModule } from './seo/seo.module';
 import { CategoriesModule } from './categories/categories.module';
+import { StoreModule } from './store/store.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { CategoriesModule } from './categories/categories.module';
     SitemapModule,
     SeoModule,
     CategoriesModule,
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [

@@ -5,12 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService, CACHE_KEYS } from '../redis/redis.service';
+import { CustomersService } from '../customers/customers.service';
 import {
   CreateOrderDto,
   UpdateOrderDto,
   UpdateOrderStatusDto,
   UpdatePaymentStatusDto,
   QueryOrderDto,
+  CheckoutDto,
 } from './dto';
 import { Prisma, OrderStatus, PaymentStatus } from '@prisma/client';
 
@@ -19,6 +21,7 @@ export class OrdersService {
   constructor(
     private prisma: PrismaService,
     private redis: RedisService,
+    private customersService: CustomersService,
   ) {}
 
   // ==========================================
@@ -488,5 +491,94 @@ export class OrdersService {
 
     const sequence = String(count + 1).padStart(3, '0');
     return `ORD-${dateStr}-${sequence}`;
+  }
+
+  // ==========================================
+  // CREATE ORDER FROM CHECKOUT (PUBLIC)
+  // ==========================================
+  async createFromCheckout(tenantId: string, dto: CheckoutDto) {
+    // 1. Find or create customer by phone
+    const customer = await this.customersService.findOrCreateCustomer(
+      tenantId,
+      {
+        phone: dto.phone,
+        name: dto.name,
+        email: dto.email,
+        address: dto.address,
+      },
+    );
+
+    // 2. Prepare metadata for order
+    const metadata = {
+      courier: dto.courier,
+      shippingAddress: dto.address,
+    };
+
+    // 3. Create order using existing create() method
+    const result = await this.create(tenantId, {
+      customerId: customer.id,
+      items: dto.items,
+      paymentMethod: dto.paymentMethod,
+      notes: dto.notes,
+      metadata,
+    });
+
+    // 4. Generate tracking URL
+    const trackingUrl = `/track/${result.order.id}`;
+
+    return {
+      message: 'Pesanan berhasil dibuat',
+      order: result.order,
+      customer: {
+        id: customer.id,
+        name: customer.name,
+        phone: customer.phone,
+      },
+      trackingUrl,
+    };
+  }
+
+  // ==========================================
+  // FIND ONE ORDER (PUBLIC - for tracking)
+  // ==========================================
+  async findOnePublic(orderId: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                images: true,
+              },
+            },
+          },
+        },
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+        tenant: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            whatsapp: true,
+            logo: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException('Pesanan tidak ditemukan');
+    }
+
+    return order;
   }
 }
