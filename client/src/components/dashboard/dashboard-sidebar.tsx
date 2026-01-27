@@ -75,11 +75,6 @@ const navigation: NavGroup[] = [
         title: 'Produk',
         href: '/dashboard/products',
         icon: Package,
-        children: [
-          { title: 'Semua Produk', href: '/dashboard/products' },
-          { title: 'Tambah Produk', href: '/dashboard/products/new' },
-          { title: 'Kategori', href: '/dashboard/products/categories' },
-        ],
       },
       {
         title: 'Pelanggan',
