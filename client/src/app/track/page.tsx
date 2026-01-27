@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
+import { API_URL } from '@/config/constants';
 
 export default function TrackOrderPage() {
   const router = useRouter();
@@ -35,8 +36,8 @@ export default function TrackOrderPage() {
 
     // Check if order exists before redirecting
     try {
-      // Use Next.js API route that proxies to backend
-      const response = await fetch(`/api/store/track/${trimmedOrderId}`);
+      // Fetch directly from backend API
+      const response = await fetch(`${API_URL}/store/track/${trimmedOrderId}`);
 
       if (response.ok) {
         // Order found, redirect to tracking page

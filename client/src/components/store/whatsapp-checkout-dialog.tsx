@@ -22,6 +22,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { formatPrice, generateWhatsAppLink } from '@/lib/format';
 import { useCartStore, useCartItems, useCartTotalPrice } from '@/stores';
 import type { PublicTenant, PaymentMethods, ShippingMethods } from '@/types';
+import { API_URL } from '@/config/constants';
 
 interface WhatsAppCheckoutDialogProps {
   open: boolean;
@@ -148,8 +149,8 @@ export function WhatsAppCheckoutDialog({
     setIsLoading(true);
 
     try {
-      // 1. Create order via API
-      const response = await fetch(`/api/store/${tenant.slug}/checkout`, {
+      // 1. Create order via API (direct to backend)
+      const response = await fetch(`${API_URL}/store/${tenant.slug}/checkout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
