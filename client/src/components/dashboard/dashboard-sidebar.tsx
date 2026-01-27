@@ -10,11 +10,14 @@ import {
   Settings,
   Store,
   ChevronRight,
+  ChevronsUpDown,
+  LogOut,
   type LucideIcon,
 } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
@@ -30,6 +33,17 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth, useLogout } from '@/hooks';
+import { getInitials } from '@/lib/format';
 
 // ==========================================
 // NAVIGATION ITEMS
@@ -103,6 +117,8 @@ const navigation: NavGroup[] = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const { tenant } = useAuth();
+  const { logout } = useLogout();
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -188,6 +204,73 @@ export function DashboardSidebar() {
           </SidebarGroup>
         ))}
       </SidebarContent>
+
+      {/* User Avatar Footer */}
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={tenant?.logo || undefined} />
+                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+                      {tenant?.name ? getInitials(tenant.name) : 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">{tenant?.name}</span>
+                    <span className="truncate text-xs text-muted-foreground">{tenant?.email}</span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto size-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+                side="bottom"
+                align="end"
+                sideOffset={4}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage src={tenant?.logo || undefined} />
+                      <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
+                        {tenant?.name ? getInitials(tenant.name) : 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">{tenant?.name}</span>
+                      <span className="truncate text-xs text-muted-foreground">{tenant?.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Pengaturan
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href={`/store/${tenant?.slug}`}>
+                    <Store className="mr-2 h-4 w-4" />
+                    Lihat Toko
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Keluar
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
 
       {/* Rail for collapsed state */}
       <SidebarRail />
