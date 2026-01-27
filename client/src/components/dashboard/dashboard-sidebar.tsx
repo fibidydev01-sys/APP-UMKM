@@ -4,9 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Package,
-  Users,
-  ShoppingCart,
   Settings,
   Store,
   ChevronRight,
@@ -28,11 +25,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -70,21 +63,6 @@ const navigation: NavGroup[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutDashboard,
-      },
-      {
-        title: 'Produk',
-        href: '/dashboard/products',
-        icon: Package,
-      },
-      {
-        title: 'Pelanggan',
-        href: '/dashboard/customers',
-        icon: Users,
-      },
-      {
-        title: 'Pesanan',
-        href: '/dashboard/orders',
-        icon: ShoppingCart,
       },
     ],
   },
@@ -129,10 +107,7 @@ export function DashboardSidebar() {
                     >
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                          <SidebarMenuButton
-                            tooltip={item.title}
-                            isActive={active}
-                          >
+                          <SidebarMenuButton tooltip={item.title} isActive={active}>
                             <item.icon className="h-4 w-4" />
                             <span>{item.title}</span>
                             <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -142,10 +117,7 @@ export function DashboardSidebar() {
                           <SidebarMenuSub>
                             {item.children.map((child) => (
                               <SidebarMenuSubItem key={child.href}>
-                                <SidebarMenuSubButton
-                                  asChild
-                                  isActive={pathname === child.href}
-                                >
+                                <SidebarMenuSubButton asChild isActive={pathname === child.href}>
                                   <Link href={child.href}>
                                     <span>{child.title}</span>
                                   </Link>
@@ -162,11 +134,7 @@ export function DashboardSidebar() {
                 // Simple item
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      asChild
-                      tooltip={item.title}
-                      isActive={active}
-                    >
+                    <SidebarMenuButton asChild tooltip={item.title} isActive={active}>
                       <Link href={item.href}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
@@ -224,7 +192,9 @@ export function DashboardSidebar() {
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
                       <span className="truncate font-semibold">{tenant?.name}</span>
-                      <span className="truncate text-xs text-muted-foreground">{tenant?.email}</span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {tenant?.email}
+                      </span>
                     </div>
                   </div>
                 </DropdownMenuLabel>
