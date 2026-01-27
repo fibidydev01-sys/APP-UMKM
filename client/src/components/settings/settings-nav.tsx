@@ -74,7 +74,7 @@ export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
   };
 
   return (
-    <Sidebar collapsible="none" className="border-r">
+    <Sidebar collapsible="none" className="border-r min-h-screen">
       <SidebarHeader className="border-b px-4 py-3">
         <h2 className="font-semibold text-lg">Pengaturan</h2>
         <p className="text-sm text-muted-foreground">Kelola preferensi toko</p>
