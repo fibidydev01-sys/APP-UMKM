@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
@@ -66,6 +67,7 @@ export function SettingsMobileTrigger() {
 // ============================================================================
 
 export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
+  const router = useRouter();
   const { setOpenMobile } = useSidebar();
 
   const handleTabClick = (key: string) => {
@@ -76,8 +78,20 @@ export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
   return (
     <Sidebar className="border-r min-h-screen">
       <SidebarHeader className="border-b px-4 py-3">
-        <h2 className="font-semibold text-lg">Pengaturan</h2>
-        <p className="text-sm text-muted-foreground">Kelola preferensi toko</p>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push('/dashboard')}
+            className="h-8 w-8 p-0"
+          >
+            &larr;
+          </Button>
+          <div>
+            <h2 className="font-semibold text-lg">Pengaturan</h2>
+            <p className="text-sm text-muted-foreground">Kelola preferensi toko</p>
+          </div>
+        </div>
       </SidebarHeader>
 
       <SidebarContent>
