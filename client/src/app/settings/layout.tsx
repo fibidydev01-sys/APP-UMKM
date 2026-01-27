@@ -4,6 +4,7 @@ import { AuthGuard } from '@/components/auth';
 // ==========================================
 // SETTINGS LAYOUT
 // Isolated settings pages with AuthGuard
+// Uses SidebarProvider for desktop sidebar + mobile sheet
 // ==========================================
 
 export const metadata: Metadata = {
@@ -20,9 +21,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <AuthGuard requireAuth redirectTo="/login">
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto py-6 px-4 md:px-6 lg:px-8">{children}</div>
-      </div>
+      <div className="min-h-screen bg-background">{children}</div>
     </AuthGuard>
   );
 }

@@ -3,7 +3,7 @@
  * FILE: app/settings/page.tsx
  * ============================================================================
  * Route: /settings
- * Description: Settings page with navigation to subsections (no icons, pure text)
+ * Description: Settings page with sidebar navigation (desktop) and sheet (mobile)
  * Updated: January 2026
  * ============================================================================
  */
@@ -11,12 +11,11 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Tabs, TabsContent } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PageHeader } from '@/components/dashboard';
+import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import {
   SettingsNav,
+  SettingsMobileTrigger,
   PaymentSettings,
   ShippingSettings,
   SeoSettings,
@@ -126,7 +125,6 @@ export default function SettingsPage() {
   // State
   // ---------------------------------------------------------------------------
   const [activeTab, setActiveTab] = useState('store');
-  const [sheetOpen, setSheetOpen] = useState(false);
 
   // Saving states
   const [isSavingPayment, setIsSavingPayment] = useState(false);
@@ -197,7 +195,6 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   const handleTabChange = useCallback((newTab: string) => {
     setActiveTab(newTab);
-    setSheetOpen(false);
   }, []);
 
   // ---------------------------------------------------------------------------
@@ -360,37 +357,12 @@ export default function SettingsPage() {
   };
 
   // ---------------------------------------------------------------------------
-  // Render
+  // Render Content Based on Active Tab
   // ---------------------------------------------------------------------------
-  return (
-    <div>
-      <PageHeader title="Pengaturan" description="Kelola pengaturan toko dan preferensi Anda" />
-
-      {/* Dialogs */}
-      <BankAccountDialog
-        open={bankDialogOpen}
-        onOpenChange={setBankDialogOpen}
-        bank={editingBank}
-        onSave={handleSaveBank}
-      />
-      <EwalletDialog
-        open={ewalletDialogOpen}
-        onOpenChange={setEwalletDialogOpen}
-        ewallet={editingEwallet}
-        onSave={handleSaveEwallet}
-      />
-
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-6">
-        {/* Navigation */}
-        <SettingsNav
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          sheetOpen={sheetOpen}
-          onSheetOpenChange={setSheetOpen}
-        />
-
-        {/* Tab: Store Info - Navigation Cards */}
-        <TabsContent value="store" className="mt-6">
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'store':
+        return (
           <Card>
             <CardHeader>
               <CardTitle>Informasi Toko</CardTitle>
@@ -425,10 +397,10 @@ export default function SettingsPage() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        );
 
-        {/* Tab: Payment */}
-        <TabsContent value="payment" className="mt-6">
+      case 'payment':
+        return (
           <PaymentSettings
             settings={paymentSettings}
             isLoading={tenantLoading}
@@ -456,10 +428,10 @@ export default function SettingsPage() {
             onDeleteEwallet={handleDeleteEwallet}
             onToggleEwallet={handleToggleEwallet}
           />
-        </TabsContent>
+        );
 
-        {/* Tab: Shipping */}
-        <TabsContent value="shipping" className="mt-6">
+      case 'shipping':
+        return (
           <ShippingSettings
             settings={shippingSettings}
             isLoading={tenantLoading}
@@ -467,10 +439,10 @@ export default function SettingsPage() {
             onSettingsChange={setShippingSettings}
             onSave={handleSaveShipping}
           />
-        </TabsContent>
+        );
 
-        {/* Tab: SEO */}
-        <TabsContent value="seo" className="mt-6">
+      case 'seo':
+        return (
           <SeoSettings
             settings={seoSettings}
             tenantName={tenant?.name}
@@ -481,8 +453,47 @@ export default function SettingsPage() {
             onSettingsChange={setSeoSettings}
             onSave={handleSaveSeo}
           />
-        </TabsContent>
-      </Tabs>
-    </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+  return (
+    <SidebarProvider defaultOpen={true}>
+      {/* Dialogs */}
+      <BankAccountDialog
+        open={bankDialogOpen}
+        onOpenChange={setBankDialogOpen}
+        bank={editingBank}
+        onSave={handleSaveBank}
+      />
+      <EwalletDialog
+        open={ewalletDialogOpen}
+        onOpenChange={setEwalletDialogOpen}
+        ewallet={editingEwallet}
+        onSave={handleSaveEwallet}
+      />
+
+      {/* Sidebar Navigation */}
+      <SettingsNav activeTab={activeTab} onTabChange={handleTabChange} />
+
+      {/* Main Content */}
+      <SidebarInset>
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-1 p-4 md:p-6 lg:p-8">
+            {/* Mobile Trigger */}
+            <SettingsMobileTrigger />
+
+            {/* Content */}
+            {renderContent()}
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
