@@ -6,7 +6,7 @@ import Image from "next/image";
 import Script from "next/script";
 
 import { cn } from "@/lib/utils";
-import { Button } from "@umkm/shared/ui";
+import { Button } from "@/components/ui/button";
 
 // Cloudinary types
 declare global {

@@ -6,8 +6,7 @@
 >
 > **Date**: 2026-01-21
 >
-> **Critical Issue**: Category mismatch between frontend (15 fixed) and backend
-> (unlimited String)
+> **Critical Issue**: Category mismatch between frontend (15 fixed) and backend (unlimited String)
 
 ---
 
@@ -241,7 +240,7 @@ export interface PredefinedCategory {
 export interface DynamicCategory {
   key: string;
   label: string;
-  count?: number; // Number of tenants in this category
+  count?: number;          // Number of tenants in this category
   isPredefined: false;
 }
 
@@ -296,13 +295,9 @@ export interface CategoriesResponse {
 
 ```typescript
 import { CATEGORY_CONFIG } from '@/config/categories';
-import type {
-  Category,
-  PredefinedCategory,
-  DynamicCategory,
-} from '@/types/category';
+import type { Category, PredefinedCategory, DynamicCategory } from '@/types/category';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 // ==========================================
 // FETCH CATEGORIES FROM API
@@ -324,9 +319,7 @@ export async function fetchAllCategoriesFromDB(): Promise<string[]> {
 /**
  * Fetch category stats (with counts)
  */
-export async function fetchCategoryStats(): Promise<
-  { category: string; count: number }[]
-> {
+export async function fetchCategoryStats(): Promise<{ category: string; count: number }[]> {
   try {
     const res = await fetch(`${API_URL}/categories/stats`);
     if (!res.ok) return [];
@@ -343,9 +336,7 @@ export async function searchCategories(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
 
   try {
-    const res = await fetch(
-      `${API_URL}/categories/search?q=${encodeURIComponent(query)}`
-    );
+    const res = await fetch(`${API_URL}/categories/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) return [];
     return res.json();
   } catch {
@@ -888,7 +879,6 @@ export function CategorySearch() {
 ## ✅ IMPLEMENTATION CHECKLIST
 
 ### Backend:
-
 - [ ] Create `categories.module.ts`
 - [ ] Create `categories.service.ts`
 - [ ] Create `categories.controller.ts`
@@ -898,7 +888,6 @@ export function CategorySearch() {
 - [ ] Test all endpoints
 
 ### Frontend - Core:
-
 - [ ] Create `types/category.ts` (unified types)
 - [ ] Create `lib/categories/unified-service.ts`
 - [ ] Add `fetchAllCategoriesFromDB()`
@@ -906,7 +895,6 @@ export function CategorySearch() {
 - [ ] Add `getAllCategoriesWithStats()`
 
 ### Frontend - Registration:
-
 - [ ] Update `step-category.tsx`
 - [ ] Add custom category input UI
 - [ ] Add validation for custom category
@@ -914,7 +902,6 @@ export function CategorySearch() {
 - [ ] Test custom category input
 
 ### Frontend - Discover:
-
 - [ ] Update `app/discover/[category]/page.tsx`
 - [ ] Support dynamic categories (no 404)
 - [ ] Update `CategoryPageClient` to handle dynamic
@@ -924,7 +911,6 @@ export function CategorySearch() {
 - [ ] Test search with dynamic categories
 
 ### Frontend - UI Components:
-
 - [ ] Create default category card (for dynamic)
 - [ ] Update CategoryCard to handle both types
 - [ ] Add category badge component
@@ -950,31 +936,26 @@ export function CategorySearch() {
 ## 🚀 DEPLOYMENT STRATEGY
 
 ### Phase 1 (Day 1-2): Backend
-
 1. Add backend categories API
 2. Test endpoints
 3. Deploy backend
 
 ### Phase 2 (Day 2-3): Frontend Core
-
 1. Create unified category service
 2. Update type system
 3. Test API integration
 
 ### Phase 3 (Day 3-4): Registration
-
 1. Update registration flow
 2. Add custom category input
 3. Test full registration with custom category
 
 ### Phase 4 (Day 4-5): Discover
-
 1. Update discover page logic
 2. Add category search
 3. Test full flow
 
 ### Phase 5 (Day 5): Testing & Polish
-
 1. E2E testing
 2. Performance optimization
 3. SEO testing
@@ -985,18 +966,16 @@ export function CategorySearch() {
 ## 📈 FUTURE ENHANCEMENTS
 
 ### Phase 2 Features:
-
-- **Category Suggestions**: ML-based category recommendations during
-  registration
-- **Category Merge**: Admin tool to merge similar categories ("Distro" + "Distro
-  Streetwear")
-- **Category Hierarchy**: Parent-child relationships (Fashion > Distro >
-  Streetwear)
+- **Category Suggestions**: ML-based category recommendations during registration
+- **Category Merge**: Admin tool to merge similar categories ("Distro" + "Distro Streetwear")
+- **Category Hierarchy**: Parent-child relationships (Fashion > Distro > Streetwear)
 - **Category Analytics**: Popular categories, trending categories
 - **Category Aliases**: Search "bengkel" → finds "Bengkel Motor"
 - **Multi-language**: Category names in English + Bahasa
 
 ---
 
-**Created**: 2026-01-21 **Version**: 1.0 **Status**: ✅ Blueprint Ready for
-Implementation **Next Steps**: Implement backend categories API
+**Created**: 2026-01-21
+**Version**: 1.0
+**Status**: ✅ Blueprint Ready for Implementation
+**Next Steps**: Implement backend categories API

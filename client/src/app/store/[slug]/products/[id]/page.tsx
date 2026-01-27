@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
-import { tenantsApi } from '@/lib/api';
-import { productsApi } from '@/features/products';
+import { tenantsApi, productsApi } from '@/lib/api';
 import {
   StoreBreadcrumb,
   ProductGallery,
@@ -10,17 +9,17 @@ import {
   ShippingInfo,
   RelatedProducts,
   ProductGridSkeleton,
-} from '@/features/store';
+} from '@/components/store';
 import {
   ProductSchema,
   BreadcrumbSchema,
   SocialShare,
   generateProductBreadcrumbs,
-} from '@/features/seo';
-import { createProductMetadata, getTenantUrl } from '@/features/seo';
-import { Separator } from '@umkm/shared/ui';
+} from '@/components/seo';
+import { createProductMetadata, getTenantUrl } from '@/lib/seo';
+import { Separator } from '@/components/ui/separator';
 import type { Metadata } from 'next';
-import type { PublicTenant, Product } from '@umkm/shared/types';
+import type { PublicTenant, Product } from '@/types';
 
 // ==========================================
 // PRODUCT DETAIL PAGE

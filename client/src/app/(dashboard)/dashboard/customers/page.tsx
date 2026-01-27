@@ -6,11 +6,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { PageHeader } from '@/features/dashboard';
-import { CustomersTable, customersApi, Customer } from '@/features/customers';
-import { Skeleton } from '@umkm/shared/ui';
-import { getErrorMessage } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/dashboard';
+import { CustomersTable } from '@/components/customers';
+import { Skeleton } from '@/components/ui/skeleton';
+import { customersApi, getErrorMessage } from '@/lib/api';
+import type { Customer } from '@/types';
 
 // ==========================================
 // CUSTOMERS LIST PAGE (Client Component)

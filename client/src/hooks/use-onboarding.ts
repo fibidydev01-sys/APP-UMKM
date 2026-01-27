@@ -1,9 +1,12 @@
-'use client';
+"use client";
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTenant } from './use-tenant';
-import { useProducts } from '@/features/products';
-import { calculateOnboardingProgress, type OnboardingProgress } from '@/features/onboarding';
+import { useProducts } from './use-products';
+import {
+  calculateOnboardingProgress,
+  OnboardingProgress
+} from '@/lib/onboarding';
 
 // ============================================
 // USE ONBOARDING HOOK

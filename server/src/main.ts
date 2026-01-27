@@ -25,11 +25,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   // Allowed origins from ENV
-  // Default: localhost:3000 (client/dashboard), localhost:3002 (catalog)
-  const allowedOrigins = (
-    process.env.FRONTEND_URL ||
-    'http://localhost:3000,http://localhost:3002'
-  )
+  const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
     .split(',')
     .map((origin) => origin.trim());
 
@@ -39,33 +35,11 @@ async function bootstrap() {
       origin: string | undefined,
       callback: (err: Error | null, allow?: boolean) => void,
     ) => {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin) {
-        logger.log(`CORS: Allowing request with no origin`);
-        return callback(null, true);
-      }
-
-      // Log the incoming origin for debugging
-      logger.log(`CORS: Request from origin: ${origin}`);
-
-      // Check if origin is in allowed list
+      if (!origin) return callback(null, true);
       if (allowedOrigins.includes(origin)) {
-        logger.log(`CORS: ✅ Allowed origin: ${origin}`);
         callback(null, true);
       } else {
-        // In development, allow localhost on any port
-        const isDevelopment = process.env.NODE_ENV !== 'production';
-        const isLocalhost =
-          origin.startsWith('http://localhost:') ||
-          origin.startsWith('http://127.0.0.1:');
-
-        if (isDevelopment && isLocalhost) {
-          logger.log(`CORS: ✅ Allowed (dev localhost): ${origin}`);
-          callback(null, true);
-        } else {
-          logger.warn(`CORS: ❌ Rejected origin: ${origin}`);
-          callback(new Error('Not allowed by CORS'));
-        }
+        callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,

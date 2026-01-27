@@ -1,6 +1,5 @@
-import { IsOptional, IsString, IsNumber, Min, IsIn } from 'class-validator';
+import { IsOptional, IsString, IsNumber, Min } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderStatus, PaymentStatus } from '@umkm/shared/types';
 
 export class QueryOrderDto {
   @IsOptional()
@@ -8,12 +7,12 @@ export class QueryOrderDto {
   search?: string; // Search by orderNumber
 
   @IsOptional()
-  @IsIn(Object.values(OrderStatus))
-  status?: OrderStatus;
+  @IsString()
+  status?: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED';
 
   @IsOptional()
-  @IsIn(Object.values(PaymentStatus))
-  paymentStatus?: PaymentStatus;
+  @IsString()
+  paymentStatus?: 'PENDING' | 'PAID' | 'PARTIAL' | 'FAILED';
 
   @IsOptional()
   @IsString()

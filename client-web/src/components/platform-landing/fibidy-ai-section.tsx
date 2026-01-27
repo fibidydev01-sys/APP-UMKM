@@ -11,8 +11,8 @@ import {
   ChevronRight,
   Sparkles,
 } from 'lucide-react';
-import { Card, CardContent } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════

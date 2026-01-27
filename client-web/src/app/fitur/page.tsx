@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import { Wrench } from 'lucide-react';
 import { LandingHeader, LandingFooter } from '@/components/platform-landing';
-import { Badge } from '@umkm/shared/ui';
+import { Badge } from '@/components/ui/badge';
 
 // Lazy load sections
 const FeaturesSection = dynamic(() =>

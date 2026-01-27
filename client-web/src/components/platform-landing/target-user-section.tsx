@@ -1,5 +1,5 @@
 import { ShoppingCart, Wrench, Coffee, Lightbulb } from 'lucide-react';
-import { Card, CardContent } from '@umkm/shared/ui';
+import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════

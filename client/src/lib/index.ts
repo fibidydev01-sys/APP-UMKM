@@ -2,29 +2,26 @@
 // LIB INDEX - Export all utilities
 // ==========================================
 
+// Classname utility
+export { cn } from './cn';
+
+// Format utilities
+export * from './format';
+
+// Validation schemas
+export * from './validations';
+
 // API client & services
 export * from './api';
-
-// Categories service
-export * from './categories';
 
 // Cloudinary utilities
 export * from './cloudinary';
 
-// Format utilities
-export * from './formatters';
+// Invoice utilities (NEW)
+export * from './invoice';
 
-// Landing page templates (shared between landing-builder and tenant-landing features)
-export * from './landing-templates';
+// Landing page utilities
+export * from './landing';
 
-// SEO utilities (OG images, store URLs)
-export * from './seo';
-
-// Theme utilities
-export * from './theme';
-
-// General utilities (cn, helpers)
-export * from './utils';
-
-// Validation schemas
-export * from './validation';
+// Discover utilities
+export * from './discover';

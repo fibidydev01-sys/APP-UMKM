@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/providers';
-import { Toaster } from '@umkm/shared/ui';
+import { Toaster } from '@/components/ui/sonner';
 import { seoConfig } from '@/config/seo.config';
 import { getFullUrl } from '@/lib/seo';
 import { OrganizationSchema } from '@/components/seo';

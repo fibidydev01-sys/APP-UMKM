@@ -4,10 +4,11 @@
 // Route: /dashboard/products/new
 
 import { useState, useEffect } from 'react';
-import { PageHeader } from '@/features/dashboard';
-import { ProductForm, productsApi } from '@/features/products';
-import { Skeleton } from '@umkm/shared/ui';
-import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
+import { PageHeader } from '@/components/dashboard';
+import { ProductForm } from '@/components/products';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { productsApi } from '@/lib/api';
 
 // ==========================================
 // CREATE PRODUCT PAGE (Client Component)

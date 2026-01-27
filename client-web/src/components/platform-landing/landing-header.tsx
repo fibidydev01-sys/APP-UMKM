@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Store, Menu } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@umkm/shared/ui';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -13,7 +13,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
-} from '@umkm/shared/ui';
+} from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 
 // ══════════════════════════════════════════════════════════════

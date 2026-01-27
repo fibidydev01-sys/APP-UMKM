@@ -6,7 +6,7 @@ import {
   formatOgPrice,
   truncateOgText,
   getOgInitials,
-} from '@/lib/seo';
+} from '@/lib/og-utils';
 
 // ==========================================
 // PRODUCT OPEN GRAPH IMAGE

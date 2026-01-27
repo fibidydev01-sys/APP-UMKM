@@ -12,8 +12,7 @@ import {
   UpdatePaymentStatusDto,
   QueryOrderDto,
 } from './dto';
-import { Prisma } from '@prisma/client';
-import { OrderStatus, PaymentStatus } from '@umkm/shared/types';
+import { Prisma, OrderStatus, PaymentStatus } from '@prisma/client';
 
 @Injectable()
 export class OrdersService {

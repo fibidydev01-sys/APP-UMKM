@@ -4,8 +4,8 @@
 // ══════════════════════════════════════════════════════════════
 
 import { Star, Quote, CheckCircle } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@umkm/shared/ui';
-import { Card, CardContent } from '@umkm/shared/ui';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent } from '@/components/ui/card';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting (Icons instead of emojis)

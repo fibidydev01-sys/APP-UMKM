@@ -4,11 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
 
-import { Button } from '@umkm/shared/ui';
-import { Skeleton } from '@umkm/shared/ui';
-import { PageHeader } from '@/features/dashboard';
-import { ProductsTable, productsApi, Product } from '@/features/products';
-import { getErrorMessage } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/components/dashboard';
+import { ProductsTable } from '@/components/products';
+import { productsApi, getErrorMessage } from '@/lib/api';
+
+import type { Product } from '@/types';
 
 // ============================================================================
 // TYPES

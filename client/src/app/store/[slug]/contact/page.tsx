@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@/lib/api';
-import { TenantContact } from '@/features/landing-blocks';
-import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/features/seo';
-import type { PublicTenant } from '@umkm/shared/types';
+import { TenantContact } from '@/components/landing';
+import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/components/seo';
+import type { PublicTenant } from '@/types';
 
 // ==========================================
 // CONTACT PAGE
@@ -37,11 +37,7 @@ export async function generateMetadata({ params }: ContactPageProps): Promise<Me
     openGraph: {
       title: `Hubungi ${tenant.name}`,
       description,
-      images: tenant.heroBackgroundImage
-        ? [tenant.heroBackgroundImage]
-        : tenant.logo
-          ? [tenant.logo]
-          : [],
+      images: tenant.heroBackgroundImage ? [tenant.heroBackgroundImage] : tenant.logo ? [tenant.logo] : [],
     },
   };
 }
@@ -74,12 +70,17 @@ export default async function ContactPage({ params }: ContactPageProps) {
             {contactConfig?.title || 'Hubungi Kami'}
           </h1>
           {contactConfig?.subtitle && (
-            <p className="text-lg text-muted-foreground">{contactConfig.subtitle}</p>
+            <p className="text-lg text-muted-foreground">
+              {contactConfig.subtitle}
+            </p>
           )}
         </div>
 
         {/* Contact Content */}
-        <TenantContact config={contactConfig} tenant={tenant} />
+        <TenantContact
+          config={contactConfig}
+          tenant={tenant}
+        />
       </div>
     </>
   );

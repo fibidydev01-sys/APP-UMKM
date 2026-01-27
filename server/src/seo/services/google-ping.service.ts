@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { QuotaTrackerService } from '../managers/quota-tracker.service';
-import { GooglePingResult } from '@umkm/shared/types';
+import { GooglePingResult } from '../interfaces';
 
 // ==========================================
 // GOOGLE PING SERVICE

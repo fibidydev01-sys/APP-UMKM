@@ -1,5 +1,5 @@
 {
-  "name": "@umkm/server",
+  "name": "server",
   "version": "0.0.1",
   "description": "UMKM Multi-Tenant Backend API",
   "author": "Fibidy",
@@ -8,7 +8,6 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "dev": "nest start --watch",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -38,7 +37,6 @@
     "@nestjs/throttler": "^6.5.0",
     "@prisma/client": "6.0.1",
     "@types/compression": "^1.8.1",
-    "@umkm/shared": "workspace:^",
     "@upstash/redis": "^1.36.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
@@ -106,6 +104,6 @@
   },
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=9.0.0"
+    "npm": ">=9.0.0"
   }
 }

@@ -10,7 +10,7 @@ import {
   Pencil,
   AlertCircle,
 } from 'lucide-react';
-import { Card, CardContent } from '@umkm/shared/ui';
+import { Card, CardContent } from '@/components/ui/card';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting (Icons instead of emojis)

@@ -4,7 +4,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import type { Request } from 'express';
 import { PrismaService } from '../../prisma/prisma.service';
-import type { JwtPayload } from '@umkm/shared/types';
 
 const COOKIE_NAME = 'fibidy_auth';
 
@@ -37,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: JwtPayload) {
+  async validate(payload: { sub: string; email: string; slug: string }) {
     const tenant = await this.prisma.tenant.findUnique({
       where: { id: payload.sub },
       select: {

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Package, ArrowLeft } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
+import { Button } from '@/components/ui/button';
 
 // ==========================================
 // PRODUCT NOT FOUND PAGE

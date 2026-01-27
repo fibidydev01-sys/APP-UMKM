@@ -12,3 +12,6 @@ export type { RequestConfig } from './client';
 // API Services
 export { authApi } from './auth';
 export { tenantsApi } from './tenants';
+export { productsApi } from './products';
+export { customersApi } from './customers';
+export { ordersApi } from './orders';

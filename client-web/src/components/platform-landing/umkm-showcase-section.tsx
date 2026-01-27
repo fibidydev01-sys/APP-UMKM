@@ -9,14 +9,45 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Store, Package, ArrowRight, AlertCircle, ExternalLink } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
-import { Card, CardContent } from '@umkm/shared/ui';
-import { Skeleton } from '@umkm/shared/ui';
-import type { TenantSitemapItem, TenantDetail, ShowcaseTenant } from '@umkm/shared/types';
+import {
+  Store,
+  Package,
+  ArrowRight,
+  AlertCircle,
+  ExternalLink,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getTenantFullUrl } from '@/lib/store-url';
 import { tenantsApi } from '@/lib/api';
+
+// ══════════════════════════════════════════════════════════════
+// TYPES
+// ══════════════════════════════════════════════════════════════
+
+interface TenantSitemapItem {
+  slug: string;
+  updatedAt: string;
+}
+
+interface TenantDetail {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  description: string | null;
+  logo: string | null;
+  heroBackgroundImage: string | null;
+  _count?: {
+    products: number;
+  };
+}
+
+interface ShowcaseTenant extends TenantDetail {
+  url: string;
+}
 
 // ══════════════════════════════════════════════════════════════
 // CONSTANTS
@@ -27,25 +58,25 @@ const MAX_TENANTS = 12;
 
 // Category display mapping
 const CATEGORY_LABELS: Record<string, string> = {
-  WARUNG_KELONTONG: 'Warung Kelontong',
-  TOKO_BANGUNAN: 'Toko Bangunan',
-  TOKO_ELEKTRONIK: 'Toko Elektronik',
-  BENGKEL: 'Bengkel',
-  SALON_KECANTIKAN: 'Salon Kecantikan',
-  LAUNDRY: 'Laundry',
-  WARUNG_MAKAN: 'Warung Makan',
-  CATERING: 'Catering',
-  KEDAI_KOPI: 'Kedai Kopi',
-  TOKO_KUE: 'Toko Kue & Bakery',
-  APOTEK: 'Apotek',
-  KONTER_HP: 'Konter HP',
-  RENTAL_KENDARAAN: 'Rental',
-  STUDIO_FOTO: 'Studio Foto',
-  PRINTING: 'Printing',
-  PET_SHOP: 'Pet Shop',
-  AC_SERVICE: 'Service AC',
-  RESTORAN: 'Restoran',
-  OTHER: 'Lainnya',
+  'WARUNG_KELONTONG': 'Warung Kelontong',
+  'TOKO_BANGUNAN': 'Toko Bangunan',
+  'TOKO_ELEKTRONIK': 'Toko Elektronik',
+  'BENGKEL': 'Bengkel',
+  'SALON_KECANTIKAN': 'Salon Kecantikan',
+  'LAUNDRY': 'Laundry',
+  'WARUNG_MAKAN': 'Warung Makan',
+  'CATERING': 'Catering',
+  'KEDAI_KOPI': 'Kedai Kopi',
+  'TOKO_KUE': 'Toko Kue & Bakery',
+  'APOTEK': 'Apotek',
+  'KONTER_HP': 'Konter HP',
+  'RENTAL_KENDARAAN': 'Rental',
+  'STUDIO_FOTO': 'Studio Foto',
+  'PRINTING': 'Printing',
+  'PET_SHOP': 'Pet Shop',
+  'AC_SERVICE': 'Service AC',
+  'RESTORAN': 'Restoran',
+  'OTHER': 'Lainnya',
 };
 
 // ══════════════════════════════════════════════════════════════
@@ -100,7 +131,12 @@ function TenantCard({ tenant }: TenantCardProps) {
   const productCount = tenant._count?.products || 0;
 
   return (
-    <Link href={tenant.url} target="_blank" rel="noopener noreferrer" className="group block">
+    <Link
+      href={tenant.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block"
+    >
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 border-2 border-transparent hover:border-primary/20">
         <CardContent className="p-0">
           {/* Hero Background */}
@@ -159,7 +195,9 @@ function TenantCard({ tenant }: TenantCardProps) {
               </div>
 
               {tenant.description && (
-                <p className="text-xs text-muted-foreground line-clamp-2">{tenant.description}</p>
+                <p className="text-xs text-muted-foreground line-clamp-2">
+                  {tenant.description}
+                </p>
               )}
 
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -219,7 +257,7 @@ export function UMKMShowcaseSection() {
 
         // Step 3: Filter out failed fetches and add URLs
         const validTenants: ShowcaseTenant[] = tenantDetails
-          .filter((t): t is TenantDetail => t !== null && !!t.id)
+          .filter((t): t is TenantDetail => t !== null && t.id)
           .map((t) => ({
             ...t,
             url: getTenantFullUrl(t.slug),
@@ -247,7 +285,10 @@ export function UMKMShowcaseSection() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <Badge variant="secondary" className="mb-4 px-4 py-2 text-sm font-medium gap-2">
+          <Badge
+            variant="secondary"
+            className="mb-4 px-4 py-2 text-sm font-medium gap-2"
+          >
             <Store className="h-4 w-4 text-primary" />
             <span>UMKM Showcase</span>
           </Badge>
@@ -275,7 +316,10 @@ export function UMKMShowcaseSection() {
               <AlertCircle className="h-8 w-8 text-destructive" />
             </div>
             <p className="text-muted-foreground mb-4">{error}</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>
+            <Button
+              variant="outline"
+              onClick={() => window.location.reload()}
+            >
               Coba Lagi
             </Button>
           </div>
@@ -292,7 +336,9 @@ export function UMKMShowcaseSection() {
 
             {/* CTA */}
             <div className="text-center mt-12">
-              <p className="text-muted-foreground mb-4">Mau toko kamu juga tampil di sini?</p>
+              <p className="text-muted-foreground mb-4">
+                Mau toko kamu juga tampil di sini?
+              </p>
               <Button asChild size="lg">
                 <Link href="/register">
                   Buat Toko Sekarang

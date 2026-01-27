@@ -1,18 +1,17 @@
 import { IsString, IsNotEmpty, IsIn, IsOptional } from 'class-validator';
-import { OrderStatus, PaymentStatus } from '@umkm/shared/types';
 
 export class UpdateOrderStatusDto {
   @IsString()
   @IsNotEmpty()
-  @IsIn(Object.values(OrderStatus))
-  status: OrderStatus;
+  @IsIn(['PENDING', 'PROCESSING', 'COMPLETED', 'CANCELLED'])
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CANCELLED';
 }
 
 export class UpdatePaymentStatusDto {
   @IsString()
   @IsNotEmpty()
-  @IsIn(Object.values(PaymentStatus))
-  paymentStatus: PaymentStatus;
+  @IsIn(['PENDING', 'PAID', 'PARTIAL', 'FAILED'])
+  paymentStatus: 'PENDING' | 'PAID' | 'PARTIAL' | 'FAILED';
 
   @IsOptional()
   paidAmount?: number;

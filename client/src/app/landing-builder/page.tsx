@@ -11,23 +11,23 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   LivePreview,
   LandingErrorBoundary,
   BuilderSidebar,
   BlockDrawer,
   BuilderLoadingSteps,
-  useLandingConfig,
-  mergeWithTemplateDefaults,
-} from '@/features/landing-builder';
-import type { SectionType, DrawerState, TemplateId } from '@/features/landing-builder';
+} from '@/components/landing-builder';
+import type { SectionType, DrawerState } from '@/components/landing-builder';
 import { useTenant } from '@/hooks';
-import { productsApi } from '@/features/products';
+import { useLandingConfig } from '@/hooks/use-landing-config';
+import { productsApi } from '@/lib/api';
+import { mergeWithTemplateDefaults, type TemplateId } from '@/lib/landing';
 import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw } from 'lucide-react';
 import Link from 'next/link';
-import type { TenantLandingConfig, Product } from '@umkm/shared/types';
+import type { TenantLandingConfig, Product } from '@/types';
 
 // ============================================================================
 // MAIN COMPONENT
@@ -44,7 +44,7 @@ export default function LandingBuilderPage() {
   // UI State
   const [activeSection, setActiveSection] = useState<SectionType>('hero'); // 🚀 Default to hero so drawer shows
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [drawerState, setDrawerState] = useState<DrawerState>('expanded'); // 🚀 Start EXPANDED to show blocks immediately
+  const [drawerState, setDrawerState] = useState<DrawerState>('collapsed'); // Start collapsed, user can expand manually
   const [loadingComplete, setLoadingComplete] = useState(false); // 🚀 Track when loading screen dismissed
 
   // ============================================================================

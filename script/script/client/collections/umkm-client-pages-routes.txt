@@ -1,0 +1,5176 @@
+################################################################
+##
+##  UMKM MULTI-TENANT SYSTEM
+##  CLIENT SOURCE CODE COLLECTION
+##
+##  Collection Type: PAGES_ROUTES
+##  Generated: 2026-01-05 18:10:23
+##  Script Version: 3.1
+##  Project: UMKM Multi-Tenant E-Commerce Platform (Next.js)
+##
+################################################################
+
+This collection contains PAGES & ROUTES:
+- app/(auth)/ - Authentication pages (login, register, forgot-password)
+- app/(dashboard)/ - Dashboard routes
+  ├── dashboard/ - Main dashboard & subpages
+  │   ├── customers/ - Customer management pages
+  │   ├── orders/ - Order management pages
+  │   ├── products/ - Product management pages
+  │   └── settings/ - Settings page
+  └── store/ - Store preview page
+- app/(store)/ - Public store pages
+  └── store/[slug]/ - Dynamic tenant store pages
+
+################################################################
+
+
+################################################################
+##
+##  CATEGORY: Authentication Pages
+##  Path: src/app/(auth)
+##
+################################################################
+
+================================================
+FILE: src/app/(auth)/layout.tsx
+Lines: 25
+================================================
+
+import type { Metadata } from 'next';
+import { GuestGuard } from '@/components/auth';
+
+// ==========================================
+// AUTH LAYOUT
+// Applies GuestGuard to all auth pages
+// ==========================================
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Fibidy',
+    default: 'Fibidy',
+  },
+};
+
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function AuthLayout({ children }: AuthLayoutProps) {
+  return (
+    <GuestGuard redirectTo="/dashboard">
+      {children}
+    </GuestGuard>
+  );
+}
+
+================================================
+FILE: src/app/(auth)/forgot-password/page.tsx
+Lines: 21
+================================================
+
+import type { Metadata } from 'next';
+import { AuthLayout, ForgotPasswordForm } from '@/components/auth';
+
+// ==========================================
+// FORGOT PASSWORD PAGE
+// ==========================================
+
+export const metadata: Metadata = {
+  title: 'Lupa Password',
+  description: 'Reset password akun Anda',
+};
+
+export default function ForgotPasswordPage() {
+  return (
+    <AuthLayout
+      title="Lupa Password?"
+      description="Jangan khawatir, kami akan membantu Anda"
+    >
+      <ForgotPasswordForm />
+    </AuthLayout>
+  );
+}
+
+================================================
+FILE: src/app/(auth)/login/page.tsx
+Lines: 21
+================================================
+
+import type { Metadata } from 'next';
+import { AuthLayout, LoginForm } from '@/components/auth';
+
+// ==========================================
+// LOGIN PAGE
+// ==========================================
+
+export const metadata: Metadata = {
+  title: 'Masuk',
+  description: 'Masuk ke dashboard toko Anda',
+};
+
+export default function LoginPage() {
+  return (
+    <AuthLayout
+      title="Selamat Datang Kembali"
+      description="Masuk ke dashboard untuk mengelola toko Anda"
+    >
+      <LoginForm />
+    </AuthLayout>
+  );
+}
+
+================================================
+FILE: src/app/(auth)/register/page.tsx
+Lines: 21
+================================================
+
+import type { Metadata } from 'next';
+import { AuthLayout, RegisterForm } from '@/components/auth';
+
+// ==========================================
+// REGISTER PAGE
+// ==========================================
+
+export const metadata: Metadata = {
+  title: 'Daftar',
+  description: 'Buat toko online gratis dalam hitungan menit',
+};
+
+export default function RegisterPage() {
+  return (
+    <AuthLayout
+      title="Buat Toko Online Gratis"
+      description="Mulai jualan online dalam hitungan menit"
+    >
+      <RegisterForm />
+    </AuthLayout>
+  );
+}
+
+
+################################################################
+##
+##  CATEGORY: Dashboard Routes
+##  Path: src/app/(dashboard)
+##
+################################################################
+
+================================================
+FILE: src/app/(dashboard)/layout.tsx
+Lines: 28
+================================================
+
+import type { Metadata } from 'next';
+import { AuthGuard } from '@/components/auth';
+import { DashboardLayout } from '@/components/dashboard';
+
+// ==========================================
+// DASHBOARD LAYOUT
+// Protected with AuthGuard
+// ==========================================
+
+export const metadata: Metadata = {
+  title: {
+    template: '%s | Dashboard - Fibidy',
+    default: 'Dashboard - Fibidy',
+  },
+};
+
+interface DashboardRootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function DashboardRootLayout({
+  children,
+}: DashboardRootLayoutProps) {
+  return (
+    <AuthGuard requireAuth redirectTo="/login">
+      <DashboardLayout>{children}</DashboardLayout>
+    </AuthGuard>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/page.tsx
+Lines: 172
+================================================
+
+import Link from 'next/link';
+import { Package, Users, ShoppingCart, TrendingUp } from 'lucide-react';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  PageHeader,
+  StatsCard,
+  RevenueWidget,
+  RecentOrders,
+  AlertsWidget,
+} from '@/components/dashboard';
+import { serverApi } from '@/lib/api/server';
+import { formatPrice } from '@/lib/format';
+import type { Metadata } from 'next';
+import type { DashboardStats } from '@/types';
+
+// ==========================================
+// METADATA
+// ==========================================
+
+export const metadata: Metadata = {
+  title: 'Dashboard',
+};
+
+// ==========================================
+// DASHBOARD PAGE
+// ==========================================
+
+export default async function DashboardPage() {
+  const stats = await getStats();
+
+  return (
+    <>
+      <PageHeader
+        title="Dashboard"
+        description="Selamat datang di panel admin toko Anda"
+      />
+
+      {/* ==========================================
+          PRIORITY 1: ALERTS
+          ========================================== */}
+      <div className="mb-6">
+        <AlertsWidget
+          lowStockCount={stats?.alerts.lowStock || 0}
+          pendingOrdersCount={stats?.alerts.pendingOrders || 0}
+          lowStockItems={stats?.lowStockItems}
+        />
+      </div>
+
+      {/* ==========================================
+          PRIORITY 2: STATS CARDS (with Trends)
+          ========================================== */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <StatsCard
+          title="Total Produk"
+          value={stats?.products.total || 0}
+          subtitle={`${stats?.products.active || 0} aktif`}
+          icon={<Package className="h-4 w-4" />}
+          href="/dashboard/products"
+        />
+        <StatsCard
+          title="Pelanggan"
+          value={stats?.customers.total || 0}
+          subtitle={`+${stats?.customers.thisMonth || 0} bulan ini`}
+          icon={<Users className="h-4 w-4" />}
+          href="/dashboard/customers"
+          trend={stats?.customers.trend}
+        />
+        <StatsCard
+          title="Pesanan Bulan Ini"
+          value={stats?.orders.thisMonth || 0}
+          subtitle={`${stats?.orders.today || 0} hari ini`}
+          icon={<ShoppingCart className="h-4 w-4" />}
+          href="/dashboard/orders"
+          trend={stats?.orders.trend}
+        />
+        <StatsCard
+          title="Pendapatan Bulan Ini"
+          value={formatPrice(stats?.revenue.thisMonth || 0)}
+          icon={<TrendingUp className="h-4 w-4" />}
+          trend={stats?.revenue.trend}
+        />
+      </div>
+
+      {/* ==========================================
+          PRIORITY 3: REVENUE + RECENT ORDERS
+          ========================================== */}
+      <div className="grid gap-6 md:grid-cols-2 mb-6">
+        <RevenueWidget
+          thisWeek={stats?.revenue.thisWeek || 0}
+          thisMonth={stats?.revenue.thisMonth || 0}
+          lastMonth={stats?.revenue.lastMonth || 0}
+          trend={stats?.revenue.trend || 0}
+        />
+        <RecentOrders orders={stats?.recentOrders || []} />
+      </div>
+
+      {/* ==========================================
+          QUICK ACTIONS
+          ========================================== */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <QuickActionCard
+          title="Tambah Produk"
+          description="Tambahkan produk baru ke toko Anda"
+          icon={<Package className="h-6 w-6" />}
+          href="/dashboard/products/new"
+        />
+        <QuickActionCard
+          title="Buat Pesanan"
+          description="Buat pesanan baru untuk pelanggan"
+          icon={<ShoppingCart className="h-6 w-6" />}
+          href="/dashboard/orders/new"
+        />
+        <QuickActionCard
+          title="Tambah Pelanggan"
+          description="Tambahkan pelanggan baru ke database"
+          icon={<Users className="h-6 w-6" />}
+          href="/dashboard/customers/new"
+        />
+      </div>
+    </>
+  );
+}
+
+// ==========================================
+// DATA FETCHING
+// ==========================================
+
+async function getStats(): Promise<DashboardStats | null> {
+  try {
+    return await serverApi.getStats();
+  } catch {
+    return null;
+  }
+}
+
+// ==========================================
+// QUICK ACTION CARD
+// ==========================================
+
+function QuickActionCard({
+  title,
+  description,
+  icon,
+  href,
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  href: string;
+}) {
+  return (
+    <Link href={href}>
+      <Card className="hover:bg-muted/50 transition-colors cursor-pointer h-full">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-primary/10 rounded-lg text-primary">
+              {icon}
+            </div>
+            <div>
+              <CardTitle className="text-base">{title}</CardTitle>
+              <CardDescription>{description}</CardDescription>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+    </Link>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/customers/page.tsx
+Lines: 125
+================================================
+
+// src/app/(dashboard)/dashboard/customers/page.tsx
+// Route: /dashboard/customers
+// ✅ FIXED: Client component with proper authentication
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/dashboard';
+import { CustomersTable } from '@/components/customers';
+import { Skeleton } from '@/components/ui/skeleton';
+import { customersApi, getErrorMessage } from '@/lib/api';
+import type { Customer } from '@/types';
+
+// ==========================================
+// CUSTOMERS LIST PAGE (Client Component)
+// ==========================================
+
+export default function CustomersPage() {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch customers
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await customersApi.getAll({ limit: 100 });
+      setCustomers(response.data);
+    } catch (err) {
+      console.error('Failed to fetch customers:', err);
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Pelanggan" description="Kelola data pelanggan Anda">
+          <Button disabled>
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah Pelanggan
+          </Button>
+        </PageHeader>
+        <TableSkeleton />
+      </>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <>
+        <PageHeader title="Pelanggan" description="Kelola data pelanggan Anda">
+          <Button asChild>
+            <Link href="/dashboard/customers/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Tambah Pelanggan
+            </Link>
+          </Button>
+        </PageHeader>
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
+          <p className="text-destructive font-medium">Gagal memuat pelanggan</p>
+          <p className="text-sm text-muted-foreground mt-1">{error}</p>
+          <Button variant="outline" className="mt-4" onClick={fetchData}>
+            Coba Lagi
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <PageHeader title="Pelanggan" description="Kelola data pelanggan Anda">
+        <Button asChild>
+          <Link href="/dashboard/customers/new">
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah Pelanggan
+          </Link>
+        </Button>
+      </PageHeader>
+
+      <CustomersTable customers={customers} />
+    </>
+  );
+}
+
+// ==========================================
+// SKELETON COMPONENT
+// ==========================================
+
+function TableSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <Skeleton className="h-10 w-80" />
+      </div>
+      <div className="rounded-md border">
+        <div className="p-4 space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-9 w-9 rounded-full" />
+              <Skeleton className="h-4 flex-1" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/customers/[id]/page.tsx
+Lines: 326
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/customers/[id]/page.tsx
+// Route: /dashboard/customers/[id]
+// Purpose: View customer detail
+
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import {
+  ArrowLeft,
+  Edit,
+  Trash2,
+  Phone,
+  Mail,
+  MapPin,
+  ShoppingBag,
+  FileText,
+  Loader2,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useCustomer } from '@/hooks';
+
+// ==========================================
+// CUSTOMER DETAIL PAGE (Client Component)
+// ==========================================
+
+function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(amount);
+}
+
+function formatDate(dateString: string | null | undefined) {
+  if (!dateString) return '-';
+  return new Date(dateString).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+function getInitials(name: string) {
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+export default function CustomerDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const id = params.id as string;
+
+  // ✅ Client-side fetch = localStorage accessible = token sent!
+  const { customer, isLoading, error } = useCustomer(id);
+
+  // Loading state
+  if (isLoading) {
+    return <CustomerDetailSkeleton />;
+  }
+
+  // Error / Not Found state
+  if (error || !customer) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <h1 className="text-2xl font-bold mb-2">Pelanggan Tidak Ditemukan</h1>
+        <p className="text-muted-foreground mb-4">{error || 'Data tidak ditemukan'}</p>
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/customers">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Kembali ke Daftar Pelanggan
+          </Link>
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Header with Actions */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/dashboard/customers">
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">{customer.name}</h1>
+            <p className="text-muted-foreground">Detail informasi pelanggan</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href={`/dashboard/customers/${id}/edit`}>
+              <Edit className="h-4 w-4 mr-2" />
+              Edit
+            </Link>
+          </Button>
+          <Button variant="destructive" size="icon">
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Left Column - Customer Info */}
+        <div className="md:col-span-2 space-y-6">
+          {/* Basic Info Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Informasi Pelanggan</CardTitle>
+              <CardDescription>Data dasar pelanggan</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-start gap-4">
+                <Avatar className="h-16 w-16">
+                  <AvatarFallback className="text-lg">
+                    {getInitials(customer.name)}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="space-y-3 flex-1">
+                  <div>
+                    <h3 className="font-semibold text-lg">{customer.name}</h3>
+                  </div>
+
+                  <Separator />
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {customer.email && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <a href={`mailto:${customer.email}`} className="hover:underline">
+                          {customer.email}
+                        </a>
+                      </div>
+                    )}
+                    {customer.phone && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <a href={`tel:${customer.phone}`} className="hover:underline">
+                          {customer.phone}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  {customer.address && (
+                    <div className="flex items-start gap-2 text-sm">
+                      <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <span className="text-muted-foreground">{customer.address}</span>
+                    </div>
+                  )}
+
+                  {customer.notes && (
+                    <div className="flex items-start gap-2 text-sm">
+                      <FileText className="h-4 w-4 text-muted-foreground mt-0.5" />
+                      <span className="text-muted-foreground">{customer.notes}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Orders History Card */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div>
+                <CardTitle>Riwayat Pesanan</CardTitle>
+                <CardDescription>Pesanan terakhir dari pelanggan ini</CardDescription>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href={`/dashboard/orders/new?customer=${id}`}>
+                  <ShoppingBag className="h-4 w-4 mr-2" />
+                  Buat Pesanan
+                </Link>
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {customer.totalOrders > 0 ? (
+                <div className="text-center py-4 text-muted-foreground">
+                  <p>{customer.totalOrders} pesanan tercatat</p>
+                  <p className="text-sm">Lihat detail di halaman pesanan</p>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <ShoppingBag className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <p>Belum ada pesanan</p>
+                  <p className="text-sm">Pesanan akan muncul di sini</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column - Stats */}
+        <div className="space-y-6">
+          {/* Stats Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Statistik</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Total Pesanan</p>
+                <p className="text-2xl font-bold">{customer.totalOrders}</p>
+              </div>
+              <Separator />
+              <div>
+                <p className="text-sm text-muted-foreground">Total Belanja</p>
+                <p className="text-2xl font-bold">{formatCurrency(customer.totalSpent)}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Timeline Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Timeline</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div>
+                <p className="text-muted-foreground">Terdaftar</p>
+                <p className="font-medium">{formatDate(customer.createdAt)}</p>
+              </div>
+              <Separator />
+              <div>
+                <p className="text-muted-foreground">Terakhir Diupdate</p>
+                <p className="font-medium">{formatDate(customer.updatedAt)}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Aksi Cepat</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              {customer.phone && (
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <a
+                    href={`https://wa.me/${customer.phone.replace(/\D/g, '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Phone className="h-4 w-4 mr-2" />
+                    Hubungi via WhatsApp
+                  </a>
+                </Button>
+              )}
+              <Button variant="outline" className="w-full justify-start" asChild>
+                <Link href={`/dashboard/orders/new?customer=${id}`}>
+                  <ShoppingBag className="h-4 w-4 mr-2" />
+                  Buat Pesanan Baru
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ==========================================
+// SKELETON COMPONENT
+// ==========================================
+
+function CustomerDetailSkeleton() {
+  return (
+    <>
+      <div className="flex items-center gap-4 mb-6">
+        <Skeleton className="h-10 w-10" />
+        <div>
+          <Skeleton className="h-8 w-48 mb-2" />
+          <Skeleton className="h-4 w-32" />
+        </div>
+      </div>
+      <div className="grid gap-6 md:grid-cols-3">
+        <div className="md:col-span-2 space-y-6">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-40" />
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <Skeleton className="h-16 w-16 rounded-full" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-3/4" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <Skeleton className="h-6 w-24" />
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Skeleton className="h-8 w-20" />
+              <Skeleton className="h-8 w-32" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/customers/[id]/edit/page.tsx
+Lines: 75
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/customers/[id]/edit/page.tsx
+// Route: /dashboard/customers/[id]/edit
+// Purpose: Edit existing customer
+
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/dashboard';
+import { CustomerForm } from '@/components/customers';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { useCustomer } from '@/hooks';
+
+// ==========================================
+// EDIT CUSTOMER PAGE (Client Component)
+// ==========================================
+
+export default function EditCustomerPage() {
+  const params = useParams();
+  const id = params.id as string;
+
+  // ✅ Client-side fetch = localStorage accessible = token sent!
+  const { customer, isLoading, error } = useCustomer(id);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Edit Pelanggan" description="Memuat data..." />
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </CardContent>
+        </Card>
+      </>
+    );
+  }
+
+  // Error / Not Found state
+  if (error || !customer) {
+    return (
+      <>
+        <PageHeader
+          title="Pelanggan Tidak Ditemukan"
+          description={error || 'Data tidak ditemukan'}
+        />
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/customers">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Kembali ke Daftar Pelanggan
+          </Link>
+        </Button>
+      </>
+    );
+  }
+
+  // ✅ Render existing CustomerForm component with fetched data!
+  return (
+    <>
+      <PageHeader
+        title="Edit Pelanggan"
+        description={`Mengedit: ${customer.name}`}
+      />
+      <CustomerForm customer={customer} />
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/customers/new/page.tsx
+Lines: 28
+================================================
+
+// src/app/(dashboard)/dashboard/customers/new/page.tsx
+// Route: /dashboard/customers/new
+// Purpose: Create new customer form
+
+import { PageHeader } from '@/components/dashboard';
+import { CustomerForm } from '@/components/customers';
+import type { Metadata } from 'next';
+
+// ==========================================
+// CREATE CUSTOMER PAGE
+// ==========================================
+
+export const metadata: Metadata = {
+  title: 'Tambah Pelanggan',
+};
+
+export default function NewCustomerPage() {
+  return (
+    <>
+      <PageHeader
+        title="Tambah Pelanggan"
+        description="Tambah pelanggan baru ke database Anda"
+      />
+
+      <CustomerForm />
+    </>
+  );
+}
+
+
+================================================
+FILE: src/app/(dashboard)/dashboard/orders/page.tsx
+Lines: 130
+================================================
+
+// src/app/(dashboard)/dashboard/orders/page.tsx
+// Route: /dashboard/orders
+// ✅ FINAL: Pola skeleton sama dengan Customers Page
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/dashboard';
+import { OrdersTable } from '@/components/orders';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ordersApi, getErrorMessage } from '@/lib/api';
+import type { OrderListItem } from '@/types';
+
+// ==========================================
+// ORDERS LIST PAGE (Client Component)
+// ==========================================
+
+export default function OrdersPage() {
+  const [orders, setOrders] = useState<OrderListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch orders
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await ordersApi.getAll({ limit: 100 });
+      setOrders(response.data);
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Fetch on mount
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Pesanan" description="Kelola pesanan masuk">
+          <Button disabled>
+            <Plus className="h-4 w-4 mr-2" />
+            Buat Pesanan
+          </Button>
+        </PageHeader>
+        <TableSkeleton />
+      </>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <>
+        <PageHeader title="Pesanan" description="Kelola pesanan masuk">
+          <Button asChild>
+            <Link href="/dashboard/orders/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Buat Pesanan
+            </Link>
+          </Button>
+        </PageHeader>
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
+          <p className="text-destructive font-medium">Gagal memuat pesanan</p>
+          <p className="text-sm text-muted-foreground mt-1">{error}</p>
+          <Button variant="outline" className="mt-4" onClick={fetchData}>
+            Coba Lagi
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <PageHeader title="Pesanan" description="Kelola pesanan masuk">
+        <Button asChild>
+          <Link href="/dashboard/orders/new">
+            <Plus className="h-4 w-4 mr-2" />
+            Buat Pesanan
+          </Link>
+        </Button>
+      </PageHeader>
+
+      <OrdersTable orders={orders} onRefresh={fetchData} />
+    </>
+  );
+}
+
+// ==========================================
+// SKELETON COMPONENT
+// ✅ FINAL: Sama persis dengan Customers Page
+// ==========================================
+
+function TableSkeleton() {
+  return (
+    <div className="space-y-4">
+      {/* Toolbar */}
+      <div className="flex gap-2">
+        <Skeleton className="h-10 w-64" />
+        <Skeleton className="h-10 w-[150px]" />
+        <Skeleton className="h-10 w-[160px]" />
+      </div>
+
+      {/* Table */}
+      <div className="rounded-md border">
+        <div className="p-4 space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-4 flex-1" />
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/orders/[id]/page.tsx
+Lines: 164
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/orders/[id]/page.tsx
+// Route: /dashboard/orders/[id]
+// ✅ FIXED: Client Component with proper authentication
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/dashboard';
+import { OrderDetail } from '@/components/orders';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ordersApi, getErrorMessage } from '@/lib/api';
+import type { Order } from '@/types';
+
+// ==========================================
+// ORDER DETAIL PAGE (Client Component)
+// ==========================================
+
+export default function OrderDetailPage() {
+  const params = useParams();
+  const id = params.id as string;
+
+  const [order, setOrder] = useState<Order | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ Client-side fetch = localStorage accessible = token sent!
+  useEffect(() => {
+    const fetchOrder = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const data = await ordersApi.getById(id);
+        setOrder(data);
+      } catch (err) {
+        console.error('Failed to fetch order:', err);
+        setError(getErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchOrder();
+    }
+  }, [id]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Detail Pesanan" description="Memuat data..." />
+        <OrderDetailSkeleton />
+      </>
+    );
+  }
+
+  // Error / Not Found state
+  if (error || !order) {
+    return (
+      <>
+        <PageHeader
+          title="Pesanan Tidak Ditemukan"
+          description={error || 'Data pesanan tidak ditemukan'}
+        />
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/orders">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Kembali ke Daftar Pesanan
+          </Link>
+        </Button>
+      </>
+    );
+  }
+
+  // ✅ Render OrderDetail with fetched data
+  return (
+    <>
+      <PageHeader
+        title={`Pesanan #${order.orderNumber}`}
+        description="Detail informasi pesanan"
+      />
+      <OrderDetail order={order} />
+    </>
+  );
+}
+
+// ==========================================
+// SKELETON COMPONENT
+// ==========================================
+
+function OrderDetailSkeleton() {
+  return (
+    <div className="grid gap-6 lg:grid-cols-3">
+      {/* Main Content */}
+      <div className="lg:col-span-2 space-y-6">
+        {/* Order Header */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <Skeleton className="h-8 w-48 mb-2" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <div className="flex gap-2">
+              <Skeleton className="h-6 w-20 rounded-full" />
+              <Skeleton className="h-6 w-20 rounded-full" />
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* Order Items */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <Skeleton className="h-12 w-12 rounded-lg" />
+                  <div className="flex-1">
+                    <Skeleton className="h-4 w-48 mb-1" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Sidebar */}
+      <div className="space-y-6">
+        {/* Customer Info */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-40" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+
+        {/* Status Management */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-32" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/orders/new/page.tsx
+Lines: 187
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/orders/new/page.tsx
+// Route: /dashboard/orders/new
+// ✅ FIXED: Client Component with proper authentication
+
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { PageHeader } from '@/components/dashboard';
+import { OrderForm } from '@/components/orders';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { productsApi, customersApi, getErrorMessage } from '@/lib/api';
+import type { Product, Customer } from '@/types';
+
+// ==========================================
+// CREATE ORDER PAGE (Client Component)
+// ==========================================
+
+export default function NewOrderPage() {
+  const searchParams = useSearchParams();
+  const initialCustomerId = searchParams.get('customer') || undefined;
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // ✅ Client-side fetch = localStorage accessible = token sent!
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const [productsRes, customersRes] = await Promise.all([
+          productsApi.getAll({ limit: 100, isActive: true }),
+          customersApi.getAll({ limit: 100 }),
+        ]);
+
+        setProducts(productsRes.data);
+        setCustomers(customersRes.data);
+      } catch (err) {
+        console.error('Failed to fetch data:', err);
+        setError(getErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader
+          title="Buat Pesanan"
+          description="Buat pesanan baru untuk pelanggan"
+        />
+        <NewOrderSkeleton />
+      </>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <>
+        <PageHeader
+          title="Buat Pesanan"
+          description="Buat pesanan baru untuk pelanggan"
+        />
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
+          <p className="text-destructive font-medium">Gagal memuat data</p>
+          <p className="text-sm text-muted-foreground mt-1">{error}</p>
+          <Button
+            variant="outline"
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Coba Lagi
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  // ✅ Render OrderForm with fetched data
+  return (
+    <>
+      <PageHeader
+        title="Buat Pesanan"
+        description="Buat pesanan baru untuk pelanggan"
+      />
+      <OrderForm
+        products={products}
+        customers={customers}
+        initialCustomerId={initialCustomerId}
+      />
+    </>
+  );
+}
+
+// ==========================================
+// SKELETON COMPONENT
+// ==========================================
+
+function NewOrderSkeleton() {
+  return (
+    <div className="grid gap-8 lg:grid-cols-3">
+      {/* Main Content */}
+      <div className="lg:col-span-2 space-y-6">
+        {/* Products */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-24" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex gap-2">
+              <Skeleton className="h-10 flex-1" />
+              <Skeleton className="h-10 w-10" />
+            </div>
+            <div className="space-y-2">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 p-3 rounded-lg border">
+                  <Skeleton className="h-12 w-32" />
+                  <div className="flex-1">
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                  <Skeleton className="h-8 w-24" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Customer */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-24" />
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+            <Skeleton className="h-20 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Sidebar */}
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-24" />
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-8" />
+            </div>
+            <div className="flex justify-between">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-24" />
+            </div>
+            <Skeleton className="h-px w-full" />
+            <div className="flex justify-between">
+              <Skeleton className="h-6 w-12" />
+              <Skeleton className="h-6 w-28" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6 space-y-2">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/products/page.tsx
+Lines: 229
+================================================
+
+/**
+ * ============================================================================
+ * PRODUCTS PAGE
+ * ============================================================================
+ * Route: /dashboard/products
+ * Description: Display and manage all products
+ * 
+ * Features:
+ * - Product listing with search & filter
+ * - Category filter (extracted from products)
+ * - Loading skeleton
+ * - Error handling with retry
+ * - ✅ Instant refresh after delete (no manual refresh needed)
+ * ============================================================================
+ */
+
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/components/dashboard';
+import { ProductsTable } from '@/components/products';
+import { productsApi, getErrorMessage } from '@/lib/api';
+
+import type { Product } from '@/types';
+
+// ============================================================================
+// TYPES
+// ============================================================================
+
+interface PageState {
+  products: Product[];
+  categories: string[];
+  isLoading: boolean;
+  error: string | null;
+}
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+/**
+ * Extract unique categories from products array
+ */
+function extractCategories(products: Product[]): string[] {
+  const categories = products
+    .map((p) => p.category)
+    .filter((c): c is string => Boolean(c));
+
+  return [...new Set(categories)].sort();
+}
+
+/**
+ * Safely parse categories response
+ */
+function parseCategories(response: unknown): string[] | null {
+  if (Array.isArray(response)) {
+    return response.filter((item): item is string => typeof item === 'string');
+  }
+  return null;
+}
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
+
+export default function ProductsPage() {
+  // ---------------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------------
+  const [state, setState] = useState<PageState>({
+    products: [],
+    categories: [],
+    isLoading: true,
+    error: null,
+  });
+
+  const { products, categories, isLoading, error } = state;
+
+  // ---------------------------------------------------------------------------
+  // Data Fetching
+  // ---------------------------------------------------------------------------
+  const fetchData = useCallback(async () => {
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      // 1. Fetch products (required)
+      const productsRes = await productsApi.getAll({ limit: 100 });
+      const fetchedProducts = productsRes.data;
+
+      // 2. Fetch categories (optional, with fallback)
+      let fetchedCategories: string[];
+
+      try {
+        const categoriesRes = await productsApi.getCategories();
+        const parsed = parseCategories(categoriesRes);
+        fetchedCategories = parsed ?? extractCategories(fetchedProducts);
+      } catch {
+        // API failed, extract from products
+        fetchedCategories = extractCategories(fetchedProducts);
+      }
+
+      // 3. Update state
+      setState({
+        products: fetchedProducts,
+        categories: fetchedCategories,
+        isLoading: false,
+        error: null,
+      });
+    } catch (err) {
+      console.error('[ProductsPage] Failed to fetch:', err);
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: getErrorMessage(err),
+      }));
+    }
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // Effects
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  // ---------------------------------------------------------------------------
+  // Render: Loading
+  // ---------------------------------------------------------------------------
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Produk" description="Kelola produk toko Anda">
+          <Button disabled>
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah Produk
+          </Button>
+        </PageHeader>
+        <ProductsTableSkeleton />
+      </>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Render: Error
+  // ---------------------------------------------------------------------------
+  if (error) {
+    return (
+      <>
+        <PageHeader title="Produk" description="Kelola produk toko Anda">
+          <Button asChild>
+            <Link href="/dashboard/products/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Tambah Produk
+            </Link>
+          </Button>
+        </PageHeader>
+
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
+          <p className="text-destructive font-medium">Gagal memuat produk</p>
+          <p className="text-sm text-muted-foreground mt-1">{error}</p>
+          <Button variant="outline" className="mt-4" onClick={fetchData}>
+            Coba Lagi
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Render: Success
+  // ---------------------------------------------------------------------------
+  return (
+    <>
+      <PageHeader title="Produk" description="Kelola produk toko Anda">
+        <Button asChild>
+          <Link href="/dashboard/products/new">
+            <Plus className="h-4 w-4 mr-2" />
+            Tambah Produk
+          </Link>
+        </Button>
+      </PageHeader>
+
+      {/* ✅ Pass onRefresh callback for instant data refresh */}
+      <ProductsTable
+        products={products}
+        categories={categories}
+        onRefresh={fetchData}
+      />
+    </>
+  );
+}
+
+// ============================================================================
+// SKELETON COMPONENT
+// ============================================================================
+
+function ProductsTableSkeleton() {
+  return (
+    <div className="space-y-4">
+      {/* Toolbar */}
+      <div className="flex gap-2">
+        <Skeleton className="h-10 w-64" />
+        <Skeleton className="h-10 w-32" />
+        <Skeleton className="h-10 w-32" />
+      </div>
+
+      {/* Table */}
+      <div className="rounded-md border">
+        <div className="p-4 space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-4">
+              <Skeleton className="h-4 w-4" />
+              <Skeleton className="h-10 w-10 rounded-lg" />
+              <Skeleton className="h-4 flex-1" />
+              <Skeleton className="h-4 w-20" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/products/[id]/edit/page.tsx
+Lines: 144
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/products/[id]/edit/page.tsx
+// Route: /dashboard/products/[id]/edit
+
+import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@/components/dashboard';
+import { ProductForm } from '@/components/products';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { productsApi, getErrorMessage } from '@/lib/api';
+import type { Product } from '@/types';
+
+// ==========================================
+// EDIT PRODUCT PAGE (Client Component)
+// ==========================================
+
+export default function EditProductPage() {
+  const params = useParams();
+  const id = params.id as string;
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        // Fetch product
+        const productData = await productsApi.getById(id);
+        setProduct(productData);
+
+        // Fetch categories with fallback
+        let fetchedCategories: string[] = [];
+
+        try {
+          fetchedCategories = await productsApi.getCategories();
+        } catch {
+          console.warn('Categories API failed, extracting from products...');
+        }
+
+        // Fallback if API returns empty
+        if (fetchedCategories.length === 0) {
+          try {
+            const allProducts = await productsApi.getAll({ limit: 200 });
+            const uniqueCategories = new Set<string>();
+            allProducts.data.forEach((p) => {
+              if (p.category) uniqueCategories.add(p.category);
+            });
+            fetchedCategories = Array.from(uniqueCategories).sort();
+          } catch {
+            console.error('Failed to extract categories');
+          }
+        }
+
+        // Ensure current product's category is included
+        if (productData.category && !fetchedCategories.includes(productData.category)) {
+          fetchedCategories = [productData.category, ...fetchedCategories].sort();
+        }
+
+        setCategories(fetchedCategories);
+      } catch (err) {
+        console.error('Failed to fetch product:', err);
+        setError(getErrorMessage(err));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader title="Edit Produk" description="Memuat data..." />
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div>
+            <Card>
+              <CardContent className="pt-6 space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Error / Not Found state
+  if (error || !product) {
+    return (
+      <>
+        <PageHeader
+          title="Produk Tidak Ditemukan"
+          description={error || 'Data produk tidak ditemukan'}
+        />
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/products">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Kembali ke Daftar Produk
+          </Link>
+        </Button>
+      </>
+    );
+  }
+
+  // ✅ Render ProductForm with fetched data
+  return (
+    <>
+      <PageHeader
+        title="Edit Produk"
+        description={`Mengedit: ${product.name}`}
+      />
+      <ProductForm product={product} categories={categories} />
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/products/categories/page.tsx
+Lines: 236
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/products/categories/page.tsx
+// Route: /dashboard/products/categories
+// Purpose: View and manage product categories (extracted from products)
+
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Tag, Package, ArrowRight, Info } from 'lucide-react';
+import { PageHeader } from '@/components/dashboard';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { productsApi, getErrorMessage } from '@/lib/api';
+
+// ==========================================
+// CATEGORIES PAGE (Client Component)
+// ==========================================
+
+interface CategoryWithCount {
+  name: string;
+  count: number;
+}
+
+export default function CategoriesPage() {
+  const router = useRouter();
+  const [categories, setCategories] = useState<CategoryWithCount[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch categories with product count
+  const fetchCategories = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // Get all products to extract categories with count
+      const response = await productsApi.getAll({ limit: 500 });
+      const products = response.data;
+
+      // Count products per category
+      const categoryMap = new Map<string, number>();
+      products.forEach((product) => {
+        if (product.category) {
+          const count = categoryMap.get(product.category) || 0;
+          categoryMap.set(product.category, count + 1);
+        }
+      });
+
+      // Convert to array and sort
+      const categoriesWithCount: CategoryWithCount[] = Array.from(categoryMap.entries())
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count); // Sort by count descending
+
+      setCategories(categoriesWithCount);
+    } catch (err) {
+      console.error('Failed to fetch categories:', err);
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  // Navigate to products filtered by category
+  const viewProductsByCategory = (category: string) => {
+    router.push(`/dashboard/products?category=${encodeURIComponent(category)}`);
+  };
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader
+          title="Kategori Produk"
+          description="Lihat kategori produk yang ada di toko Anda"
+        />
+        <Card>
+          <CardContent className="pt-6">
+            <div className="space-y-3">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-8 w-8 rounded" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                  <Skeleton className="h-6 w-16" />
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <>
+        <PageHeader
+          title="Kategori Produk"
+          description="Lihat kategori produk yang ada di toko Anda"
+        />
+        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
+          <p className="text-destructive font-medium">Gagal memuat kategori</p>
+          <p className="text-sm text-muted-foreground mt-1">{error}</p>
+          <Button variant="outline" className="mt-4" onClick={fetchCategories}>
+            Coba Lagi
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  // Total products count
+  const totalProducts = categories.reduce((sum, cat) => sum + cat.count, 0);
+
+  return (
+    <>
+      <PageHeader
+        title="Kategori Produk"
+        description="Lihat kategori produk yang ada di toko Anda"
+      >
+        <Button asChild>
+          <Link href="/dashboard/products/new">
+            <Package className="h-4 w-4 mr-2" />
+            Tambah Produk
+          </Link>
+        </Button>
+      </PageHeader>
+
+      {/* Info Alert */}
+      <Alert className="mb-6">
+        <Info className="h-4 w-4" />
+        <AlertTitle>Tentang Kategori</AlertTitle>
+        <AlertDescription>
+          Kategori dibuat otomatis saat Anda menambah produk dengan kategori baru.
+          Untuk menambah kategori, buat produk baru dan ketik nama kategori yang diinginkan.
+        </AlertDescription>
+      </Alert>
+
+      {/* Stats Card */}
+      <div className="grid gap-4 md:grid-cols-2 mb-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Total Kategori</CardDescription>
+            <CardTitle className="text-3xl">{categories.length}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription>Total Produk</CardDescription>
+            <CardTitle className="text-3xl">{totalProducts}</CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+
+      {/* Categories List */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Daftar Kategori</CardTitle>
+          <CardDescription>
+            Klik kategori untuk melihat produk di dalamnya
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {categories.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <Tag className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p className="font-medium">Belum ada kategori</p>
+              <p className="text-sm mt-1">
+                Kategori akan muncul saat Anda menambah produk dengan kategori
+              </p>
+              <Button className="mt-4" asChild>
+                <Link href="/dashboard/products/new">
+                  Tambah Produk Pertama
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {categories.map((category) => (
+                <button
+                  key={category.name}
+                  onClick={() => viewProductsByCategory(category.name)}
+                  className="w-full flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50 transition-colors text-left group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                      <Tag className="h-5 w-5 text-primary" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{category.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {category.count} produk
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="secondary">
+                      {category.count}
+                    </Badge>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Help Text */}
+      <div className="mt-6 text-center text-sm text-muted-foreground">
+        <p>
+          Ingin mengubah nama kategori? Edit produk satu per satu atau hubungi support untuk bulk rename.
+        </p>
+      </div>
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/products/new/page.tsx
+Lines: 100
+================================================
+
+'use client';
+
+// src/app/(dashboard)/dashboard/products/new/page.tsx
+// Route: /dashboard/products/new
+
+import { useState, useEffect } from 'react';
+import { PageHeader } from '@/components/dashboard';
+import { ProductForm } from '@/components/products';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { productsApi } from '@/lib/api';
+
+// ==========================================
+// CREATE PRODUCT PAGE (Client Component)
+// ==========================================
+
+export default function NewProductPage() {
+  const [categories, setCategories] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setIsLoading(true);
+
+      let fetchedCategories: string[] = [];
+
+      try {
+        fetchedCategories = await productsApi.getCategories();
+      } catch {
+        console.warn('Categories API failed, extracting from products...');
+      }
+
+      // Fallback if API returns empty
+      if (fetchedCategories.length === 0) {
+        try {
+          const allProducts = await productsApi.getAll({ limit: 200 });
+          const uniqueCategories = new Set<string>();
+          allProducts.data.forEach((p) => {
+            if (p.category) uniqueCategories.add(p.category);
+          });
+          fetchedCategories = Array.from(uniqueCategories).sort();
+        } catch {
+          console.error('Failed to extract categories');
+        }
+      }
+
+      setCategories(fetchedCategories);
+      setIsLoading(false);
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <PageHeader
+          title="Tambah Produk"
+          description="Tambah produk baru ke toko Anda"
+        />
+        <div className="grid gap-8 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <Skeleton className="h-6 w-40" />
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-24 w-full" />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          <div>
+            <Card>
+              <CardContent className="pt-6 space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // ✅ Render ProductForm (categories optional)
+  return (
+    <>
+      <PageHeader
+        title="Tambah Produk"
+        description="Tambah produk baru ke toko Anda"
+      />
+      <ProductForm categories={categories} />
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/dashboard/settings/page.tsx
+Lines: 853
+================================================
+
+/**
+ * ============================================================================
+ * FILE: app/(dashboard)/dashboard/settings/page.tsx
+ * ============================================================================
+ * Route: /dashboard/settings
+ * Description: Store settings with state persistence across tabs
+ * ============================================================================
+ */
+'use client';
+
+import { useState, useRef, useCallback, useEffect } from 'react';
+import {
+  Store,
+  Bell,
+  CreditCard,
+  Truck,
+  Shield,
+  Palette,
+  Globe,
+  Save,
+  Layout,
+  Loader2,
+  Check,
+  Moon,
+  Sun,
+} from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { PageHeader } from '@/components/dashboard';
+import { LandingBuilder } from '@/components/landing';
+import { ImageUpload } from '@/components/upload';
+import { toast } from 'sonner';
+import { useTenant } from '@/hooks';
+import { tenantsApi } from '@/lib/api';
+import { cn } from '@/lib/utils';
+import { DEFAULT_LANDING_CONFIG } from '@/types/landing';
+import type { TenantLandingConfig } from '@/types';
+
+// ============================================================================
+// THEME COLORS - Connect ke backend theme.primaryColor
+// ============================================================================
+const THEME_COLORS = [
+  { name: 'Default', value: '#0ea5e9', class: 'bg-sky-500' },
+  { name: 'Emerald', value: '#10b981', class: 'bg-emerald-500' },
+  { name: 'Rose', value: '#f43f5e', class: 'bg-rose-500' },
+  { name: 'Amber', value: '#f59e0b', class: 'bg-amber-500' },
+  { name: 'Violet', value: '#8b5cf6', class: 'bg-violet-500' },
+  { name: 'Orange', value: '#f97316', class: 'bg-orange-500' },
+] as const;
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
+
+export default function SettingsPage() {
+  // ---------------------------------------------------------------------------
+  // Hooks
+  // ---------------------------------------------------------------------------
+  const { tenant, refresh } = useTenant();
+
+  // ---------------------------------------------------------------------------
+  // State
+  // ---------------------------------------------------------------------------
+  const [activeTab, setActiveTab] = useState('store');
+  const [pendingTab, setPendingTab] = useState<string | null>(null);
+  const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
+
+  const [isSaving, setIsSaving] = useState(false);
+  const [isSavingAppearance, setIsSavingAppearance] = useState(false);
+  const [isRemovingLogo, setIsRemovingLogo] = useState(false);
+  const [isRemovingBanner, setIsRemovingBanner] = useState(false);
+
+  // Form state for editable fields
+  const [formData, setFormData] = useState<{
+    name: string;
+    description: string;
+    phone: string;
+    address: string;
+    logo: string | undefined;
+    banner: string | undefined;
+    primaryColor: string;
+  } | null>(null);
+
+  // ✅ LANDING CONFIG STATE - Lifted to parent
+  const [landingConfig, setLandingConfig] = useState<TenantLandingConfig | null>(null);
+  const savedLandingConfigRef = useRef<TenantLandingConfig | null>(null);
+
+  // Notification Settings
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [orderNotifications, setOrderNotifications] = useState(true);
+  const [stockNotifications, setStockNotifications] = useState(true);
+
+  // Payment Settings
+  const [currency, setCurrency] = useState('IDR');
+  const [taxRate, setTaxRate] = useState('11');
+
+  // Shipping Settings
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState('100000');
+  const [defaultShippingCost, setDefaultShippingCost] = useState('15000');
+
+  // ---------------------------------------------------------------------------
+  // Initialize form data from tenant (only once)
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    if (tenant && formData === null) {
+      const themeData = tenant.theme as { primaryColor?: string } | null;
+      setFormData({
+        name: tenant.name || '',
+        description: tenant.description || '',
+        phone: tenant.phone || '',
+        address: tenant.address || '',
+        logo: tenant.logo || undefined,
+        banner: tenant.banner || undefined,
+        primaryColor: themeData?.primaryColor || THEME_COLORS[0].value,
+      });
+    }
+  }, [tenant, formData]);
+
+  // ✅ Initialize landing config from tenant (only once)
+  useEffect(() => {
+    if (tenant && landingConfig === null) {
+      const initialConfig = {
+        ...DEFAULT_LANDING_CONFIG,
+        ...tenant.landingConfig,
+      };
+      setLandingConfig(initialConfig);
+      savedLandingConfigRef.current = initialConfig;
+    }
+  }, [tenant, landingConfig]);
+
+  // Loading state
+  const tenantLoading = tenant === null;
+
+  // ---------------------------------------------------------------------------
+  // Check for unsaved landing changes
+  // ---------------------------------------------------------------------------
+  const hasUnsavedLandingChanges = useCallback(() => {
+    if (!landingConfig || !savedLandingConfigRef.current) return false;
+    return JSON.stringify(landingConfig) !== JSON.stringify(savedLandingConfigRef.current);
+  }, [landingConfig]);
+
+  // ---------------------------------------------------------------------------
+  // Tab Change Handler with Unsaved Changes Check
+  // ---------------------------------------------------------------------------
+  const handleTabChange = useCallback((newTab: string) => {
+    // If leaving landing tab with unsaved changes, show warning
+    if (activeTab === 'landing' && newTab !== 'landing' && hasUnsavedLandingChanges()) {
+      setPendingTab(newTab);
+      setShowUnsavedDialog(true);
+      return;
+    }
+    setActiveTab(newTab);
+  }, [activeTab, hasUnsavedLandingChanges]);
+
+  const handleDiscardChanges = useCallback(() => {
+    // Reset to saved config
+    if (savedLandingConfigRef.current) {
+      setLandingConfig({ ...savedLandingConfigRef.current });
+    }
+    setShowUnsavedDialog(false);
+    if (pendingTab) {
+      setActiveTab(pendingTab);
+      setPendingTab(null);
+    }
+  }, [pendingTab]);
+
+  const handleCancelTabChange = useCallback(() => {
+    setShowUnsavedDialog(false);
+    setPendingTab(null);
+  }, []);
+
+  // ---------------------------------------------------------------------------
+  // Handlers
+  // ---------------------------------------------------------------------------
+  const handleSaveStore = async () => {
+    if (!tenant || !formData) return;
+
+    setIsSaving(true);
+    try {
+      await tenantsApi.update({
+        name: formData.name || undefined,
+        description: formData.description || undefined,
+        phone: formData.phone || undefined,
+        address: formData.address || undefined,
+      });
+      await refresh();
+      toast.success('Informasi toko berhasil disimpan');
+    } catch (error) {
+      console.error('Failed to save store settings:', error);
+      toast.error('Gagal menyimpan informasi toko');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveAppearance = async () => {
+    if (!tenant || !formData) return;
+
+    setIsSavingAppearance(true);
+    try {
+      await tenantsApi.update({
+        logo: formData.logo || undefined,
+        banner: formData.banner || undefined,
+        theme: { primaryColor: formData.primaryColor },
+      });
+      await refresh();
+      toast.success('Tampilan toko berhasil disimpan');
+    } catch (error) {
+      console.error('Failed to save appearance:', error);
+      toast.error('Gagal menyimpan tampilan toko');
+    } finally {
+      setIsSavingAppearance(false);
+    }
+  };
+
+  // ✅ Handle remove logo - langsung save ke backend
+  const handleRemoveLogo = async () => {
+    if (!tenant || !formData) return;
+
+    setIsRemovingLogo(true);
+    try {
+      // Update local state
+      setFormData({ ...formData, logo: undefined });
+      // Save to backend immediately
+      await tenantsApi.update({ logo: '' });
+      await refresh();
+      toast.success('Logo berhasil dihapus');
+    } catch (error) {
+      console.error('Failed to remove logo:', error);
+      toast.error('Gagal menghapus logo');
+      // Revert local state on error
+      setFormData({ ...formData, logo: tenant.logo || undefined });
+    } finally {
+      setIsRemovingLogo(false);
+    }
+  };
+
+  // ✅ Handle remove banner - langsung save ke backend
+  const handleRemoveBanner = async () => {
+    if (!tenant || !formData) return;
+
+    setIsRemovingBanner(true);
+    try {
+      // Update local state
+      setFormData({ ...formData, banner: undefined });
+      // Save to backend immediately
+      await tenantsApi.update({ banner: '' });
+      await refresh();
+      toast.success('Banner berhasil dihapus');
+    } catch (error) {
+      console.error('Failed to remove banner:', error);
+      toast.error('Gagal menghapus banner');
+      // Revert local state on error
+      setFormData({ ...formData, banner: tenant.banner || undefined });
+    } finally {
+      setIsRemovingBanner(false);
+    }
+  };
+
+  // ✅ Landing config save handler - updates the ref
+  const handleLandingSaved = useCallback(() => {
+    if (landingConfig) {
+      savedLandingConfigRef.current = { ...landingConfig };
+    }
+    refresh();
+  }, [landingConfig, refresh]);
+
+  const updateFormData = (key: keyof NonNullable<typeof formData>, value: string | undefined) => {
+    if (formData) {
+      setFormData({ ...formData, [key]: value ?? '' });
+    }
+  };
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+  return (
+    <div>
+      <PageHeader
+        title="Pengaturan"
+        description="Kelola pengaturan toko dan preferensi Anda"
+      />
+
+      {/* ✅ Unsaved Changes Dialog */}
+      <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Perubahan Belum Disimpan</AlertDialogTitle>
+            <AlertDialogDescription>
+              Anda memiliki perubahan pada Landing Page yang belum disimpan.
+              Apakah Anda ingin membuang perubahan tersebut?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelTabChange}>
+              Kembali
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDiscardChanges}>
+              Buang Perubahan
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-6">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 lg:w-auto">
+          <TabsTrigger value="store" className="gap-2">
+            <Store className="h-4 w-4" />
+            <span className="hidden sm:inline">Toko</span>
+          </TabsTrigger>
+          <TabsTrigger value="landing" className="gap-2 relative">
+            <Layout className="h-4 w-4" />
+            <span className="hidden sm:inline">Landing</span>
+            {/* ✅ Yellow dot for unsaved changes */}
+            {hasUnsavedLandingChanges() && (
+              <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-yellow-500" />
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="gap-2">
+            <Bell className="h-4 w-4" />
+            <span className="hidden sm:inline">Notifikasi</span>
+          </TabsTrigger>
+          <TabsTrigger value="payment" className="gap-2">
+            <CreditCard className="h-4 w-4" />
+            <span className="hidden sm:inline">Pembayaran</span>
+          </TabsTrigger>
+          <TabsTrigger value="shipping" className="gap-2">
+            <Truck className="h-4 w-4" />
+            <span className="hidden sm:inline">Pengiriman</span>
+          </TabsTrigger>
+          <TabsTrigger value="appearance" className="gap-2">
+            <Palette className="h-4 w-4" />
+            <span className="hidden sm:inline">Tampilan</span>
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Store Settings */}
+        <TabsContent value="store" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Informasi Toko</CardTitle>
+              <CardDescription>
+                Informasi dasar tentang toko Anda yang akan ditampilkan kepada pelanggan.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {tenantLoading || !formData ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                </div>
+              ) : (
+                <>
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label htmlFor="store-name">Nama Toko</Label>
+                      <Input
+                        id="store-name"
+                        placeholder="Nama toko Anda"
+                        value={formData.name}
+                        onChange={(e) => updateFormData('name', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="store-email">Email Toko</Label>
+                      <Input
+                        id="store-email"
+                        type="email"
+                        placeholder="email@toko.com"
+                        value={tenant?.email || ''}
+                        disabled
+                      />
+                      <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="store-phone">Nomor Telepon</Label>
+                      <Input
+                        id="store-phone"
+                        placeholder="+62 xxx xxxx xxxx"
+                        value={formData.phone}
+                        onChange={(e) => updateFormData('phone', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="store-website">Website (Opsional)</Label>
+                      <Input
+                        id="store-website"
+                        placeholder="https://www.toko-anda.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="store-description">Deskripsi Toko</Label>
+                    <Textarea
+                      id="store-description"
+                      placeholder="Ceritakan tentang toko Anda..."
+                      rows={4}
+                      value={formData.description}
+                      onChange={(e) => updateFormData('description', e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="store-address">Alamat</Label>
+                    <Textarea
+                      id="store-address"
+                      placeholder="Alamat lengkap toko"
+                      rows={3}
+                      value={formData.address}
+                      onChange={(e) => updateFormData('address', e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flex justify-end">
+                    <Button onClick={handleSaveStore} disabled={isSaving}>
+                      {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      <Save className="mr-2 h-4 w-4" />
+                      Simpan Informasi Toko
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Landing Page Settings */}
+        <TabsContent value="landing" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                Landing Page
+                {/* ✅ Unsaved indicator in card header */}
+                {hasUnsavedLandingChanges() && (
+                  <span className="text-xs font-normal text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded">
+                    Belum disimpan
+                  </span>
+                )}
+              </CardTitle>
+              <CardDescription>
+                Kustomisasi halaman landing toko Anda. Jika dimatikan, akan menggunakan tampilan default.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {tenantLoading || !landingConfig ? (
+                <div className="space-y-4">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-32 w-full" />
+                  <Skeleton className="h-32 w-full" />
+                </div>
+              ) : tenant ? (
+                <LandingBuilder
+                  config={landingConfig}
+                  onConfigChange={setLandingConfig}
+                  tenantSlug={tenant.slug}
+                  onSave={handleLandingSaved}
+                  hasUnsavedChanges={hasUnsavedLandingChanges()}
+                />
+              ) : (
+                <p className="text-muted-foreground">Gagal memuat data tenant</p>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Notification Settings */}
+        <TabsContent value="notifications" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Preferensi Notifikasi</CardTitle>
+              <CardDescription>
+                Atur notifikasi yang ingin Anda terima.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Notifikasi Email</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Terima notifikasi melalui email
+                  </p>
+                </div>
+                <Switch
+                  checked={emailNotifications}
+                  onCheckedChange={setEmailNotifications}
+                />
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Notifikasi Pesanan Baru</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Dapatkan notifikasi saat ada pesanan baru
+                  </p>
+                </div>
+                <Switch
+                  checked={orderNotifications}
+                  onCheckedChange={setOrderNotifications}
+                />
+              </div>
+
+              <Separator />
+
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Peringatan Stok Rendah</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Dapatkan notifikasi saat stok produk menipis
+                  </p>
+                </div>
+                <Switch
+                  checked={stockNotifications}
+                  onCheckedChange={setStockNotifications}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Payment Settings */}
+        <TabsContent value="payment" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pengaturan Pembayaran</CardTitle>
+              <CardDescription>
+                Konfigurasi mata uang dan pajak.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>Mata Uang</Label>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="IDR">IDR - Rupiah Indonesia</SelectItem>
+                      <SelectItem value="USD">USD - US Dollar</SelectItem>
+                      <SelectItem value="SGD">SGD - Singapore Dollar</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="tax-rate">Tarif Pajak (%)</Label>
+                  <Input
+                    id="tax-rate"
+                    type="number"
+                    placeholder="11"
+                    value={taxRate}
+                    onChange={(e) => setTaxRate(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h4 className="text-sm font-medium mb-4">Metode Pembayaran Aktif</h4>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-muted rounded">
+                        <CreditCard className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Transfer Bank</p>
+                        <p className="text-sm text-muted-foreground">
+                          BCA, Mandiri, BNI, BRI
+                        </p>
+                      </div>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-muted rounded">
+                        <Globe className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-medium">E-Wallet</p>
+                        <p className="text-sm text-muted-foreground">
+                          GoPay, OVO, DANA, ShopeePay
+                        </p>
+                      </div>
+                    </div>
+                    <Switch defaultChecked />
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-muted rounded">
+                        <Shield className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-medium">COD</p>
+                        <p className="text-sm text-muted-foreground">
+                          Bayar di tempat
+                        </p>
+                      </div>
+                    </div>
+                    <Switch />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Shipping Settings */}
+        <TabsContent value="shipping" className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Pengaturan Pengiriman</CardTitle>
+              <CardDescription>
+                Konfigurasi opsi pengiriman dan ongkos kirim.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="free-shipping">
+                    Batas Gratis Ongkir (Rp)
+                  </Label>
+                  <Input
+                    id="free-shipping"
+                    type="number"
+                    placeholder="100000"
+                    value={freeShippingThreshold}
+                    onChange={(e) => setFreeShippingThreshold(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Pesanan di atas nilai ini akan gratis ongkir
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="default-shipping">
+                    Ongkos Kirim Default (Rp)
+                  </Label>
+                  <Input
+                    id="default-shipping"
+                    type="number"
+                    placeholder="15000"
+                    value={defaultShippingCost}
+                    onChange={(e) => setDefaultShippingCost(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Ongkos kirim untuk pesanan di bawah batas gratis ongkir
+                  </p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h4 className="text-sm font-medium mb-4">Kurir Aktif</h4>
+                <div className="space-y-4">
+                  {['JNE', 'J&T Express', 'SiCepat', 'AnterAja', 'Ninja Express'].map(
+                    (courier) => (
+                      <div
+                        key={courier}
+                        className="flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 bg-muted rounded">
+                            <Truck className="h-4 w-4" />
+                          </div>
+                          <p className="font-medium">{courier}</p>
+                        </div>
+                        <Switch defaultChecked={['JNE', 'J&T Express'].includes(courier)} />
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Appearance Settings */}
+        <TabsContent value="appearance" className="mt-6">
+          <div className="space-y-6">
+            {/* Logo & Banner Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Logo & Banner</CardTitle>
+                <CardDescription>
+                  Gambar yang ditampilkan di toko online Anda.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {tenantLoading || !formData ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-40 w-40" />
+                    <Skeleton className="h-32 w-full" />
+                  </div>
+                ) : (
+                  <>
+                    <div className="space-y-2">
+                      <Label>Logo Toko</Label>
+                      <div className="max-w-[200px]">
+                        <ImageUpload
+                          value={formData.logo}
+                          onChange={(url) => updateFormData('logo', url)}
+                          onRemove={handleRemoveLogo}
+                          disabled={isRemovingLogo}
+                          folder="fibidy/logos"
+                          aspectRatio={1}
+                          placeholder="Upload logo toko"
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Rekomendasi: 200x200px, format PNG atau JPG
+                      </p>
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-2">
+                      <Label>Banner Toko</Label>
+                      <ImageUpload
+                        value={formData.banner}
+                        onChange={(url) => updateFormData('banner', url)}
+                        onRemove={handleRemoveBanner}
+                        disabled={isRemovingBanner}
+                        folder="fibidy/banners"
+                        aspectRatio={3}
+                        placeholder="Upload banner toko"
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Rekomendasi: 1200x400px, format PNG atau JPG
+                      </p>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Theme Color Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Warna Tema</CardTitle>
+                <CardDescription>
+                  Pilih warna utama untuk toko online Anda. Warna akan diterapkan pada tombol, link, dan elemen aksen.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {tenantLoading || !formData ? (
+                  <div className="flex gap-3">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <Skeleton key={i} className="h-16 w-16 rounded-lg" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                    {THEME_COLORS.map((color) => (
+                      <button
+                        key={color.value}
+                        type="button"
+                        onClick={() => updateFormData('primaryColor', color.value)}
+                        disabled={isSavingAppearance}
+                        className={cn(
+                          'relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all',
+                          formData.primaryColor === color.value
+                            ? 'border-primary bg-primary/5'
+                            : 'border-transparent hover:border-muted-foreground/20',
+                          isSavingAppearance && 'opacity-50 cursor-not-allowed'
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            'w-10 h-10 rounded-full flex items-center justify-center',
+                            color.class
+                          )}
+                        >
+                          {formData.primaryColor === color.value && (
+                            <Check className="h-5 w-5 text-white" />
+                          )}
+                        </div>
+                        <span className="text-xs font-medium">{color.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Dark Mode Info Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Mode Gelap</CardTitle>
+                <CardDescription>
+                  Ubah tampilan antara mode terang dan gelap.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-muted rounded-md">
+                    <Moon className="h-4 w-4" />
+                    <span>/</span>
+                    <Sun className="h-4 w-4" />
+                  </span>
+                  untuk mengubah mode tampilan.
+                  Preferensi akan disimpan secara otomatis di browser Anda.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Save Button */}
+            <div className="flex justify-end">
+              <Button onClick={handleSaveAppearance} disabled={isSavingAppearance || tenantLoading}>
+                {isSavingAppearance && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Save className="mr-2 h-4 w-4" />
+                Simpan Tampilan
+              </Button>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(dashboard)/store/page.tsx
+Lines: 91
+================================================
+
+'use client';
+
+// src/app/(store)/store/page.tsx
+// Route: /store
+// Purpose: Redirect to user's own store or show store directory
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Store, ArrowRight, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/hooks';
+
+// ==========================================
+// STORE INDEX PAGE
+// Redirects logged-in users to their store
+// Shows landing for guests
+// ==========================================
+
+export default function StoreIndexPage() {
+  const router = useRouter();
+  const { tenant, isLoading } = useAuth();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    // If user is logged in and has a store, redirect to their store
+    if (!isLoading && tenant?.slug) {
+      setIsRedirecting(true);
+      router.push(`/store/${tenant.slug}`);
+    }
+  }, [isLoading, tenant, router]);
+
+  // Show loading while checking auth or redirecting
+  if (isLoading || isRedirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">
+            {isRedirecting ? 'Mengalihkan ke toko Anda...' : 'Memuat...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Guest view - show store info/CTA
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-b from-primary/5 via-background to-background">
+      <Card className="max-w-md w-full">
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-4">
+            <div className="rounded-full bg-primary/10 p-4">
+              <Store className="h-10 w-10 text-primary" />
+            </div>
+          </div>
+          <CardTitle className="text-2xl">Selamat Datang di Fibidy Store</CardTitle>
+          <CardDescription>
+            Platform toko online untuk UMKM Indonesia
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-center text-muted-foreground">
+            Untuk melihat toko, masukkan alamat toko di URL:
+          </p>
+          <div className="bg-muted rounded-lg p-3 text-center font-mono text-sm">
+            fibidy.com/store/<span className="text-primary">nama-toko</span>
+          </div>
+
+          <div className="flex flex-col gap-2 pt-4">
+            <Button asChild>
+              <Link href="/register">
+                Buat Toko Gratis
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/login">
+                Masuk ke Dashboard
+              </Link>
+            </Button>
+          </div>
+
+          <p className="text-center text-xs text-muted-foreground pt-4">
+            Sudah punya toko? Login untuk melihat toko Anda
+          </p>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+
+################################################################
+##
+##  CATEGORY: Store Pages
+##  Path: src/app/(store)
+##
+################################################################
+
+================================================
+FILE: src/app/(store)/store/[slug]/layout.tsx
+Lines: 183
+================================================
+
+import { tenantsApi } from '@/lib/api';
+import { StoreHeader, StoreFooter, StoreNotFound } from '@/components/store';
+import { LocalBusinessSchema } from '@/components/seo';
+import { createTenantMetadata } from '@/lib/seo';
+import type { Metadata } from 'next';
+import type { PublicTenant } from '@/types';
+
+// ==========================================
+// STORE LAYOUT
+// Wraps all store pages for a specific tenant
+// ==========================================
+
+interface StoreLayoutProps {
+  children: React.ReactNode;
+  params: Promise<{ slug: string }>;
+}
+
+// ==========================================
+// THEME COLOR MAPPING
+// Predefined OKLCH values for each theme color
+// ==========================================
+const THEME_OKLCH_MAP: Record<string, { light: string; dark: string }> = {
+  // Sky/Default
+  '#0ea5e9': {
+    light: 'oklch(0.685 0.169 237.323)',
+    dark: 'oklch(0.746 0.16 232.661)',
+  },
+  // Emerald
+  '#10b981': {
+    light: 'oklch(0.696 0.17 162.48)',
+    dark: 'oklch(0.765 0.177 163.223)',
+  },
+  // Rose
+  '#f43f5e': {
+    light: 'oklch(0.645 0.246 16.439)',
+    dark: 'oklch(0.712 0.194 13.428)',
+  },
+  // Amber
+  '#f59e0b': {
+    light: 'oklch(0.769 0.188 70.08)',
+    dark: 'oklch(0.822 0.165 68.293)',
+  },
+  // Violet
+  '#8b5cf6': {
+    light: 'oklch(0.606 0.25 292.717)',
+    dark: 'oklch(0.702 0.183 293.541)',
+  },
+  // Orange
+  '#f97316': {
+    light: 'oklch(0.705 0.213 47.604)',
+    dark: 'oklch(0.762 0.182 50.939)',
+  },
+};
+
+// Default pink (from your globals.css)
+const DEFAULT_THEME = {
+  light: 'oklch(0.656 0.241 354.308)',
+  dark: 'oklch(0.718 0.202 349.761)',
+};
+
+// Fetch tenant data (server-side)
+async function getTenant(slug: string): Promise<PublicTenant | null> {
+  try {
+    const tenant = await tenantsApi.getBySlug(slug);
+    return tenant;
+  } catch {
+    return null;
+  }
+}
+
+// ==========================================
+// GENERATE METADATA (Enhanced with SEO)
+// ==========================================
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const tenant = await getTenant(slug);
+
+  if (!tenant) {
+    return {
+      title: 'Toko Tidak Ditemukan',
+      description: 'Toko yang Anda cari tidak ditemukan atau sudah tidak aktif.',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  // Use enhanced metadata generator from lib/seo.ts
+  return createTenantMetadata({
+    tenant: {
+      name: tenant.name,
+      slug: tenant.slug,
+      description: tenant.description,
+      logo: tenant.logo,
+      banner: tenant.banner,
+      metaTitle: tenant.metaTitle,
+      metaDescription: tenant.metaDescription,
+    },
+  });
+}
+
+// ==========================================
+// STORE LAYOUT COMPONENT
+// ==========================================
+
+export default async function StoreLayout({
+  children,
+  params,
+}: StoreLayoutProps) {
+  const { slug } = await params;
+  const tenant = await getTenant(slug);
+
+  // Show not found if tenant doesn't exist or inactive
+  if (!tenant || tenant.status !== 'ACTIVE') {
+    return <StoreNotFound slug={slug} />;
+  }
+
+  // Get theme color from tenant
+  const primaryHex = tenant.theme?.primaryColor?.toLowerCase() || '';
+
+  // Get OKLCH values from map, or use default pink
+  const themeColors = THEME_OKLCH_MAP[primaryHex] || DEFAULT_THEME;
+
+  return (
+    <>
+      {/* ==========================================
+          INJECT TENANT THEME CSS VARIABLES
+          Override --primary for this store
+      ========================================== */}
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            /* Light Mode */
+            .tenant-theme {
+              --primary: ${themeColors.light};
+              --ring: ${themeColors.light};
+              --sidebar-primary: ${themeColors.light};
+              --sidebar-ring: ${themeColors.light};
+              --chart-1: ${themeColors.light};
+            }
+            
+            /* Dark Mode */
+            .dark .tenant-theme,
+            .tenant-theme.dark {
+              --primary: ${themeColors.dark};
+              --ring: ${themeColors.dark};
+              --sidebar-primary: ${themeColors.dark};
+              --sidebar-ring: ${themeColors.dark};
+              --chart-1: ${themeColors.dark};
+            }
+          `,
+        }}
+      />
+
+      <div className="tenant-theme flex min-h-screen flex-col">
+        {/* ==========================================
+            LOCAL BUSINESS SCHEMA (JSON-LD)
+            Per-tenant structured data for Google
+        ========================================== */}
+        <LocalBusinessSchema
+          tenant={{
+            name: tenant.name,
+            slug: tenant.slug,
+            description: tenant.description,
+            category: tenant.category,
+            whatsapp: tenant.whatsapp || '',
+            phone: tenant.phone,
+            address: tenant.address,
+            logo: tenant.logo,
+            banner: tenant.banner,
+            socialLinks: tenant.socialLinks,
+          }}
+        />
+
+        <StoreHeader tenant={tenant} />
+        <main className="flex-1">{children}</main>
+        <StoreFooter tenant={tenant} />
+      </div>
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(store)/store/[slug]/opengraph-image.tsx
+Lines: 233
+================================================
+
+import { ImageResponse } from 'next/og';
+import {
+  OG_IMAGE_WIDTH,
+  OG_IMAGE_HEIGHT,
+  OG_COLORS,
+  getOgInitials,
+  truncateOgText,
+} from '@/lib/og-utils';
+
+// ==========================================
+// TENANT STORE OPEN GRAPH IMAGE
+// Route: /store/[slug]/opengraph-image
+// ==========================================
+
+export const runtime = 'edge';
+export const alt = 'Toko Online';
+export const size = {
+  width: OG_IMAGE_WIDTH,
+  height: OG_IMAGE_HEIGHT,
+};
+export const contentType = 'image/png';
+
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+// Fetch tenant data
+async function getTenant(slug: string) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const res = await fetch(`${apiUrl}/tenants/by-slug/${slug}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export default async function TenantOgImage({ params }: Props) {
+  const { slug } = await params;
+  const tenant = await getTenant(slug);
+
+  // Fallback if tenant not found
+  if (!tenant) {
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: OG_COLORS.backgroundGray,
+            fontSize: '48px',
+            color: OG_COLORS.textLight,
+          }}
+        >
+          Toko Tidak Ditemukan
+        </div>
+      ),
+      { ...size }
+    );
+  }
+
+  const productCount = tenant._count?.products || 0;
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          background: 'white',
+        }}
+      >
+        {/* Header Bar */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '30px 50px',
+            background: OG_COLORS.primary,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              color: 'white',
+            }}
+          >
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            </svg>
+            <span style={{ fontSize: '24px', fontWeight: 'bold' }}>Fibidy</span>
+          </div>
+          <div style={{ color: 'white', fontSize: '20px' }}>
+            {slug}.fibidy.com
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            padding: '50px',
+            gap: '50px',
+          }}
+        >
+          {/* Logo/Avatar */}
+          <div
+            style={{
+              width: '200px',
+              height: '200px',
+              borderRadius: '24px',
+              background: tenant.logo
+                ? 'white'
+                : `linear-gradient(135deg, ${OG_COLORS.primary}, ${OG_COLORS.primaryDark})`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+              border: tenant.logo ? '4px solid #f1f5f9' : 'none',
+              overflow: 'hidden',
+            }}
+          >
+            {tenant.logo ? (
+              <img
+                src={tenant.logo}
+                alt={tenant.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            ) : (
+              <span style={{ fontSize: '80px', color: 'white', fontWeight: 'bold' }}>
+                {getOgInitials(tenant.name)}
+              </span>
+            )}
+          </div>
+
+          {/* Info */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '15px',
+              flex: 1,
+            }}
+          >
+            {/* Store Name */}
+            <div
+              style={{
+                fontSize: '56px',
+                fontWeight: 'bold',
+                color: OG_COLORS.text,
+                lineHeight: 1.1,
+              }}
+            >
+              {truncateOgText(tenant.name, 30)}
+            </div>
+
+            {/* Description */}
+            {tenant.description && (
+              <div
+                style={{
+                  fontSize: '28px',
+                  color: OG_COLORS.textLight,
+                  lineHeight: 1.4,
+                }}
+              >
+                {truncateOgText(tenant.description, 80)}
+              </div>
+            )}
+
+            {/* Stats Row */}
+            <div
+              style={{
+                display: 'flex',
+                gap: '30px',
+                marginTop: '20px',
+              }}
+            >
+              {/* Product Count */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '22px',
+                  color: OG_COLORS.textLight,
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 4H4v2h16V4zm1 10v-2l-1-5H4l-1 5v2h1v6h10v-6h4v6h2v-6h1zm-9 4H6v-4h6v4z" />
+                </svg>
+                {productCount}+ Produk
+              </div>
+
+              {/* WhatsApp */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '22px',
+                  color: '#25D366',
+                }}
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                </svg>
+                WhatsApp Order
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ),
+    { ...size }
+  );
+}
+
+================================================
+FILE: src/app/(store)/store/[slug]/page.tsx
+Lines: 258
+================================================
+
+import { notFound } from 'next/navigation';
+import { tenantsApi, productsApi } from '@/lib/api';
+// Existing store components (fallback)
+import { StoreHero, FeaturedProducts } from '@/components/store';
+// New landing components
+import {
+  TenantHero,
+  TenantAbout,
+  TenantProducts,
+  TenantTestimonials,
+  TenantContact,
+  TenantCta,
+} from '@/components/landing';
+// SEO Components
+import {
+  BreadcrumbSchema,
+  ProductListSchema,
+  generateTenantBreadcrumbs,
+} from '@/components/seo';
+import { DEFAULT_LANDING_CONFIG } from '@/types/landing';
+import type { PublicTenant, Product } from '@/types';
+
+// ==========================================
+// STORE HOMEPAGE
+// ==========================================
+
+interface StorePageProps {
+  params: Promise<{ slug: string }>;
+}
+
+async function getTenant(slug: string): Promise<PublicTenant | null> {
+  try {
+    return await tenantsApi.getBySlug(slug);
+  } catch {
+    return null;
+  }
+}
+
+async function getFeaturedProducts(slug: string): Promise<Product[]> {
+  try {
+    const response = await productsApi.getByStore(slug, {
+      isActive: true,
+      isFeatured: true,
+      limit: 8,
+    });
+    return response.data;
+  } catch {
+    return [];
+  }
+}
+
+async function getLatestProducts(slug: string): Promise<Product[]> {
+  try {
+    const response = await productsApi.getByStore(slug, {
+      isActive: true,
+      sortBy: 'createdAt',
+      sortOrder: 'desc',
+      limit: 8,
+    });
+    return response.data;
+  } catch {
+    return [];
+  }
+}
+
+async function getProducts(slug: string, limit = 8): Promise<Product[]> {
+  try {
+    const response = await productsApi.getByStore(slug, {
+      isActive: true,
+      limit,
+    });
+    return response.data;
+  } catch {
+    return [];
+  }
+}
+
+export default async function StorePage({ params }: StorePageProps) {
+  const { slug } = await params;
+  const tenant = await getTenant(slug);
+
+  if (!tenant) {
+    notFound();
+  }
+
+  // Merge tenant config with defaults
+  const landingConfig = {
+    ...DEFAULT_LANDING_CONFIG,
+    ...tenant.landingConfig,
+  };
+
+  // Generate breadcrumbs for SEO
+  const breadcrumbs = generateTenantBreadcrumbs({
+    name: tenant.name,
+    slug: tenant.slug,
+  });
+
+  // ==========================================
+  // MODE 1: DEFAULT VIEW (landingConfig.enabled = false)
+  // Uses existing StoreHero + FeaturedProducts components
+  // ==========================================
+  if (!landingConfig.enabled) {
+    const [featuredProducts, latestProducts] = await Promise.all([
+      getFeaturedProducts(slug),
+      getLatestProducts(slug),
+    ]);
+
+    // Combine all products for ProductListSchema
+    const allProducts = [...featuredProducts, ...latestProducts].filter(
+      (product, index, self) =>
+        index === self.findIndex((p) => p.id === product.id)
+    );
+
+    return (
+      <>
+        {/* ==========================================
+            SEO: Structured Data (JSON-LD)
+        ========================================== */}
+        <BreadcrumbSchema items={breadcrumbs} />
+        {allProducts.length > 0 && (
+          <ProductListSchema
+            products={allProducts.map((p) => ({
+              id: p.id,
+              name: p.name,
+              slug: p.slug,
+              price: p.price,
+              images: p.images,
+            }))}
+            tenant={{ name: tenant.name, slug: tenant.slug }}
+            listName={`Produk ${tenant.name}`}
+          />
+        )}
+
+        {/* ==========================================
+            PAGE CONTENT
+        ========================================== */}
+        <div className="container px-4 py-8 space-y-12">
+          {/* Hero Section - EXISTING COMPONENT */}
+          <StoreHero tenant={tenant} />
+
+          {/* Featured Products - EXISTING COMPONENT */}
+          {featuredProducts.length > 0 && (
+            <FeaturedProducts
+              products={featuredProducts}
+              storeSlug={slug}
+              title="Produk Unggulan"
+            />
+          )}
+
+          {/* Latest Products - EXISTING COMPONENT */}
+          {latestProducts.length > 0 && (
+            <FeaturedProducts
+              products={latestProducts}
+              storeSlug={slug}
+              title="Produk Terbaru"
+            />
+          )}
+
+          {/* Empty State */}
+          {featuredProducts.length === 0 && latestProducts.length === 0 && (
+            <div className="text-center py-12 bg-muted/30 rounded-lg">
+              <p className="text-muted-foreground mb-2">
+                Belum ada produk tersedia
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Hubungi penjual untuk informasi lebih lanjut
+              </p>
+            </div>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  // ==========================================
+  // MODE 2: CUSTOM LANDING PAGE (landingConfig.enabled = true)
+  // Uses new Landing components
+  // ==========================================
+  const productLimit = landingConfig.products?.config?.limit || 8;
+  const products = await getProducts(slug, productLimit);
+
+  return (
+    <>
+      {/* ==========================================
+          SEO: Structured Data (JSON-LD)
+      ========================================== */}
+      <BreadcrumbSchema items={breadcrumbs} />
+      {products.length > 0 && (
+        <ProductListSchema
+          products={products.map((p) => ({
+            id: p.id,
+            name: p.name,
+            slug: p.slug,
+            price: p.price,
+            images: p.images,
+          }))}
+          tenant={{ name: tenant.name, slug: tenant.slug }}
+          listName={`Produk ${tenant.name}`}
+        />
+      )}
+
+      {/* ==========================================
+          PAGE CONTENT
+      ========================================== */}
+      <div className="container px-4 py-8 space-y-8">
+        {/* Hero - NEW COMPONENT */}
+        {landingConfig.hero?.enabled && (
+          <TenantHero tenant={tenant} config={landingConfig.hero} />
+        )}
+
+        {/* About - NEW COMPONENT */}
+        {landingConfig.about?.enabled && (
+          <TenantAbout tenant={tenant} config={landingConfig.about} />
+        )}
+
+        {/* Products - NEW COMPONENT */}
+        {landingConfig.products?.enabled && products.length > 0 && (
+          <TenantProducts
+            products={products}
+            storeSlug={slug}
+            config={landingConfig.products}
+          />
+        )}
+
+        {/* Testimonials - NEW COMPONENT */}
+        {landingConfig.testimonials?.enabled && (
+          <TenantTestimonials config={landingConfig.testimonials} />
+        )}
+
+        {/* CTA - NEW COMPONENT */}
+        {landingConfig.cta?.enabled && (
+          <TenantCta storeSlug={slug} config={landingConfig.cta} />
+        )}
+
+        {/* Contact - NEW COMPONENT */}
+        {landingConfig.contact?.enabled && (
+          <TenantContact tenant={tenant} config={landingConfig.contact} />
+        )}
+
+        {/* Empty State - All sections disabled */}
+        {!landingConfig.hero?.enabled &&
+          !landingConfig.about?.enabled &&
+          !landingConfig.products?.enabled &&
+          !landingConfig.testimonials?.enabled &&
+          !landingConfig.cta?.enabled &&
+          !landingConfig.contact?.enabled && (
+            <div className="text-center py-12 bg-muted/30 rounded-lg">
+              <p className="text-muted-foreground mb-2">
+                Landing page belum dikonfigurasi
+              </p>
+              <p className="text-sm text-muted-foreground">
+                Aktifkan section di Dashboard &gt; Settings &gt; Landing
+              </p>
+            </div>
+          )}
+      </div>
+    </>
+  );
+}
+
+================================================
+FILE: src/app/(store)/store/[slug]/products/page.tsx
+Lines: 151
+================================================
+
+import { Suspense } from 'react';
+import { productsApi } from '@/lib/api';
+import {
+  ProductGrid,
+  ProductFilters,
+  CategoryList,
+  ProductPagination,
+  ProductGridSkeleton,
+} from '@/components/store';
+import type { Metadata } from 'next';
+import type { Product, PaginatedResponse } from '@/types';
+
+// ==========================================
+// STORE PRODUCTS PAGE
+// ==========================================
+
+interface ProductsPageProps {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export const metadata: Metadata = {
+  title: 'Semua Produk',
+};
+
+async function getProducts(
+  slug: string,
+  searchParams: { [key: string]: string | string[] | undefined }
+): Promise<PaginatedResponse<Product>> {
+  const page = Number(searchParams.page) || 1;
+  const search = searchParams.search as string | undefined;
+  const category = searchParams.category as string | undefined;
+  const sort = (searchParams.sort as string) || 'newest';
+
+  // Map sort to API params
+  let sortBy: 'name' | 'price' | 'createdAt' | 'stock' | 'updatedAt' = 'createdAt';
+  let sortOrder: 'asc' | 'desc' = 'desc';
+
+  switch (sort) {
+    case 'oldest':
+      sortBy = 'createdAt';
+      sortOrder = 'asc';
+      break;
+    case 'price-asc':
+      sortBy = 'price';
+      sortOrder = 'asc';
+      break;
+    case 'price-desc':
+      sortBy = 'price';
+      sortOrder = 'desc';
+      break;
+    case 'name-asc':
+      sortBy = 'name';
+      sortOrder = 'asc';
+      break;
+    case 'name-desc':
+      sortBy = 'name';
+      sortOrder = 'desc';
+      break;
+  }
+
+  try {
+    return await productsApi.getByStore(slug, {
+      page,
+      limit: 12,
+      search,
+      category,
+      sortBy,
+      sortOrder,
+      isActive: true,
+    });
+  } catch {
+    return {
+      data: [],
+      meta: { total: 0, page: 1, limit: 12, totalPages: 0 },
+    };
+  }
+}
+
+async function getCategories(slug: string): Promise<string[]> {
+  try {
+    // This would need a public endpoint or we extract from products
+    const response = await productsApi.getByStore(slug, {
+      limit: 100,
+      isActive: true,
+    });
+    const categories = new Set<string>();
+    response.data.forEach((p) => {
+      if (p.category) categories.add(p.category);
+    });
+    return Array.from(categories).sort();
+  } catch {
+    return [];
+  }
+}
+
+export default async function ProductsPage({
+  params,
+  searchParams,
+}: ProductsPageProps) {
+  const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
+
+  const [productsResponse, categories] = await Promise.all([
+    getProducts(slug, resolvedSearchParams),
+    getCategories(slug),
+  ]);
+
+  const { data: products, meta } = productsResponse;
+  const currentCategory = resolvedSearchParams.category as string | undefined;
+
+  return (
+    <div className="container px-4 py-8">
+      {/* Page Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold mb-2">Semua Produk</h1>
+        <p className="text-muted-foreground">
+          {meta.total} produk tersedia
+        </p>
+      </div>
+
+      {/* Filters */}
+      <div className="mb-6">
+        <ProductFilters storeSlug={slug} categories={categories} />
+      </div>
+
+      {/* Category List */}
+      {categories.length > 0 && (
+        <div className="mb-6">
+          <CategoryList
+            categories={categories}
+            storeSlug={slug}
+            currentCategory={currentCategory}
+          />
+        </div>
+      )}
+
+      {/* Products Grid */}
+      <Suspense fallback={<ProductGridSkeleton count={12} />}>
+        <ProductGrid products={products} storeSlug={slug} />
+      </Suspense>
+
+      {/* Pagination */}
+      <ProductPagination
+        storeSlug={slug}
+        currentPage={meta.page}
+        totalPages={meta.totalPages}
+        total={meta.total}
+      />
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(store)/store/[slug]/products/[id]/not-found.tsx
+Lines: 33
+================================================
+
+import Link from 'next/link';
+import { Package, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+// ==========================================
+// PRODUCT NOT FOUND PAGE
+// ==========================================
+
+export default function ProductNotFound() {
+  return (
+    <div className="container px-4 py-16">
+      <div className="text-center max-w-md mx-auto">
+        <div className="flex justify-center mb-6">
+          <div className="rounded-full bg-muted p-6">
+            <Package className="h-12 w-12 text-muted-foreground" />
+          </div>
+        </div>
+
+        <h1 className="text-2xl font-bold mb-2">Produk Tidak Ditemukan</h1>
+
+        <p className="text-muted-foreground mb-6">
+          Produk yang Anda cari tidak ditemukan atau sudah tidak tersedia.
+        </p>
+
+        <Button asChild>
+          <Link href="..">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Kembali ke Toko
+          </Link>
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/(store)/store/[slug]/products/[id]/opengraph-image.tsx
+Lines: 300
+================================================
+
+import { ImageResponse } from 'next/og';
+import {
+  OG_IMAGE_WIDTH,
+  OG_IMAGE_HEIGHT,
+  OG_COLORS,
+  formatOgPrice,
+  truncateOgText,
+  getOgInitials,
+} from '@/lib/og-utils';
+
+// ==========================================
+// PRODUCT OPEN GRAPH IMAGE
+// Route: /store/[slug]/product/[id]/opengraph-image
+// ==========================================
+
+export const runtime = 'edge';
+export const alt = 'Product';
+export const size = {
+  width: OG_IMAGE_WIDTH,
+  height: OG_IMAGE_HEIGHT,
+};
+export const contentType = 'image/png';
+
+interface Props {
+  params: Promise<{ slug: string; id: string }>;
+}
+
+// Fetch product data
+async function getProduct(id: string) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const res = await fetch(`${apiUrl}/products/public/${id}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+// Fetch tenant data
+async function getTenant(slug: string) {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+    const res = await fetch(`${apiUrl}/tenants/by-slug/${slug}`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
+export default async function ProductOgImage({ params }: Props) {
+  const { slug, id } = await params;
+  const [tenant, product] = await Promise.all([
+    getTenant(slug),
+    getProduct(id),
+  ]);
+
+  // Fallback if not found
+  if (!tenant || !product) {
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: OG_COLORS.backgroundGray,
+            fontSize: '48px',
+            color: OG_COLORS.textLight,
+          }}
+        >
+          Produk Tidak Ditemukan
+        </div>
+      ),
+      { ...size }
+    );
+  }
+
+  const productImage = product.images?.[0];
+  const hasDiscount = product.comparePrice && product.comparePrice > product.price;
+  const discountPercent = hasDiscount
+    ? Math.round((1 - product.price / product.comparePrice) * 100)
+    : 0;
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          background: 'white',
+        }}
+      >
+        {/* Left Side - Product Image */}
+        <div
+          style={{
+            width: '50%',
+            height: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: OG_COLORS.backgroundGray,
+            position: 'relative',
+          }}
+        >
+          {productImage ? (
+            <img
+              src={productImage}
+              alt={product.name}
+              style={{
+                maxWidth: '85%',
+                maxHeight: '85%',
+                objectFit: 'contain',
+                borderRadius: '16px',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '20px',
+                color: OG_COLORS.textLight,
+              }}
+            >
+              <svg
+                width="120"
+                height="120"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <span style={{ fontSize: '24px' }}>No Image</span>
+            </div>
+          )}
+
+          {/* Discount Badge */}
+          {hasDiscount && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '30px',
+                left: '30px',
+                background: OG_COLORS.error,
+                color: 'white',
+                padding: '12px 24px',
+                borderRadius: '12px',
+                fontSize: '28px',
+                fontWeight: 'bold',
+              }}
+            >
+              -{discountPercent}%
+            </div>
+          )}
+        </div>
+
+        {/* Right Side - Product Info */}
+        <div
+          style={{
+            width: '50%',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            padding: '50px',
+          }}
+        >
+          {/* Category Badge */}
+          {product.category && (
+            <div
+              style={{
+                fontSize: '20px',
+                color: OG_COLORS.primary,
+                fontWeight: '600',
+                marginBottom: '15px',
+                textTransform: 'uppercase',
+                letterSpacing: '1px',
+              }}
+            >
+              {product.category}
+            </div>
+          )}
+
+          {/* Product Name */}
+          <div
+            style={{
+              fontSize: '48px',
+              fontWeight: 'bold',
+              color: OG_COLORS.text,
+              lineHeight: 1.2,
+              marginBottom: '20px',
+            }}
+          >
+            {truncateOgText(product.name, 50)}
+          </div>
+
+          {/* Price */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'baseline',
+              gap: '15px',
+              marginBottom: '30px',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '42px',
+                fontWeight: 'bold',
+                color: OG_COLORS.primary,
+              }}
+            >
+              {formatOgPrice(product.price)}
+            </div>
+            {hasDiscount && (
+              <div
+                style={{
+                  fontSize: '28px',
+                  color: OG_COLORS.textLight,
+                  textDecoration: 'line-through',
+                }}
+              >
+                {formatOgPrice(product.comparePrice)}
+              </div>
+            )}
+          </div>
+
+          {/* Store Info Card */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '15px',
+              padding: '20px',
+              background: OG_COLORS.backgroundGray,
+              borderRadius: '16px',
+            }}
+          >
+            {/* Store Avatar */}
+            <div
+              style={{
+                width: '50px',
+                height: '50px',
+                borderRadius: '12px',
+                background: OG_COLORS.primary,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <span style={{ color: 'white', fontSize: '24px', fontWeight: 'bold' }}>
+                {getOgInitials(tenant.name)}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <div style={{ fontSize: '22px', fontWeight: '600', color: OG_COLORS.text }}>
+                {truncateOgText(tenant.name, 25)}
+              </div>
+              <div style={{ fontSize: '18px', color: OG_COLORS.textLight }}>
+                {slug}.fibidy.com
+              </div>
+            </div>
+          </div>
+
+          {/* WhatsApp CTA */}
+          <div
+            style={{
+              marginTop: '30px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              color: '#25D366',
+              fontSize: '24px',
+              fontWeight: '600',
+            }}
+          >
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+            </svg>
+            Order via WhatsApp
+          </div>
+        </div>
+      </div>
+    ),
+    { ...size }
+  );
+}
+
+================================================
+FILE: src/app/(store)/store/[slug]/products/[id]/page.tsx
+Lines: 239
+================================================
+
+import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import { tenantsApi, productsApi } from '@/lib/api';
+import {
+  StoreBreadcrumb,
+  ProductGallery,
+  ProductInfo,
+  ProductActions,
+  RelatedProducts,
+  ProductGridSkeleton,
+} from '@/components/store';
+import {
+  ProductSchema,
+  BreadcrumbSchema,
+  SocialShare,
+  generateProductBreadcrumbs,
+} from '@/components/seo';
+import { createProductMetadata, getTenantUrl } from '@/lib/seo';
+import { Separator } from '@/components/ui/separator';
+import type { Metadata } from 'next';
+import type { PublicTenant, Product } from '@/types';
+
+// ==========================================
+// PRODUCT DETAIL PAGE
+// ==========================================
+
+interface ProductPageProps {
+  params: Promise<{ slug: string; id: string }>;
+}
+
+// Fetch tenant
+async function getTenant(slug: string): Promise<PublicTenant | null> {
+  try {
+    return await tenantsApi.getBySlug(slug);
+  } catch {
+    return null;
+  }
+}
+
+// Fetch product (PUBLIC endpoint)
+async function getProduct(
+  slug: string,
+  productId: string
+): Promise<Product | null> {
+  try {
+    return await productsApi.getByStoreAndId(slug, productId);
+  } catch {
+    return null;
+  }
+}
+
+// Fetch related products
+async function getRelatedProducts(
+  slug: string,
+  currentId: string,
+  category?: string | null
+): Promise<Product[]> {
+  try {
+    const response = await productsApi.getByStore(slug, {
+      isActive: true,
+      category: category || undefined,
+      limit: 4,
+    });
+    return response.data.filter((p) => p.id !== currentId);
+  } catch {
+    return [];
+  }
+}
+
+// ==========================================
+// GENERATE METADATA (Enhanced with SEO)
+// ==========================================
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { slug, id } = await params;
+  const [tenant, product] = await Promise.all([
+    getTenant(slug),
+    getProduct(slug, id),
+  ]);
+
+  if (!tenant || !product) {
+    return {
+      title: 'Produk Tidak Ditemukan',
+      description: 'Produk yang Anda cari tidak ditemukan.',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  // Use enhanced metadata generator from lib/seo.ts
+  return createProductMetadata({
+    product: {
+      id: product.id,
+      name: product.name,
+      slug: product.slug,
+      description: product.description,
+      price: product.price,
+      images: product.images,
+      category: product.category,
+    },
+    tenant: {
+      name: tenant.name,
+      slug: tenant.slug,
+    },
+  });
+}
+
+// ==========================================
+// PRODUCT PAGE COMPONENT
+// ==========================================
+
+export default async function ProductPage({ params }: ProductPageProps) {
+  const { slug, id } = await params;
+
+  const [tenant, product] = await Promise.all([
+    getTenant(slug),
+    getProduct(slug, id),
+  ]);
+
+  // Not found
+  if (!tenant || !product) {
+    notFound();
+  }
+
+  // Fetch related products
+  const relatedProducts = await getRelatedProducts(slug, id, product.category);
+
+  // Generate breadcrumbs for SEO
+  const breadcrumbs = generateProductBreadcrumbs(
+    { name: tenant.name, slug: tenant.slug },
+    {
+      name: product.name,
+      id: product.id,
+      slug: product.slug,
+      category: product.category,
+    }
+  );
+
+  // Generate product URL for sharing
+  const productPath = product.slug
+    ? `/p/${product.slug}`
+    : `/product/${product.id}`;
+  const productUrl = getTenantUrl(tenant.slug, productPath);
+
+  return (
+    <>
+      {/* ==========================================
+          SEO: Structured Data (JSON-LD)
+      ========================================== */}
+      <BreadcrumbSchema items={breadcrumbs} />
+      <ProductSchema
+        product={{
+          id: product.id,
+          name: product.name,
+          slug: product.slug,
+          description: product.description,
+          price: product.price,
+          comparePrice: product.comparePrice,
+          images: product.images,
+          category: product.category,
+          sku: product.sku,
+          stock: product.stock,
+          trackStock: product.trackStock,
+        }}
+        tenant={{
+          name: tenant.name,
+          slug: tenant.slug,
+          whatsapp: tenant.whatsapp,
+        }}
+      />
+
+      {/* ==========================================
+          PAGE CONTENT
+      ========================================== */}
+      <div className="container px-4 py-8">
+        {/* Breadcrumb */}
+        <div className="mb-6">
+          <StoreBreadcrumb
+            storeSlug={slug}
+            storeName={tenant.name}
+            items={[
+              { label: 'Produk', href: `/store/${slug}/products` },
+              { label: product.name },
+            ]}
+          />
+        </div>
+
+        {/* Product Detail */}
+        <div className="grid gap-8 lg:grid-cols-2">
+          {/* Left: Gallery */}
+          <div>
+            <ProductGallery images={product.images} productName={product.name} />
+          </div>
+
+          {/* Right: Info & Actions */}
+          <div className="space-y-6">
+            <ProductInfo product={product} />
+
+            {/* Social Share Buttons */}
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                Bagikan produk ini:
+              </span>
+              <SocialShare
+                url={productUrl}
+                title={`${product.name} - ${tenant.name}`}
+                description={
+                  product.description ||
+                  `Beli ${product.name} di ${tenant.name}`
+                }
+                variant="buttons"
+              />
+            </div>
+
+            <Separator />
+            <ProductActions product={product} tenant={tenant} />
+          </div>
+        </div>
+
+        {/* Description */}
+        {product.description && (
+          <section className="mt-12">
+            <h2 className="text-xl font-semibold mb-4">Deskripsi Produk</h2>
+            <div className="prose prose-gray max-w-none">
+              <p className="whitespace-pre-wrap text-muted-foreground">
+                {product.description}
+              </p>
+            </div>
+          </section>
+        )}
+
+        {/* Related Products */}
+        <Suspense fallback={<ProductGridSkeleton count={4} />}>
+          <RelatedProducts products={relatedProducts} storeSlug={slug} />
+        </Suspense>
+      </div>
+    </>
+  );
+}
+
+================================================
+FILE: src/app/layout.tsx
+Lines: 228
+================================================
+
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import { Providers } from '@/providers';
+import { Toaster } from '@/components/ui/sonner';
+import { seoConfig } from '@/config/seo.config';
+import { getFullUrl } from '@/lib/seo';
+import { OrganizationSchema } from '@/components/seo';
+import './globals.css';
+
+// ==========================================
+// FONT CONFIGURATION
+// ==========================================
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+// ==========================================
+// VIEWPORT CONFIGURATION
+// ==========================================
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: 'cover', // For notch devices
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: seoConfig.themeColor },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+  ],
+};
+
+// ==========================================
+// ROOT METADATA (Fallback for all pages)
+// ==========================================
+
+export const metadata: Metadata = {
+  // ==========================================
+  // BASIC META
+  // ==========================================
+  title: {
+    default: seoConfig.defaultTitle,
+    template: seoConfig.titleTemplate,
+  },
+  description: seoConfig.defaultDescription,
+  keywords: [...seoConfig.defaultKeywords], // Spread to fix readonly
+
+  // ==========================================
+  // SITE INFO
+  // ==========================================
+  applicationName: seoConfig.siteName,
+  authors: [{ name: seoConfig.siteName, url: seoConfig.siteUrl }],
+  creator: seoConfig.siteName,
+  publisher: seoConfig.siteName,
+  generator: 'Next.js',
+
+  // ==========================================
+  // BASE URL
+  // ==========================================
+  metadataBase: new URL(seoConfig.siteUrl),
+
+  // ==========================================
+  // CANONICAL & LANGUAGES
+  // ==========================================
+  alternates: {
+    canonical: '/',
+    languages: {
+      'id-ID': '/',
+    },
+  },
+
+  // ==========================================
+  // ROBOTS
+  // ==========================================
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  // ==========================================
+  // ICONS
+  // ==========================================
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    ],
+    apple: [{ url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }],
+    shortcut: '/favicon.ico',
+  },
+
+  // ==========================================
+  // MANIFEST (PWA)
+  // ==========================================
+  manifest: '/manifest.json',
+
+  // ==========================================
+  // OPEN GRAPH
+  // ==========================================
+  openGraph: {
+    type: 'website',
+    locale: seoConfig.locale,
+    url: seoConfig.siteUrl,
+    siteName: seoConfig.siteName,
+    title: seoConfig.defaultTitle,
+    description: seoConfig.defaultDescription,
+    images: [
+      {
+        url: getFullUrl(seoConfig.defaultOgImage),
+        width: 1200,
+        height: 630,
+        alt: seoConfig.siteName,
+      },
+    ],
+  },
+
+  // ==========================================
+  // TWITTER
+  // ==========================================
+  twitter: {
+    card: 'summary_large_image',
+    title: seoConfig.defaultTitle,
+    description: seoConfig.defaultDescription,
+    site: seoConfig.twitterHandle,
+    creator: seoConfig.twitterHandle,
+    images: [getFullUrl(seoConfig.defaultOgImage)],
+  },
+
+  // ==========================================
+  // VERIFICATION
+  // ==========================================
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  },
+
+  // ==========================================
+  // APPLE MOBILE WEB APP (PWA)
+  // ==========================================
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: seoConfig.siteName,
+  },
+
+  // ==========================================
+  // FORMAT DETECTION
+  // ==========================================
+  formatDetection: {
+    telephone: false,
+    email: false,
+    address: false,
+  },
+
+  // ==========================================
+  // CATEGORY
+  // ==========================================
+  category: 'technology',
+};
+
+// ==========================================
+// ROOT LAYOUT
+// ==========================================
+
+interface RootLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
+  return (
+    <html lang="id" suppressHydrationWarning>
+      <head>
+        {/* Preconnect for performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+
+        {/* DNS Prefetch */}
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+        {/* Preconnect to API (production) */}
+        {seoConfig.isProduction && (
+          <>
+            <link rel="preconnect" href="https://api.fibidy.com" />
+            <link rel="dns-prefetch" href="https://api.fibidy.com" />
+          </>
+        )}
+
+        {/* PWA Theme Color (fallback) */}
+        <meta name="theme-color" content="#ec4899" />
+
+        {/* Apple PWA Meta Tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Fibidy" />
+
+        {/* MS Tile */}
+        <meta name="msapplication-TileColor" content="#ec4899" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+
+        {/* Organization + WebSite Schema (JSON-LD) */}
+        <OrganizationSchema />
+      </head>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        {/* Unified Providers (Theme + Hydration + PWA) */}
+        <Providers>
+          {children}
+          <Toaster position="top-center" richColors />
+        </Providers>
+      </body>
+    </html>
+  );
+}
+
+================================================
+FILE: src/app/page.tsx
+Lines: 68
+================================================
+
+import type { Metadata } from 'next';
+import {
+  LandingHeader,
+  LandingFooter,
+  HeroSection,
+  LogosSection,
+  ProblemSection,
+  SolutionSection,
+  HowItWorksSection,
+  TestimonialHighlightSection,
+  FeaturesSection,
+  TestimonialsSection,
+  PricingSection,
+  FAQSection,
+  BlogSection,
+  CTASection,
+} from '@/components/platform-landing';
+
+export const metadata: Metadata = {
+  title: 'Fibidy - Platform Toko Online Gratis untuk UMKM Indonesia',
+  description:
+    'Buat toko online profesional dalam hitungan menit. Kelola produk, terima pesanan via WhatsApp, dan tingkatkan penjualan Anda dengan mudah. Gratis selamanya!',
+  keywords: [
+    'toko online gratis',
+    'platform UMKM',
+    'jualan online',
+    'toko online Indonesia',
+    'buat toko online',
+    'WhatsApp order',
+    'katalog online',
+    'UMKM digital',
+    'fibidy',
+  ],
+  openGraph: {
+    title: 'Fibidy - Platform Toko Online Gratis untuk UMKM Indonesia',
+    description: 'Buat toko online profesional dalam hitungan menit. Gratis selamanya!',
+    type: 'website',
+    locale: 'id_ID',
+    siteName: 'Fibidy',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Fibidy - Platform Toko Online Gratis untuk UMKM',
+    description: 'Buat toko online profesional dalam hitungan menit. Gratis selamanya!',
+  },
+};
+
+export default function HomePage() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <LandingHeader />
+      <main className="flex-1">
+        <HeroSection />
+        <LogosSection />
+        <ProblemSection />
+        <SolutionSection />
+        <HowItWorksSection />
+        <TestimonialHighlightSection />
+        <FeaturesSection />
+        <TestimonialsSection />
+        <PricingSection />
+        <FAQSection />
+        <BlogSection />
+        <CTASection />
+      </main>
+      <LandingFooter />
+    </div>
+  );
+}
+
+================================================
+FILE: src/app/globals.css
+Lines: 236
+================================================
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Base Colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Chart Colors */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Sidebar Colors */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Radius Variants - Complete Set */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* Fonts (optional - uncomment if using) */
+  /* --font-sans: var(--font-geist-sans); */
+  /* --font-mono: var(--font-geist-mono); */
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
+}
+
+/* ==========================================
+   PINK + WHITE THEME (Light Mode - Default)
+   Friendly, warm, ramah UMKM Indonesia 🇮🇩
+   ✨ Optimized for maximum appeal & conversion
+   ========================================== */
+
+:root {
+  --radius: 0.625rem;
+
+  /* Base - Clean White Background */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  /* Card - Pure White */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+
+  /* Popover - White */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  /* Primary - Pink 500 (Main Brand Color) */
+  --primary: oklch(0.656 0.241 354.308);
+  --primary-foreground: oklch(1 0 0);
+
+  /* Secondary - Pink 50 (Light Accent) */
+  --secondary: oklch(0.971 0.014 343.198);
+  --secondary-foreground: oklch(0.345 0.212 349.761);
+
+  /* Muted - Pink 50/100 (Subtle Backgrounds) */
+  --muted: oklch(0.971 0.014 343.198);
+  --muted-foreground: oklch(0.556 0 0);
+
+  /* Accent - Pink 100 (Hover States) */
+  --accent: oklch(0.948 0.028 342.258);
+  --accent-foreground: oklch(0.345 0.212 349.761);
+
+  /* Destructive - Red (Error States) */
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* Border & Input - Light Pink Tint */
+  --border: oklch(0.922 0.01 340);
+  --input: oklch(0.922 0.01 340);
+  --ring: oklch(0.656 0.241 354.308);
+
+  /* Charts - Pink Variations for Data Viz */
+  --chart-1: oklch(0.656 0.241 354.308); /* Pink 500 */
+  --chart-2: oklch(0.718 0.202 349.761); /* Pink 400 */
+  --chart-3: oklch(0.808 0.151 343.198); /* Pink 300 */
+  --chart-4: oklch(0.345 0.212 349.761); /* Pink 700 */
+  --chart-5: oklch(0.496 0.265 354.308); /* Pink 600 */
+
+  /* Sidebar - Soft Pink Background */
+  --sidebar: oklch(0.985 0.007 343.198);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.656 0.241 354.308);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.948 0.028 342.258);
+  --sidebar-accent-foreground: oklch(0.345 0.212 349.761);
+  --sidebar-border: oklch(0.922 0.01 340);
+  --sidebar-ring: oklch(0.656 0.241 354.308);
+}
+
+/* ==========================================
+   DARK MODE (Professional Dark Theme)
+   ========================================== */
+
+.dark {
+  /* Base - Dark Background */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+
+  /* Card - Slightly Lighter Dark */
+  --card: oklch(0.178 0.005 343.198);
+  --card-foreground: oklch(0.985 0 0);
+
+  /* Popover */
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+
+  /* Primary - Lighter Pink for Dark BG */
+  --primary: oklch(0.718 0.202 349.761);
+  --primary-foreground: oklch(0.145 0 0);
+
+  /* Secondary - Dark Pink Tint */
+  --secondary: oklch(0.269 0.02 343.198);
+  --secondary-foreground: oklch(0.985 0 0);
+
+  /* Muted - Dark Subtle */
+  --muted: oklch(0.269 0.02 343.198);
+  --muted-foreground: oklch(0.708 0 0);
+
+  /* Accent */
+  --accent: oklch(0.269 0.02 343.198);
+  --accent-foreground: oklch(0.985 0 0);
+
+  /* Destructive - Muted Red */
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+
+  /* Border & Input */
+  --border: oklch(0.269 0.02 343.198);
+  --input: oklch(0.269 0.02 343.198);
+  --ring: oklch(0.718 0.202 349.761);
+
+  /* Charts - Adjusted for Dark Mode */
+  --chart-1: oklch(0.718 0.202 349.761);
+  --chart-2: oklch(0.808 0.151 343.198);
+  --chart-3: oklch(0.656 0.241 354.308);
+  --chart-4: oklch(0.948 0.028 342.258);
+  --chart-5: oklch(0.496 0.265 354.308);
+
+  /* Sidebar */
+  --sidebar: oklch(0.178 0.005 343.198);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.718 0.202 349.761);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0.02 343.198);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0.02 343.198);
+  --sidebar-ring: oklch(0.718 0.202 349.761);
+}
+
+/* ==========================================
+   BASE STYLES
+   ========================================== */
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  .container {
+    @apply mx-auto;
+  }
+}
+/* ==========================================
+   CUSTOM UTILITIES
+   ========================================== */
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Add more custom utilities here as needed */
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+
+
+################################################################
+##
+##  COLLECTION SUMMARY
+##
+################################################################
+
+Total Categories: 4
+Total Files Collected: 29
+Skipped Files: 0
+Total Lines: 4905
+Failed Files: 0
+Duration: 12s
+Completed: 2026-01-05 18:10:34
+
+################################################################
+##  END OF COLLECTION
+################################################################

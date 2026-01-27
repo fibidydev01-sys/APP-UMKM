@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { useAuthStore, useIsAuthenticated } from '@/features/auth';
+import { useAuthStore, useIsAuthenticated } from '@/stores';
 import { tenantsApi, getErrorMessage } from '@/lib/api';
 import { toast } from '@/providers';
-import type { PublicTenant, UpdateTenantInput, DashboardStats } from '@umkm/shared/types';
+import type { PublicTenant, UpdateTenantInput, DashboardStats } from '@/types';
 
 // ==========================================
 // USE TENANT HOOK

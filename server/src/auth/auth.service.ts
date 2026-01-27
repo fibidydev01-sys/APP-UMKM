@@ -13,7 +13,6 @@ import { CategoriesService } from '../categories/categories.service'; // ✅ For
 import { RegisterDto, LoginDto } from './dto';
 import { getDefaultLandingConfig } from '../validators/landing-config.validator';
 import type { Tenant, Prisma } from '@prisma/client';
-import type { JwtPayloadInput, AuthResponse } from '@umkm/shared/types';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_SECONDS = 900;
@@ -289,7 +288,7 @@ export class AuthService {
   }
 
   private generateToken(tenant: Tenant): string {
-    const payload: JwtPayloadInput = {
+    const payload = {
       sub: tenant.id,
       email: tenant.email,
       slug: tenant.slug,
@@ -299,6 +298,7 @@ export class AuthService {
   }
 
   private sanitizeTenant(tenant: Tenant) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...result } = tenant;
     return result;
   }

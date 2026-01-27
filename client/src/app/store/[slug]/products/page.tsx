@@ -1,14 +1,14 @@
 import { Suspense } from 'react';
-import { productsApi } from '@/features/products';
+import { productsApi } from '@/lib/api';
 import {
   ProductGrid,
   ProductFilters,
   CategoryList,
   ProductPagination,
   ProductGridSkeleton,
-} from '@/features/store';
+} from '@/components/store';
 import type { Metadata } from 'next';
-import type { Product, PaginatedResponse } from '@umkm/shared/types';
+import type { Product, PaginatedResponse } from '@/types';
 
 // ==========================================
 // STORE PRODUCTS PAGE

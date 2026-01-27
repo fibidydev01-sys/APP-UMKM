@@ -7,7 +7,7 @@ import {
   SeoIndexResult,
   SeoServiceStatus,
   ProductIndexResult,
-} from '@umkm/shared/types';
+} from './interfaces';
 
 // ==========================================
 // SEO SERVICE - MAIN ORCHESTRATOR

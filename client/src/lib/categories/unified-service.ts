@@ -4,13 +4,13 @@ import type {
   PredefinedCategory,
   DynamicCategory,
   CategoryStatsResponse,
-} from '@umkm/shared/types';
+} from '@/types/category';
 
 // ==========================================
 // CONFIG
 // ==========================================
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
 
 // ==========================================
 // FETCH CATEGORIES FROM API
@@ -53,9 +53,12 @@ export async function searchCategories(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
 
   try {
-    const res = await fetch(`${API_URL}/categories/search?q=${encodeURIComponent(query)}`, {
-      next: { revalidate: 60 }, // Cache for 1 minute
-    });
+    const res = await fetch(
+      `${API_URL}/categories/search?q=${encodeURIComponent(query)}`,
+      {
+        next: { revalidate: 60 }, // Cache for 1 minute
+      }
+    );
     if (!res.ok) return [];
     return res.json();
   } catch {

@@ -10,8 +10,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@umkm/shared/ui';
-import { Button } from '@umkm/shared/ui';
+} from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
 
 // ══════════════════════════════════════════════════════════════
 // DATA - V8.1 Copywriting

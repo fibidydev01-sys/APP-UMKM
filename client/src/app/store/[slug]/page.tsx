@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
-import { tenantsApi } from '@/lib/api';
-import { productsApi } from '@/features/products';
-import { normalizeTestimonials } from '@/features/landing-builder';
+import { tenantsApi, productsApi } from '@/lib/api';
+import { normalizeTestimonials } from '@/lib/landing';
 import {
   TenantHero,
   TenantAbout,
@@ -9,9 +8,13 @@ import {
   TenantTestimonials,
   TenantContact,
   TenantCta,
-} from '@/features/landing-blocks';
-import { BreadcrumbSchema, ProductListSchema, generateTenantBreadcrumbs } from '@/features/seo';
-import type { PublicTenant, Product, Testimonial, SectionKey } from '@umkm/shared/types';
+} from '@/components/landing';
+import {
+  BreadcrumbSchema,
+  ProductListSchema,
+  generateTenantBreadcrumbs,
+} from '@/components/seo';
+import type { PublicTenant, Product, Testimonial, SectionKey } from '@/types';
 
 // ==========================================
 // STORE HOMEPAGE - CUSTOM LANDING ONLY
@@ -84,14 +87,7 @@ export default async function StorePage({ params }: StorePageProps) {
   const hasTestimonials = testimonialsEnabled && testimonialItems.length > 0;
 
   // 🚀 Section order - use config.sectionOrder or default order
-  const defaultOrder: SectionKey[] = [
-    'hero',
-    'about',
-    'products',
-    'testimonials',
-    'cta',
-    'contact',
-  ];
+  const defaultOrder: SectionKey[] = ['hero', 'about', 'products', 'testimonials', 'cta', 'contact'];
   const sectionOrder = landingConfig?.sectionOrder || defaultOrder;
 
   // Section enabled checks
@@ -103,12 +99,7 @@ export default async function StorePage({ params }: StorePageProps) {
 
   // Check if any section is enabled
   const hasAnySectionEnabled =
-    heroEnabled ||
-    aboutEnabled ||
-    productsEnabled ||
-    hasTestimonials ||
-    ctaEnabled ||
-    contactEnabled;
+    heroEnabled || aboutEnabled || productsEnabled || hasTestimonials || ctaEnabled || contactEnabled;
 
   // 🚀 Section rendering map
   const sectionComponents: Record<SectionKey, React.ReactNode> = {
@@ -119,17 +110,14 @@ export default async function StorePage({ params }: StorePageProps) {
       <TenantAbout key="about" config={landingConfig?.about} tenant={tenant} />
     ) : null,
     products: productsEnabled ? (
-      <TenantProducts
-        key="products"
-        products={products}
-        config={landingConfig?.products}
-        storeSlug={slug}
-      />
+      <TenantProducts key="products" products={products} config={landingConfig?.products} storeSlug={slug} />
     ) : null,
     testimonials: hasTestimonials ? (
       <TenantTestimonials key="testimonials" config={landingConfig?.testimonials} tenant={tenant} />
     ) : null,
-    cta: ctaEnabled ? <TenantCta key="cta" config={landingConfig?.cta} tenant={tenant} /> : null,
+    cta: ctaEnabled ? (
+      <TenantCta key="cta" config={landingConfig?.cta} tenant={tenant} />
+    ) : null,
     contact: contactEnabled ? (
       <TenantContact key="contact" config={landingConfig?.contact} tenant={tenant} />
     ) : null,
@@ -160,7 +148,9 @@ export default async function StorePage({ params }: StorePageProps) {
         {/* Empty State */}
         {!hasAnySectionEnabled && (
           <div className="text-center py-12 bg-muted/30 rounded-lg">
-            <p className="text-muted-foreground mb-2">Landing page belum dikonfigurasi</p>
+            <p className="text-muted-foreground mb-2">
+              Landing page belum dikonfigurasi
+            </p>
             <p className="text-sm text-muted-foreground">
               Aktifkan section di Dashboard &gt; Settings &gt; Landing
             </p>

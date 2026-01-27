@@ -28,9 +28,7 @@ export class CategoriesService {
     return this.redis.getOrSet(
       cacheKey,
       async () => {
-        this.logger.debug(
-          '[getAllUniqueCategories] Cache MISS - fetching from DB',
-        );
+        this.logger.debug('[getAllUniqueCategories] Cache MISS - fetching from DB');
 
         const result = await this.prisma.tenant.findMany({
           where: {
@@ -46,9 +44,7 @@ export class CategoriesService {
         });
 
         const categories = result.map((t) => t.category);
-        this.logger.debug(
-          `[getAllUniqueCategories] Found ${categories.length} categories`,
-        );
+        this.logger.debug(`[getAllUniqueCategories] Found ${categories.length} categories`);
 
         return categories;
       },
@@ -89,9 +85,7 @@ export class CategoriesService {
           count: r._count.category,
         }));
 
-        this.logger.debug(
-          `[getCategoryStats] Found stats for ${stats.length} categories`,
-        );
+        this.logger.debug(`[getCategoryStats] Found stats for ${stats.length} categories`);
 
         return stats;
       },
@@ -116,9 +110,7 @@ export class CategoriesService {
     return this.redis.getOrSet(
       cacheKey,
       async () => {
-        this.logger.debug(
-          `[searchCategories] Cache MISS for query: "${normalizedQuery}"`,
-        );
+        this.logger.debug(`[searchCategories] Cache MISS for query: "${normalizedQuery}"`);
 
         const result = await this.prisma.tenant.findMany({
           where: {
@@ -139,9 +131,7 @@ export class CategoriesService {
         });
 
         const categories = result.map((t) => t.category);
-        this.logger.debug(
-          `[searchCategories] Found ${categories.length} matches for "${normalizedQuery}"`,
-        );
+        this.logger.debug(`[searchCategories] Found ${categories.length} matches for "${normalizedQuery}"`);
 
         return categories;
       },
@@ -160,9 +150,7 @@ export class CategoriesService {
     return this.redis.getOrSet(
       cacheKey,
       async () => {
-        this.logger.debug(
-          `[categoryExists] Cache MISS for category: "${category}"`,
-        );
+        this.logger.debug(`[categoryExists] Cache MISS for category: "${category}"`);
 
         const count = await this.prisma.tenant.count({
           where: {
@@ -172,9 +160,7 @@ export class CategoriesService {
         });
 
         const exists = count > 0;
-        this.logger.debug(
-          `[categoryExists] Category "${category}" exists: ${exists}`,
-        );
+        this.logger.debug(`[categoryExists] Category "${category}" exists: ${exists}`);
 
         return exists;
       },
@@ -187,9 +173,7 @@ export class CategoriesService {
    * Call this when a tenant is created/updated/deleted
    */
   async invalidateCategoryCache(): Promise<void> {
-    this.logger.log(
-      '[invalidateCategoryCache] Invalidating all category caches',
-    );
+    this.logger.log('[invalidateCategoryCache] Invalidating all category caches');
 
     const keysToDelete = [
       CACHE_KEYS.CATEGORIES_ALL,

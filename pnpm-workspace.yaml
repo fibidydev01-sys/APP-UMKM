@@ -1,6 +1,0 @@
-packages:
-  - 'catalog'
-  - 'client'
-  - 'client-web'
-  - 'server'
-  - 'packages/*'

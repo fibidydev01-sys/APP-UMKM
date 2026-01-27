@@ -3,20 +3,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Save, Plus, Trash2 } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
-import { Input } from '@umkm/shared/ui';
-import { Label } from '@umkm/shared/ui';
-import { Textarea } from '@umkm/shared/ui';
-import { Skeleton } from '@umkm/shared/ui';
-import { PageHeader } from '@/features/dashboard';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { About1 } from '@/features/landing-blocks/components/blocks';
+import { About1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { FeatureItem, Tenant } from '@umkm/shared/types';
+import type { FeatureItem, Tenant } from '@/types';
 
 export default function AboutPage() {
   const router = useRouter();
@@ -97,7 +97,11 @@ export default function AboutPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push('/dashboard/settings')}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -209,9 +213,7 @@ export default function AboutPage() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => {
-                                  const updated = formData.aboutFeatures.filter(
-                                    (_, i) => i !== index
-                                  );
+                                  const updated = formData.aboutFeatures.filter((_, i) => i !== index);
                                   updateFormData('aboutFeatures', updated);
                                 }}
                               >
@@ -263,10 +265,7 @@ export default function AboutPage() {
                                     value={feature.description}
                                     onChange={(e) => {
                                       const updated = [...formData.aboutFeatures];
-                                      updated[index] = {
-                                        ...updated[index],
-                                        description: e.target.value,
-                                      };
+                                      updated[index] = { ...updated[index], description: e.target.value };
                                       updateFormData('aboutFeatures', updated);
                                     }}
                                   />
@@ -288,11 +287,7 @@ export default function AboutPage() {
                   Pratinjau real-time dari About Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
-                  }}
-                />
+                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <About1
                     title={formData.aboutTitle || 'Tentang Kami'}

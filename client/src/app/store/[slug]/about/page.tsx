@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@/lib/api';
-import { TenantAbout } from '@/features/landing-blocks';
-import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/features/seo';
-import type { PublicTenant } from '@umkm/shared/types';
+import { TenantAbout } from '@/components/landing';
+import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/components/seo';
+import type { PublicTenant } from '@/types';
 
 // ==========================================
 // ABOUT PAGE
@@ -42,11 +42,7 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
     openGraph: {
       title: `Tentang ${tenant.name}`,
       description,
-      images: tenant.heroBackgroundImage
-        ? [tenant.heroBackgroundImage]
-        : tenant.logo
-          ? [tenant.logo]
-          : [],
+      images: tenant.heroBackgroundImage ? [tenant.heroBackgroundImage] : tenant.logo ? [tenant.logo] : [],
     },
   };
 }
@@ -79,12 +75,17 @@ export default async function AboutPage({ params }: AboutPageProps) {
             {aboutConfig?.title || 'Tentang Kami'}
           </h1>
           {aboutConfig?.subtitle && (
-            <p className="text-lg text-muted-foreground">{aboutConfig.subtitle}</p>
+            <p className="text-lg text-muted-foreground">
+              {aboutConfig.subtitle}
+            </p>
           )}
         </div>
 
         {/* About Content */}
-        <TenantAbout config={aboutConfig} tenant={tenant} />
+        <TenantAbout
+          config={aboutConfig}
+          tenant={tenant}
+        />
       </div>
     </>
   );

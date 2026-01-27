@@ -1,6 +1,0 @@
-// ==========================================
-// AUTH HOOKS - Exports
-// ==========================================
-
-export * from './use-auth';
-export * from './use-register-wizard';

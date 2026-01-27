@@ -5,11 +5,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { PageHeader } from '@/features/dashboard';
-import { OrdersTable, ordersApi, OrderListItem } from '@/features/orders';
-import { Skeleton } from '@umkm/shared/ui';
-import { getErrorMessage } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/dashboard';
+import { OrdersTable } from '@/components/orders';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ordersApi, getErrorMessage } from '@/lib/api';
+import type { OrderListItem } from '@/types';
 
 // ==========================================
 // ORDERS LIST PAGE (Client Component)

@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { tenantsApi } from '@/lib/api';
-import { normalizeTestimonials } from '@/features/landing-builder';
-import { TenantTestimonials } from '@/features/landing-blocks';
-import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/features/seo';
+import { normalizeTestimonials } from '@/lib/landing';
+import { TenantTestimonials } from '@/components/landing';
+import { BreadcrumbSchema, generateTenantBreadcrumbs } from '@/components/seo';
 import { Star } from 'lucide-react';
-import type { PublicTenant, Testimonial } from '@umkm/shared/types';
+import type { PublicTenant, Testimonial } from '@/types';
 
 // ==========================================
 // TESTIMONIALS PAGE
@@ -37,11 +37,7 @@ export async function generateMetadata({ params }: TestimonialsPageProps): Promi
     openGraph: {
       title: `Review ${tenant.name}`,
       description: `Testimoni pelanggan ${tenant.name}`,
-      images: tenant.heroBackgroundImage
-        ? [tenant.heroBackgroundImage]
-        : tenant.logo
-          ? [tenant.logo]
-          : [],
+      images: tenant.heroBackgroundImage ? [tenant.heroBackgroundImage] : tenant.logo ? [tenant.logo] : [],
     },
   };
 }
@@ -62,10 +58,9 @@ export default async function TestimonialsPage({ params }: TestimonialsPageProps
 
   // Calculate stats
   const totalReviews = testimonialItems.length;
-  const avgRating =
-    totalReviews > 0
-      ? (testimonialItems.reduce((acc, t) => acc + (t.rating || 5), 0) / totalReviews).toFixed(1)
-      : '0';
+  const avgRating = totalReviews > 0
+    ? (testimonialItems.reduce((acc, t) => acc + (t.rating || 5), 0) / totalReviews).toFixed(1)
+    : '0';
 
   const breadcrumbs = [
     ...generateTenantBreadcrumbs({ name: tenant.name, slug: tenant.slug }),
@@ -83,7 +78,9 @@ export default async function TestimonialsPage({ params }: TestimonialsPageProps
             {testimonialConfig?.title || 'Testimoni Pelanggan'}
           </h1>
           {testimonialConfig?.subtitle && (
-            <p className="text-lg text-muted-foreground mb-6">{testimonialConfig.subtitle}</p>
+            <p className="text-lg text-muted-foreground mb-6">
+              {testimonialConfig.subtitle}
+            </p>
           )}
 
           {/* Stats */}
@@ -94,28 +91,34 @@ export default async function TestimonialsPage({ params }: TestimonialsPageProps
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      className={`h-5 w-5 ${
-                        star <= Math.round(Number(avgRating))
-                          ? 'fill-yellow-400 text-yellow-400'
-                          : 'text-muted-foreground'
-                      }`}
+                      className={`h-5 w-5 ${star <= Math.round(Number(avgRating))
+                        ? 'fill-yellow-400 text-yellow-400'
+                        : 'text-muted-foreground'
+                        }`}
                     />
                   ))}
                 </div>
                 <span className="font-semibold text-lg">{avgRating}</span>
               </div>
               <span className="text-muted-foreground">•</span>
-              <span className="text-muted-foreground">{totalReviews} review</span>
+              <span className="text-muted-foreground">
+                {totalReviews} review
+              </span>
             </div>
           )}
         </div>
 
         {/* Testimonials Content */}
         {totalReviews > 0 ? (
-          <TenantTestimonials config={testimonialConfig} tenant={tenant} />
+          <TenantTestimonials
+            config={testimonialConfig}
+            tenant={tenant}
+          />
         ) : (
           <div className="text-center py-12 bg-muted/30 rounded-lg">
-            <p className="text-muted-foreground">Belum ada testimoni</p>
+            <p className="text-muted-foreground">
+              Belum ada testimoni
+            </p>
           </div>
         )}
       </div>

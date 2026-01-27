@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { google } from 'googleapis';
 import { KeyManagerService } from '../managers/key-manager.service';
 import { QuotaTrackerService } from '../managers/quota-tracker.service';
-import { GoogleIndexingResult, KeyStats } from '@umkm/shared/types';
+import { GoogleIndexingResult, KeyStats } from '../interfaces';
 
 // ==========================================
 // GOOGLE INDEXING SERVICE

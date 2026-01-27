@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Store, ArrowRight, AlertCircle, Loader2 } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
+import { Button } from '@/components/ui/button';
 import {
   DiscoverHeader,
   DiscoverHero,
@@ -19,14 +19,14 @@ import {
   TenantCardSkeleton,
   SearchResultsHeader,
   NoResults,
-} from '@/features/discover';
-import type { ShowcaseTenant } from '@umkm/shared/types';
+} from '@/components/discover';
+import type { ShowcaseTenant } from '@/types/discover';
 import {
   fetchAllTenants,
   getCategoryLabel,
   sortTenants,
   CACHE_DURATION,
-} from '@/features/discover';
+} from '@/lib/discover';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

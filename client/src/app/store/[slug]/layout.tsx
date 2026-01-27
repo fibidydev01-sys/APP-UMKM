@@ -1,11 +1,11 @@
 import { tenantsApi } from '@/lib/api';
-import { StoreHeader, StoreFooter, StoreNotFound } from '@/features/store';
-import { LocalBusinessSchema } from '@/features/seo';
-import { TemplateProvider } from '@/lib/landing-templates';
+import { StoreHeader, StoreFooter, StoreNotFound } from '@/components/store';
+import { LocalBusinessSchema } from '@/components/seo';
+import { TemplateProvider } from '@/lib/landing';
 import { generateThemeCSS } from '@/lib/theme';
-import { createTenantMetadata } from '@/features/seo';
+import { createTenantMetadata } from '@/lib/seo';
 import type { Metadata } from 'next';
-import type { PublicTenant } from '@umkm/shared/types';
+import type { PublicTenant } from '@/types';
 
 // ==========================================
 // STORE LAYOUT
@@ -71,7 +71,10 @@ export async function generateMetadata({
 // STORE LAYOUT COMPONENT
 // ==========================================
 
-export default async function StoreLayout({ children, params }: StoreLayoutProps) {
+export default async function StoreLayout({
+  children,
+  params,
+}: StoreLayoutProps) {
   const { slug } = await params;
   const tenant = await getTenant(slug);
 
@@ -110,7 +113,7 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
             phone: tenant.phone,
             address: tenant.address,
             logo: tenant.logo,
-            banner: tenant.heroBackgroundImage,
+            heroBackgroundImage: tenant.heroBackgroundImage,
             socialLinks: tenant.socialLinks,
           }}
         />
@@ -119,7 +122,9 @@ export default async function StoreLayout({ children, params }: StoreLayoutProps
 
         {/* 🚀 WRAP CHILDREN WITH TEMPLATE PROVIDER */}
         <main className="flex-1">
-          <TemplateProvider initialTemplateId={templateId}>{children}</TemplateProvider>
+          <TemplateProvider initialTemplateId={templateId}>
+            {children}
+          </TemplateProvider>
         </main>
 
         <StoreFooter tenant={tenant} />

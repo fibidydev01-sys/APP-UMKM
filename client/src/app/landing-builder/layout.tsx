@@ -5,7 +5,7 @@
  * Protected with AuthGuard - requires authentication
  */
 
-import { AuthGuard } from '@/features/auth';
+import { AuthGuard } from '@/components/auth';
 
 export default function LandingBuilderLayout({
   children,

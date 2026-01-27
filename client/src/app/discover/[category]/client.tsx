@@ -12,16 +12,16 @@ import {
   Loader2,
   ArrowLeft,
 } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
-import { Skeleton } from '@umkm/shared/ui';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   DiscoverHeader,
   CategoryFilterBar,
   MinimalFooter,
   TenantPreviewDrawer,
-} from '@/features/discover';
-import type { ShowcaseTenant } from '@umkm/shared/types';
+} from '@/components/discover';
+import type { ShowcaseTenant } from '@/types/discover';
 import { CATEGORY_CONFIG } from '@/config/categories';
 import {
   fetchTenantsByCategory,
@@ -30,7 +30,7 @@ import {
   categoryKeyToSlug,
   sortTenants,
   MAX_TENANTS_CATEGORY,
-} from '@/features/discover';
+} from '@/lib/discover';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES

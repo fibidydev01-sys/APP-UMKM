@@ -2,8 +2,8 @@
 // Route: /dashboard/customers/new
 // Purpose: Create new customer form
 
-import { PageHeader } from '@/features/dashboard';
-import { CustomerForm } from '@/features/customers';
+import { PageHeader } from '@/components/dashboard';
+import { CustomerForm } from '@/components/customers';
 import type { Metadata } from 'next';
 
 // ==========================================

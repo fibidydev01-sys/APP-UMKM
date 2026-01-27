@@ -8,12 +8,13 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { PageHeader } from '@/features/dashboard';
-import { OrderDetail, ordersApi, Order } from '@/features/orders';
-import { Skeleton } from '@umkm/shared/ui';
-import { Button } from '@umkm/shared/ui';
-import { Card, CardContent, CardHeader } from '@umkm/shared/ui';
-import { getErrorMessage } from '@/lib/api';
+import { PageHeader } from '@/components/dashboard';
+import { OrderDetail } from '@/components/orders';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ordersApi, getErrorMessage } from '@/lib/api';
+import type { Order } from '@/types';
 
 // ==========================================
 // ORDER DETAIL PAGE (Client Component)

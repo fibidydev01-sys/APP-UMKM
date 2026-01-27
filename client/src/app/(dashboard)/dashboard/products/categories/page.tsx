@@ -8,24 +8,23 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Tag, Package, ArrowRight, Info } from 'lucide-react';
-import { PageHeader } from '@/features/dashboard';
-import { Button } from '@umkm/shared/ui';
-import { Skeleton } from '@umkm/shared/ui';
+import { PageHeader } from '@/components/dashboard';
+import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@umkm/shared/ui';
+} from '@/components/ui/card';
 import {
   Alert,
   AlertDescription,
   AlertTitle,
-} from '@umkm/shared/ui';
-import { Badge } from '@umkm/shared/ui';
-import { productsApi } from '@/features/products';
-import { getErrorMessage } from '@/lib/api';
+} from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { productsApi, getErrorMessage } from '@/lib/api';
 
 // ==========================================
 // CATEGORIES PAGE (Client Component)

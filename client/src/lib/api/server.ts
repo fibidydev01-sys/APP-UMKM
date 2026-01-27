@@ -7,7 +7,7 @@ import type {
   Order,
   DashboardStats,
   PaginatedResponse,
-} from '@umkm/shared/types';
+} from '@/types';
 
 // ==========================================
 // SERVER-SIDE API CLIENT

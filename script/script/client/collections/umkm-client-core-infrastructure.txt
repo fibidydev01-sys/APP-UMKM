@@ -1,0 +1,7400 @@
+################################################################
+##
+##  UMKM MULTI-TENANT SYSTEM
+##  CLIENT SOURCE CODE COLLECTION
+##
+##  Collection Type: CORE_INFRASTRUCTURE
+##  Generated: 2026-01-05 18:36:13
+##  Script Version: 3.1
+##  Project: UMKM Multi-Tenant E-Commerce Platform (Next.js)
+##
+################################################################
+
+This collection contains CORE & INFRASTRUCTURE:
+- lib/ - Core utilities & API clients
+  ├── api/ - API client functions (auth, customers, orders, products, tenants)
+  ├── cloudinary.ts - Image upload utilities
+  ├── format.ts - Formatting utilities
+  ├── invoice.ts - Invoice generation
+  ├── utils.ts - General utilities
+  └── validations.ts - Zod validation schemas
+- hooks/ - Custom React hooks
+- stores/ - Zustand state management
+- types/ - TypeScript type definitions
+- config/ - App configuration
+- providers/ - React context providers
+
+################################################################
+
+
+################################################################
+##
+##  CATEGORY: Library & Utilities
+##  Path: src/lib
+##
+################################################################
+
+================================================
+FILE: src/lib/cloudinary.ts
+Lines: 117
+================================================
+
+// ==========================================
+// CLOUDINARY UTILITIES
+// ==========================================
+
+/**
+ * Get optimized Cloudinary URL with transformations
+ */
+export function getCloudinaryUrl(
+  publicIdOrUrl: string,
+  options: {
+    width?: number;
+    height?: number;
+    crop?: 'fill' | 'fit' | 'limit' | 'thumb' | 'scale';
+    gravity?: 'auto' | 'face' | 'center';
+    quality?: 'auto' | 'auto:eco' | 'auto:good' | 'auto:best' | number;
+    format?: 'auto' | 'webp' | 'jpg' | 'png';
+  } = {}
+): string {
+  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+
+  if (!cloudName) {
+    console.warn('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is not set');
+    return publicIdOrUrl;
+  }
+
+  // If it's already a full URL, extract the public_id
+  let publicId = publicIdOrUrl;
+  if (publicIdOrUrl.includes('cloudinary.com')) {
+    const match = publicIdOrUrl.match(/\/upload\/(?:v\d+\/)?(.+)$/);
+    if (match) {
+      publicId = match[1];
+      // Remove file extension if present
+      publicId = publicId.replace(/\.[^/.]+$/, '');
+    }
+  }
+
+  // Build transformation string
+  const transforms: string[] = [];
+
+  if (options.width) transforms.push(`w_${options.width}`);
+  if (options.height) transforms.push(`h_${options.height}`);
+  if (options.crop) transforms.push(`c_${options.crop}`);
+  if (options.gravity) transforms.push(`g_${options.gravity}`);
+  if (options.quality) transforms.push(`q_${options.quality}`);
+  if (options.format) transforms.push(`f_${options.format}`);
+
+  const transformString = transforms.length > 0 ? transforms.join(',') + '/' : '';
+
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${transformString}${publicId}`;
+}
+
+/**
+ * Get thumbnail URL (400x400, cropped)
+ */
+export function getThumbnailUrl(publicIdOrUrl: string): string {
+  return getCloudinaryUrl(publicIdOrUrl, {
+    width: 400,
+    height: 400,
+    crop: 'fill',
+    gravity: 'auto',
+    quality: 'auto',
+    format: 'auto',
+  });
+}
+
+/**
+ * Get product image URL (800px max width)
+ */
+export function getProductImageUrl(publicIdOrUrl: string): string {
+  return getCloudinaryUrl(publicIdOrUrl, {
+    width: 800,
+    crop: 'limit',
+    quality: 'auto',
+    format: 'auto',
+  });
+}
+
+/**
+ * Get banner URL (1200px width)
+ */
+export function getBannerUrl(publicIdOrUrl: string): string {
+  return getCloudinaryUrl(publicIdOrUrl, {
+    width: 1200,
+    crop: 'limit',
+    quality: 'auto',
+    format: 'auto',
+  });
+}
+
+/**
+ * Get logo URL (200x200)
+ */
+export function getLogoUrl(publicIdOrUrl: string): string {
+  return getCloudinaryUrl(publicIdOrUrl, {
+    width: 200,
+    height: 200,
+    crop: 'fit',
+    quality: 'auto',
+    format: 'auto',
+  });
+}
+
+/**
+ * Check if URL is a Cloudinary URL
+ */
+export function isCloudinaryUrl(url: string): boolean {
+  return url.includes('res.cloudinary.com');
+}
+
+/**
+ * Extract public_id from Cloudinary URL
+ */
+export function extractPublicId(url: string): string {
+  if (!isCloudinaryUrl(url)) return url;
+
+  const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[^/.]+)?$/);
+  return match ? match[1] : url;
+}
+
+================================================
+FILE: src/lib/cn.ts
+Lines: 9
+================================================
+
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Merge Tailwind classes with clsx
+ * Usage: cn('px-4 py-2', conditional && 'bg-primary', className)
+ */
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+================================================
+FILE: src/lib/format.ts
+Lines: 198
+================================================
+
+// ==========================================
+// FORMAT UTILITIES
+// ==========================================
+
+/**
+ * Format number to Indonesian Rupiah
+ */
+export function formatPrice(price: number): string {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+/**
+ * Format price to short format (Rp 1.5jt)
+ */
+export function formatPriceShort(price: number): string {
+  if (price >= 1000000000) {
+    return `Rp ${(price / 1000000000).toFixed(1)}M`;
+  }
+  if (price >= 1000000) {
+    return `Rp ${(price / 1000000).toFixed(1)}jt`;
+  }
+  if (price >= 1000) {
+    return `Rp ${(price / 1000).toFixed(0)}rb`;
+  }
+  return `Rp ${price}`;
+}
+
+/**
+ * Format date to Indonesian format
+ */
+export function formatDate(date: string | Date): string {
+  return new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  }).format(new Date(date));
+}
+
+/**
+ * Format date to short format
+ */
+export function formatDateShort(date: string | Date): string {
+  return new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(date));
+}
+
+/**
+ * Format datetime
+ */
+export function formatDateTime(date: string | Date): string {
+  return new Intl.DateTimeFormat('id-ID', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(date));
+}
+
+/**
+ * Format relative time (e.g., "5 menit lalu")
+ */
+export function formatRelativeTime(date: string | Date): string {
+  const now = new Date();
+  const then = new Date(date);
+  const diffMs = now.getTime() - then.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMins < 1) return 'Baru saja';
+  if (diffMins < 60) return `${diffMins} menit lalu`;
+  if (diffHours < 24) return `${diffHours} jam lalu`;
+  if (diffDays < 7) return `${diffDays} hari lalu`;
+  return formatDateShort(date);
+}
+
+/**
+ * Format phone number for display
+ */
+export function formatPhone(phone: string): string {
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.startsWith('62')) {
+    const number = cleaned.slice(2);
+    return `+62 ${number.slice(0, 3)}-${number.slice(3, 7)}-${number.slice(7)}`;
+  }
+  return phone;
+}
+
+/**
+ * Normalize phone number to 62xxx format
+ */
+export function normalizePhone(phone: string): string {
+  let cleaned = phone.replace(/\D/g, '');
+  if (cleaned.startsWith('0')) {
+    cleaned = '62' + cleaned.slice(1);
+  }
+  if (!cleaned.startsWith('62')) {
+    cleaned = '62' + cleaned;
+  }
+  return cleaned;
+}
+
+/**
+ * Generate WhatsApp link
+ */
+export function generateWhatsAppLink(phone: string, message: string): string {
+  const cleanPhone = phone.replace(/\D/g, '');
+  const encodedMessage = encodeURIComponent(message);
+  return `https://wa.me/${cleanPhone}?text=${encodedMessage}`;
+}
+
+/**
+ * Generate order WhatsApp message
+ */
+export function generateOrderWhatsAppMessage(
+  storeName: string,
+  products: Array<{ name: string; qty: number; price: number }>
+): string {
+  const itemsList = products
+    .map((p) => `• ${p.name} (${p.qty}x) - ${formatPrice(p.price * p.qty)}`)
+    .join('\n');
+
+  const total = products.reduce((sum, p) => sum + p.price * p.qty, 0);
+
+  return `Halo ${storeName},
+
+Saya ingin memesan:
+${itemsList}
+
+Total: ${formatPrice(total)}
+
+Mohon konfirmasi ketersediaan.
+Terima kasih!`;
+}
+
+/**
+ * Slugify text
+ */
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+/**
+ * Get initials from name
+ */
+export function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+/**
+ * Truncate text
+ */
+export function truncate(text: string, length: number): string {
+  if (text.length <= length) return text;
+  return text.slice(0, length) + '...';
+}
+
+/**
+ * Get order status color class
+ */
+export function getOrderStatusColor(status: string): string {
+  const colors: Record<string, string> = {
+    PENDING: 'bg-yellow-100 text-yellow-800',
+    PROCESSING: 'bg-blue-100 text-blue-800',
+    COMPLETED: 'bg-green-100 text-green-800',
+    CANCELLED: 'bg-red-100 text-red-800',
+  };
+  return colors[status] || 'bg-gray-100 text-gray-800';
+}
+
+/**
+ * Get payment status color class
+ */
+export function getPaymentStatusColor(status: string): string {
+  const colors: Record<string, string> = {
+    PENDING: 'bg-yellow-100 text-yellow-800',
+    PAID: 'bg-green-100 text-green-800',
+    PARTIAL: 'bg-orange-100 text-orange-800',
+    FAILED: 'bg-red-100 text-red-800',
+  };
+  return colors[status] || 'bg-gray-100 text-gray-800';
+}
+
+================================================
+FILE: src/lib/index.ts
+Lines: 20
+================================================
+
+// ==========================================
+// LIB INDEX - Export all utilities
+// ==========================================
+
+// Classname utility
+export { cn } from './cn';
+
+// Format utilities
+export * from './format';
+
+// Validation schemas
+export * from './validations';
+
+// API client & services
+export * from './api';
+
+// Cloudinary utilities
+export * from './cloudinary';
+
+// Invoice utilities (NEW)
+export * from './invoice';
+
+================================================
+FILE: src/lib/invoice.ts
+Lines: 174
+================================================
+
+// ==========================================
+// INVOICE UTILITIES - FINAL
+// ==========================================
+
+import { formatPrice, formatDate, generateWhatsAppLink } from './format';
+import type { Order } from '@/types';
+
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'fibidy_unsigned';
+const INVOICE_FOLDER = 'fibidy/invoices';
+
+/**
+ * Generate invoice image dengan margin/padding
+ */
+export async function generateInvoiceImage(element: HTMLElement): Promise<Blob> {
+  const html2canvas = (await import('html2canvas')).default;
+
+  // Create container with padding for margin effect
+  const container = document.createElement('div');
+  container.style.cssText = `
+    position: fixed;
+    left: -9999px;
+    top: 0;
+    z-index: -1;
+    background: #ffffff;
+    padding: 40px;
+  `;
+
+  const clone = element.cloneNode(true) as HTMLElement;
+  clone.style.cssText = `
+    background-color: #ffffff !important;
+    color: #111827 !important;
+    font-family: Arial, sans-serif !important;
+  `;
+
+  container.appendChild(clone);
+  document.body.appendChild(container);
+
+  try {
+    const canvas = await html2canvas(container, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff',
+      logging: false,
+      onclone: (clonedDoc) => {
+        const styles = clonedDoc.querySelectorAll('style, link[rel="stylesheet"]');
+        styles.forEach((style) => {
+          if (style.tagName === 'LINK') {
+            style.remove();
+          }
+        });
+      },
+    });
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        (blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error('Failed to generate invoice image'));
+        },
+        'image/png',
+        0.95
+      );
+    });
+  } finally {
+    document.body.removeChild(container);
+  }
+}
+
+/**
+ * Upload invoice image ke Cloudinary
+ */
+export async function uploadInvoiceToCloudinary(
+  blob: Blob,
+  orderNumber: string
+): Promise<string> {
+  if (!CLOUDINARY_CLOUD_NAME) {
+    throw new Error('Cloudinary cloud name not configured');
+  }
+
+  const formData = new FormData();
+  const filename = `invoice-${orderNumber}-${Date.now()}`;
+
+  formData.append('file', blob, `${filename}.png`);
+  formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  formData.append('folder', INVOICE_FOLDER);
+  formData.append('public_id', filename);
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: 'POST', body: formData }
+  );
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}));
+    throw new Error(error.message || 'Failed to upload invoice to Cloudinary');
+  }
+
+  const data = await response.json();
+  return data.secure_url;
+}
+
+/**
+ * Generate WhatsApp message untuk invoice
+ */
+export function generateInvoiceWhatsAppMessage(
+  order: Order,
+  storeName: string,
+  invoiceUrl?: string
+): string {
+  const itemsList = order.items
+    .map((item) => `• ${item.name} (${item.qty}x) - ${formatPrice(item.subtotal)}`)
+    .join('\n');
+
+  let message = `Halo ${order.customerName || 'Pelanggan'},
+
+Terima kasih atas pesanan Anda di *${storeName}*!
+
+*Invoice: ${order.orderNumber}*
+Tanggal: ${formatDate(order.createdAt)}
+
+*Detail Pesanan:*
+${itemsList}
+
+${order.discount > 0 ? `Diskon: -${formatPrice(order.discount)}\n` : ''}${order.tax > 0 ? `Pajak: ${formatPrice(order.tax)}\n` : ''}*Total: ${formatPrice(order.total)}*
+
+Status Pembayaran: ${getPaymentStatusText(order.paymentStatus)}`;
+
+  if (invoiceUrl) {
+    message += `\n\nLihat Invoice:\n${invoiceUrl}`;
+  }
+
+  message += `\n\n---\nPowered by fibidy.com`;
+
+  return message;
+}
+
+function getPaymentStatusText(status: string): string {
+  const statusMap: Record<string, string> = {
+    PENDING: 'Menunggu Pembayaran',
+    PAID: 'Lunas',
+    PARTIAL: 'Sebagian Dibayar',
+    FAILED: 'Gagal',
+  };
+  return statusMap[status] || status;
+}
+
+/**
+ * Download invoice image locally
+ */
+export function downloadInvoiceImage(blob: Blob, orderNumber: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `invoice-${orderNumber}.png`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Open WhatsApp with invoice message
+ */
+export function openWhatsAppWithInvoice(
+  phone: string,
+  order: Order,
+  storeName: string,
+  invoiceUrl?: string
+): void {
+  const message = generateInvoiceWhatsAppMessage(order, storeName, invoiceUrl);
+  const whatsappUrl = generateWhatsAppLink(phone, message);
+  window.open(whatsappUrl, '_blank');
+}
+
+================================================
+FILE: src/lib/og-utils.ts
+Lines: 72
+================================================
+
+// ==========================================
+// OPEN GRAPH IMAGE UTILITIES
+// ==========================================
+
+// Standard OG Image dimensions
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;
+
+// Color palette (Pink theme - Fibidy branding)
+export const OG_COLORS = {
+  // Primary colors
+  primary: '#ec4899',
+  primaryDark: '#db2777',
+  primaryLight: '#f472b6',
+
+  // Background colors
+  background: '#ffffff',
+  backgroundDark: '#0f172a',
+  backgroundGray: '#f8fafc',
+
+  // Text colors
+  text: '#1e293b',
+  textLight: '#64748b',
+  textWhite: '#ffffff',
+
+  // Accent colors
+  success: '#10b981',
+  warning: '#f59e0b',
+  error: '#ef4444',
+} as const;
+
+// Font sizes for OG images
+export const OG_FONTS = {
+  title: '56px',
+  titleLarge: '72px',
+  subtitle: '32px',
+  body: '24px',
+  small: '20px',
+  tiny: '16px',
+} as const;
+
+/**
+ * Format price for display in OG images
+ */
+export function formatOgPrice(price: number): string {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(price);
+}
+
+/**
+ * Truncate text for OG images
+ */
+export function truncateOgText(text: string, maxLength: number): string {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - 3).trim() + '...';
+}
+
+/**
+ * Get initials from name (for avatar fallback)
+ */
+export function getOgInitials(name: string): string {
+  if (!name) return '?';
+  const words = name.trim().split(' ');
+  if (words.length === 1) {
+    return words[0].charAt(0).toUpperCase();
+  }
+  return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
+}
+
+================================================
+FILE: src/lib/schema.ts
+Lines: 332
+================================================
+
+import { seoConfig } from '@/config/seo.config';
+import { getFullUrl, getTenantUrl } from '@/lib/seo';
+
+// ==========================================
+// SCHEMA.ORG GENERATORS
+// ==========================================
+
+/**
+ * Organization Schema (Platform level)
+ * https://schema.org/Organization
+ */
+export function generateOrganizationSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${seoConfig.siteUrl}/#organization`,
+    name: seoConfig.organization.name,
+    legalName: seoConfig.organization.legalName,
+    url: seoConfig.organization.url,
+    logo: {
+      '@type': 'ImageObject',
+      url: seoConfig.organization.logo,
+      width: 512,
+      height: 512,
+    },
+    foundingDate: seoConfig.organization.foundingDate,
+    address: {
+      '@type': 'PostalAddress',
+      addressCountry: seoConfig.organization.address.addressCountry,
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: seoConfig.organization.contactPoint.contactType,
+      availableLanguage: seoConfig.organization.contactPoint.availableLanguage,
+    },
+    sameAs: seoConfig.organization.sameAs,
+  };
+}
+
+/**
+ * WebSite Schema with SearchAction
+ * https://schema.org/WebSite
+ */
+export function generateWebSiteSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${seoConfig.siteUrl}/#website`,
+    name: seoConfig.siteName,
+    url: seoConfig.siteUrl,
+    description: seoConfig.defaultDescription,
+    publisher: {
+      '@id': `${seoConfig.siteUrl}/#organization`,
+    },
+    potentialAction: [
+      {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${seoConfig.siteUrl}/search?q={search_term_string}`,
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    ],
+    inLanguage: seoConfig.language,
+  };
+}
+
+/**
+ * LocalBusiness Schema (Tenant level)
+ * https://schema.org/LocalBusiness
+ */
+export function generateLocalBusinessSchema(tenant: {
+  name: string;
+  slug: string;
+  description?: string | null;
+  category?: string;
+  whatsapp: string;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  logo?: string | null;
+  banner?: string | null;
+  socialLinks?: {
+    instagram?: string;
+    facebook?: string;
+    tiktok?: string;
+  } | null;
+}) {
+  const tenantUrl = getTenantUrl(tenant.slug);
+
+  // Collect social links
+  const sameAs: string[] = [];
+  if (tenant.socialLinks?.instagram) sameAs.push(tenant.socialLinks.instagram);
+  if (tenant.socialLinks?.facebook) sameAs.push(tenant.socialLinks.facebook);
+  if (tenant.socialLinks?.tiktok) sameAs.push(tenant.socialLinks.tiktok);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${tenantUrl}/#business`,
+    name: tenant.name,
+    url: tenantUrl,
+    description: tenant.description || `${tenant.name} - Toko online terpercaya`,
+    image: tenant.banner || tenant.logo || getFullUrl(seoConfig.defaultOgImage),
+    logo: tenant.logo || seoConfig.organization.logo,
+    telephone: tenant.phone || `+${tenant.whatsapp}`,
+    email: tenant.email || undefined,
+    address: tenant.address ? {
+      '@type': 'PostalAddress',
+      streetAddress: tenant.address,
+      addressCountry: 'ID',
+    } : undefined,
+    priceRange: '$$',
+    paymentAccepted: 'Cash, Bank Transfer, E-Wallet',
+    currenciesAccepted: 'IDR',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Indonesia',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: `+${tenant.whatsapp}`,
+      contactType: 'customer service',
+      availableLanguage: ['Indonesian'],
+    },
+    sameAs: sameAs.length > 0 ? sameAs : undefined,
+  };
+}
+
+/**
+ * Product Schema
+ * https://schema.org/Product
+ */
+export function generateProductSchema(
+  product: {
+    id: string;
+    name: string;
+    slug?: string | null;
+    description?: string | null;
+    price: number;
+    comparePrice?: number | null;
+    images?: string[];
+    category?: string | null;
+    sku?: string | null;
+    stock?: number | null;
+    trackStock?: boolean;
+  },
+  tenant: {
+    name: string;
+    slug: string;
+    whatsapp: string;
+  }
+) {
+  const productPath = product.slug ? `/p/${product.slug}` : `/product/${product.id}`;
+  const productUrl = getTenantUrl(tenant.slug, productPath);
+  const tenantUrl = getTenantUrl(tenant.slug);
+  const inStock = product.trackStock ? (product.stock ?? 0) > 0 : true;
+
+  // Price valid for 1 year
+  const priceValidUntil = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `${productUrl}/#product`,
+    name: product.name,
+    description: product.description || `${product.name} dari ${tenant.name}`,
+    url: productUrl,
+    image: product.images?.[0] || getFullUrl(seoConfig.defaultOgImage),
+    sku: product.sku || product.id,
+    category: product.category || undefined,
+    brand: {
+      '@type': 'Brand',
+      name: tenant.name,
+    },
+    manufacturer: {
+      '@type': 'Organization',
+      name: tenant.name,
+    },
+    offers: {
+      '@type': 'Offer',
+      url: productUrl,
+      priceCurrency: 'IDR',
+      price: product.price,
+      priceValidUntil: priceValidUntil,
+      availability: inStock
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      itemCondition: 'https://schema.org/NewCondition',
+      seller: {
+        '@type': 'Organization',
+        name: tenant.name,
+        url: tenantUrl,
+      },
+    },
+  };
+}
+
+/**
+ * BreadcrumbList Schema
+ * https://schema.org/BreadcrumbList
+ */
+export function generateBreadcrumbSchema(
+  items: Array<{ name: string; url: string }>
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url.startsWith('http') ? item.url : getFullUrl(item.url),
+    })),
+  };
+}
+
+/**
+ * ItemList Schema (Product List)
+ * https://schema.org/ItemList
+ */
+export function generateProductListSchema(
+  products: Array<{
+    id: string;
+    name: string;
+    slug?: string | null;
+    price: number;
+    images?: string[];
+  }>,
+  tenant: {
+    name: string;
+    slug: string;
+  },
+  listName: string = 'Daftar Produk'
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: listName,
+    numberOfItems: products.length,
+    itemListElement: products.map((product, index) => {
+      const productPath = product.slug ? `/p/${product.slug}` : `/product/${product.id}`;
+      return {
+        '@type': 'ListItem',
+        position: index + 1,
+        url: getTenantUrl(tenant.slug, productPath),
+        name: product.name,
+        image: product.images?.[0] || undefined,
+      };
+    }),
+  };
+}
+
+/**
+ * FAQPage Schema
+ * https://schema.org/FAQPage
+ */
+export function generateFAQSchema(
+  faqs: Array<{ question: string; answer: string }>
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+}
+
+/**
+ * WebPage Schema
+ * https://schema.org/WebPage
+ */
+export function generateWebPageSchema(page: {
+  name: string;
+  description: string;
+  url: string;
+  datePublished?: string;
+  dateModified?: string;
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${getFullUrl(page.url)}/#webpage`,
+    name: page.name,
+    description: page.description,
+    url: getFullUrl(page.url),
+    isPartOf: {
+      '@id': `${seoConfig.siteUrl}/#website`,
+    },
+    about: {
+      '@id': `${seoConfig.siteUrl}/#organization`,
+    },
+    datePublished: page.datePublished,
+    dateModified: page.dateModified,
+    inLanguage: seoConfig.language,
+  };
+}
+
+/**
+ * CollectionPage Schema
+ * https://schema.org/CollectionPage
+ */
+export function generateCollectionPageSchema(
+  page: {
+    name: string;
+    description: string;
+    url: string;
+  },
+  numberOfItems: number
+) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': `${getFullUrl(page.url)}/#collectionpage`,
+    name: page.name,
+    description: page.description,
+    url: getFullUrl(page.url),
+    numberOfItems: numberOfItems,
+    isPartOf: {
+      '@id': `${seoConfig.siteUrl}/#website`,
+    },
+    inLanguage: seoConfig.language,
+  };
+}
+
+================================================
+FILE: src/lib/seo.ts
+Lines: 374
+================================================
+
+import { Metadata } from 'next';
+import { seoConfig } from '@/config/seo.config';
+
+// ==========================================
+// URL UTILITIES
+// ==========================================
+
+/**
+ * Get full URL for main platform
+ */
+export function getFullUrl(path: string = ''): string {
+  return seoConfig.getMainUrl(path);
+}
+
+/**
+ * Get tenant store URL (subdomain in prod, path in dev)
+ */
+export function getTenantUrl(slug: string, path: string = ''): string {
+  return seoConfig.getTenantUrl(slug, path);
+}
+
+/**
+ * Check if slug is reserved
+ */
+export function isReservedSlug(slug: string): boolean {
+  return seoConfig.reservedSubdomains.includes(slug.toLowerCase());
+}
+
+/**
+ * Validate tenant slug format
+ * - 3-30 chars
+ * - lowercase alphanumeric and dash
+ * - no double dash
+ * - not reserved
+ */
+export function isValidSlug(slug: string): boolean {
+  if (!slug) return false;
+  const pattern = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/;
+  return pattern.test(slug) && !slug.includes('--') && !isReservedSlug(slug);
+}
+
+/**
+ * Generate URL-friendly slug from text
+ */
+export function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+// ==========================================
+// TEXT UTILITIES
+// ==========================================
+
+/**
+ * Truncate text for meta description (max 155-160 chars)
+ */
+export function truncateDescription(text: string, maxLength: number = 155): string {
+  if (!text) return '';
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - 3).trim() + '...';
+}
+
+/**
+ * Sanitize text for meta tags
+ */
+export function sanitizeMetaText(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/[\n\r\t]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// ==========================================
+// METADATA GENERATORS
+// ==========================================
+
+interface CreateMetadataOptions {
+  title: string;
+  description: string;
+  keywords?: string[];
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article' | 'product';
+  noIndex?: boolean;
+}
+
+/**
+ * Create metadata for main platform pages
+ */
+export function createMetadata({
+  title,
+  description,
+  keywords,
+  canonical,
+  ogImage,
+  ogType = 'website',
+  noIndex = false,
+}: CreateMetadataOptions): Metadata {
+  const cleanDescription = truncateDescription(sanitizeMetaText(description));
+  const cleanTitle = sanitizeMetaText(title);
+  const imageUrl = ogImage
+    ? (ogImage.startsWith('http') ? ogImage : getFullUrl(ogImage))
+    : getFullUrl(seoConfig.defaultOgImage);
+  const canonicalUrl = canonical || seoConfig.siteUrl;
+
+  return {
+    title: cleanTitle,
+    description: cleanDescription,
+    keywords: keywords || seoConfig.defaultKeywords,
+    authors: [{ name: seoConfig.siteName }],
+    creator: seoConfig.siteName,
+    publisher: seoConfig.siteName,
+
+    robots: noIndex
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
+
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
+    openGraph: {
+      title: cleanTitle,
+      description: cleanDescription,
+      url: canonicalUrl,
+      siteName: seoConfig.siteName,
+      locale: seoConfig.locale,
+      type: ogType,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: cleanTitle,
+        },
+      ],
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title: cleanTitle,
+      description: cleanDescription,
+      site: seoConfig.twitterHandle,
+      creator: seoConfig.twitterHandle,
+      images: [imageUrl],
+    },
+  };
+}
+
+/**
+ * Create metadata for tenant store pages
+ */
+export function createTenantMetadata({
+  tenant,
+  pageTitle,
+  pageDescription,
+  path = '',
+  ogImage,
+}: {
+  tenant: {
+    name: string;
+    slug: string;
+    description?: string | null;
+    logo?: string | null;
+    banner?: string | null;
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+  };
+  pageTitle?: string;
+  pageDescription?: string;
+  path?: string;
+  ogImage?: string;
+}): Metadata {
+  // Build title
+  const title = pageTitle
+    ? `${pageTitle} | ${tenant.name}`
+    : tenant.metaTitle || `${tenant.name} | Fibidy`;
+
+  // Build description
+  const description = pageDescription
+    || tenant.metaDescription
+    || tenant.description
+    || `${tenant.name} - Belanja mudah dan pesan langsung via WhatsApp.`;
+
+  // URLs
+  const canonicalUrl = getTenantUrl(tenant.slug, path);
+  const imageUrl = ogImage || tenant.banner || tenant.logo;
+
+  // Build metadata base for subdomain (production only)
+  const metadataBase = seoConfig.isProduction
+    ? new URL(`https://${tenant.slug}.${seoConfig.domain}`)
+    : new URL(seoConfig.siteUrl);
+
+  return {
+    metadataBase,
+    title,
+    description: truncateDescription(sanitizeMetaText(description)),
+
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
+    openGraph: {
+      title,
+      description: truncateDescription(description),
+      url: canonicalUrl,
+      siteName: tenant.name,
+      locale: seoConfig.locale,
+      type: 'website',
+      images: imageUrl ? [
+        {
+          url: imageUrl.startsWith('http') ? imageUrl : getFullUrl(imageUrl),
+          width: 1200,
+          height: 630,
+          alt: tenant.name,
+        },
+      ] : undefined,
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: truncateDescription(description),
+      images: imageUrl ? [imageUrl.startsWith('http') ? imageUrl : getFullUrl(imageUrl)] : undefined,
+    },
+
+    keywords: [
+      tenant.name,
+      'toko online',
+      'belanja online',
+      'whatsapp order',
+      'fibidy',
+    ],
+  };
+}
+
+/**
+ * Create metadata for product pages
+ */
+export function createProductMetadata({
+  product,
+  tenant,
+}: {
+  product: {
+    id: string;
+    name: string;
+    slug?: string | null;
+    description?: string | null;
+    price: number;
+    images?: string[];
+    category?: string | null;
+  };
+  tenant: {
+    name: string;
+    slug: string;
+  };
+}): Metadata {
+  const title = `${product.name} - ${tenant.name} | Fibidy`;
+
+  const priceFormatted = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0,
+  }).format(product.price);
+
+  const description = product.description
+    || `Beli ${product.name} di ${tenant.name} ${priceFormatted}. Order langsung via WhatsApp!`;
+
+  const productPath = product.slug
+    ? `/p/${product.slug}`
+    : `/product/${product.id}`;
+  const canonicalUrl = getTenantUrl(tenant.slug, productPath);
+  const ogImage = product.images?.[0];
+
+  const metadataBase = seoConfig.isProduction
+    ? new URL(`https://${tenant.slug}.${seoConfig.domain}`)
+    : new URL(seoConfig.siteUrl);
+
+  return {
+    metadataBase,
+    title,
+    description: truncateDescription(sanitizeMetaText(description)),
+
+    alternates: {
+      canonical: canonicalUrl,
+    },
+
+    openGraph: {
+      title,
+      description: truncateDescription(description),
+      url: canonicalUrl,
+      siteName: tenant.name,
+      locale: seoConfig.locale,
+      type: 'website',
+      images: ogImage ? [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ] : undefined,
+    },
+
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: truncateDescription(description),
+      images: ogImage ? [ogImage] : undefined,
+    },
+
+    keywords: [
+      product.name,
+      tenant.name,
+      product.category || '',
+      'beli online',
+      'whatsapp order',
+    ].filter(Boolean),
+  };
+}
+
+// ==========================================
+// BREADCRUMB HELPERS
+// ==========================================
+
+export interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+/**
+ * Generate breadcrumbs for tenant store
+ */
+export function generateTenantBreadcrumbs(tenant: {
+  name: string;
+  slug: string;
+}): BreadcrumbItem[] {
+  return [
+    { name: 'Home', url: getFullUrl('/') },
+    { name: tenant.name, url: getTenantUrl(tenant.slug) },
+  ];
+}
+
+/**
+ * Generate breadcrumbs for product page
+ */
+export function generateProductBreadcrumbs(
+  tenant: { name: string; slug: string },
+  product: { name: string; id: string; slug?: string | null; category?: string | null }
+): BreadcrumbItem[] {
+  const breadcrumbs: BreadcrumbItem[] = [
+    { name: 'Home', url: getFullUrl('/') },
+    { name: tenant.name, url: getTenantUrl(tenant.slug) },
+  ];
+
+  if (product.category) {
+    breadcrumbs.push({
+      name: product.category,
+      url: getTenantUrl(tenant.slug, `/products?category=${encodeURIComponent(product.category)}`),
+    });
+  }
+
+  const productPath = product.slug ? `/p/${product.slug}` : `/product/${product.id}`;
+  breadcrumbs.push({
+    name: product.name,
+    url: getTenantUrl(tenant.slug, productPath),
+  });
+
+  return breadcrumbs;
+}
+
+================================================
+FILE: src/lib/utils.ts
+Lines: 11
+================================================
+
+// ==========================================
+// UTILITIES - Re-export from lib files
+// ==========================================
+
+// Classname utility (used by shadcn)
+export { cn } from './cn';
+
+// Format utilities
+export * from './format';
+
+// Validation schemas
+export * from './validations';
+
+================================================
+FILE: src/lib/validations.ts
+Lines: 207
+================================================
+
+import { z } from 'zod';
+
+// ==========================================
+// VALIDATION SCHEMAS (ZOD)
+// ==========================================
+
+/**
+ * Login form schema
+ */
+export const loginSchema = z.object({
+  email: z
+    .string()
+    .min(1, 'Email tidak boleh kosong')
+    .email('Format email tidak valid'),
+  password: z
+    .string()
+    .min(1, 'Password tidak boleh kosong'),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;
+
+/**
+ * Register form schema
+ */
+export const registerSchema = z.object({
+  slug: z
+    .string()
+    .min(3, 'Slug minimal 3 karakter')
+    .max(30, 'Slug maksimal 30 karakter')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug hanya boleh huruf kecil, angka, dan strip (-)'),
+  name: z
+    .string()
+    .min(3, 'Nama toko minimal 3 karakter')
+    .max(100, 'Nama toko maksimal 100 karakter'),
+  category: z
+    .string()
+    .min(1, 'Pilih kategori usaha'),
+  email: z
+    .string()
+    .min(1, 'Email tidak boleh kosong')
+    .email('Format email tidak valid'),
+  password: z
+    .string()
+    .min(6, 'Password minimal 6 karakter'),
+  whatsapp: z
+    .string()
+    .min(1, 'Nomor WhatsApp tidak boleh kosong')
+    .regex(/^62[0-9]{9,13}$/, 'Format WhatsApp harus diawali 62 (contoh: 6281234567890)'),
+  description: z.string().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+});
+
+export type RegisterFormData = z.infer<typeof registerSchema>;
+
+/**
+ * Change password schema
+ */
+export const changePasswordSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(1, 'Password lama tidak boleh kosong'),
+  newPassword: z
+    .string()
+    .min(6, 'Password baru minimal 6 karakter'),
+  confirmPassword: z
+    .string()
+    .min(1, 'Konfirmasi password tidak boleh kosong'),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: 'Konfirmasi password tidak cocok',
+  path: ['confirmPassword'],
+});
+
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
+
+/**
+ * Product form schema
+ */
+export const productSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Nama produk tidak boleh kosong')
+    .max(200, 'Nama produk maksimal 200 karakter'),
+  description: z
+    .string()
+    .max(1000, 'Deskripsi maksimal 1000 karakter')
+    .optional(),
+  category: z
+    .string()
+    .max(100, 'Kategori maksimal 100 karakter')
+    .optional(),
+  sku: z
+    .string()
+    .max(50, 'SKU maksimal 50 karakter')
+    .optional(),
+  price: z
+    .number()
+    .min(0, 'Harga tidak boleh negatif'),
+  comparePrice: z
+    .number()
+    .min(0, 'Harga coret tidak boleh negatif')
+    .optional(),
+  costPrice: z
+    .number()
+    .min(0, 'Harga modal tidak boleh negatif')
+    .optional(),
+  stock: z
+    .number()
+    .min(0, 'Stok tidak boleh negatif')
+    .optional(),
+  minStock: z
+    .number()
+    .min(0, 'Stok minimum tidak boleh negatif')
+    .optional(),
+  trackStock: z.boolean().optional(),
+  unit: z
+    .string()
+    .max(20, 'Satuan maksimal 20 karakter')
+    .optional(),
+  images: z.array(z.string()).optional(),
+  isActive: z.boolean().optional(),
+  isFeatured: z.boolean().optional(),
+});
+
+export type ProductFormData = z.infer<typeof productSchema>;
+
+/**
+ * Customer form schema
+ * ✅ Phone validation untuk format TANPA prefix (81234567890)
+ * ✅ Notes field REMOVED (not supported by backend yet)
+ */
+export const customerSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Nama pelanggan tidak boleh kosong')
+    .max(100, 'Nama maksimal 100 karakter'),
+  phone: z
+    .string()
+    .min(9, 'Nomor telepon minimal 9 digit')
+    .max(13, 'Nomor telepon maksimal 13 digit')
+    .regex(/^[0-9]{9,13}$/, 'Format nomor telepon tidak valid (contoh: 81234567890)'),
+  email: z
+    .string()
+    .email('Format email tidak valid')
+    .optional()
+    .or(z.literal('')),
+  address: z
+    .string()
+    .max(300, 'Alamat maksimal 300 karakter')
+    .optional(),
+  // notes - REMOVED (backend tidak support)
+});
+
+export type CustomerFormData = z.infer<typeof customerSchema>;
+
+/**
+ * Order item schema
+ */
+export const orderItemSchema = z.object({
+  productId: z.string().optional(),
+  name: z.string().min(1, 'Nama item tidak boleh kosong'),
+  price: z.number().min(0, 'Harga tidak boleh negatif'),
+  qty: z.number().min(1, 'Jumlah minimal 1'),
+  notes: z.string().optional(),
+});
+
+/**
+ * Order form schema
+ */
+export const orderSchema = z.object({
+  customerId: z.string().optional(),
+  customerName: z.string().optional(),
+  customerPhone: z.string().optional(),
+  items: z.array(orderItemSchema).min(1, 'Minimal 1 item dalam order'),
+  discount: z.number().min(0).optional(),
+  tax: z.number().min(0).optional(),
+  paymentMethod: z.string().optional(),
+  notes: z.string().optional(),
+});
+
+export type OrderFormData = z.infer<typeof orderSchema>;
+
+/**
+ * Store settings schema
+ */
+export const storeSettingsSchema = z.object({
+  name: z
+    .string()
+    .min(3, 'Nama toko minimal 3 karakter')
+    .max(100, 'Nama toko maksimal 100 karakter'),
+  description: z
+    .string()
+    .max(500, 'Deskripsi maksimal 500 karakter')
+    .optional(),
+  whatsapp: z
+    .string()
+    .min(1, 'Nomor WhatsApp tidak boleh kosong')
+    .regex(/^62[0-9]{9,13}$/, 'Format WhatsApp harus diawali 62'),
+  phone: z.string().optional(),
+  address: z
+    .string()
+    .max(300, 'Alamat maksimal 300 karakter')
+    .optional(),
+  logo: z.string().optional(),
+  banner: z.string().optional(),
+});
+
+export type StoreSettingsFormData = z.infer<typeof storeSettingsSchema>;
+
+================================================
+FILE: src/lib/api/auth.ts
+Lines: 49
+================================================
+
+import { api } from './client';
+import type { LoginInput, RegisterInput, Tenant } from '@/types';
+
+// ==========================================
+// AUTH RESPONSE TYPES
+// ==========================================
+
+interface AuthResponse {
+  message: string;
+  tenant: Tenant;
+}
+
+interface AuthStatusResponse {
+  authenticated: boolean;
+  tenant: Tenant | null;
+}
+
+// ==========================================
+// AUTH API SERVICE
+// ==========================================
+
+export const authApi = {
+  login: (data: LoginInput): Promise<AuthResponse> => {
+    return api.post<AuthResponse>('/auth/login', data);
+  },
+
+  register: (data: RegisterInput): Promise<AuthResponse> => {
+    return api.post<AuthResponse>('/auth/register', data);
+  },
+
+  logout: (): Promise<{ message: string }> => {
+    return api.post<{ message: string }>('/auth/logout');
+  },
+
+  me: (): Promise<Tenant> => {
+    return api.get<Tenant>('/auth/me');
+  },
+
+  status: (): Promise<AuthStatusResponse> => {
+    return api.get<AuthStatusResponse>('/auth/status');
+  },
+
+  refresh: (): Promise<AuthResponse> => {
+    return api.post<AuthResponse>('/auth/refresh');
+  },
+
+  checkSlug: (slug: string): Promise<{ available: boolean }> => {
+    return api.get<{ available: boolean }>(`/auth/check-slug/${slug}`);
+  },
+};
+
+================================================
+FILE: src/lib/api/client.ts
+Lines: 297
+================================================
+
+import { API_URL } from '@/config/constants';
+import type { ApiError } from '@/types';
+
+// ==========================================
+// API CLIENT CONFIGURATION
+// ==========================================
+
+export interface RequestConfig extends RequestInit {
+  params?: Record<string, string | number | boolean | undefined>;
+  timeout?: number;
+}
+
+export interface ApiClientConfig {
+  baseURL: string;
+  onUnauthorized?: () => void;
+}
+
+// ==========================================
+// API CLIENT CLASS
+// ==========================================
+
+class ApiClient {
+  private baseURL: string;
+  private onUnauthorized?: () => void;
+
+  constructor(config: ApiClientConfig) {
+    this.baseURL = config.baseURL;
+    this.onUnauthorized = config.onUnauthorized;
+  }
+
+  private buildURL(
+    endpoint: string,
+    params?: Record<string, string | number | boolean | undefined>,
+  ): string {
+    const fullURL = `${this.baseURL}${endpoint}`;
+    const url = new URL(fullURL);
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== '') {
+          url.searchParams.append(key, String(value));
+        }
+      });
+    }
+
+    return url.toString();
+  }
+
+  private getHeaders(customHeaders?: HeadersInit): Headers {
+    const headers = new Headers(customHeaders);
+
+    if (!headers.has('Content-Type')) {
+      headers.set('Content-Type', 'application/json');
+    }
+
+    return headers;
+  }
+
+  private async handleResponse<T>(response: Response): Promise<T> {
+    if (response.status === 204) {
+      return {} as T;
+    }
+
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType?.includes('application/json');
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        this.onUnauthorized?.();
+      }
+
+      let error: ApiError;
+      if (isJson) {
+        error = await response.json();
+      } else {
+        error = {
+          statusCode: response.status,
+          message: response.statusText || 'An error occurred',
+        };
+      }
+
+      throw new ApiRequestError(error);
+    }
+
+    if (isJson) {
+      return response.json();
+    }
+
+    return response.text() as unknown as T;
+  }
+
+  private async fetchWithTimeout(
+    url: string,
+    options: RequestInit,
+    timeout: number = 30000,
+  ): Promise<Response> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        credentials: 'include', // ✅ IMPORTANT: Include cookies
+      });
+      return response;
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  async get<T>(endpoint: string, config?: RequestConfig): Promise<T> {
+    const url = this.buildURL(endpoint, config?.params);
+    const headers = this.getHeaders(config?.headers);
+
+    const response = await this.fetchWithTimeout(
+      url,
+      { method: 'GET', headers, ...config },
+      config?.timeout,
+    );
+
+    return this.handleResponse<T>(response);
+  }
+
+  async post<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig,
+  ): Promise<T> {
+    const url = this.buildURL(endpoint, config?.params);
+    const headers = this.getHeaders(config?.headers);
+
+    const response = await this.fetchWithTimeout(
+      url,
+      {
+        method: 'POST',
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+        ...config,
+      },
+      config?.timeout,
+    );
+
+    return this.handleResponse<T>(response);
+  }
+
+  async patch<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig,
+  ): Promise<T> {
+    const url = this.buildURL(endpoint, config?.params);
+    const headers = this.getHeaders(config?.headers);
+
+    const response = await this.fetchWithTimeout(
+      url,
+      {
+        method: 'PATCH',
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+        ...config,
+      },
+      config?.timeout,
+    );
+
+    return this.handleResponse<T>(response);
+  }
+
+  async put<T>(
+    endpoint: string,
+    data?: unknown,
+    config?: RequestConfig,
+  ): Promise<T> {
+    const url = this.buildURL(endpoint, config?.params);
+    const headers = this.getHeaders(config?.headers);
+
+    const response = await this.fetchWithTimeout(
+      url,
+      {
+        method: 'PUT',
+        headers,
+        body: data ? JSON.stringify(data) : undefined,
+        ...config,
+      },
+      config?.timeout,
+    );
+
+    return this.handleResponse<T>(response);
+  }
+
+  async delete<T>(endpoint: string, config?: RequestConfig): Promise<T> {
+    const url = this.buildURL(endpoint, config?.params);
+    const headers = this.getHeaders(config?.headers);
+
+    const response = await this.fetchWithTimeout(
+      url,
+      { method: 'DELETE', headers, ...config },
+      config?.timeout,
+    );
+
+    return this.handleResponse<T>(response);
+  }
+
+  async upload<T>(
+    endpoint: string,
+    formData: FormData,
+    config?: RequestConfig,
+  ): Promise<T> {
+    const url = this.buildURL(endpoint, config?.params);
+    const headers = new Headers(config?.headers);
+
+    const response = await this.fetchWithTimeout(
+      url,
+      {
+        method: 'POST',
+        headers,
+        body: formData,
+        ...config,
+      },
+      config?.timeout || 60000,
+    );
+
+    return this.handleResponse<T>(response);
+  }
+}
+
+// ==========================================
+// API ERROR CLASS
+// ==========================================
+
+export class ApiRequestError extends Error {
+  public statusCode: number;
+  public errors?: string[];
+
+  constructor(error: ApiError) {
+    const message = Array.isArray(error.message)
+      ? error.message.join(', ')
+      : error.message;
+
+    super(message);
+    this.name = 'ApiRequestError';
+    this.statusCode = error.statusCode;
+    this.errors = Array.isArray(error.message) ? error.message : undefined;
+  }
+
+  isValidationError(): boolean {
+    return this.statusCode === 400;
+  }
+
+  isUnauthorized(): boolean {
+    return this.statusCode === 401;
+  }
+
+  isForbidden(): boolean {
+    return this.statusCode === 403;
+  }
+
+  isNotFound(): boolean {
+    return this.statusCode === 404;
+  }
+
+  isServerError(): boolean {
+    return this.statusCode >= 500;
+  }
+}
+
+// ==========================================
+// CREATE API CLIENT INSTANCE
+// ==========================================
+
+function handleUnauthorized(): void {
+  if (typeof window === 'undefined') return;
+  if (window.location.pathname === '/login') return;
+  window.location.href = '/login';
+}
+
+export const api = new ApiClient({
+  baseURL: API_URL,
+  onUnauthorized: handleUnauthorized,
+});
+
+// ==========================================
+// HELPER FUNCTIONS
+// ==========================================
+
+export function isApiError(error: unknown): error is ApiRequestError {
+  return error instanceof ApiRequestError;
+}
+
+export function getErrorMessage(error: unknown): string {
+  if (isApiError(error)) {
+    return error.message;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'Terjadi kesalahan yang tidak diketahui';
+}
+
+================================================
+FILE: src/lib/api/customers.ts
+Lines: 69
+================================================
+
+import { api } from './client';
+import type {
+  Customer,
+  CreateCustomerInput,
+  UpdateCustomerInput,
+  CustomerQueryParams,
+  PaginatedResponse,
+} from '@/types';
+
+// ==========================================
+// CUSTOMERS API SERVICE
+// ==========================================
+
+export const customersApi = {
+  /**
+   * Get all customers
+   * GET /customers
+   */
+  getAll: async (params?: CustomerQueryParams): Promise<PaginatedResponse<Customer>> => {
+    return api.get<PaginatedResponse<Customer>>('/customers', { params });
+  },
+
+  /**
+   * Get single customer by ID
+   * GET /customers/:id
+   */
+  getById: async (id: string): Promise<Customer> => {
+    return api.get<Customer>(`/customers/${id}`);
+  },
+
+  /**
+   * Search customers by phone
+   * GET /customers/search?phone=xxx
+   */
+  searchByPhone: async (phone: string): Promise<Customer[]> => {
+    return api.get<Customer[]>('/customers/search', { params: { phone } });
+  },
+
+  /**
+   * Create new customer
+   * POST /customers
+   */
+  create: async (data: CreateCustomerInput): Promise<Customer> => {
+    return api.post<Customer>('/customers', data);
+  },
+
+  /**
+   * Update customer
+   * PATCH /customers/:id
+   */
+  update: async (id: string, data: UpdateCustomerInput): Promise<Customer> => {
+    return api.patch<Customer>(`/customers/${id}`, data);
+  },
+
+  /**
+   * Delete customer
+   * DELETE /customers/:id
+   */
+  delete: async (id: string): Promise<void> => {
+    return api.delete<void>(`/customers/${id}`);
+  },
+
+  /**
+   * Get customer order history
+   * GET /customers/:id/orders
+   */
+  getOrders: async (id: string): Promise<{ orders: unknown[]; total: number }> => {
+    return api.get(`/customers/${id}/orders`);
+  },
+};
+
+================================================
+FILE: src/lib/api/index.ts
+Lines: 16
+================================================
+
+// ==========================================
+// API INDEX
+// ==========================================
+
+// Client-side API
+export { api, ApiRequestError, isApiError, getErrorMessage } from './client';
+export type { RequestConfig } from './client';
+
+// Server-side API
+
+
+// API Services
+export { authApi } from './auth';
+export { tenantsApi } from './tenants';
+export { productsApi } from './products';
+export { customersApi } from './customers';
+export { ordersApi } from './orders';
+
+================================================
+FILE: src/lib/api/orders.ts
+Lines: 108
+================================================
+
+import { api } from './client';
+import type {
+  Order,
+  OrderListItem,
+  CreateOrderInput,
+  UpdateOrderInput,
+  UpdateOrderStatusInput,
+  UpdatePaymentStatusInput,
+  OrderQueryParams,
+  PaginatedResponse,
+} from '@/types';
+
+// ==========================================
+// ORDERS API SERVICE
+// ==========================================
+
+export const ordersApi = {
+  /**
+   * Get all orders
+   * GET /orders
+   */
+  getAll: async (params?: OrderQueryParams): Promise<PaginatedResponse<OrderListItem>> => {
+    return api.get<PaginatedResponse<OrderListItem>>('/orders', { params });
+  },
+
+  /**
+   * Get single order by ID
+   * GET /orders/:id
+   */
+  getById: async (id: string): Promise<Order> => {
+    return api.get<Order>(`/orders/${id}`);
+  },
+
+  /**
+   * Get order by order number
+   * GET /orders/number/:orderNumber
+   */
+  getByNumber: async (orderNumber: string): Promise<Order> => {
+    return api.get<Order>(`/orders/number/${orderNumber}`);
+  },
+
+  /**
+   * Create new order
+   * POST /orders
+   */
+  create: async (data: CreateOrderInput): Promise<Order> => {
+    return api.post<Order>('/orders', data);
+  },
+
+  /**
+   * Update order
+   * PATCH /orders/:id
+   */
+  update: async (id: string, data: UpdateOrderInput): Promise<Order> => {
+    return api.patch<Order>(`/orders/${id}`, data);
+  },
+
+  /**
+   * Update order status
+   * PATCH /orders/:id/status
+   */
+  updateStatus: async (id: string, data: UpdateOrderStatusInput): Promise<Order> => {
+    return api.patch<Order>(`/orders/${id}/status`, data);
+  },
+
+  /**
+   * Update payment status
+   * PATCH /orders/:id/payment
+   */
+  updatePayment: async (id: string, data: UpdatePaymentStatusInput): Promise<Order> => {
+    return api.patch<Order>(`/orders/${id}/payment`, data);
+  },
+
+  /**
+   * Cancel order
+   * PATCH /orders/:id/cancel
+   */
+  cancel: async (id: string, reason?: string): Promise<Order> => {
+    return api.patch<Order>(`/orders/${id}/cancel`, { reason });
+  },
+
+  /**
+   * Delete order (only PENDING orders)
+   * DELETE /orders/:id
+   */
+  delete: async (id: string): Promise<void> => {
+    return api.delete<void>(`/orders/${id}`);
+  },
+
+  /**
+   * Get today's orders
+   * GET /orders/today
+   */
+  getToday: async (): Promise<OrderListItem[]> => {
+    return api.get<OrderListItem[]>('/orders/today');
+  },
+
+  /**
+   * Get order stats
+   * GET /orders/stats
+   */
+  getStats: async (period?: 'today' | 'week' | 'month'): Promise<{
+    count: number;
+    revenue: number;
+    avgOrderValue: number;
+  }> => {
+    return api.get('/orders/stats', { params: { period } });
+  },
+};
+
+================================================
+FILE: src/lib/api/products.ts
+Lines: 170
+================================================
+
+// src/lib/api/products.ts
+import { api } from './client';
+import type {
+  Product,
+  CreateProductInput,
+  UpdateProductInput,
+  ProductQueryParams,
+  PaginatedResponse,
+  LowStockProduct,
+} from '@/types';
+
+// ==========================================
+// PRODUCTS API SERVICE
+// ==========================================
+
+export const productsApi = {
+  /**
+   * Get all products (protected - tenant's products)
+   * GET /products
+   */
+  getAll: async (params?: ProductQueryParams): Promise<PaginatedResponse<Product>> => {
+    return api.get<PaginatedResponse<Product>>('/products', { params });
+  },
+
+  /**
+   * Get public products by tenant slug
+   * GET /products/store/:slug
+   */
+  getByStore: async (slug: string, params?: ProductQueryParams): Promise<PaginatedResponse<Product>> => {
+    return api.get<PaginatedResponse<Product>>(`/products/store/${slug}`, { params });
+  },
+
+  /**
+   * Get single product by ID (protected - for dashboard)
+   * GET /products/:id
+   */
+  getById: async (id: string): Promise<Product> => {
+    return api.get<Product>(`/products/${id}`);
+  },
+
+  /**
+   * Get single product by store slug and product ID (public - for store frontend)
+   * GET /products/store/:slug/:productId
+   */
+  getByStoreAndId: async (slug: string, productId: string): Promise<Product> => {
+    return api.get<Product>(`/products/store/${slug}/${productId}`);
+  },
+
+  /**
+   * Create new product
+   * POST /products
+   */
+  create: async (data: CreateProductInput): Promise<Product> => {
+    return api.post<Product>('/products', data);
+  },
+
+  /**
+   * Update product
+   * PATCH /products/:id
+   */
+  update: async (id: string, data: UpdateProductInput): Promise<Product> => {
+    return api.patch<Product>(`/products/${id}`, data);
+  },
+
+  /**
+   * Delete product
+   * DELETE /products/:id
+   */
+  delete: async (id: string): Promise<void> => {
+    return api.delete<void>(`/products/${id}`);
+  },
+
+  /**
+   * Update stock
+   * PATCH /products/:id/stock
+   */
+  updateStock: async (id: string, quantity: number, reason?: string): Promise<Product> => {
+    return api.patch<Product>(`/products/${id}/stock`, { quantity, reason });
+  },
+
+  /**
+   * Get low stock products
+   * GET /products/low-stock
+   */
+  getLowStock: async (): Promise<LowStockProduct[]> => {
+    return api.get<LowStockProduct[]>('/products/low-stock');
+  },
+
+  /**
+   * Get product categories (unique from tenant's products)
+   * GET /products/categories
+   */
+  getCategories: async (): Promise<string[]> => {
+    const response = await api.get<{ categories: string[] }>('/products/categories');
+    return response.categories || [];
+  },
+
+  /**
+   * Upload product image
+   * POST /products/upload
+   */
+  uploadImage: async (file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.upload<{ url: string }>('/products/upload', formData);
+  },
+
+  /**
+   * Bulk update products (active/inactive)
+   * PATCH /products/bulk
+   */
+  bulkUpdate: async (ids: string[], data: Partial<UpdateProductInput>): Promise<{ count: number }> => {
+    return api.patch<{ count: number }>('/products/bulk', { ids, ...data });
+  },
+
+  /**
+   * Bulk delete products
+   * DELETE /products/bulk
+   */
+  bulkDelete: async (ids: string[]): Promise<{ count: number; message: string }> => {
+    const getToken = (): string | null => {
+      if (typeof window === 'undefined') return null;
+      try {
+        const stored = localStorage.getItem('fibidy_token');
+        if (!stored) return null;
+        const parsed = JSON.parse(stored);
+        return parsed?.state?.token || null;
+      } catch {
+        return null;
+      }
+    };
+
+    const token = getToken();
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
+    try {
+      const response = await fetch(`${baseUrl}/products/bulk`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: JSON.stringify({ ids }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem('fibidy_token');
+          window.location.href = '/login';
+        }
+        const error = await response.json().catch(() => ({ message: 'Gagal menghapus produk' }));
+        throw new Error(error.message || 'Gagal menghapus produk');
+      }
+
+      return response.json();
+    } catch (err) {
+      clearTimeout(timeoutId);
+
+      if (err instanceof Error && err.name === 'AbortError') {
+        throw new Error('Request timeout - coba hapus lebih sedikit produk sekaligus');
+      }
+      throw err;
+    }
+  },
+};
+
+================================================
+FILE: src/lib/api/server.ts
+Lines: 113
+================================================
+
+import { cookies } from 'next/headers';
+import { API_URL } from '@/config/constants';
+import type {
+  Tenant,
+  Product,
+  Customer,
+  Order,
+  DashboardStats,
+  PaginatedResponse,
+} from '@/types';
+
+// ==========================================
+// SERVER-SIDE API CLIENT
+// ==========================================
+
+const COOKIE_NAME = 'fibidy_auth';
+
+interface FetchOptions extends RequestInit {
+  params?: Record<string, string | number | boolean | undefined>;
+}
+
+function buildURL(
+  endpoint: string,
+  params?: Record<string, string | number | boolean | undefined>,
+): string {
+  const url = new URL(`${API_URL}${endpoint}`);
+
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== '') {
+        url.searchParams.append(key, String(value));
+      }
+    });
+  }
+
+  return url.toString();
+}
+
+export async function serverFetch<T>(
+  endpoint: string,
+  options: FetchOptions = {},
+): Promise<T | null> {
+  const { params, ...fetchOptions } = options;
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+
+  const url = buildURL(endpoint, params);
+
+  try {
+    const response = await fetch(url, {
+      ...fetchOptions,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...fetchOptions.headers,
+      },
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return null;
+      }
+      console.error(`API Error: ${response.status} ${response.statusText}`);
+      return null;
+    }
+
+    if (response.status === 204) {
+      return {} as T;
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error('Server fetch error:', error);
+    return null;
+  }
+}
+
+// ==========================================
+// SERVER API HELPERS
+// ==========================================
+
+export const serverApi = {
+  // Auth
+  getMe: () => serverFetch<Tenant>('/auth/me'),
+
+  // Tenants
+  getStats: () => serverFetch<DashboardStats>('/tenants/me/stats'),
+  getTenant: () => serverFetch<Tenant>('/tenants/me'),
+
+  // Products
+  getProducts: (params?: Record<string, string | number | boolean | undefined>) =>
+    serverFetch<PaginatedResponse<Product>>('/products', { params }),
+  getProduct: (id: string) => serverFetch<Product>(`/products/${id}`),
+  getCategories: () => serverFetch<{ categories: string[] }>('/products/categories'),
+  getLowStock: () => serverFetch<Product[]>('/products/low-stock'),
+
+  // Customers
+  getCustomers: (params?: Record<string, string | number | boolean | undefined>) =>
+    serverFetch<PaginatedResponse<Customer>>('/customers', { params }),
+  getCustomer: (id: string) => serverFetch<Customer>(`/customers/${id}`),
+
+  // Orders
+  getOrders: (params?: Record<string, string | number | boolean | undefined>) =>
+    serverFetch<PaginatedResponse<Order>>('/orders', { params }),
+  getOrder: (id: string) => serverFetch<Order>(`/orders/${id}`),
+
+  // Public
+  getTenantBySlug: (slug: string) =>
+    serverFetch<Tenant>(`/tenants/by-slug/${slug}`),
+  getStoreProducts: (slug: string, params?: Record<string, string | number | boolean | undefined>) =>
+    serverFetch<PaginatedResponse<Product>>(`/products/store/${slug}`, { params }),
+};
+
+================================================
+FILE: src/lib/api/tenants.ts
+Lines: 48
+================================================
+
+import { api, ApiRequestError, getErrorMessage } from './client';
+import type {
+  Tenant,
+  PublicTenant,
+  UpdateTenantInput,
+  TenantStats,
+} from '@/types';
+
+// ==========================================
+// TENANTS API
+// ==========================================
+
+export const tenantsApi = {
+  // Get current tenant (protected)
+  me: async (): Promise<Tenant> => {
+    return api.get<Tenant>('/tenants/me');
+  },
+
+  // Get tenant by slug (public)
+  getBySlug: async (slug: string): Promise<PublicTenant> => {
+    return api.get<PublicTenant>(`/tenants/by-slug/${slug}`);
+  },
+
+  // Update current tenant (protected)
+  update: async (data: UpdateTenantInput): Promise<{ message: string; tenant: Tenant }> => {
+    return api.patch<{ message: string; tenant: Tenant }>('/tenants/me', data);
+  },
+
+  // Get dashboard stats (protected)
+  getStats: async (): Promise<TenantStats> => {
+    return api.get<TenantStats>('/tenants/stats');
+  },
+
+  // Upload logo
+  uploadLogo: async (file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.upload<{ url: string }>('/tenants/upload/logo', formData);
+  },
+
+  // Upload banner
+  uploadBanner: async (file: File): Promise<{ url: string }> => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.upload<{ url: string }>('/tenants/upload/banner', formData);
+  },
+};
+
+export { ApiRequestError, getErrorMessage };
+
+
+################################################################
+##
+##  CATEGORY: Custom React Hooks
+##  Path: src/hooks
+##
+################################################################
+
+================================================
+FILE: src/hooks/index.ts
+Lines: 57
+================================================
+
+// ==========================================
+// HOOKS INDEX - Export all custom hooks
+// ==========================================
+
+// Auth Hooks
+export {
+  useAuth,
+  useLogin,
+  useRegister,
+  useLogout,
+  useCheckSlug,
+  useChangePassword,
+  useDeleteAccount,
+} from './use-auth';
+
+// Tenant Hooks
+export {
+  useTenant,
+  usePublicTenant,
+  useUpdateTenant,
+  useDashboardStats,
+} from './use-tenant';
+
+// Products Hooks
+export {
+  useProducts,
+  useProduct,
+  useCreateProduct,
+  useUpdateProduct,
+  useDeleteProduct,
+  useStoreProducts,
+} from './use-products';
+
+// Customers Hooks
+export {
+  useCustomers,
+  useCustomer,
+  useCreateCustomer,
+  useUpdateCustomer,
+  useDeleteCustomer,
+  useSearchCustomer,
+} from './use-customers';
+
+// Orders Hooks
+export {
+  useOrders,
+  useOrder,
+  useCreateOrder,
+  useUpdateOrderStatus,
+  useUpdatePaymentStatus,
+  useCancelOrder,
+  useTodayOrders,
+} from './use-orders';
+
+// Utility Hooks
+export { useDebounce, useDebouncedCallback } from './use-debounce';
+export { useMediaQuery, useIsMobile, useIsTablet, useIsDesktop, useIsLargeDesktop, breakpoints } from './use-media-query';
+export { useMounted, useIsClient } from './use-mounted';
+
+================================================
+FILE: src/hooks/use-auth.ts
+Lines: 259
+================================================
+
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuthStore } from '@/stores';
+import { authApi, getErrorMessage } from '@/lib/api';
+import { toast } from '@/providers';
+import type { LoginInput, RegisterInput } from '@/types';
+
+// ==========================================
+// USE AUTH HOOK
+// ==========================================
+
+export function useAuth() {
+  const store = useAuthStore();
+
+  return {
+    tenant: store.tenant,
+    isAuthenticated: !!store.tenant,
+    isLoading: store.isLoading,
+    isChecked: store.isChecked,
+    setTenant: store.setTenant,
+    reset: store.reset,
+  };
+}
+
+// ==========================================
+// USE AUTH CHECK HOOK
+// ==========================================
+
+export function useAuthCheck() {
+  const { setTenant, setChecked, isChecked } = useAuthStore();
+
+  const checkAuth = useCallback(async () => {
+    if (isChecked) return;
+
+    try {
+      const response = await authApi.status();
+
+      if (response.authenticated && response.tenant) {
+        setTenant(response.tenant);
+      } else {
+        setTenant(null);
+      }
+    } catch {
+      setTenant(null);
+    } finally {
+      setChecked(true);
+    }
+  }, [isChecked, setTenant, setChecked]);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  return { checkAuth };
+}
+
+// ==========================================
+// USE LOGIN HOOK
+// ==========================================
+
+export function useLogin() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { setTenant, setChecked } = useAuthStore();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const login = useCallback(
+    async (data: LoginInput) => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await authApi.login(data);
+
+        setTenant(response.tenant);
+        setChecked(true);
+
+        toast.success('Login berhasil!', `Selamat datang, ${response.tenant.name}`);
+
+        const from = searchParams.get('from');
+        router.push(from || '/dashboard');
+
+        return response;
+      } catch (err) {
+        const message = getErrorMessage(err);
+        setError(message);
+        toast.error('Login gagal', message);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setTenant, setChecked, router, searchParams],
+  );
+
+  const reset = useCallback(() => {
+    setError(null);
+  }, []);
+
+  return { login, isLoading, error, reset };
+}
+
+// ==========================================
+// USE REGISTER HOOK
+// ==========================================
+
+export function useRegister() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { setTenant, setChecked } = useAuthStore();
+  const router = useRouter();
+
+  const register = useCallback(
+    async (data: RegisterInput) => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        const response = await authApi.register(data);
+
+        setTenant(response.tenant);
+        setChecked(true);
+
+        toast.success('Pendaftaran berhasil!', 'Toko Anda sudah siap digunakan');
+        router.push('/dashboard');
+
+        return response;
+      } catch (err) {
+        const message = getErrorMessage(err);
+        setError(message);
+        toast.error('Pendaftaran gagal', message);
+        throw err;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [setTenant, setChecked, router],
+  );
+
+  const reset = useCallback(() => {
+    setError(null);
+  }, []);
+
+  return { register, isLoading, error, reset };
+}
+
+// ==========================================
+// USE LOGOUT HOOK
+// ==========================================
+
+export function useLogout() {
+  const { reset } = useAuthStore();
+  const router = useRouter();
+
+  const logout = useCallback(async () => {
+    try {
+      await authApi.logout();
+    } catch {
+      // Ignore error
+    }
+
+    reset();
+    toast.success('Logout berhasil');
+    router.push('/login');
+  }, [reset, router]);
+
+  return { logout };
+}
+
+// ==========================================
+// USE CHECK SLUG HOOK
+// ==========================================
+
+export function useCheckSlug() {
+  const [isChecking, setIsChecking] = useState(false);
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
+
+  const checkSlug = useCallback(async (slug: string) => {
+    if (slug.length < 3) {
+      setIsAvailable(null);
+      return;
+    }
+
+    setIsChecking(true);
+
+    try {
+      const response = await authApi.checkSlug(slug);
+      setIsAvailable(response.available);
+    } catch {
+      setIsAvailable(null);
+    } finally {
+      setIsChecking(false);
+    }
+  }, []);
+
+  const reset = useCallback(() => {
+    setIsAvailable(null);
+  }, []);
+
+  return { checkSlug, isChecking, isAvailable, reset };
+}
+
+// ==========================================
+// PLACEHOLDER HOOKS
+// ==========================================
+
+export function useChangePassword() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const changePassword = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    async (_currentPassword: string, _newPassword: string) => {
+      setIsLoading(true);
+      setError(null);
+
+      try {
+        toast.success('Password berhasil diubah');
+        return true;
+      } catch (err) {
+        const message = getErrorMessage(err);
+        setError(message);
+        toast.error('Gagal mengubah password', message);
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
+
+  return { changePassword, isLoading, error };
+}
+
+export function useDeleteAccount() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const deleteAccount = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      toast.success('Akun berhasil dihapus');
+      return true;
+    } catch (err) {
+      const message = getErrorMessage(err);
+      setError(message);
+      toast.error('Gagal menghapus akun', message);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { deleteAccount, isLoading, error };
+}
+
+================================================
+FILE: src/hooks/use-customers.ts
+Lines: 221
+================================================
+
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { customersApi, getErrorMessage } from '@/lib/api';
+import { toast } from '@/providers';
+import type { Customer, CreateCustomerInput, UpdateCustomerInput, CustomerQueryParams } from '@/types';
+
+// ==========================================
+// USE CUSTOMERS HOOK
+// Customers list with search & pagination
+// ==========================================
+
+export function useCustomers(initialParams?: CustomerQueryParams) {
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 0,
+  });
+  const [filters, setFilters] = useState<CustomerQueryParams>(initialParams || {});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCustomers = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await customersApi.getAll(filters);
+      setCustomers(response.data);
+      setPagination(response.meta);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
+
+  const updateFilters = useCallback((newFilters: Partial<CustomerQueryParams>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
+  }, []);
+
+  return {
+    customers,
+    pagination,
+    filters,
+    isLoading,
+    error,
+    setFilters: updateFilters,
+    refetch: fetchCustomers,
+  };
+}
+
+// ==========================================
+// USE CUSTOMER HOOK
+// Single customer by ID
+// ==========================================
+
+export function useCustomer(id: string | null) {
+  const [customer, setCustomer] = useState<Customer | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCustomer = useCallback(async () => {
+    if (!id) {
+      setCustomer(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await customersApi.getById(id);
+      setCustomer(data);
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setCustomer(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchCustomer();
+  }, [fetchCustomer]);
+
+  return {
+    customer,
+    isLoading,
+    error,
+    refetch: fetchCustomer,
+  };
+}
+
+// ==========================================
+// USE CREATE CUSTOMER HOOK
+// ==========================================
+
+export function useCreateCustomer() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const createCustomer = useCallback(async (data: CreateCustomerInput) => {
+    setIsLoading(true);
+
+    try {
+      const customer = await customersApi.create(data);
+      toast.success('Pelanggan berhasil ditambahkan');
+      return customer;
+    } catch (err) {
+      toast.error('Gagal menambahkan pelanggan', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    createCustomer,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE UPDATE CUSTOMER HOOK
+// ==========================================
+
+export function useUpdateCustomer() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const updateCustomer = useCallback(async (id: string, data: UpdateCustomerInput) => {
+    setIsLoading(true);
+
+    try {
+      const customer = await customersApi.update(id, data);
+      toast.success('Pelanggan berhasil diperbarui');
+      return customer;
+    } catch (err) {
+      toast.error('Gagal memperbarui pelanggan', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    updateCustomer,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE DELETE CUSTOMER HOOK
+// ==========================================
+
+export function useDeleteCustomer() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const deleteCustomer = useCallback(async (id: string) => {
+    setIsLoading(true);
+
+    try {
+      await customersApi.delete(id);
+      toast.success('Pelanggan berhasil dihapus');
+      return true;
+    } catch (err) {
+      toast.error('Gagal menghapus pelanggan', getErrorMessage(err));
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    deleteCustomer,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE SEARCH CUSTOMER HOOK
+// Search by phone for order creation
+// ==========================================
+
+export function useSearchCustomer() {
+  const [results, setResults] = useState<Customer[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const searchByPhone = useCallback(async (phone: string) => {
+    if (phone.length < 4) {
+      setResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+
+    try {
+      const customers = await customersApi.searchByPhone(phone);
+      setResults(customers);
+    } catch {
+      setResults([]);
+    } finally {
+      setIsSearching(false);
+    }
+  }, []);
+
+  const clear = useCallback(() => {
+    setResults([]);
+  }, []);
+
+  return {
+    results,
+    isSearching,
+    searchByPhone,
+    clear,
+  };
+}
+
+================================================
+FILE: src/hooks/use-debounce.ts
+Lines: 58
+================================================
+
+'use client';
+
+import { useState, useEffect } from 'react';
+
+// ==========================================
+// USE DEBOUNCE HOOK
+// Debounce a value with configurable delay
+// ==========================================
+
+export function useDebounce<T>(value: T, delay: number = 500): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+// ==========================================
+// USE DEBOUNCED CALLBACK HOOK
+// Debounce a callback function
+// ==========================================
+
+export function useDebouncedCallback<T extends (...args: unknown[]) => unknown>(
+  callback: T,
+  delay: number = 500
+): T {
+  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+
+  const debouncedCallback = ((...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    const newTimeoutId = setTimeout(() => {
+      callback(...args);
+    }, delay);
+
+    setTimeoutId(newTimeoutId);
+  }) as T;
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [timeoutId]);
+
+  return debouncedCallback;
+}
+
+================================================
+FILE: src/hooks/use-media-query.ts
+Lines: 52
+================================================
+
+'use client';
+
+import { useSyncExternalStore, useCallback } from 'react';
+
+export function useMediaQuery(query: string): boolean {
+  const subscribe = useCallback(
+    (callback: () => void) => {
+      const mediaQuery = window.matchMedia(query);
+      mediaQuery.addEventListener('change', callback);
+      return () => mediaQuery.removeEventListener('change', callback);
+    },
+    [query]
+  );
+
+  const getSnapshot = useCallback(() => {
+    return window.matchMedia(query).matches;
+  }, [query]);
+
+  const getServerSnapshot = useCallback(() => {
+    // Return false on server (no window)
+    return false;
+  }, []);
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
+// ==========================================
+// BREAKPOINT HOOKS (unchanged)
+// ==========================================
+
+export function useIsMobile(): boolean {
+  return useMediaQuery('(max-width: 639px)');
+}
+
+export function useIsTablet(): boolean {
+  return useMediaQuery('(min-width: 640px) and (max-width: 1023px)');
+}
+
+export function useIsDesktop(): boolean {
+  return useMediaQuery('(min-width: 1024px)');
+}
+
+export function useIsLargeDesktop(): boolean {
+  return useMediaQuery('(min-width: 1280px)');
+}
+
+export const breakpoints = {
+  sm: '(min-width: 640px)',
+  md: '(min-width: 768px)',
+  lg: '(min-width: 1024px)',
+  xl: '(min-width: 1280px)',
+  '2xl': '(min-width: 1536px)',
+} as const;
+
+================================================
+FILE: src/hooks/use-mobile.ts
+Lines: 19
+================================================
+
+import * as React from "react"
+
+const MOBILE_BREAKPOINT = 768
+
+export function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => {
+      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    }
+    mql.addEventListener("change", onChange)
+    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    return () => mql.removeEventListener("change", onChange)
+  }, [])
+
+  return !!isMobile
+}
+
+
+================================================
+FILE: src/hooks/use-mounted.ts
+Lines: 36
+================================================
+
+'use client';
+
+import { useSyncExternalStore } from 'react';
+
+// Empty subscribe function (mount state doesn't change)
+const emptySubscribe = () => () => { };
+
+/**
+ * Check if component is mounted/hydrated
+ * Uses useSyncExternalStore for React Compiler compatibility
+ */
+export function useMounted(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,   // Client: always true after hydration
+    () => false   // Server: always false
+  );
+}
+
+/**
+ * Alias for useMounted
+ */
+export function useIsClient(): boolean {
+  return useMounted();
+}
+
+/**
+ * Hook specifically for hydration state
+ * Returns true immediately on client-side navigation
+ */
+export function useIsHydrated(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
+
+================================================
+FILE: src/hooks/use-orders.ts
+Lines: 251
+================================================
+
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { ordersApi, getErrorMessage } from '@/lib/api';
+import { toast } from '@/providers';
+import type {
+  Order,
+  OrderListItem,
+  CreateOrderInput,
+  UpdatePaymentStatusInput,
+  OrderQueryParams,
+  OrderStatus,
+} from '@/types';
+
+// ==========================================
+// USE ORDERS HOOK
+// Orders list with filters & pagination
+// ==========================================
+
+export function useOrders(initialParams?: OrderQueryParams) {
+  const [orders, setOrders] = useState<OrderListItem[]>([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 0,
+  });
+  const [filters, setFilters] = useState<OrderQueryParams>(initialParams || {});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchOrders = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await ordersApi.getAll(filters);
+      setOrders(response.data);
+      setPagination(response.meta);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  const updateFilters = useCallback((newFilters: Partial<OrderQueryParams>) => {
+    setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
+  }, []);
+
+  return {
+    orders,
+    pagination,
+    filters,
+    isLoading,
+    error,
+    setFilters: updateFilters,
+    refetch: fetchOrders,
+  };
+}
+
+// ==========================================
+// USE ORDER HOOK
+// Single order by ID
+// ==========================================
+
+export function useOrder(id: string | null) {
+  const [order, setOrder] = useState<Order | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchOrder = useCallback(async () => {
+    if (!id) {
+      setOrder(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await ordersApi.getById(id);
+      setOrder(data);
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setOrder(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchOrder();
+  }, [fetchOrder]);
+
+  return {
+    order,
+    isLoading,
+    error,
+    refetch: fetchOrder,
+  };
+}
+
+// ==========================================
+// USE CREATE ORDER HOOK
+// ==========================================
+
+export function useCreateOrder() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const createOrder = useCallback(async (data: CreateOrderInput) => {
+    setIsLoading(true);
+
+    try {
+      const order = await ordersApi.create(data);
+      toast.success('Pesanan berhasil dibuat', `No. ${order.orderNumber}`);
+      return order;
+    } catch (err) {
+      toast.error('Gagal membuat pesanan', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    createOrder,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE UPDATE ORDER STATUS HOOK
+// ==========================================
+
+export function useUpdateOrderStatus() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const updateStatus = useCallback(async (
+    id: string,
+    status: OrderStatus
+  ) => {
+    setIsLoading(true);
+
+    try {
+      const order = await ordersApi.updateStatus(id, { status });
+      toast.success('Status pesanan diperbarui');
+      return order; // ✅ Return order, not boolean
+    } catch (err) {
+      toast.error('Gagal memperbarui status', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { updateStatus, isLoading };
+}
+// ==========================================
+// USE UPDATE PAYMENT STATUS HOOK
+// ==========================================
+
+export function useUpdatePaymentStatus() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const updatePayment = useCallback(async (
+    id: string,
+    data: UpdatePaymentStatusInput
+  ) => {
+    setIsLoading(true);
+
+    try {
+      const order = await ordersApi.updatePayment(id, data);
+      toast.success('Status pembayaran diperbarui');
+      return order; // ✅ Return order
+    } catch (err) {
+      toast.error('Gagal memperbarui pembayaran', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    updatePayment, // ✅ Correct export name
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE CANCEL ORDER HOOK
+// ==========================================
+
+export function useCancelOrder() {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const cancelOrder = useCallback(async (id: string, reason?: string) => {
+    setIsLoading(true);
+
+    try {
+      const order = await ordersApi.cancel(id, reason);
+      toast.success('Pesanan dibatalkan');
+      return order;
+    } catch (err) {
+      toast.error('Gagal membatalkan pesanan', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return {
+    cancelOrder,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE TODAY ORDERS HOOK
+// ==========================================
+
+export function useTodayOrders() {
+  const [orders, setOrders] = useState<OrderListItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchOrders = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const data = await ordersApi.getToday();
+      setOrders(data);
+    } catch {
+      setOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
+
+  return {
+    orders,
+    isLoading,
+    refetch: fetchOrders,
+  };
+}
+
+================================================
+FILE: src/hooks/use-products.ts
+Lines: 278
+================================================
+
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { useProductsStore } from '@/stores';
+import { productsApi, getErrorMessage } from '@/lib/api';
+import { toast } from '@/providers';
+import type { Product, CreateProductInput, UpdateProductInput, ProductQueryParams } from '@/types';
+
+// ==========================================
+// USE PRODUCTS HOOK
+// Products list with filters & pagination
+// ==========================================
+
+export function useProducts(initialParams?: ProductQueryParams) {
+  const {
+    products,
+    filters,
+    pagination,
+    isLoading,
+    error,
+    setProducts,
+    setFilters,
+    setPagination,
+    setLoading,
+    setError,
+    setCategories,
+  } = useProductsStore();
+
+  // Initialize filters
+  useEffect(() => {
+    if (initialParams) {
+      setFilters(initialParams);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Fetch products
+  const fetchProducts = useCallback(async () => {
+    setLoading(true);
+
+    try {
+      const response = await productsApi.getAll(filters);
+      setProducts(response.data);
+      setPagination(response.meta);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
+  }, [filters, setLoading, setProducts, setPagination, setError]);
+
+  // Fetch on filter change
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // Fetch categories with fallback
+  const fetchCategories = useCallback(async () => {
+    try {
+      const categories = await productsApi.getCategories();
+      if (Array.isArray(categories) && categories.length > 0) {
+        setCategories(categories);
+        return;
+      }
+    } catch (err) {
+      console.warn('Categories API failed, extracting from products...', err);
+    }
+
+    // Fallback: extract from loaded products
+    const currentProducts = useProductsStore.getState().products;
+    if (currentProducts.length > 0) {
+      const extracted = [...new Set(
+        currentProducts
+          .map(p => p.category)
+          .filter((c): c is string => Boolean(c))
+      )].sort();
+
+      if (extracted.length > 0) {
+        setCategories(extracted);
+      }
+    }
+  }, [setCategories]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  return {
+    products,
+    filters,
+    pagination,
+    isLoading,
+    error,
+    setFilters,
+    refetch: fetchProducts,
+  };
+}
+
+// ==========================================
+// USE PRODUCT HOOK
+// Single product by ID
+// ==========================================
+
+export function useProduct(id: string | null) {
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProduct = useCallback(async () => {
+    if (!id) {
+      setProduct(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await productsApi.getById(id);
+      setProduct(data);
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setProduct(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchProduct();
+  }, [fetchProduct]);
+
+  return {
+    product,
+    isLoading,
+    error,
+    refetch: fetchProduct,
+  };
+}
+
+// ==========================================
+// USE CREATE PRODUCT HOOK
+// Create product mutation
+// ==========================================
+
+export function useCreateProduct() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { addProduct } = useProductsStore();
+
+  const createProduct = useCallback(async (data: CreateProductInput) => {
+    setIsLoading(true);
+
+    try {
+      const product = await productsApi.create(data);
+      addProduct(product);
+      toast.success('Produk berhasil ditambahkan');
+      return product;
+    } catch (err) {
+      toast.error('Gagal menambahkan produk', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [addProduct]);
+
+  return {
+    createProduct,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE UPDATE PRODUCT HOOK
+// Update product mutation
+// ==========================================
+
+export function useUpdateProduct() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { updateProduct: updateInStore } = useProductsStore();
+
+  const updateProduct = useCallback(async (id: string, data: UpdateProductInput) => {
+    setIsLoading(true);
+
+    try {
+      const product = await productsApi.update(id, data);
+      updateInStore(id, product);
+      toast.success('Produk berhasil diperbarui');
+      return product;
+    } catch (err) {
+      toast.error('Gagal memperbarui produk', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [updateInStore]);
+
+  return {
+    updateProduct,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE DELETE PRODUCT HOOK
+// Delete product mutation
+// ==========================================
+
+export function useDeleteProduct() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { removeProduct } = useProductsStore();
+
+  const deleteProduct = useCallback(async (id: string) => {
+    setIsLoading(true);
+
+    try {
+      await productsApi.delete(id);
+      removeProduct(id);
+      toast.success('Produk berhasil dihapus');
+      return true;
+    } catch (err) {
+      toast.error('Gagal menghapus produk', getErrorMessage(err));
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [removeProduct]);
+
+  return {
+    deleteProduct,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE STORE PRODUCTS HOOK
+// Products for public store (by slug)
+// ==========================================
+
+export function useStoreProducts(slug: string, params?: ProductQueryParams) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [pagination, setPagination] = useState({
+    total: 0,
+    page: 1,
+    limit: 20,
+    totalPages: 0,
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchProducts = useCallback(async () => {
+    if (!slug) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await productsApi.getByStore(slug, {
+        ...params,
+        isActive: true, // Only active products for store
+      });
+      setProducts(response.data);
+      setPagination(response.meta);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, [slug, params]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  return {
+    products,
+    pagination,
+    isLoading,
+    error,
+    refetch: fetchProducts,
+  };
+}
+
+================================================
+FILE: src/hooks/use-pwa.ts
+Lines: 74
+================================================
+
+'use client';
+
+// ==========================================
+// PWA HOOK
+// Re-export from provider for convenience
+// ==========================================
+
+// Main hook - re-export from provider
+export { usePWA } from '@/components/pwa/pwa-provider';
+
+// ==========================================
+// PWA UTILITIES
+// ==========================================
+
+/**
+ * Check if the app is running as PWA (installed)
+ */
+export function isPWA(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window.navigator as any).standalone === true ||
+    document.referrer.includes('android-app://')
+  );
+}
+
+/**
+ * Check if PWA install is supported
+ */
+export function isPWASupported(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  return 'serviceWorker' in navigator;
+}
+
+/**
+ * Check if running on iOS
+ */
+export function isIOS(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  return /iPad|iPhone|iPod/.test(navigator.userAgent);
+}
+
+/**
+ * Check if running on Android
+ */
+export function isAndroid(): boolean {
+  if (typeof window === 'undefined') return false;
+
+  return /Android/.test(navigator.userAgent);
+}
+
+/**
+ * Get PWA display mode
+ */
+export function getPWADisplayMode():
+  | 'browser'
+  | 'standalone'
+  | 'minimal-ui'
+  | 'fullscreen' {
+  if (typeof window === 'undefined') return 'browser';
+
+  const displayModes = ['standalone', 'minimal-ui', 'fullscreen'] as const;
+
+  for (const mode of displayModes) {
+    if (window.matchMedia(`(display-mode: ${mode})`).matches) {
+      return mode;
+    }
+  }
+
+  return 'browser';
+}
+
+================================================
+FILE: src/hooks/use-tenant.ts
+Lines: 138
+================================================
+
+'use client';
+
+import { useState, useCallback, useEffect } from 'react';
+import { useAuthStore } from '@/stores';
+import { tenantsApi, getErrorMessage } from '@/lib/api';
+import { toast } from '@/providers';
+import type { PublicTenant, UpdateTenantInput, DashboardStats } from '@/types';
+
+// ==========================================
+// USE TENANT HOOK
+// Get current tenant data
+// ==========================================
+
+export function useTenant() {
+  const { tenant, setTenant, isAuthenticated } = useAuthStore();
+
+  const refresh = useCallback(async () => {
+    if (!isAuthenticated) return;
+
+    try {
+      const data = await tenantsApi.me();
+      setTenant(data);
+      return data;
+    } catch (err) {
+      console.error('Failed to refresh tenant:', err);
+    }
+  }, [isAuthenticated, setTenant]);
+
+  return {
+    tenant,
+    refresh,
+  };
+}
+
+// ==========================================
+// USE PUBLIC TENANT HOOK
+// Get tenant by slug (public store)
+// ==========================================
+
+export function usePublicTenant(slug: string) {
+  const [tenant, setTenant] = useState<PublicTenant | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTenant = useCallback(async () => {
+    if (!slug) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await tenantsApi.getBySlug(slug);
+      setTenant(data);
+    } catch (err) {
+      setError(getErrorMessage(err));
+      setTenant(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    fetchTenant();
+  }, [fetchTenant]);
+
+  return {
+    tenant,
+    isLoading,
+    error,
+    refetch: fetchTenant,
+  };
+}
+
+// ==========================================
+// USE UPDATE TENANT HOOK
+// Update tenant/store settings
+// ==========================================
+
+export function useUpdateTenant() {
+  const [isLoading, setIsLoading] = useState(false);
+  const { setTenant } = useAuthStore();
+
+  const updateTenant = useCallback(async (data: UpdateTenantInput) => {
+    setIsLoading(true);
+
+    try {
+      const updated = await tenantsApi.update(data);
+      setTenant(updated);
+      toast.success('Pengaturan toko berhasil disimpan');
+      return updated;
+    } catch (err) {
+      toast.error('Gagal menyimpan pengaturan', getErrorMessage(err));
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [setTenant]);
+
+  return {
+    updateTenant,
+    isLoading,
+  };
+}
+
+// ==========================================
+// USE DASHBOARD STATS HOOK
+// Get dashboard statistics
+// ==========================================
+
+export function useDashboardStats() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchStats = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await tenantsApi.getStats();
+      setStats(data);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchStats();
+  }, [fetchStats]);
+
+  return {
+    stats,
+    isLoading,
+    error,
+    refetch: fetchStats,
+  };
+}
+
+
+################################################################
+##
+##  CATEGORY: Zustand State Management
+##  Path: src/stores
+##
+################################################################
+
+================================================
+FILE: src/stores/auth-store.ts
+Lines: 111
+================================================
+
+'use client';
+
+import { create } from 'zustand';
+import { useSyncExternalStore } from 'react';
+import type { Tenant } from '@/types';
+
+// ==========================================
+// AUTH STORE TYPES
+// ==========================================
+
+interface AuthState {
+  tenant: Tenant | null;
+  isLoading: boolean;
+  isChecked: boolean;
+}
+
+interface AuthActions {
+  setTenant: (tenant: Tenant | null) => void;
+  setLoading: (loading: boolean) => void;
+  setChecked: (checked: boolean) => void;
+  reset: () => void;
+}
+
+type AuthStore = AuthState & AuthActions;
+
+// ==========================================
+// AUTH STORE
+// ==========================================
+
+export const useAuthStore = create<AuthStore>()((set) => ({
+  tenant: null,
+  isLoading: true,
+  isChecked: false,
+
+  setTenant: (tenant) => {
+    set({ tenant, isLoading: false });
+  },
+
+  setLoading: (isLoading) => {
+    set({ isLoading });
+  },
+
+  setChecked: (isChecked) => {
+    set({ isChecked, isLoading: false });
+  },
+
+  reset: () => {
+    set({
+      tenant: null,
+      isLoading: false,
+      isChecked: true,
+    });
+  },
+}));
+
+// ==========================================
+// HYDRATION-SAFE HOOKS
+// ==========================================
+
+const subscribe = (callback: () => void) => {
+  return useAuthStore.subscribe(callback);
+};
+
+const emptySubscribe = () => () => { };
+
+export function useIsAuthenticated(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => !!useAuthStore.getState().tenant,
+    () => false,
+  );
+}
+
+export function useAuthChecked(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => useAuthStore.getState().isChecked,
+    () => false,
+  );
+}
+
+export function useAuthHydrated(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false,
+  );
+}
+
+export function useCurrentTenant(): Tenant | null {
+  return useSyncExternalStore(
+    subscribe,
+    () => useAuthStore.getState().tenant,
+    () => null,
+  );
+}
+
+export function useAuthLoading(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => useAuthStore.getState().isLoading,
+    () => true,
+  );
+}
+
+// ==========================================
+// SELECTORS
+// ==========================================
+
+export const selectTenant = (state: AuthStore) => state.tenant;
+export const selectIsLoading = (state: AuthStore) => state.isLoading;
+export const selectIsChecked = (state: AuthStore) => state.isChecked;
+
+================================================
+FILE: src/stores/cart-store.ts
+Lines: 217
+================================================
+
+'use client';
+
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import { useSyncExternalStore, useCallback } from 'react';
+import { STORAGE_KEYS } from '@/config/constants';
+
+// ==========================================
+// CART STORE TYPES
+// ==========================================
+
+export interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  qty: number;
+  image?: string;
+  unit?: string;
+  maxStock?: number;
+}
+
+interface CartState {
+  items: CartItem[];
+  isHydrated: boolean;
+}
+
+interface CartActions {
+  addItem: (item: Omit<CartItem, 'qty'>, qty?: number) => void;
+  removeItem: (id: string) => void;
+  updateQty: (id: string, qty: number) => void;
+  incrementQty: (id: string) => void;
+  decrementQty: (id: string) => void;
+  clearCart: () => void;
+  setHydrated: () => void;
+}
+
+type CartStore = CartState & CartActions;
+
+// ==========================================
+// CART STORE
+// ==========================================
+
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set) => ({
+      items: [],
+      isHydrated: false,
+
+      addItem: (item, qty = 1) => {
+        set((state) => {
+          const existingIndex = state.items.findIndex((i) => i.id === item.id);
+
+          if (existingIndex !== -1) {
+            const newItems = [...state.items];
+            const newQty = newItems[existingIndex].qty + qty;
+
+            if (item.maxStock && newQty > item.maxStock) {
+              newItems[existingIndex].qty = item.maxStock;
+            } else {
+              newItems[existingIndex].qty = newQty;
+            }
+
+            return { items: newItems };
+          }
+
+          return {
+            items: [...state.items, { ...item, qty }],
+          };
+        });
+      },
+
+      removeItem: (id) => {
+        set((state) => ({
+          items: state.items.filter((item) => item.id !== id),
+        }));
+      },
+
+      updateQty: (id, qty) => {
+        if (qty < 1) return;
+
+        set((state) => ({
+          items: state.items.map((item) =>
+            item.id === id
+              ? { ...item, qty: item.maxStock ? Math.min(qty, item.maxStock) : qty }
+              : item
+          ),
+        }));
+      },
+
+      incrementQty: (id) => {
+        set((state) => ({
+          items: state.items.map((item) => {
+            if (item.id !== id) return item;
+
+            const newQty = item.qty + 1;
+            if (item.maxStock && newQty > item.maxStock) return item;
+
+            return { ...item, qty: newQty };
+          }),
+        }));
+      },
+
+      decrementQty: (id) => {
+        set((state) => {
+          const item = state.items.find((i) => i.id === id);
+          if (!item) return state;
+
+          if (item.qty <= 1) {
+            return { items: state.items.filter((i) => i.id !== id) };
+          }
+
+          return {
+            items: state.items.map((i) =>
+              i.id === id ? { ...i, qty: i.qty - 1 } : i
+            ),
+          };
+        });
+      },
+
+      clearCart: () => {
+        set({ items: [] });
+      },
+
+      setHydrated: () => {
+        set({ isHydrated: true });
+      },
+    }),
+    {
+      name: STORAGE_KEYS.CART,
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        items: state.items,
+      }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated();
+      },
+    }
+  )
+);
+
+// ==========================================
+// SELECTORS
+// ==========================================
+
+export const selectCartItems = (state: CartStore) => state.items;
+export const selectCartIsHydrated = (state: CartStore) => state.isHydrated;
+
+export const selectCartTotalItems = (state: CartStore) =>
+  state.items.reduce((sum, item) => sum + item.qty, 0);
+
+export const selectCartTotalPrice = (state: CartStore) =>
+  state.items.reduce((sum, item) => sum + item.price * item.qty, 0);
+
+export const selectCartIsEmpty = (state: CartStore) =>
+  state.items.length === 0;
+
+export const selectCartItem = (id: string) => (state: CartStore) =>
+  state.items.find((item) => item.id === id);
+
+export const selectItemQty = (id: string) => (state: CartStore) =>
+  state.items.find((item) => item.id === id)?.qty || 0;
+
+// ==========================================
+// HOOKS
+// ==========================================
+
+const emptySubscribe = () => () => { };
+
+export const useCartItems = () => {
+  return useCartStore(selectCartItems);
+};
+
+export const useCartTotalItems = () => {
+  return useCartStore(selectCartTotalItems);
+};
+
+export const useCartTotalPrice = () => {
+  return useCartStore(selectCartTotalPrice);
+};
+
+export const useCartIsEmpty = () => {
+  return useCartStore(selectCartIsEmpty);
+};
+
+export const useCartHydrated = (): boolean => {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => useCartStore.getState().isHydrated,
+    () => false
+  );
+};
+
+export const useCartItem = (id: string) => {
+  const selector = useCallback(
+    (state: CartStore) => state.items.find((item) => item.id === id),
+    [id]
+  );
+  return useCartStore(selector);
+};
+
+export const useItemQty = (id: string): number => {
+  const selector = useCallback(
+    (state: CartStore) => state.items.find((item) => item.id === id)?.qty || 0,
+    [id]
+  );
+  return useCartStore(selector);
+};
+
+export const useCartActions = () => {
+  return {
+    addItem: useCartStore.getState().addItem,
+    removeItem: useCartStore.getState().removeItem,
+    updateQty: useCartStore.getState().updateQty,
+    incrementQty: useCartStore.getState().incrementQty,
+    decrementQty: useCartStore.getState().decrementQty,
+    clearCart: useCartStore.getState().clearCart,
+  };
+};
+
+================================================
+FILE: src/stores/index.ts
+Lines: 84
+================================================
+
+// ==========================================
+// STORES INDEX - Export all stores
+// ==========================================
+
+// Auth Store
+export {
+  useAuthStore,
+  useIsAuthenticated,
+  useAuthChecked,
+  useAuthHydrated,
+  useCurrentTenant,
+  useAuthLoading,
+  selectTenant,
+  selectIsLoading,
+  selectIsChecked,
+} from './auth-store';
+
+// Cart Store
+export {
+  useCartStore,
+  selectCartItems,
+  selectCartTotalItems,
+  selectCartTotalPrice,
+  selectCartIsEmpty,
+  selectCartIsHydrated,
+  selectCartItem,
+  selectItemQty,
+  useCartItems,
+  useCartTotalItems,
+  useCartTotalPrice,
+  useCartIsEmpty,
+  useCartHydrated,
+  useCartItem,
+  useItemQty,
+  useCartActions,
+  type CartItem,
+} from './cart-store';
+
+// Products Store
+export {
+  useProductsStore,
+  selectProducts,
+  selectCategories,
+  selectFilters,
+  selectPagination,
+  selectProductsLoading,
+  selectProductsError,
+  selectProductById,
+  selectActiveProducts,
+  selectFeaturedProducts,
+  useProducts,
+  useProductCategories,
+  useProductFilters,
+  useProductPagination,
+  useProductsLoading,
+  useProductsError,
+  useProductById,
+  useActiveProducts,
+  useFeaturedProducts,
+} from './products-store';
+
+// UI Store
+export {
+  useUIStore,
+  selectSidebarOpen,
+  selectSidebarCollapsed,
+  selectMobileMenuOpen,
+  selectModal,
+  selectModalOpen,
+  selectModalType,
+  selectModalData,
+  selectGlobalLoading,
+  selectLoadingMessage,
+  useSidebarOpen,
+  useSidebarCollapsed,
+  useMobileMenuOpen,
+  useModal,
+  useModalOpen,
+  useModalType,
+  useModalData,
+  useGlobalLoading,
+  useLoadingMessage,
+  MODAL_TYPES,
+  type ModalType,
+} from './ui-store';
+
+================================================
+FILE: src/stores/products-store.ts
+Lines: 215
+================================================
+
+'use client';
+
+import { create } from 'zustand';
+import type { Product, ProductQueryParams } from '@/types';
+
+// ==========================================
+// PRODUCTS STORE TYPES
+// ==========================================
+
+interface ProductsState {
+  // Data
+  products: Product[];
+  categories: string[];
+
+  // Filters
+  filters: ProductQueryParams;
+
+  // UI State
+  isLoading: boolean;
+  error: string | null;
+
+  // Pagination
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+interface ProductsActions {
+  // Data actions
+  setProducts: (products: Product[]) => void;
+  setCategories: (categories: string[]) => void;
+  addProduct: (product: Product) => void;
+  updateProduct: (id: string, updates: Partial<Product>) => void;
+  removeProduct: (id: string) => void;
+
+  // Filter actions
+  setFilters: (filters: Partial<ProductQueryParams>) => void;
+  resetFilters: () => void;
+  setSearch: (search: string) => void;
+  setCategory: (category: string | undefined) => void;
+  setPage: (page: number) => void;
+
+  // UI actions
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+
+  // Pagination
+  setPagination: (pagination: Partial<ProductsState['pagination']>) => void;
+
+  // Reset
+  reset: () => void;
+}
+
+type ProductsStore = ProductsState & ProductsActions;
+
+// ==========================================
+// DEFAULT STATE
+// ==========================================
+
+const defaultFilters: ProductQueryParams = {
+  search: '',
+  category: undefined,
+  isActive: undefined,
+  isFeatured: undefined,
+  sortBy: 'createdAt',
+  sortOrder: 'desc',
+  page: 1,
+  limit: 20,
+};
+
+const defaultPagination = {
+  total: 0,
+  page: 1,
+  limit: 20,
+  totalPages: 0,
+};
+
+// ==========================================
+// PRODUCTS STORE
+// ==========================================
+
+export const useProductsStore = create<ProductsStore>()((set) => ({
+  // Initial State
+  products: [],
+  categories: [],
+  filters: defaultFilters,
+  isLoading: false,
+  error: null,
+  pagination: defaultPagination,
+
+  // Data Actions
+  setProducts: (products) => {
+    set({ products, error: null });
+  },
+
+  setCategories: (categories) => {
+    set({ categories });
+  },
+
+  addProduct: (product) => {
+    set((state) => ({
+      products: [product, ...state.products],
+    }));
+  },
+
+  updateProduct: (id, updates) => {
+    set((state) => ({
+      products: state.products.map((p) =>
+        p.id === id ? { ...p, ...updates } : p
+      ),
+    }));
+  },
+
+  removeProduct: (id) => {
+    set((state) => ({
+      products: state.products.filter((p) => p.id !== id),
+    }));
+  },
+
+  // Filter Actions
+  setFilters: (filters) => {
+    set((state) => ({
+      filters: { ...state.filters, ...filters, page: 1 },
+    }));
+  },
+
+  resetFilters: () => {
+    set({ filters: defaultFilters });
+  },
+
+  setSearch: (search) => {
+    set((state) => ({
+      filters: { ...state.filters, search, page: 1 },
+    }));
+  },
+
+  setCategory: (category) => {
+    set((state) => ({
+      filters: { ...state.filters, category, page: 1 },
+    }));
+  },
+
+  setPage: (page) => {
+    set((state) => ({
+      filters: { ...state.filters, page },
+    }));
+  },
+
+  // UI Actions
+  setLoading: (isLoading) => {
+    set({ isLoading });
+  },
+
+  setError: (error) => {
+    set({ error, isLoading: false });
+  },
+
+  // Pagination
+  setPagination: (pagination) => {
+    set((state) => ({
+      pagination: { ...state.pagination, ...pagination },
+    }));
+  },
+
+  // Reset
+  reset: () => {
+    set({
+      products: [],
+      categories: [],
+      filters: defaultFilters,
+      isLoading: false,
+      error: null,
+      pagination: defaultPagination,
+    });
+  },
+}));
+
+// ==========================================
+// SELECTORS
+// ==========================================
+
+export const selectProducts = (state: ProductsStore) => state.products;
+export const selectCategories = (state: ProductsStore) => state.categories;
+export const selectFilters = (state: ProductsStore) => state.filters;
+export const selectPagination = (state: ProductsStore) => state.pagination;
+export const selectProductsLoading = (state: ProductsStore) => state.isLoading;
+export const selectProductsError = (state: ProductsStore) => state.error;
+
+// Select product by ID
+export const selectProductById = (id: string) => (state: ProductsStore) =>
+  state.products.find((p) => p.id === id);
+
+// Select active products only
+export const selectActiveProducts = (state: ProductsStore) =>
+  state.products.filter((p) => p.isActive);
+
+// Select featured products
+export const selectFeaturedProducts = (state: ProductsStore) =>
+  state.products.filter((p) => p.isFeatured);
+
+// ==========================================
+// HOOKS
+// ==========================================
+
+export const useProducts = () => useProductsStore(selectProducts);
+export const useProductCategories = () => useProductsStore(selectCategories);
+export const useProductFilters = () => useProductsStore(selectFilters);
+export const useProductPagination = () => useProductsStore(selectPagination);
+export const useProductsLoading = () => useProductsStore(selectProductsLoading);
+export const useProductsError = () => useProductsStore(selectProductsError);
+export const useProductById = (id: string) => useProductsStore(selectProductById(id));
+export const useActiveProducts = () => useProductsStore(selectActiveProducts);
+export const useFeaturedProducts = () => useProductsStore(selectFeaturedProducts);
+
+================================================
+FILE: src/stores/ui-store.ts
+Lines: 194
+================================================
+
+'use client';
+
+import { create } from 'zustand';
+
+// ==========================================
+// UI STORE TYPES
+// ==========================================
+
+interface ModalState {
+  isOpen: boolean;
+  type: string | null;
+  data: unknown;
+}
+
+interface UIState {
+  // Sidebar
+  sidebarOpen: boolean;
+  sidebarCollapsed: boolean;
+
+  // Mobile menu
+  mobileMenuOpen: boolean;
+
+  // Modal
+  modal: ModalState;
+
+  // Global loading
+  globalLoading: boolean;
+  loadingMessage: string | null | undefined;
+
+  // Toast queue (for sonner)
+  // Note: Sonner handles its own state, this is for programmatic access
+}
+
+interface UIActions {
+  // Sidebar
+  toggleSidebar: () => void;
+  setSidebarOpen: (open: boolean) => void;
+  toggleSidebarCollapsed: () => void;
+  setSidebarCollapsed: (collapsed: boolean) => void;
+
+  // Mobile menu
+  toggleMobileMenu: () => void;
+  setMobileMenuOpen: (open: boolean) => void;
+  closeMobileMenu: () => void;
+
+  // Modal
+  openModal: (type: string, data?: unknown) => void;
+  closeModal: () => void;
+
+  // Global loading
+  setGlobalLoading: (loading: boolean, message?: string | null) => void;
+
+  // Reset
+  reset: () => void;
+}
+
+type UIStore = UIState & UIActions;
+
+// ==========================================
+// DEFAULT STATE
+// ==========================================
+
+const defaultModalState: ModalState = {
+  isOpen: false,
+  type: null,
+  data: null,
+};
+
+// ==========================================
+// UI STORE
+// ==========================================
+
+export const useUIStore = create<UIStore>()((set) => ({
+  // Initial State
+  sidebarOpen: true,
+  sidebarCollapsed: false,
+  mobileMenuOpen: false,
+  modal: defaultModalState,
+  globalLoading: false,
+  loadingMessage: null,
+
+  // Sidebar Actions
+  toggleSidebar: () => {
+    set((state) => ({ sidebarOpen: !state.sidebarOpen }));
+  },
+
+  setSidebarOpen: (sidebarOpen) => {
+    set({ sidebarOpen });
+  },
+
+  toggleSidebarCollapsed: () => {
+    set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed }));
+  },
+
+  setSidebarCollapsed: (sidebarCollapsed) => {
+    set({ sidebarCollapsed });
+  },
+
+  // Mobile Menu Actions
+  toggleMobileMenu: () => {
+    set((state) => ({ mobileMenuOpen: !state.mobileMenuOpen }));
+  },
+
+  setMobileMenuOpen: (mobileMenuOpen) => {
+    set({ mobileMenuOpen });
+  },
+
+  closeMobileMenu: () => {
+    set({ mobileMenuOpen: false });
+  },
+
+  // Modal Actions
+  openModal: (type, data = null) => {
+    set({
+      modal: { isOpen: true, type, data },
+    });
+  },
+
+  closeModal: () => {
+    set({ modal: defaultModalState });
+  },
+
+  // Global Loading
+  setGlobalLoading: (globalLoading, loadingMessage = undefined) => { // ← UBAH DARI null KE undefined
+    set({ globalLoading, loadingMessage });
+  },
+
+  // Reset
+  reset: () => {
+    set({
+      sidebarOpen: true,
+      sidebarCollapsed: false,
+      mobileMenuOpen: false,
+      modal: defaultModalState,
+      globalLoading: false,
+      loadingMessage: null,
+    });
+  },
+}));
+
+// ==========================================
+// SELECTORS
+// ==========================================
+
+export const selectSidebarOpen = (state: UIStore) => state.sidebarOpen;
+export const selectSidebarCollapsed = (state: UIStore) => state.sidebarCollapsed;
+export const selectMobileMenuOpen = (state: UIStore) => state.mobileMenuOpen;
+export const selectModal = (state: UIStore) => state.modal;
+export const selectModalOpen = (state: UIStore) => state.modal.isOpen;
+export const selectModalType = (state: UIStore) => state.modal.type;
+export const selectModalData = (state: UIStore) => state.modal.data;
+export const selectGlobalLoading = (state: UIStore) => state.globalLoading;
+export const selectLoadingMessage = (state: UIStore) => state.loadingMessage;
+
+// ==========================================
+// HOOKS
+// ==========================================
+
+export const useSidebarOpen = () => useUIStore(selectSidebarOpen);
+export const useSidebarCollapsed = () => useUIStore(selectSidebarCollapsed);
+export const useMobileMenuOpen = () => useUIStore(selectMobileMenuOpen);
+export const useModal = () => useUIStore(selectModal);
+export const useModalOpen = () => useUIStore(selectModalOpen);
+export const useModalType = () => useUIStore(selectModalType);
+export const useModalData = <T = unknown>() => useUIStore(selectModalData) as T;
+export const useGlobalLoading = () => useUIStore(selectGlobalLoading);
+export const useLoadingMessage = () => useUIStore(selectLoadingMessage);
+
+// ==========================================
+// MODAL TYPES (for type safety)
+// ==========================================
+
+export const MODAL_TYPES = {
+  // Product modals
+  DELETE_PRODUCT: 'DELETE_PRODUCT',
+  PRODUCT_PREVIEW: 'PRODUCT_PREVIEW',
+
+  // Customer modals
+  DELETE_CUSTOMER: 'DELETE_CUSTOMER',
+  CUSTOMER_ORDERS: 'CUSTOMER_ORDERS',
+
+  // Order modals
+  ORDER_DETAIL: 'ORDER_DETAIL',
+  CANCEL_ORDER: 'CANCEL_ORDER',
+  UPDATE_PAYMENT: 'UPDATE_PAYMENT',
+
+  // Settings modals
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD',
+
+  // General
+  CONFIRM: 'CONFIRM',
+  IMAGE_PREVIEW: 'IMAGE_PREVIEW',
+} as const;
+
+export type ModalType = typeof MODAL_TYPES[keyof typeof MODAL_TYPES];
+
+
+################################################################
+##
+##  CATEGORY: TypeScript Types
+##  Path: src/types
+##
+################################################################
+
+================================================
+FILE: src/types/api.ts
+Lines: 48
+================================================
+
+// ==========================================
+// API RESPONSE TYPES
+// ==========================================
+
+/**
+ * Standard API response wrapper
+ */
+export interface ApiResponse<T> {
+  data: T;
+  message?: string;
+}
+
+/**
+ * Paginated response
+ */
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: PaginationMeta;
+}
+
+/**
+ * Pagination metadata
+ */
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+/**
+ * API Error response
+ */
+export interface ApiError {
+  statusCode: number;
+  message: string | string[];
+  error?: string;
+}
+
+/**
+ * Query parameters for list endpoints
+ */
+export interface QueryParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+================================================
+FILE: src/types/auth.ts
+Lines: 56
+================================================
+
+import type { Tenant } from './tenant';
+
+// ==========================================
+// AUTH TYPES
+// ==========================================
+
+/**
+ * Login request payload
+ */
+export interface LoginInput {
+  email: string;
+  password: string;
+}
+
+/**
+ * Register request payload
+ */
+export interface RegisterInput {
+  slug: string;
+  name: string;
+  category: string;
+  email: string;
+  password: string;
+  whatsapp: string;
+  description?: string;
+  phone?: string;
+  address?: string;
+}
+
+/**
+ * Auth response from API
+ */
+export interface AuthResponse {
+  message: string;
+  access_token: string;
+  tenant: Tenant;
+}
+
+/**
+ * JWT Payload (decoded token)
+ */
+export interface JwtPayload {
+  sub: string;      // tenant id
+  email: string;
+  slug: string;
+  iat: number;
+  exp: number;
+}
+
+/**
+ * Change password request
+ */
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+================================================
+FILE: src/types/cloudinary.ts
+Lines: 93
+================================================
+
+// ==========================================
+// CLOUDINARY TYPE DEFINITIONS
+// ==========================================
+
+export interface CloudinaryUploadResult {
+  event: 'success' | 'close' | 'display-changed' | string;
+  info: CloudinaryUploadInfo;
+}
+
+export interface CloudinaryUploadInfo {
+  id: string;
+  batchId: string;
+  asset_id: string;
+  public_id: string;
+  version: number;
+  version_id: string;
+  signature: string;
+  width: number;
+  height: number;
+  format: string;
+  resource_type: 'image' | 'video' | 'raw' | 'auto';
+  created_at: string;
+  tags: string[];
+  bytes: number;
+  type: string;
+  etag: string;
+  placeholder: boolean;
+  url: string;
+  secure_url: string;
+  folder: string;
+  original_filename: string;
+  original_extension: string;
+  api_key: string;
+  // Thumbnail info
+  thumbnail_url?: string;
+  eager?: Array<{
+    transformation: string;
+    width: number;
+    height: number;
+    bytes: number;
+    format: string;
+    url: string;
+    secure_url: string;
+  }>;
+}
+
+export interface CloudinaryUploadOptions {
+  uploadPreset?: string;
+  folder?: string;
+  maxFiles?: number;
+  maxFileSize?: number;
+  clientAllowedFormats?: string[];
+  resourceType?: 'image' | 'video' | 'raw' | 'auto';
+  cropping?: boolean;
+  croppingAspectRatio?: number;
+  showSkipCropButton?: boolean;
+  sources?: Array<'local' | 'url' | 'camera' | 'dropbox' | 'google_drive'>;
+  multiple?: boolean;
+  defaultSource?: 'local' | 'url' | 'camera';
+  styles?: {
+    palette?: {
+      window?: string;
+      windowBorder?: string;
+      tabIcon?: string;
+      menuIcons?: string;
+      textDark?: string;
+      textLight?: string;
+      link?: string;
+      action?: string;
+      inactiveTabIcon?: string;
+      error?: string;
+      inProgress?: string;
+      complete?: string;
+      sourceBg?: string;
+    };
+  };
+}
+
+export interface ImageUploadProps {
+  value?: string;
+  onChange: (url: string | undefined) => void;
+  folder?: string;
+  aspectRatio?: 'square' | 'video' | 'banner' | 'free';
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+export interface MultiImageUploadProps {
+  value: string[];
+  onChange: (urls: string[]) => void;
+  folder?: string;
+  maxImages?: number;
+  disabled?: boolean;
+}
+
+================================================
+FILE: src/types/customer.ts
+Lines: 50
+================================================
+
+// ==========================================
+// CUSTOMER TYPES
+// ==========================================
+
+/**
+ * Customer entity
+ */
+export interface Customer {
+  id: string;
+  tenantId: string;
+  name: string;
+  phone: string;
+  email?: string | null;
+  address?: string | null;
+  notes?: string | null;
+  metadata?: Record<string, unknown> | null;
+  totalOrders: number;
+  totalSpent: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Create customer request
+ */
+export interface CreateCustomerInput {
+  name: string;
+  phone: string;
+  email?: string;
+  address?: string;
+  notes?: string;
+  metadata?: Record<string, unknown>;
+}
+
+
+/**
+ * Update customer request
+ */
+export type UpdateCustomerInput = Partial<CreateCustomerInput>;
+
+/**
+ * Customer query parameters
+ */
+export interface CustomerQueryParams {
+  search?: string;
+  sortBy?: 'name' | 'totalOrders' | 'totalSpent' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  [key: string]: string | number | boolean | undefined;
+}
+
+================================================
+FILE: src/types/index.ts
+Lines: 46
+================================================
+
+// ==========================================
+// TYPES INDEX - Export all types
+// ==========================================
+
+// API Types
+export * from './api';
+
+// Auth Types
+export * from './auth';
+
+// Tenant Types
+export * from './tenant';
+
+// Product Types
+export * from './product';
+
+// Customer Types
+export * from './customer';
+
+// Order Types
+export * from './order';
+
+// Landing Types
+export * from './landing';
+// ==========================================
+// COMMON UTILITY TYPES
+// ==========================================
+
+/**
+ * Make all properties optional except specified keys
+ */
+export type PartialExcept<T, K extends keyof T> = Partial<Omit<T, K>> & Pick<T, K>;
+
+/**
+ * Make specified properties required
+ */
+export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
+
+/**
+ * Nullable type helper
+ */
+export type Nullable<T> = T | null;
+
+/**
+ * ID type (CUID string)
+ */
+export type ID = string;
+
+================================================
+FILE: src/types/landing.ts
+Lines: 129
+================================================
+
+// ==========================================
+// LANDING PAGE TYPE DEFINITIONS
+// ==========================================
+
+export interface LandingSection {
+  enabled: boolean;
+  title?: string;
+  subtitle?: string;
+  config?: Record<string, unknown>;
+}
+
+export interface HeroSectionConfig {
+  layout?: 'centered' | 'left' | 'right';
+  showCta?: boolean;
+  ctaText?: string;
+  ctaLink?: string;
+  backgroundImage?: string;
+  overlayOpacity?: number;
+}
+
+export interface AboutSectionConfig {
+  content?: string;
+  showImage?: boolean;
+  image?: string;
+  features?: Array<{
+    icon?: string;
+    title: string;
+    description: string;
+  }>;
+}
+
+export interface ProductsSectionConfig {
+  displayMode?: 'featured' | 'latest' | 'all';
+  limit?: number;
+  showViewAll?: boolean;
+}
+
+export interface TestimonialsSectionConfig {
+  items?: Array<{
+    id: string;
+    name: string;
+    role?: string;
+    avatar?: string;
+    content: string;
+    rating?: number;
+  }>;
+}
+
+export interface ContactSectionConfig {
+  showMap?: boolean;
+  showForm?: boolean;
+  showSocialMedia?: boolean;
+}
+
+export interface CtaSectionConfig {
+  buttonText?: string;
+  buttonLink?: string;
+  style?: 'primary' | 'secondary' | 'outline';
+}
+
+export interface TenantLandingConfig {
+  enabled: boolean;
+  hero?: LandingSection & { config?: HeroSectionConfig };
+  about?: LandingSection & { config?: AboutSectionConfig };
+  products?: LandingSection & { config?: ProductsSectionConfig };
+  testimonials?: LandingSection & { config?: TestimonialsSectionConfig };
+  contact?: LandingSection & { config?: ContactSectionConfig };
+  cta?: LandingSection & { config?: CtaSectionConfig };
+}
+
+export const DEFAULT_LANDING_CONFIG: TenantLandingConfig = {
+  enabled: false, // Default: disabled, use existing StoreHero
+  hero: {
+    enabled: true,
+    title: '',
+    subtitle: '',
+    config: {
+      layout: 'centered',
+      showCta: true,
+      ctaText: 'Lihat Produk',
+      overlayOpacity: 0.5,
+    },
+  },
+  about: {
+    enabled: false,
+    title: 'Tentang Kami',
+    subtitle: '',
+    config: {
+      showImage: true,
+      features: [],
+    },
+  },
+  products: {
+    enabled: true,
+    title: 'Produk Kami',
+    subtitle: 'Pilihan produk terbaik untuk Anda',
+    config: {
+      displayMode: 'featured',
+      limit: 8,
+      showViewAll: true,
+    },
+  },
+  testimonials: {
+    enabled: false,
+    title: 'Testimoni',
+    subtitle: 'Apa kata pelanggan kami',
+    config: {
+      items: [],
+    },
+  },
+  contact: {
+    enabled: true,
+    title: 'Hubungi Kami',
+    subtitle: '',
+    config: {
+      showMap: false,
+      showForm: false,
+      showSocialMedia: true,
+    },
+  },
+  cta: {
+    enabled: false,
+    title: 'Siap Berbelanja?',
+    subtitle: '',
+    config: {
+      buttonText: 'Mulai Belanja',
+      style: 'primary',
+    },
+  },
+};
+
+================================================
+FILE: src/types/order.ts
+Lines: 160
+================================================
+
+import type { Customer } from './customer';
+import type { Product } from './product';
+
+// ==========================================
+// ORDER TYPES
+// ==========================================
+
+/**
+ * Order status enum
+ */
+export type OrderStatus =
+  | 'PENDING'
+  | 'PROCESSING'
+  | 'COMPLETED'
+  | 'CANCELLED';
+
+/**
+ * Payment status enum
+ */
+export type PaymentStatus =
+  | 'PENDING'
+  | 'PAID'
+  | 'PARTIAL'
+  | 'FAILED';
+
+/**
+ * Order item entity
+ */
+export interface OrderItem {
+  id: string;
+  orderId: string;
+  productId?: string | null;
+  product?: Pick<Product, 'id' | 'name' | 'images'> | null;
+  name: string;
+  price: number;
+  qty: number;
+  subtotal: number;
+  notes?: string | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+/**
+ * Order entity
+ */
+export interface Order {
+  id: string;
+  tenantId: string;
+  customerId?: string | null;
+  customer?: Pick<Customer, 'id' | 'name' | 'phone' | 'email' | 'address'> | null;
+  orderNumber: string;
+  items: OrderItem[];
+  subtotal: number;
+  discount: number;
+  tax: number;
+  total: number;
+  paymentMethod?: string | null;
+  paymentStatus: PaymentStatus;
+  paidAmount: number;
+  status: OrderStatus;
+  customerName?: string | null;
+  customerPhone?: string | null;
+  notes?: string | null;
+  metadata?: Record<string, unknown> | null;
+  createdAt: string;
+  updatedAt: string;
+  completedAt?: string | null;
+  _count?: {
+    items: number;
+  };
+}
+
+/**
+ * Order list item (simplified for list view)
+ */
+export interface OrderListItem {
+  id: string;
+  orderNumber: string;
+  subtotal: number;
+  discount: number;
+  total: number;
+  status: OrderStatus;
+  paymentStatus: PaymentStatus;
+  paymentMethod?: string | null;
+  customerName?: string | null;
+  customerPhone?: string | null;
+  createdAt: string;
+  customer?: Pick<Customer, 'id' | 'name' | 'phone'> | null;
+  _count?: {
+    items: number;
+  };
+}
+
+/**
+ * Create order item request
+ */
+export interface CreateOrderItemInput {
+  productId?: string;
+  name: string;
+  price: number;
+  qty: number;
+  notes?: string;
+}
+
+/**
+ * Create order request
+ */
+export interface CreateOrderInput {
+  customerId?: string;
+  customerName?: string;
+  customerPhone?: string;
+  items: CreateOrderItemInput[];
+  subtotal?: number;
+  total?: number;
+  discount?: number;
+  tax?: number;
+  paymentMethod?: string;
+  notes?: string;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Update order request
+ */
+export interface UpdateOrderInput {
+  discount?: number;
+  paymentMethod?: string;
+  notes?: string;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Update order status request
+ */
+export interface UpdateOrderStatusInput {
+  status: OrderStatus;
+}
+
+/**
+ * Update payment status request
+ */
+export interface UpdatePaymentStatusInput {
+  paymentStatus: PaymentStatus;
+  paidAmount?: number;
+}
+
+/**
+ * Order query parameters
+ */
+export interface OrderQueryParams {
+  search?: string;
+  status?: OrderStatus;
+  paymentStatus?: PaymentStatus;
+  customerId?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: 'orderNumber' | 'total' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  [key: string]: string | number | boolean | undefined;
+}
+
+================================================
+FILE: src/types/product.ts
+Lines: 92
+================================================
+
+// ==========================================
+// PRODUCT TYPES
+// ==========================================
+
+/**
+ * Product entity
+ */
+export interface Product {
+  id: string;
+  tenantId: string;
+  name: string;
+  description?: string | null;
+  category?: string | null;
+  sku?: string | null;
+  price: number;
+  comparePrice?: number | null;
+  costPrice?: number | null;
+  stock?: number | null;
+  minStock?: number | null;
+  trackStock: boolean;
+  unit?: string | null;
+  images: string[];
+  metadata?: Record<string, unknown> | null;
+  isActive: boolean;
+  isFeatured: boolean;
+  slug?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * Create product request
+ */
+export interface CreateProductInput {
+  name: string;
+  description?: string;
+  category?: string;
+  sku?: string;
+  price: number;
+  comparePrice?: number;
+  costPrice?: number;
+  stock?: number;
+  minStock?: number;
+  trackStock?: boolean;
+  unit?: string;
+  images?: string[];
+  metadata?: Record<string, unknown>;
+  isActive?: boolean;
+  isFeatured?: boolean;
+}
+
+/**
+ * Update product request
+ */
+export type UpdateProductInput = Partial<CreateProductInput>;
+
+/**
+ * Update stock request
+ */
+export interface UpdateStockInput {
+  quantity: number;  // Positive = add, Negative = subtract
+  reason?: string;
+}
+
+/**
+ * Product query parameters
+ */
+/**
+ * Product query parameters
+ */
+export interface ProductQueryParams {
+  search?: string;
+  category?: string;
+  isActive?: boolean;
+  isFeatured?: boolean;
+  lowStock?: boolean;
+  sortBy?: 'name' | 'price' | 'stock' | 'createdAt' | 'updatedAt';
+  sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  [key: string]: string | number | boolean | undefined;
+}
+
+/**
+ * Low stock product
+ */
+export interface LowStockProduct {
+  id: string;
+  name: string;
+  stock: number | null;
+  minStock: number | null;
+  unit?: string | null;
+}
+
+================================================
+FILE: src/types/tenant.ts
+Lines: 139
+================================================
+
+// ==========================================
+// TENANT TYPES
+// ==========================================
+
+import type { TenantLandingConfig } from './landing';
+
+// ==========================================
+// SOCIAL LINKS TYPE
+// ==========================================
+export interface SocialLinks {
+  instagram?: string;
+  facebook?: string;
+  tiktok?: string;
+  youtube?: string;
+  twitter?: string;
+}
+
+export interface Tenant {
+  id: string;
+  slug: string;
+  name: string;
+  email: string;
+  category: string;
+  description?: string;
+  whatsapp?: string;
+  phone?: string;
+  address?: string;
+  logo?: string;
+  banner?: string;
+  theme?: { primaryColor?: string };
+  landingConfig?: TenantLandingConfig;
+  // SEO Fields
+  metaTitle?: string;
+  metaDescription?: string;
+  socialLinks?: SocialLinks;
+  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface PublicTenant {
+  id: string;
+  slug: string;
+  name: string;
+  category: string;
+  description?: string;
+  whatsapp?: string;
+  phone?: string;
+  address?: string;
+  logo?: string;
+  banner?: string;
+  theme?: { primaryColor?: string };
+  landingConfig?: TenantLandingConfig;
+  // SEO Fields
+  metaTitle?: string;
+  metaDescription?: string;
+  socialLinks?: SocialLinks;
+  status: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+  createdAt: string;
+  _count?: { products: number };
+}
+
+export interface UpdateTenantInput {
+  name?: string;
+  description?: string;
+  whatsapp?: string;
+  phone?: string;
+  address?: string;
+  logo?: string;
+  banner?: string;
+  theme?: { primaryColor?: string };
+  landingConfig?: TenantLandingConfig;
+  // SEO Fields
+  metaTitle?: string;
+  metaDescription?: string;
+  socialLinks?: SocialLinks;
+}
+
+// ==========================================
+// DASHBOARD STATS (Enhanced)
+// ==========================================
+
+export interface RecentOrder {
+  id: string;
+  orderNumber: string;
+  total: number;
+  status: string;
+  paymentStatus: string;
+  createdAt: string;
+  customer?: {
+    id: string;
+    name: string;
+    phone?: string;
+  } | null;
+  customerName?: string;
+  customerPhone?: string;
+}
+
+export interface LowStockItem {
+  id: string;
+  name: string;
+  stock: number | null;
+  sku?: string | null;
+}
+
+export interface DashboardStats {
+  products: {
+    total: number;
+    active: number;
+    lowStock: number;
+  };
+  customers: {
+    total: number;
+    thisMonth: number;
+    trend: number;
+  };
+  orders: {
+    total: number;
+    today: number;
+    thisWeek: number;
+    thisMonth: number;
+    pending: number;
+    trend: number;
+  };
+  revenue: {
+    thisWeek: number;
+    thisMonth: number;
+    lastMonth: number;
+    trend: number;
+  };
+  alerts: {
+    lowStock: number;
+    pendingOrders: number;
+  };
+  recentOrders: RecentOrder[];
+  lowStockItems: LowStockItem[];
+}
+
+// Keep backward compatibility alias
+export type TenantStats = DashboardStats;
+
+
+################################################################
+##
+##  CATEGORY: App Configuration
+##  Path: src/config
+##
+################################################################
+
+================================================
+FILE: src/config/categories.ts
+Lines: 441
+================================================
+
+import {
+  ShoppingCart,
+  Wrench,
+  Scissors,
+  Shirt,
+  UtensilsCrossed,
+  Package,
+  Coffee,
+  Cake,
+  Pill,
+  Wind,
+  Camera,
+  Dog,
+  Dumbbell,
+  Home,
+  Printer,
+  type LucideIcon,
+} from 'lucide-react';
+
+// ==========================================
+// CATEGORY TYPES
+// ==========================================
+
+export interface CategoryFeatures {
+  stock: boolean;
+  debt: boolean;
+  booking: boolean;
+  tracking: boolean;
+  membership: boolean;
+  cashier: boolean;
+}
+
+export interface CategoryLabels {
+  product: string;
+  price: string;
+  customer: string;
+}
+
+export interface CategoryConfig {
+  key: string;
+  icon: LucideIcon;
+  label: string;
+  labelShort: string;
+  color: string;
+  description: string;
+  features: CategoryFeatures;
+  labels: CategoryLabels;
+}
+
+// ==========================================
+// 15 MVP CATEGORIES
+// ==========================================
+
+export const CATEGORY_CONFIG: Record<string, CategoryConfig> = {
+  // ========== RETAIL ==========
+  WARUNG_KELONTONG: {
+    key: 'WARUNG_KELONTONG',
+    icon: ShoppingCart,
+    label: 'Warung Kelontong',
+    labelShort: 'Warung',
+    color: '#10b981',
+    description: 'Toko kelontong, sembako, minimarket',
+    features: {
+      stock: true,
+      debt: true,
+      booking: false,
+      tracking: false,
+      membership: false,
+      cashier: true,
+    },
+    labels: {
+      product: 'Produk',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  TOKO_BANGUNAN: {
+    key: 'TOKO_BANGUNAN',
+    icon: Package,
+    label: 'Toko Bangunan',
+    labelShort: 'Bangunan',
+    color: '#f59e0b',
+    description: 'Material bangunan, alat tukang',
+    features: {
+      stock: true,
+      debt: true,
+      booking: false,
+      tracking: false,
+      membership: false,
+      cashier: true,
+    },
+    labels: {
+      product: 'Material',
+      price: 'Harga',
+      customer: 'Kontraktor',
+    },
+  },
+
+  // ========== SERVICE ==========
+  BENGKEL_MOTOR: {
+    key: 'BENGKEL_MOTOR',
+    icon: Wrench,
+    label: 'Bengkel Motor',
+    labelShort: 'Bengkel',
+    color: '#f97316',
+    description: 'Service motor, ganti oli, tune up',
+    features: {
+      stock: true,
+      debt: false,
+      booking: true,
+      tracking: true,
+      membership: false,
+      cashier: false,
+    },
+    labels: {
+      product: 'Layanan',
+      price: 'Tarif',
+      customer: 'Pelanggan',
+    },
+  },
+
+  LAUNDRY: {
+    key: 'LAUNDRY',
+    icon: Shirt,
+    label: 'Laundry',
+    labelShort: 'Laundry',
+    color: '#3b82f6',
+    description: 'Cuci kiloan, cuci satuan, setrika',
+    features: {
+      stock: false,
+      debt: false,
+      booking: false,
+      tracking: true,
+      membership: false,
+      cashier: true,
+    },
+    labels: {
+      product: 'Layanan',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  SERVICE_AC: {
+    key: 'SERVICE_AC',
+    icon: Wind,
+    label: 'Service AC',
+    labelShort: 'AC',
+    color: '#06b6d4',
+    description: 'Service AC, elektronik, kulkas',
+    features: {
+      stock: true,
+      debt: false,
+      booking: true,
+      tracking: true,
+      membership: false,
+      cashier: false,
+    },
+    labels: {
+      product: 'Layanan',
+      price: 'Tarif',
+      customer: 'Pelanggan',
+    },
+  },
+
+  // ========== BEAUTY & HEALTH ==========
+  SALON_BARBERSHOP: {
+    key: 'SALON_BARBERSHOP',
+    icon: Scissors,
+    label: 'Salon & Barbershop',
+    labelShort: 'Salon',
+    color: '#ec4899',
+    description: 'Potong rambut, creambath, facial',
+    features: {
+      stock: false,
+      debt: false,
+      booking: true,
+      tracking: false,
+      membership: true,
+      cashier: true,
+    },
+    labels: {
+      product: 'Layanan',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  APOTEK: {
+    key: 'APOTEK',
+    icon: Pill,
+    label: 'Apotek',
+    labelShort: 'Apotek',
+    color: '#ef4444',
+    description: 'Obat, vitamin, alat kesehatan',
+    features: {
+      stock: true,
+      debt: false,
+      booking: false,
+      tracking: false,
+      membership: false,
+      cashier: true,
+    },
+    labels: {
+      product: 'Obat',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  // ========== F&B ==========
+  CATERING: {
+    key: 'CATERING',
+    icon: UtensilsCrossed,
+    label: 'Catering',
+    labelShort: 'Catering',
+    color: '#f59e0b',
+    description: 'Catering harian, prasmanan, nasi box',
+    features: {
+      stock: false,
+      debt: false,
+      booking: true,
+      tracking: true,
+      membership: false,
+      cashier: false,
+    },
+    labels: {
+      product: 'Menu',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  KEDAI_KOPI: {
+    key: 'KEDAI_KOPI',
+    icon: Coffee,
+    label: 'Kedai Kopi',
+    labelShort: 'Kopi',
+    color: '#78350f',
+    description: 'Coffee shop, cafe, kedai minuman',
+    features: {
+      stock: true,
+      debt: false,
+      booking: false,
+      tracking: false,
+      membership: true,
+      cashier: true,
+    },
+    labels: {
+      product: 'Menu',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  TOKO_KUE: {
+    key: 'TOKO_KUE',
+    icon: Cake,
+    label: 'Toko Kue',
+    labelShort: 'Kue',
+    color: '#db2777',
+    description: 'Kue, roti, bakery, pastry',
+    features: {
+      stock: true,
+      debt: false,
+      booking: true,
+      tracking: false,
+      membership: false,
+      cashier: true,
+    },
+    labels: {
+      product: 'Produk',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+
+  // ========== OTHERS ==========
+  FOTOGRAFI: {
+    key: 'FOTOGRAFI',
+    icon: Camera,
+    label: 'Fotografi',
+    labelShort: 'Foto',
+    color: '#8b5cf6',
+    description: 'Studio foto, wedding, dokumentasi',
+    features: {
+      stock: false,
+      debt: false,
+      booking: true,
+      tracking: true,
+      membership: false,
+      cashier: false,
+    },
+    labels: {
+      product: 'Paket',
+      price: 'Harga',
+      customer: 'Klien',
+    },
+  },
+
+  PETSHOP: {
+    key: 'PETSHOP',
+    icon: Dog,
+    label: 'Pet Shop',
+    labelShort: 'Pet',
+    color: '#f97316',
+    description: 'Makanan hewan, grooming, aksesoris',
+    features: {
+      stock: true,
+      debt: false,
+      booking: true,
+      tracking: false,
+      membership: true,
+      cashier: true,
+    },
+    labels: {
+      product: 'Produk',
+      price: 'Harga',
+      customer: 'Pet Owner',
+    },
+  },
+
+  GYM_FITNESS: {
+    key: 'GYM_FITNESS',
+    icon: Dumbbell,
+    label: 'Gym & Fitness',
+    labelShort: 'Gym',
+    color: '#059669',
+    description: 'Tempat gym, fitness center',
+    features: {
+      stock: false,
+      debt: false,
+      booking: true,
+      tracking: false,
+      membership: true,
+      cashier: true,
+    },
+    labels: {
+      product: 'Paket',
+      price: 'Harga',
+      customer: 'Member',
+    },
+  },
+
+  KOST_KONTRAKAN: {
+    key: 'KOST_KONTRAKAN',
+    icon: Home,
+    label: 'Kost & Kontrakan',
+    labelShort: 'Kost',
+    color: '#0891b2',
+    description: 'Kost, kontrakan, sewa kamar',
+    features: {
+      stock: false,
+      debt: true,
+      booking: true,
+      tracking: true,
+      membership: false,
+      cashier: false,
+    },
+    labels: {
+      product: 'Kamar',
+      price: 'Harga',
+      customer: 'Penghuni',
+    },
+  },
+
+  PERCETAKAN: {
+    key: 'PERCETAKAN',
+    icon: Printer,
+    label: 'Percetakan',
+    labelShort: 'Print',
+    color: '#4f46e5',
+    description: 'Print, fotocopy, cetak undangan',
+    features: {
+      stock: true,
+      debt: false,
+      booking: true,
+      tracking: true,
+      membership: false,
+      cashier: true,
+    },
+    labels: {
+      product: 'Layanan',
+      price: 'Harga',
+      customer: 'Pelanggan',
+    },
+  },
+};
+
+// ==========================================
+// HELPER FUNCTIONS
+// ==========================================
+
+/**
+ * Get category config by key
+ */
+export function getCategoryConfig(category: string): CategoryConfig | null {
+  return CATEGORY_CONFIG[category] || null;
+}
+
+/**
+ * Get all categories as array
+ */
+export function getCategoryList(): CategoryConfig[] {
+  return Object.values(CATEGORY_CONFIG);
+}
+
+/**
+ * Get category options for select
+ */
+export function getCategoryOptions(): { value: string; label: string }[] {
+  return Object.values(CATEGORY_CONFIG).map((cat) => ({
+    value: cat.key,
+    label: cat.label,
+  }));
+}
+
+/**
+ * Default category config for unknown categories
+ */
+export const DEFAULT_CATEGORY_CONFIG: CategoryConfig = {
+  key: 'OTHER',
+  icon: Package,
+  label: 'Lainnya',
+  labelShort: 'Lainnya',
+  color: '#6b7280',
+  description: 'Kategori lainnya',
+  features: {
+    stock: true,
+    debt: false,
+    booking: false,
+    tracking: false,
+    membership: false,
+    cashier: true,
+  },
+  labels: {
+    product: 'Produk',
+    price: 'Harga',
+    customer: 'Pelanggan',
+  },
+};
+
+================================================
+FILE: src/config/constants.ts
+Lines: 107
+================================================
+
+// ==========================================
+// APP CONSTANTS
+// ==========================================
+
+/**
+ * API Configuration
+ */
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+/**
+ * App Configuration
+ */
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+export const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN || 'localhost:3000';
+
+/**
+ * Storage Keys
+ */
+export const STORAGE_KEYS = {
+  TOKEN: 'fibidy_token',
+  CART: 'fibidy_cart',
+  THEME: 'fibidy_theme',
+} as const;
+
+/**
+ * Pagination Defaults
+ */
+export const PAGINATION = {
+  DEFAULT_PAGE: 1,
+  DEFAULT_LIMIT: 20,
+  MAX_LIMIT: 100,
+} as const;
+
+/**
+ * Image Configuration
+ */
+export const IMAGE = {
+  MAX_SIZE: 5 * 1024 * 1024, // 5MB
+  ACCEPTED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
+  PLACEHOLDER: '/images/placeholder.png',
+} as const;
+
+/**
+ * Order Status Labels (Indonesian)
+ */
+export const ORDER_STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Menunggu',
+  PROCESSING: 'Diproses',
+  COMPLETED: 'Selesai',
+  CANCELLED: 'Dibatalkan',
+};
+
+/**
+ * Payment Status Labels (Indonesian)
+ */
+export const PAYMENT_STATUS_LABELS: Record<string, string> = {
+  PENDING: 'Belum Bayar',
+  PAID: 'Lunas',
+  PARTIAL: 'Sebagian',
+  FAILED: 'Gagal',
+};
+
+/**
+ * Payment Methods
+ */
+export const PAYMENT_METHODS = [
+  { value: 'cash', label: 'Tunai' },
+  { value: 'transfer', label: 'Transfer Bank' },
+  { value: 'qris', label: 'QRIS' },
+  { value: 'debt', label: 'Hutang' },
+] as const;
+
+/**
+ * Unit Options
+ */
+export const UNIT_OPTIONS = [
+  { value: 'pcs', label: 'Pcs' },
+  { value: 'kg', label: 'Kg' },
+  { value: 'gram', label: 'Gram' },
+  { value: 'liter', label: 'Liter' },
+  { value: 'porsi', label: 'Porsi' },
+  { value: 'jam', label: 'Jam' },
+  { value: 'hari', label: 'Hari' },
+  { value: 'paket', label: 'Paket' },
+] as const;
+
+export const BUSINESS_CATEGORIES = [
+  { value: 'WARUNG_KELONTONG', label: 'Warung Kelontong' },
+  { value: 'TOKO_BANGUNAN', label: 'Toko Bangunan' },
+  { value: 'TOKO_ELEKTRONIK', label: 'Toko Elektronik' },
+  { value: 'BENGKEL', label: 'Bengkel Motor/Mobil' },
+  { value: 'SALON_KECANTIKAN', label: 'Salon Kecantikan' },
+  { value: 'LAUNDRY', label: 'Laundry' },
+  { value: 'WARUNG_MAKAN', label: 'Warung Makan' },
+  { value: 'CATERING', label: 'Catering' },
+  { value: 'KEDAI_KOPI', label: 'Kedai Kopi' },
+  { value: 'TOKO_KUE', label: 'Toko Kue & Bakery' },
+  { value: 'APOTEK', label: 'Apotek & Toko Obat' },
+  { value: 'KONTER_HP', label: 'Konter HP & Pulsa' },
+  { value: 'RENTAL_KENDARAAN', label: 'Rental Kendaraan' },
+  { value: 'STUDIO_FOTO', label: 'Studio Foto' },
+  { value: 'PRINTING', label: 'Printing & Fotocopy' },
+  { value: 'PET_SHOP', label: 'Pet Shop' },
+  { value: 'AC_SERVICE', label: 'Service AC' },
+  { value: 'OTHER', label: 'Lainnya' },
+] as const;
+
+export type BusinessCategory = typeof BUSINESS_CATEGORIES[number]['value'];
+
+================================================
+FILE: src/config/index.ts
+Lines: 7
+================================================
+
+// ==========================================
+// CONFIG INDEX - Export all configs
+// ==========================================
+
+export * from './constants';
+export * from './site';
+export * from './navigation';
+export * from './categories';
+
+================================================
+FILE: src/config/navigation.ts
+Lines: 111
+================================================
+
+import {
+  LayoutDashboard,
+  Package,
+  Users,
+  ShoppingCart,
+  Settings,
+  Store,
+  type LucideIcon,
+} from 'lucide-react';
+
+// ==========================================
+// NAVIGATION CONFIGURATION
+// ==========================================
+
+export interface NavItem {
+  title: string;
+  href: string;
+  icon: LucideIcon;
+  badge?: string | number;
+  disabled?: boolean;
+}
+
+export interface NavGroup {
+  title: string;
+  items: NavItem[];
+}
+
+/**
+ * Dashboard sidebar navigation
+ */
+export const dashboardNav: NavGroup[] = [
+  {
+    title: 'Menu Utama',
+    items: [
+      {
+        title: 'Dashboard',
+        href: '/dashboard',
+        icon: LayoutDashboard,
+      },
+      {
+        title: 'Produk',
+        href: '/dashboard/products',
+        icon: Package,
+      },
+      {
+        title: 'Pelanggan',
+        href: '/dashboard/customers',
+        icon: Users,
+      },
+      {
+        title: 'Pesanan',
+        href: '/dashboard/orders',
+        icon: ShoppingCart,
+      },
+    ],
+  },
+  {
+    title: 'Lainnya',
+    items: [
+      {
+        title: 'Lihat Toko',
+        href: '/',
+        icon: Store,
+      },
+      {
+        title: 'Pengaturan',
+        href: '/dashboard/settings',
+        icon: Settings,
+      },
+    ],
+  },
+];
+
+/**
+ * Marketing page navigation
+ */
+export const marketingNav: NavItem[] = [
+  {
+    title: 'Beranda',
+    href: '/',
+    icon: LayoutDashboard,
+  },
+  {
+    title: 'Fitur',
+    href: '/#features',
+    icon: Package,
+  },
+  {
+    title: 'Cara Kerja',
+    href: '/#how-it-works',
+    icon: Settings,
+  },
+];
+
+/**
+ * Footer navigation
+ */
+export const footerNav = {
+  product: [
+    { title: 'Fitur', href: '/#features' },
+    { title: 'Cara Kerja', href: '/#how-it-works' },
+    { title: 'FAQ', href: '/#faq' },
+  ],
+  company: [
+    { title: 'Tentang Kami', href: '/about' },
+    { title: 'Kontak', href: '/contact' },
+  ],
+  legal: [
+    { title: 'Kebijakan Privasi', href: '/privacy' },
+    { title: 'Syarat & Ketentuan', href: '/terms' },
+  ],
+} as const;
+
+================================================
+FILE: src/config/seo.config.ts
+Lines: 143
+================================================
+
+// ==========================================
+// SEO CONFIGURATION
+// Subdomain-Ready Architecture
+// ==========================================
+
+// Environment
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+const APP_DOMAIN = process.env.NEXT_PUBLIC_APP_DOMAIN || 'localhost:3000';
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+// Production domain
+const PROD_DOMAIN = 'fibidy.com';
+const PROD_URL = 'https://fibidy.com';
+
+export const seoConfig = {
+  // ==========================================
+  // SITE INFO
+  // ==========================================
+  siteName: 'Fibidy',
+  siteUrl: IS_PRODUCTION ? PROD_URL : APP_URL,
+
+  // ==========================================
+  // DOMAIN CONFIGURATION
+  // ==========================================
+  domain: IS_PRODUCTION ? PROD_DOMAIN : APP_DOMAIN,
+  protocol: IS_PRODUCTION ? 'https' : 'http',
+  isProduction: IS_PRODUCTION,
+
+  /**
+   * Get tenant URL based on environment
+   * Production: https://{slug}.fibidy.com
+   * Development: http://localhost:3000/store/{slug}
+   */
+  getTenantUrl: (slug: string, path: string = '') => {
+    const cleanPath = path.startsWith('/') ? path : path ? `/${path}` : '';
+
+    if (IS_PRODUCTION) {
+      return `https://${slug}.${PROD_DOMAIN}${cleanPath}`;
+    }
+    return `${APP_URL}/store/${slug}${cleanPath}`;
+  },
+
+  /**
+   * Get main platform URL
+   */
+  getMainUrl: (path: string = '') => {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${IS_PRODUCTION ? PROD_URL : APP_URL}${cleanPath}`;
+  },
+
+  // ==========================================
+  // RESERVED SUBDOMAINS
+  // ==========================================
+  reservedSubdomains: [
+    // System
+    'www', 'api', 'cdn', 'app', 'admin', 'dashboard',
+    'static', 'assets', 'images', 'files', 'uploads',
+    // Auth
+    'login', 'register', 'logout', 'auth', 'oauth',
+    // Marketing
+    'blog', 'help', 'support', 'docs', 'status',
+    'pricing', 'about', 'contact', 'terms', 'privacy',
+    // Reserved
+    'store', 'shop', 'toko', 'fibidy', 'test', 'demo',
+    'null', 'undefined', 'root', 'system', 'mail', 'email',
+    'ftp', 'ssh', 'cpanel', 'webmail', 'ns1', 'ns2',
+  ],
+
+  // ==========================================
+  // DEFAULT META
+  // ==========================================
+  defaultTitle: 'Fibidy - Platform Toko Online untuk UMKM Indonesia',
+  titleTemplate: '%s | Fibidy',
+  defaultDescription:
+    'Buat toko online profesional dalam hitungan menit. Kelola produk, terima pesanan via WhatsApp, dan tingkatkan penjualan UMKM Anda. Gratis!',
+
+  // ==========================================
+  // KEYWORDS
+  // ==========================================
+  defaultKeywords: [
+    'toko online',
+    'umkm',
+    'jualan online',
+    'whatsapp order',
+    'buat toko online gratis',
+    'platform umkm',
+    'toko online indonesia',
+    'jualan whatsapp',
+    'e-commerce umkm',
+    'toko digital',
+  ] as string[],
+
+  // ==========================================
+  // SOCIAL
+  // ==========================================
+  twitterHandle: '@fibidy_id',
+
+  // ==========================================
+  // IMAGES
+  // ==========================================
+  defaultOgImage: '/opengraph-image.png',
+  logoUrl: '/logo.png',
+
+  // ==========================================
+  // LOCALE
+  // ==========================================
+  locale: 'id_ID',
+  language: 'id',
+
+  // ==========================================
+  // THEME (Pink - #ec4899)
+  // ==========================================
+  themeColor: '#ec4899',
+  backgroundColor: '#ffffff',
+
+  // ==========================================
+  // ORGANIZATION (JSON-LD)
+  // ==========================================
+  organization: {
+    name: 'Fibidy',
+    legalName: 'Fibidy Indonesia',
+    url: PROD_URL,
+    logo: `${PROD_URL}/logo.png`,
+    foundingDate: '2024',
+    address: {
+      addressCountry: 'ID',
+    },
+    contactPoint: {
+      contactType: 'customer service',
+      availableLanguage: ['Indonesian', 'English'],
+    },
+    sameAs: [
+      'https://instagram.com/fibidy_id',
+      'https://twitter.com/fibidy_id',
+      'https://tiktok.com/@fibidy_id',
+    ],
+  },
+} as const;
+
+// ==========================================
+// TYPE EXPORTS
+// ==========================================
+
+export type SeoConfig = typeof seoConfig;
+
+================================================
+FILE: src/config/site.ts
+Lines: 36
+================================================
+
+// ==========================================
+// SITE CONFIGURATION
+// ==========================================
+
+export const siteConfig = {
+  name: 'Fibidy',
+  description: 'Platform toko online untuk UMKM Indonesia. Buat toko online dalam hitungan menit, tanpa coding, tanpa biaya bulanan.',
+  tagline: 'Toko Online UMKM Lebih Mudah',
+  url: process.env.NEXT_PUBLIC_APP_URL || 'https://fibidy.com',
+  ogImage: '/og-image.png',
+
+  // Contact
+  email: 'hello@fibidy.com',
+  whatsapp: '6281234567890',
+
+  // Social
+  links: {
+    instagram: 'https://instagram.com/fibidy.id',
+    twitter: 'https://twitter.com/fibidy_id',
+    facebook: 'https://facebook.com/fibidy.id',
+  },
+
+  // SEO
+  keywords: [
+    'toko online',
+    'umkm',
+    'jualan online',
+    'katalog produk',
+    'whatsapp order',
+    'indonesia',
+  ],
+
+  // Creator
+  creator: 'PKM Kewirausahaan Mahasiswa 2026',
+}
+
+export type SiteConfig = typeof siteConfig;
+
+
+################################################################
+##
+##  CATEGORY: React Providers
+##  Path: src/providers
+##
+################################################################
+
+================================================
+FILE: src/providers/hydration-provider.tsx
+Lines: 62
+================================================
+
+'use client';
+
+import { useSyncExternalStore } from 'react';
+
+// ==========================================
+// HYDRATION HOOKS (using useSyncExternalStore)
+// ✅ No ESLint errors!
+// ==========================================
+
+/**
+ * Empty subscribe - for client-only values
+ */
+const emptySubscribe = () => () => { };
+
+/**
+ * ✅ Hook: Check if component is hydrated
+ * Uses useSyncExternalStore - NO useEffect/useState needed!
+ */
+export function useHydrated(): boolean {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,   // Client: true after hydration
+    () => false   // Server: false during SSR
+  );
+}
+
+// ==========================================
+// HYDRATION PROVIDER (Simplified)
+// Just passes children through - actual hydration handled by hooks
+// ==========================================
+
+interface HydrationProviderProps {
+  children: React.ReactNode;
+}
+
+export function HydrationProvider({ children }: HydrationProviderProps) {
+  // No state, no effects - just pass through
+  // Hydration is handled by useSyncExternalStore in individual hooks
+  return <>{children}</>;
+}
+
+// ==========================================
+// HYDRATION BOUNDARY
+// Show fallback until hydrated
+// ==========================================
+
+interface HydrationBoundaryProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}
+
+export function HydrationBoundary({
+  children,
+  fallback = null,
+}: HydrationBoundaryProps) {
+  const isHydrated = useHydrated();
+
+  if (!isHydrated) {
+    return <>{fallback}</>;
+  }
+
+  return <>{children}</>;
+}
+
+================================================
+FILE: src/providers/index.tsx
+Lines: 35
+================================================
+
+'use client';
+
+import { ThemeProvider } from './theme-provider';
+import { HydrationProvider } from './hydration-provider';
+import { PWAProvider } from '@/components/pwa';
+
+// ==========================================
+// MAIN PROVIDERS WRAPPER
+// Combines all providers in correct order
+// ==========================================
+
+interface ProvidersProps {
+  children: React.ReactNode;
+}
+
+export function Providers({ children }: ProvidersProps) {
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="light"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <HydrationProvider>
+        <PWAProvider>
+          {children}
+        </PWAProvider>
+      </HydrationProvider>
+    </ThemeProvider>
+  );
+}
+
+// Re-export individual providers
+export { ThemeProvider } from './theme-provider';
+export { HydrationProvider, HydrationBoundary } from './hydration-provider';
+export { ToastProvider, toast } from './toast-provider';
+
+================================================
+FILE: src/providers/theme-provider.tsx
+Lines: 14
+================================================
+
+'use client';
+
+import * as React from 'react';
+import { ThemeProvider as NextThemesProvider } from 'next-themes';
+
+// ==========================================
+// THEME PROVIDER
+// Wrapper for next-themes with proper typing
+// ==========================================
+
+type ThemeProviderProps = React.ComponentProps<typeof NextThemesProvider>;
+
+export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
+  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+}
+
+================================================
+FILE: src/providers/toast-provider.tsx
+Lines: 72
+================================================
+
+'use client';
+
+import { Toaster } from 'sonner';
+
+// ==========================================
+// TOAST PROVIDER
+// Using Sonner for notifications
+// ==========================================
+
+export function ToastProvider() {
+  return (
+    <Toaster
+      position="top-right"
+      expand={false}
+      richColors
+      closeButton
+      duration={4000}
+      toastOptions={{
+        style: {
+          // Match our pink theme
+          '--toast-bg': 'white',
+          '--toast-border': 'hsl(var(--border))',
+          '--toast-text': 'hsl(var(--foreground))',
+        } as React.CSSProperties,
+        className: 'shadow-lg',
+      }}
+    />
+  );
+}
+
+// ==========================================
+// TOAST HELPERS
+// Convenient toast functions
+// ==========================================
+
+import { toast as sonnerToast } from 'sonner';
+
+export const toast = {
+  success: (message: string, description?: string) => {
+    sonnerToast.success(message, { description });
+  },
+
+  error: (message: string, description?: string) => {
+    sonnerToast.error(message, { description });
+  },
+
+  warning: (message: string, description?: string) => {
+    sonnerToast.warning(message, { description });
+  },
+
+  info: (message: string, description?: string) => {
+    sonnerToast.info(message, { description });
+  },
+
+  loading: (message: string) => {
+    return sonnerToast.loading(message);
+  },
+
+  dismiss: (toastId?: string | number) => {
+    sonnerToast.dismiss(toastId);
+  },
+
+  promise: <T,>(
+    promise: Promise<T>,
+    options: {
+      loading: string;
+      success: string | ((data: T) => string);
+      error: string | ((error: Error) => string);
+    }
+  ) => {
+    return sonnerToast.promise(promise, options);
+  },
+};
+
+================================================
+FILE: src/proxy.ts
+Lines: 199
+================================================
+
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+
+// ==========================================
+// NEXT.JS 16 PROXY
+// Handles: Auth routes + Subdomain routing
+// Runtime: Node.js (NOT Edge)
+// ==========================================
+
+// ==========================================
+// CONFIGURATION
+// ==========================================
+
+const PROD_DOMAIN = 'fibidy.com';
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+/**
+ * Reserved subdomains (cannot be tenant slugs)
+ */
+const RESERVED_SUBDOMAINS = [
+  'www', 'api', 'cdn', 'app', 'admin', 'dashboard',
+  'static', 'assets', 'images', 'files', 'uploads',
+  'login', 'register', 'logout', 'auth', 'oauth',
+  'blog', 'help', 'support', 'docs', 'status',
+  'pricing', 'about', 'contact', 'terms', 'privacy',
+  'store', 'shop', 'toko', 'fibidy', 'test', 'demo',
+  'null', 'undefined', 'root', 'system', 'mail', 'email',
+];
+
+/**
+ * Protected routes that require authentication
+ */
+const PROTECTED_ROUTES = [
+  '/dashboard',
+  '/dashboard/products',
+  '/dashboard/customers',
+  '/dashboard/orders',
+  '/dashboard/settings',
+];
+
+/**
+ * Auth routes (redirect to dashboard if already logged in)
+ */
+const AUTH_ROUTES = [
+  '/login',
+  '/register',
+  '/forgot-password',
+];
+
+// ==========================================
+// HELPER FUNCTIONS
+// ==========================================
+
+/**
+ * Extract subdomain from hostname
+ * warungbusari.fibidy.com → "warungbusari"
+ * fibidy.com → null
+ * www.fibidy.com → null (reserved)
+ * localhost:3000 → null
+ */
+function extractSubdomain(hostname: string): string | null {
+  // Skip localhost (development)
+  if (hostname.includes('localhost') || hostname.includes('127.0.0.1')) {
+    return null;
+  }
+
+  // Production: check for subdomain
+  if (hostname.endsWith(`.${PROD_DOMAIN}`)) {
+    const subdomain = hostname.replace(`.${PROD_DOMAIN}`, '');
+
+    // Skip reserved subdomains
+    if (RESERVED_SUBDOMAINS.includes(subdomain.toLowerCase())) {
+      return null;
+    }
+
+    // Validate format (alphanumeric and dash)
+    if (/^[a-z0-9][a-z0-9-]*[a-z0-9]$/.test(subdomain) || /^[a-z0-9]$/.test(subdomain)) {
+      return subdomain;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if path matches any pattern
+ */
+function matchesPath(pathname: string, patterns: string[]): boolean {
+  return patterns.some((pattern) => {
+    if (pattern.endsWith('*')) {
+      return pathname.startsWith(pattern.slice(0, -1));
+    }
+    return pathname === pattern || pathname.startsWith(pattern + '/');
+  });
+}
+
+/**
+ * Get token from cookies (for future auth use)
+ */
+function getTokenFromCookies(request: NextRequest): string | null {
+  const tokenCookie = request.cookies.get('fibidy_token');
+  if (tokenCookie?.value) {
+    try {
+      const parsed = JSON.parse(tokenCookie.value);
+      return parsed?.state?.token || null;
+    } catch {
+      return tokenCookie.value;
+    }
+  }
+  return null;
+}
+
+// ==========================================
+// PROXY FUNCTION (Next.js 16)
+// ==========================================
+
+export function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const hostname = request.headers.get('host') || '';
+
+  // ==========================================
+  // 1. SKIP STATIC FILES & INTERNALS
+  // ==========================================
+  if (
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api') ||
+    pathname.startsWith('/static') ||
+    pathname.includes('.') // files with extensions
+  ) {
+    return NextResponse.next();
+  }
+
+  // ==========================================
+  // 2. SUBDOMAIN ROUTING (Production Only)
+  // ==========================================
+  if (IS_PRODUCTION) {
+    const subdomain = extractSubdomain(hostname);
+
+    if (subdomain) {
+      // Rewrite {slug}.fibidy.com → /store/{slug}/*
+      // URL in browser stays as subdomain
+      const url = request.nextUrl.clone();
+
+      // Handle root path
+      if (pathname === '/') {
+        url.pathname = `/store/${subdomain}`;
+      } else {
+        url.pathname = `/store/${subdomain}${pathname}`;
+      }
+
+      return NextResponse.rewrite(url);
+    }
+  }
+
+  // ==========================================
+  // 3. AUTH ROUTES (Optional - Let AuthGuard handle)
+  // ==========================================
+  // Uncomment if you want proxy-level auth checking
+
+  // const token = getTokenFromCookies(request);
+  // const isAuthenticated = !!token;
+
+  // // Protect dashboard routes
+  // if (matchesPath(pathname, PROTECTED_ROUTES)) {
+  //   if (!isAuthenticated) {
+  //     const loginUrl = new URL('/login', request.url);
+  //     loginUrl.searchParams.set('from', pathname);
+  //     return NextResponse.redirect(loginUrl);
+  //   }
+  // }
+
+  // // Redirect authenticated users away from auth pages
+  // if (matchesPath(pathname, AUTH_ROUTES)) {
+  //   if (isAuthenticated) {
+  //     return NextResponse.redirect(new URL('/dashboard', request.url));
+  //   }
+  // }
+
+  // ==========================================
+  // 4. DEFAULT: Continue
+  // ==========================================
+  return NextResponse.next();
+}
+
+// ==========================================
+// PROXY CONFIG
+// ==========================================
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (images, etc)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+  ],
+};
+
+================================================
+FILE: package.json
+Lines: 81
+================================================
+
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-aspect-ratio": "^1.1.8",
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-hover-card": "^1.1.15",
+    "@radix-ui/react-icons": "^1.3.2",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "@radix-ui/react-navigation-menu": "^1.2.14",
+    "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-progress": "^1.1.8",
+    "@radix-ui/react-radio-group": "^1.3.8",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.8",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@tanstack/react-table": "^8.21.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "cobe": "^0.6.5",
+    "date-fns": "^4.1.0",
+    "embla-carousel-react": "^8.6.0",
+    "html2canvas": "^1.4.1",
+    "input-otp": "^1.4.2",
+    "lucide-react": "^0.562.0",
+    "motion": "^12.23.26",
+    "next": "16.1.1",
+    "next-cloudinary": "^6.17.5",
+    "next-sitemap": "^4.2.3",
+    "next-themes": "^0.4.6",
+    "react": "19.2.3",
+    "react-day-picker": "^9.13.0",
+    "react-dom": "19.2.3",
+    "react-hook-form": "^7.69.0",
+    "react-resizable-panels": "^2.1.9",
+    "recharts": "2.15.4",
+    "rough-notation": "^0.5.1",
+    "sonner": "^2.0.7",
+    "svg-dotted-map": "^2.0.1",
+    "tailwind-merge": "^3.4.0",
+    "vaul": "^1.1.2",
+    "zod": "^4.2.1",
+    "zustand": "^5.0.9"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/html2canvas": "^1.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.1",
+    "tailwindcss": "^4",
+    "tw-animate-css": "^1.4.0",
+    "typescript": "^5"
+  }
+}
+
+
+================================================
+FILE: tsconfig.json
+Lines: 34
+================================================
+
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+
+
+================================================
+FILE: postcss.config.mjs
+Lines: 7
+================================================
+
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+
+
+================================================
+FILE: .env.example
+Lines: 16
+================================================
+
+# ===========================================
+# FIBIDY CLIENT ENVIRONMENT
+# ===========================================
+
+# API (NestJS Backend)
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+
+# App URLs
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_DOMAIN=localhost:3000
+
+# Production Domain (untuk wildcard subdomain)
+# NEXT_PUBLIC_APP_DOMAIN=fibidy.com
+
+# Cloudinary (optional - untuk image upload)
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=
+
+================================================
+FILE: components.json
+Lines: 24
+================================================
+
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/app/globals.css",
+    "baseColor": "slate",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}.json"
+  }
+}
+
+
+================================================
+FILE: README.md
+Lines: 36
+================================================
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+
+################################################################
+##
+##  COLLECTION SUMMARY
+##
+################################################################
+
+Total Categories: 7
+Total Files Collected: 60
+Skipped Files: 0
+Total Lines: 6886
+Failed Files: 0
+Duration: 15s
+Completed: 2026-01-05 18:36:28
+
+################################################################
+##  END OF COLLECTION
+################################################################

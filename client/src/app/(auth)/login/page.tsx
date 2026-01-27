@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { AuthLayout, LoginForm } from '@/features/auth';
-import { Skeleton } from '@umkm/shared/ui';
+import { AuthLayout, LoginForm } from '@/components/auth';
+import { Skeleton } from '@/components/ui/skeleton';
 
 // ==========================================
 // LOGIN PAGE

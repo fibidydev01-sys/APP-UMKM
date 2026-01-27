@@ -3,20 +3,20 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, Save, Plus, Trash2 } from 'lucide-react';
-import { Button } from '@umkm/shared/ui';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@umkm/shared/ui';
-import { Input } from '@umkm/shared/ui';
-import { Label } from '@umkm/shared/ui';
-import { Textarea } from '@umkm/shared/ui';
-import { Skeleton } from '@umkm/shared/ui';
-import { PageHeader } from '@/features/dashboard';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
-import { Testimonials1 } from '@/features/landing-blocks/components/blocks';
+import { Testimonials1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { Testimonial, Tenant } from '@umkm/shared/types';
+import type { Testimonial, Tenant } from '@/types';
 
 export default function TestimonialsPage() {
   const router = useRouter();
@@ -73,7 +73,11 @@ export default function TestimonialsPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button variant="ghost" size="sm" onClick={() => router.push('/dashboard/settings')}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.push('/dashboard/settings')}
+        >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Kembali
         </Button>
@@ -133,7 +137,6 @@ export default function TestimonialsPage() {
                       variant="outline"
                       onClick={() => {
                         const newTestimonial: Testimonial = {
-                          id: `t-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
                           name: '',
                           role: '',
                           content: '',
@@ -161,9 +164,7 @@ export default function TestimonialsPage() {
                                 size="sm"
                                 variant="ghost"
                                 onClick={() => {
-                                  const updated = formData.testimonials.filter(
-                                    (_, i) => i !== index
-                                  );
+                                  const updated = formData.testimonials.filter((_, i) => i !== index);
                                   updateFormData('testimonials', updated);
                                 }}
                               >
@@ -248,11 +249,7 @@ export default function TestimonialsPage() {
                   Pratinjau real-time dari Testimonials Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style
-                  dangerouslySetInnerHTML={{
-                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
-                  }}
-                />
+                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
                 {formData.testimonials.length === 0 ? (
                   <div className="border rounded-lg p-8 bg-muted/20 text-center">
                     <p className="text-muted-foreground">
