@@ -1,9 +1,9 @@
 /**
  * ============================================================================
- * FILE: app/(dashboard)/dashboard/settings/page.tsx
+ * FILE: app/settings/page.tsx
  * ============================================================================
- * Route: /dashboard/settings
- * Description: Settings page with navigation to subsections
+ * Route: /settings
+ * Description: Settings page with navigation to subsections (no icons, pure text)
  * Updated: January 2026
  * ============================================================================
  */
@@ -11,7 +11,6 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Loader2, Save, ChevronRight, Megaphone, Info, MessageSquareQuote, Phone, Zap, Paintbrush } from 'lucide-react';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -71,48 +70,42 @@ const DEFAULT_SHIPPING_METHODS: ShippingMethods = {
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
-// Store Info Sections Navigation
+// Store Info Sections Navigation (no icons - pure text)
 const STORE_SECTIONS = [
   {
     id: 'hero-section',
     title: 'Hero Section',
     description: 'Banner utama dan branding toko',
-    icon: Megaphone,
-    href: '/dashboard/settings/hero-section',
+    href: '/settings/hero-section',
   },
   {
     id: 'about',
     title: 'About',
     description: 'Tentang toko dan fitur unggulan',
-    icon: Info,
-    href: '/dashboard/settings/about',
+    href: '/settings/about',
   },
   {
     id: 'testimonials',
     title: 'Testimonials',
     description: 'Testimoni pelanggan',
-    icon: MessageSquareQuote,
-    href: '/dashboard/settings/testimonials',
+    href: '/settings/testimonials',
   },
   {
     id: 'contact',
     title: 'Contact',
     description: 'Informasi kontak dan lokasi',
-    icon: Phone,
-    href: '/dashboard/settings/contact',
+    href: '/settings/contact',
   },
   {
     id: 'cta',
     title: 'Call to Action',
     description: 'Ajakan untuk mengambil tindakan',
-    icon: Zap,
-    href: '/dashboard/settings/cta',
+    href: '/settings/cta',
   },
   {
     id: 'landing-builder',
     title: 'Landing Builder',
     description: 'Desain dan customize landing page',
-    icon: Paintbrush,
     href: '/landing-builder',
   },
 ];
@@ -202,13 +195,10 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   // Tab Navigation Handlers
   // ---------------------------------------------------------------------------
-  const handleTabChange = useCallback(
-    (newTab: string) => {
-      setActiveTab(newTab);
-      setSheetOpen(false);
-    },
-    []
-  );
+  const handleTabChange = useCallback((newTab: string) => {
+    setActiveTab(newTab);
+    setSheetOpen(false);
+  }, []);
 
   // ---------------------------------------------------------------------------
   // Save Handlers
@@ -283,7 +273,10 @@ export default function SettingsPage() {
         b.id === bank.id ? bank : b
       );
     } else {
-      updatedBanks = [...paymentSettings.paymentMethods.bankAccounts, { ...bank, id: generateId() }];
+      updatedBanks = [
+        ...paymentSettings.paymentMethods.bankAccounts,
+        { ...bank, id: generateId() },
+      ];
     }
 
     setPaymentSettings({
@@ -371,10 +364,7 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   return (
     <div>
-      <PageHeader
-        title="Pengaturan"
-        description="Kelola pengaturan toko dan preferensi Anda"
-      />
+      <PageHeader title="Pengaturan" description="Kelola pengaturan toko dan preferensi Anda" />
 
       {/* Dialogs */}
       <BankAccountDialog
@@ -405,36 +395,33 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle>Informasi Toko</CardTitle>
               <CardDescription>
-                Kelola informasi toko dan konten landing page. Semua data disimpan ke database yang sama.
+                Kelola informasi toko dan konten landing page. Semua data disimpan ke database yang
+                sama.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-2">
-                {STORE_SECTIONS.map((section) => {
-                  const Icon = section.icon;
-                  return (
-                    <Card
-                      key={section.id}
-                      className="group cursor-pointer hover:border-primary hover:shadow-md transition-all"
-                      onClick={() => router.push(section.href)}
-                    >
-                      <CardContent className="flex items-start gap-4 p-6">
-                        <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                          <Icon className="h-6 w-6 text-primary" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-base mb-1 group-hover:text-primary transition-colors">
-                            {section.title}
-                          </h3>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
-                            {section.description}
-                          </p>
-                        </div>
-                        <ChevronRight className="flex-shrink-0 h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                {STORE_SECTIONS.map((section) => (
+                  <Card
+                    key={section.id}
+                    className="group cursor-pointer hover:border-primary hover:shadow-md transition-all"
+                    onClick={() => router.push(section.href)}
+                  >
+                    <CardContent className="flex items-start gap-4 p-6">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold text-base mb-1 group-hover:text-primary transition-colors">
+                          {section.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {section.description}
+                        </p>
+                      </div>
+                      <span className="flex-shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all">
+                        &rarr;
+                      </span>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </CardContent>
           </Card>

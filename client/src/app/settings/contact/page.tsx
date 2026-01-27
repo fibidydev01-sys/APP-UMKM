@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,6 @@ import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { Tenant } from '@/types';
 
 export default function ContactPage() {
   const router = useRouter();
@@ -88,13 +86,8 @@ export default function ContactPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Kembali
+        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
+          &larr; Kembali
         </Button>
       </div>
 
@@ -172,14 +165,8 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="store-email">Email</Label>
-                      <Input
-                        id="store-email"
-                        value={tenant?.email || ''}
-                        disabled
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Email tidak dapat diubah
-                      </p>
+                      <Input id="store-email" value={tenant?.email || ''} disabled />
+                      <p className="text-xs text-muted-foreground">Email tidak dapat diubah</p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="store-domain">Domain Toko</Label>
@@ -260,19 +247,19 @@ export default function ContactPage() {
                   Pratinjau real-time dari Contact Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Contact1
                     title={formData.contactTitle || 'Hubungi Kami'}
                     subtitle={formData.contactSubtitle}
                     whatsapp={formData.whatsapp}
                     phone={formData.phone}
-                    email={tenant?.email}
                     address={formData.address}
                     storeName={tenant?.name || ''}
-                    mapUrl={formData.contactMapUrl}
-                    showMap={formData.contactShowMap}
-                    showForm={formData.contactShowForm}
                   />
                 </div>
               </div>
@@ -280,9 +267,7 @@ export default function ContactPage() {
               {/* Save Button */}
               <div className="flex justify-end pt-6 mt-6 border-t">
                 <Button onClick={handleSave} disabled={isSaving} size="lg">
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Save className="mr-2 h-4 w-4" />
-                  Simpan Perubahan
+                  {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </Button>
               </div>
             </>

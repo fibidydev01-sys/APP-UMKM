@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Save, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,7 @@ import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { FeatureItem, Tenant } from '@/types';
+import type { FeatureItem } from '@/types';
 
 export default function AboutPage() {
   const router = useRouter();
@@ -97,13 +96,8 @@ export default function AboutPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Kembali
+        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
+          &larr; Kembali
         </Button>
       </div>
 
@@ -193,8 +187,7 @@ export default function AboutPage() {
                         updateFormData('aboutFeatures', [...formData.aboutFeatures, newFeature]);
                       }}
                     >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Tambah Fitur
+                      + Tambah Fitur
                     </Button>
                   </div>
                   {formData.aboutFeatures.length === 0 ? (
@@ -212,12 +205,15 @@ export default function AboutPage() {
                                 type="button"
                                 size="sm"
                                 variant="ghost"
+                                className="text-destructive hover:text-destructive"
                                 onClick={() => {
-                                  const updated = formData.aboutFeatures.filter((_, i) => i !== index);
+                                  const updated = formData.aboutFeatures.filter(
+                                    (_, i) => i !== index
+                                  );
                                   updateFormData('aboutFeatures', updated);
                                 }}
                               >
-                                <Trash2 className="h-4 w-4 text-destructive" />
+                                Hapus
                               </Button>
                             </div>
                             <div className="grid gap-3">
@@ -265,7 +261,10 @@ export default function AboutPage() {
                                     value={feature.description}
                                     onChange={(e) => {
                                       const updated = [...formData.aboutFeatures];
-                                      updated[index] = { ...updated[index], description: e.target.value };
+                                      updated[index] = {
+                                        ...updated[index],
+                                        description: e.target.value,
+                                      };
                                       updateFormData('aboutFeatures', updated);
                                     }}
                                   />
@@ -287,7 +286,11 @@ export default function AboutPage() {
                   Pratinjau real-time dari About Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <About1
                     title={formData.aboutTitle || 'Tentang Kami'}
@@ -302,9 +305,7 @@ export default function AboutPage() {
               {/* Save Button */}
               <div className="flex justify-end pt-6 mt-6 border-t">
                 <Button onClick={handleSave} disabled={isSaving} size="lg">
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Save className="mr-2 h-4 w-4" />
-                  Simpan Perubahan
+                  {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </Button>
               </div>
             </>

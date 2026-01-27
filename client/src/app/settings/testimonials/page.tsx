@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Save, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,7 @@ import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
-import type { Testimonial, Tenant } from '@/types';
+import type { Testimonial } from '@/types';
 
 export default function TestimonialsPage() {
   const router = useRouter();
@@ -73,13 +72,8 @@ export default function TestimonialsPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Kembali
+        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
+          &larr; Kembali
         </Button>
       </div>
 
@@ -137,6 +131,7 @@ export default function TestimonialsPage() {
                       variant="outline"
                       onClick={() => {
                         const newTestimonial: Testimonial = {
+                          id: Math.random().toString(36).substring(2, 9),
                           name: '',
                           role: '',
                           content: '',
@@ -144,8 +139,7 @@ export default function TestimonialsPage() {
                         updateFormData('testimonials', [...formData.testimonials, newTestimonial]);
                       }}
                     >
-                      <Plus className="h-4 w-4 mr-1" />
-                      Tambah Testimonial
+                      + Tambah Testimonial
                     </Button>
                   </div>
                   {formData.testimonials.length === 0 ? (
@@ -163,12 +157,15 @@ export default function TestimonialsPage() {
                                 type="button"
                                 size="sm"
                                 variant="ghost"
+                                className="text-destructive hover:text-destructive"
                                 onClick={() => {
-                                  const updated = formData.testimonials.filter((_, i) => i !== index);
+                                  const updated = formData.testimonials.filter(
+                                    (_, i) => i !== index
+                                  );
                                   updateFormData('testimonials', updated);
                                 }}
                               >
-                                <Trash2 className="h-4 w-4 text-destructive" />
+                                Hapus
                               </Button>
                             </div>
                             <div className="grid gap-3 md:grid-cols-2">
@@ -249,7 +246,11 @@ export default function TestimonialsPage() {
                   Pratinjau real-time dari Testimonials Section Anda
                 </p>
                 {/* Inject Theme CSS */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{
+                    __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                  }}
+                />
                 {formData.testimonials.length === 0 ? (
                   <div className="border rounded-lg p-8 bg-muted/20 text-center">
                     <p className="text-muted-foreground">
@@ -270,9 +271,7 @@ export default function TestimonialsPage() {
               {/* Save Button */}
               <div className="flex justify-end pt-6 mt-6 border-t">
                 <Button onClick={handleSave} disabled={isSaving} size="lg">
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Save className="mr-2 h-4 w-4" />
-                  Simpan Perubahan
+                  {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </Button>
               </div>
             </>

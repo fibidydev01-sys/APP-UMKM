@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Save, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,6 @@ import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import type { Tenant } from '@/types';
 
 const THEME_COLORS = [
   { name: 'Sky', value: '#0ea5e9', class: 'bg-sky-500' },
@@ -139,13 +137,8 @@ export default function HeroSectionPage() {
   return (
     <div>
       <div className="flex items-center gap-4 mb-6">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => router.push('/dashboard/settings')}
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Kembali
+        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
+          &larr; Kembali
         </Button>
       </div>
 
@@ -158,7 +151,8 @@ export default function HeroSectionPage() {
         <CardHeader>
           <CardTitle>Pengaturan Hero Section</CardTitle>
           <CardDescription>
-            Hero section adalah bagian pertama yang dilihat pengunjung. Pastikan kontennya menarik dan informatif.
+            Hero section adalah bagian pertama yang dilihat pengunjung. Pastikan kontennya menarik
+            dan informatif.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -320,7 +314,7 @@ export default function HeroSectionPage() {
                             )}
                           >
                             {formData.primaryColor === color.value && (
-                              <Check className="h-5 w-5 text-white" />
+                              <span className="text-white font-bold">&#10003;</span>
                             )}
                           </div>
                           <span className="text-xs font-medium">{color.name}</span>
@@ -341,7 +335,9 @@ export default function HeroSectionPage() {
                   Pratinjau real-time dari Hero Section Anda
                 </p>
                 {/* Inject Theme CSS for Real-time Preview */}
-                <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }} />
+                <style
+                  dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }}
+                />
                 <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
                   <Hero1
                     title={formData.heroTitle || formData.name || ''}
@@ -359,9 +355,7 @@ export default function HeroSectionPage() {
               {/* Save Button */}
               <div className="flex justify-end pt-6 mt-6 border-t">
                 <Button onClick={handleSave} disabled={isSaving} size="lg">
-                  {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  <Save className="mr-2 h-4 w-4" />
-                  Simpan Perubahan
+                  {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
                 </Button>
               </div>
             </>
