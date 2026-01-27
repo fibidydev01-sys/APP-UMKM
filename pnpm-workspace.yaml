@@ -2,4 +2,3 @@ packages:
   - 'client'
   - 'client-web'
   - 'server'
-  - 'packages/*'

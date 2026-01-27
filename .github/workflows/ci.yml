@@ -10,10 +10,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAM: ${{ vars.TURBO_TEAM }}
-
 jobs:
   lint:
     name: Lint
@@ -91,7 +87,7 @@ jobs:
       - name: Generate Prisma Client
         run: cd server && pnpm exec prisma generate
 
-      - name: Build all 5 workspaces
+      - name: Build all apps (client, client-web, server)
         run: pnpm build
         env:
           # Shared env for all Next.js apps
@@ -100,8 +96,6 @@ jobs:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           # Client-web (port 3001)
           NEXT_PUBLIC_CLIENT_WEB_URL: http://localhost:3001
-          # Catalog (port 3002)
-          NEXT_PUBLIC_CATALOG_URL: http://localhost:3002
 
   test:
     name: Test

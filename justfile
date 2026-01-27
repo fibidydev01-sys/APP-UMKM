@@ -192,13 +192,28 @@ nuclear:
     @echo "🗑️  Cleaning all packages..."
     pnpm clean
     @echo ""
-    @echo "🗑️  Removing root node_modules and pnpm-lock.yaml..."
-    rm -rf node_modules pnpm-lock.yaml
+    @echo "🗑️  Removing all node_modules..."
+    rm -rf node_modules client/node_modules client-web/node_modules server/node_modules
+    @echo ""
+    @echo "🗑️  Removing build artifacts..."
+    rm -rf client/.next client-web/.next server/dist
+    @echo ""
+    @echo "🗑️  Removing pnpm-lock.yaml..."
+    rm -rf pnpm-lock.yaml
     @echo ""
     @echo "📦 Installing fresh dependencies..."
     pnpm install
     @echo ""
-    @echo "✅ NUKED & REINSTALLED! Ready to go!"
+    @echo "🔄 Generating Prisma Client..."
+    cd server && pnpm exec prisma generate
+    @echo ""
+    @echo "╔════════════════════════════════════════════════════════════╗"
+    @echo "║            ✅ NUKED & REINSTALLED! READY TO GO!            ║"
+    @echo "╚════════════════════════════════════════════════════════════╝"
+    @echo ""
+    @echo "🚀 Next steps:"
+    @echo "   just dev          - Start development servers"
+    @echo "   just db-setup     - Setup database (if needed)"
 
 # ====================
 # 🚀 QUICKSTART
@@ -208,26 +223,22 @@ nuclear:
 quickstart:
     @echo "╔════════════════════════════════════════════════════════════╗"
     @echo "║         🚀 UMKM MULTI-TENANT - QUICKSTART                  ║"
-    @echo "║              CLIENT + CLIENT-WEB + SERVER                  ║"
+    @echo "║          CLIENT + CLIENT-WEB + SERVER (NO SHARED)          ║"
     @echo "╚════════════════════════════════════════════════════════════╝"
     @echo ""
-    @echo "📋 Step 1/5: Setting up environment files..."
+    @echo "📋 Step 1/4: Setting up environment files..."
     @test -f .env || (test -f .env.example && cp .env.example .env && echo "   ✅ Created .env") || echo "   ⚠️  .env.example not found"
     @test -f server/.env || (test -f server/.env.example && cp server/.env.example server/.env && echo "   ✅ Created server/.env") || echo "   ⚠️  server/.env.example not found"
     @test -f client/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3000" > client/.env.local && echo "   ✅ Created client/.env.local")
     @test -f client-web/.env.local || (echo "NEXT_PUBLIC_API_URL=http://localhost:8000/api\nNEXT_PUBLIC_APP_URL=http://localhost:3001" > client-web/.env.local && echo "   ✅ Created client-web/.env.local")
     @echo ""
-    @echo "📦 Step 2/5: Installing all dependencies (client, client-web, server, shared)..."
+    @echo "📦 Step 2/4: Installing all dependencies (client, client-web, server)..."
     @just install
     @echo ""
-    @echo "🔨 Step 3/5: Building shared package..."
-    @cd packages/shared && pnpm build
-    @echo "   ✅ Shared package built!"
-    @echo ""
-    @echo "🗄️  Step 4/5: Setting up database (generate + push + seed)..."
+    @echo "🗄️  Step 3/4: Setting up database (generate + push + seed)..."
     @just db-setup
     @echo ""
-    @echo "🎨 Step 5/5: Verifying setup..."
+    @echo "🎨 Step 4/4: Verifying setup..."
     @echo "   ✅ Client ready at http://localhost:3000"
     @echo "   ✅ Client-Web ready at http://localhost:3001"
     @echo "   ✅ Server ready at http://localhost:8000"
