@@ -35,8 +35,8 @@ export default function TrackOrderPage() {
 
     // Check if order exists before redirecting
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-      const response = await fetch(`${apiUrl}/api/store/track/${trimmedOrderId}`);
+      // Use Next.js API route that proxies to backend
+      const response = await fetch(`/api/store/track/${trimmedOrderId}`);
 
       if (response.ok) {
         // Order found, redirect to tracking page
