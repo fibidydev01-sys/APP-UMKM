@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Search, Package, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,8 @@ import { API_URL } from '@/config/constants';
 
 export default function TrackOrderPage() {
   const router = useRouter();
+  const params = useParams();
+  const slug = params.slug as string;
   const [orderId, setOrderId] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
@@ -40,8 +42,8 @@ export default function TrackOrderPage() {
       const response = await fetch(`${API_URL}/store/track/${trimmedOrderId}`);
 
       if (response.ok) {
-        // Order found, redirect to tracking page
-        router.push(`/track/${trimmedOrderId}`);
+        // Order found, redirect to tracking page with slug
+        router.push(`/store/${slug}/track/${trimmedOrderId}`);
       } else {
         // Order not found
         toast.error('Pesanan tidak ditemukan. Pastikan nomor pesanan sudah benar.');
@@ -59,11 +61,11 @@ export default function TrackOrderPage() {
       <div className="border-b">
         <div className="container mx-auto px-4 py-4">
           <Link
-            href="/"
+            href={`/store/${slug}`}
             className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Kembali ke Beranda
+            Kembali ke Toko
           </Link>
         </div>
       </div>
@@ -161,7 +163,7 @@ export default function TrackOrderPage() {
             <div className="text-center pt-4">
               <p className="text-sm text-muted-foreground">
                 Tidak menemukan pesanan Anda?{' '}
-                <Link href="/" className="text-primary hover:underline font-medium">
+                <Link href={`/store/${slug}`} className="text-primary hover:underline font-medium">
                   Hubungi Toko
                 </Link>
               </p>

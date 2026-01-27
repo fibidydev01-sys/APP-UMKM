@@ -5,6 +5,7 @@ import { API_URL } from '@/config/constants';
 
 interface PageProps {
   params: Promise<{
+    slug: string;
     orderId: string;
   }>;
 }

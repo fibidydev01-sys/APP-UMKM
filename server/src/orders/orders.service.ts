@@ -496,7 +496,7 @@ export class OrdersService {
   // ==========================================
   // CREATE ORDER FROM CHECKOUT (PUBLIC)
   // ==========================================
-  async createFromCheckout(tenantId: string, dto: CheckoutDto) {
+  async createFromCheckout(tenantId: string, tenantSlug: string, dto: CheckoutDto) {
     // 1. Find or create customer by phone
     const customer = await this.customersService.findOrCreateCustomer(
       tenantId,
@@ -523,8 +523,8 @@ export class OrdersService {
       metadata,
     });
 
-    // 4. Generate tracking URL
-    const trackingUrl = `/track/${result.order.id}`;
+    // 4. Generate tracking URL with tenant slug
+    const trackingUrl = `/store/${tenantSlug}/track/${result.order.id}`;
 
     return {
       message: 'Pesanan berhasil dibuat',

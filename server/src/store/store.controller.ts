@@ -53,7 +53,7 @@ export class StoreController {
     }
 
     // 2. Create order from checkout (auto-create customer)
-    return this.ordersService.createFromCheckout(tenant.id, dto);
+    return this.ordersService.createFromCheckout(tenant.id, slug, dto);
   }
 
   // ==========================================
