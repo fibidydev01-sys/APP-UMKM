@@ -93,21 +93,6 @@ const navigation: NavGroup[] = [
       },
     ],
   },
-  {
-    title: 'Lainnya',
-    items: [
-      {
-        title: 'Lihat Toko',
-        href: '/store',
-        icon: Store,
-      },
-      {
-        title: 'Pengaturan',
-        href: '/dashboard/settings',
-        icon: Settings,
-      },
-    ],
-  },
 ];
 
 // ==========================================
