@@ -4,9 +4,9 @@ import { TrackingPage } from '@/components/tracking/tracking-page';
 import { API_URL } from '@/config/constants';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     orderId: string;
-  };
+  }>;
 }
 
 async function getOrder(orderId: string) {
@@ -27,7 +27,8 @@ async function getOrder(orderId: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const order = await getOrder(params.orderId);
+  const { orderId } = await params;
+  const order = await getOrder(orderId);
 
   if (!order) {
     return {
@@ -42,7 +43,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function Page({ params }: PageProps) {
-  const order = await getOrder(params.orderId);
+  const { orderId } = await params;
+  const order = await getOrder(orderId);
 
   if (!order) {
     notFound();
