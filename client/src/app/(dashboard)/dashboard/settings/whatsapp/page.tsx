@@ -38,8 +38,10 @@ export default function WhatsAppConnectionPage() {
     setPhoneNumber,
   } = useWhatsApp();
 
-  // Track if we've already initiated connection on mount
-  const hasInitiated = useRef(false);
+  // Track if initial auto-connect has been done (only once per page load)
+  const hasAutoConnected = useRef(false);
+  // Track if status came from WebSocket (not initial check)
+  const isWebSocketUpdate = useRef(false);
 
   // Redirect to inbox when connected
   useEffect(() => {
@@ -60,6 +62,8 @@ export default function WhatsAppConnectionPage() {
     });
 
     const unsubStatus = onConnectionStatus((data) => {
+      // Mark that this status update came from WebSocket
+      isWebSocketUpdate.current = true;
       setStatus(data.status as WhatsAppStatus);
       if (data.phoneNumber) {
         setPhoneNumber(data.phoneNumber);
@@ -78,29 +82,31 @@ export default function WhatsAppConnectionPage() {
     };
   }, []);
 
-  // AUTO-CONNECT: When status is DISCONNECTED, auto-initiate connection
+  // AUTO-CONNECT: Only on initial page load when status is DISCONNECTED
+  // NOT when WebSocket emits DISCONNECTED (to prevent loop)
   useEffect(() => {
-    if (status === 'DISCONNECTED' && !hasInitiated.current && !isConnecting && !isCheckingStatus) {
-      hasInitiated.current = true;
-      connect().catch((err) => {
-        console.error('Auto-connect failed:', err);
-        hasInitiated.current = false; // Allow retry
-      });
+    // Skip if:
+    // 1. Already auto-connected once
+    // 2. Currently connecting or checking status
+    // 3. Status update came from WebSocket (not initial check)
+    if (hasAutoConnected.current || isConnecting || isCheckingStatus) {
+      return;
     }
 
-    // Reset flag when connected or QR is pending
-    if (status === 'CONNECTED' || status === 'QR_PENDING') {
-      hasInitiated.current = false;
+    // Only auto-connect if DISCONNECTED and this is initial check (not WebSocket update)
+    if (status === 'DISCONNECTED' && !isWebSocketUpdate.current) {
+      hasAutoConnected.current = true;
+      connect().catch((err) => {
+        console.error('Auto-connect failed:', err);
+      });
     }
   }, [status, isConnecting, isCheckingStatus, connect]);
 
   const handleConnect = useCallback(async () => {
     try {
-      hasInitiated.current = true;
       await connect();
     } catch (error) {
       console.error('Connection failed:', error);
-      hasInitiated.current = false;
     }
   }, [connect]);
 
