@@ -143,6 +143,7 @@ export default function WhatsAppConnectionPage() {
             isConnecting={isConnecting}
             isDisconnecting={isDisconnecting}
             isCheckingStatus={isCheckingStatus}
+            isWebSocketDisconnect={isWebSocketUpdate.current}
             onConnect={handleConnect}
             onDisconnect={handleDisconnect}
           />
@@ -236,6 +237,7 @@ interface ConnectionContentProps {
   isConnecting: boolean;
   isDisconnecting: boolean;
   isCheckingStatus: boolean;
+  isWebSocketDisconnect: boolean;
   onConnect: () => void;
   onDisconnect: () => void;
 }
@@ -247,6 +249,7 @@ function ConnectionContent({
   isConnecting,
   isDisconnecting,
   isCheckingStatus,
+  isWebSocketDisconnect,
   onConnect,
   onDisconnect,
 }: ConnectionContentProps) {
@@ -352,8 +355,39 @@ function ConnectionContent({
     );
   }
 
-  // 2. Disconnected - Auto-connecting (show loading)
+  // 2. Disconnected state
   if (status === 'DISCONNECTED') {
+    // If disconnect came from WebSocket (connection failed), show reconnect button
+    if (isWebSocketDisconnect) {
+      return (
+        <div className="text-center py-8">
+          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
+            <WifiOff className="w-8 h-8 text-red-500" />
+          </div>
+          <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+            Koneksi Terputus
+          </h3>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+            Koneksi ke WhatsApp gagal. Silakan coba lagi.
+          </p>
+          <Button onClick={onConnect} disabled={isConnecting} size="lg">
+            {isConnecting ? (
+              <>
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                Menghubungkan...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-5 w-5 mr-2" />
+                Hubungkan Ulang
+              </>
+            )}
+          </Button>
+        </div>
+      );
+    }
+
+    // Initial auto-connecting (show loading)
     return (
       <div className="text-center py-8">
         <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-500" />
