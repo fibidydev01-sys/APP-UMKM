@@ -9,6 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({
   namespace: '/messages',
@@ -25,12 +26,70 @@ export class MessagesGateway
 
   private readonly logger = new Logger(MessagesGateway.name);
 
-  handleConnection(client: Socket) {
-    this.logger.log(`Messages WebSocket client connected: ${client.id}`);
+  constructor(private readonly jwtService: JwtService) {}
+
+  async handleConnection(client: Socket) {
+    try {
+      // Extract token from cookie or handshake auth
+      const token = this.extractTokenFromSocket(client);
+
+      if (!token) {
+        this.logger.warn(`Client ${client.id} connected without auth token`);
+        client.disconnect();
+        return;
+      }
+
+      // Verify JWT token
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
+
+      // Store user info in socket data
+      client.data.user = payload;
+      const tenantId = payload.sub; // JWT payload uses 'sub' field for tenant ID
+
+      // Join tenant room for broadcast messages
+      client.join(tenantId);
+
+      this.logger.log(
+        `Messages client ${client.id} authenticated and joined tenant room: ${tenantId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Authentication failed for Messages client ${client.id}: ${error.message}`,
+      );
+      client.disconnect();
+    }
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`Messages WebSocket client disconnected: ${client.id}`);
+    const tenantId = client.data.user?.sub;
+    this.logger.log(
+      `Messages WebSocket client disconnected: ${client.id} (tenant: ${tenantId})`,
+    );
+  }
+
+  /**
+   * Extract JWT token from socket handshake
+   */
+  private extractTokenFromSocket(client: Socket): string | null {
+    // Try to get token from cookie
+    const cookies = client.handshake.headers.cookie;
+    if (cookies) {
+      const cookieMatch = cookies.match(/fibidy_auth=([^;]+)/);
+      if (cookieMatch) {
+        return cookieMatch[1];
+      }
+    }
+
+    // Try to get token from auth header
+    const authHeader =
+      client.handshake.auth?.token || client.handshake.headers.authorization;
+    if (authHeader) {
+      return authHeader.replace('Bearer ', '');
+    }
+
+    return null;
   }
 
   /**
