@@ -1,18 +1,14 @@
 'use client';
 
-import { useEffect, useCallback, useState, useRef } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useWhatsApp } from '@/hooks/use-whatsapp';
 import { onQRCode, onConnectionStatus } from '@/lib/socket';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wifi, WifiOff, Loader2, CheckCircle2, Phone, RefreshCw, LogOut, AlertCircle } from 'lucide-react';
+import { Wifi, WifiOff, Loader2, CheckCircle2, Phone, RefreshCw, LogOut, QrCode } from 'lucide-react';
 import { cn, formatPhone } from '@/lib/utils';
 import type { WhatsAppStatus } from '@/types/chat';
-
-// Constants for QR timeout handling
-const QR_TIMEOUT_MS = 15000; // 15 seconds timeout for QR to arrive
-const MAX_AUTO_RETRIES = 2; // Maximum auto-retry attempts
 
 // ==========================================
 // WHATSAPP CONNECTION PAGE
@@ -217,80 +213,6 @@ function ConnectionContent({
   onDisconnect,
   onRefresh,
 }: ConnectionContentProps) {
-  // State for QR timeout handling
-  const [qrTimedOut, setQrTimedOut] = useState(false);
-  const [autoRetryCount, setAutoRetryCount] = useState(0);
-  const [isAutoRetrying, setIsAutoRetrying] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const retryTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Handle QR_PENDING timeout
-  useEffect(() => {
-    // Clear any existing timeouts
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    if (retryTimeoutRef.current) {
-      clearTimeout(retryTimeoutRef.current);
-      retryTimeoutRef.current = null;
-    }
-
-    // Reset states when status changes from QR_PENDING
-    if (status !== 'QR_PENDING') {
-      setQrTimedOut(false);
-      setAutoRetryCount(0);
-      setIsAutoRetrying(false);
-      return;
-    }
-
-    // If QR code exists, reset timeout state
-    if (qrCode) {
-      setQrTimedOut(false);
-      setIsAutoRetrying(false);
-      return;
-    }
-
-    // Status is QR_PENDING but qrCode is null - start timeout
-    timeoutRef.current = setTimeout(() => {
-      // QR code still not arrived after timeout
-      if (!qrCode && status === 'QR_PENDING') {
-        if (autoRetryCount < MAX_AUTO_RETRIES) {
-          // Auto-retry by calling connect() to trigger new QR generation
-          setIsAutoRetrying(true);
-          setAutoRetryCount((prev) => prev + 1);
-
-          // Small delay before retry - use onConnect() NOT onRefresh()
-          // onRefresh() only checks status, doesn't generate new QR
-          retryTimeoutRef.current = setTimeout(() => {
-            onConnect();
-            setIsAutoRetrying(false);
-          }, 1000);
-        } else {
-          // Max retries reached, show timeout error
-          setQrTimedOut(true);
-          setIsAutoRetrying(false);
-        }
-      }
-    }, QR_TIMEOUT_MS);
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-      }
-    };
-  }, [status, qrCode, autoRetryCount, onConnect]);
-
-  // Handle manual retry
-  const handleManualRetry = useCallback(() => {
-    setQrTimedOut(false);
-    setAutoRetryCount(0);
-    onConnect();
-  }, [onConnect]);
-
   // Disconnected state
   if (status === 'DISCONNECTED') {
     return (
@@ -336,61 +258,40 @@ function ConnectionContent({
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
             QR code akan refresh otomatis jika kadaluarsa
           </p>
-          <Button variant="outline" onClick={onRefresh}>
+          <Button variant="outline" onClick={onConnect}>
             <RefreshCw className="h-4 w-4 mr-2" />
             Refresh QR Code
           </Button>
         </div>
       );
-    } else if (qrTimedOut) {
-      // QR timeout - show error with retry button
+    } else {
+      // QR code doesn't exist - show reload button (NO WAITING!)
       return (
         <div className="text-center py-8">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-            <AlertCircle className="w-8 h-8 text-red-500" />
-          </div>
-          <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-            QR Code Gagal Dimuat
-          </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-            Koneksi ke server WhatsApp timeout. Pastikan koneksi internet stabil dan coba lagi.
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <Button onClick={handleManualRetry} disabled={isConnecting}>
+          <div className="border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl p-8 bg-zinc-50 dark:bg-zinc-900/50">
+            <div className="w-16 h-16 mx-auto mb-4 bg-zinc-200 dark:bg-zinc-800 rounded-full flex items-center justify-center">
+              <QrCode className="w-8 h-8 text-zinc-500" />
+            </div>
+            <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+              QR Code Belum Tersedia
+            </h3>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+              Klik tombol di bawah untuk memuat QR Code
+            </p>
+            <Button onClick={onConnect} disabled={isConnecting} size="lg">
               {isConnecting ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Mencoba...
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Memuat QR...
                 </>
               ) : (
                 <>
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Coba Lagi
+                  <RefreshCw className="h-5 w-5 mr-2" />
+                  Muat QR Code
                 </>
               )}
             </Button>
           </div>
-        </div>
-      );
-    } else {
-      // QR code doesn't exist yet - show loading with progress indicator
-      return (
-        <div className="text-center py-8">
-          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-500" />
-          <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-            {isAutoRetrying ? 'Mencoba ulang...' : 'Membuat QR Code...'}
-          </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-2">
-            {isAutoRetrying
-              ? `Percobaan ${autoRetryCount + 1} dari ${MAX_AUTO_RETRIES + 1}`
-              : 'Mohon tunggu, QR code sedang dibuat'
-            }
-          </p>
-          {autoRetryCount > 0 && !isAutoRetrying && (
-            <p className="text-xs text-zinc-400 dark:text-zinc-500">
-              Auto-retry: {autoRetryCount}/{MAX_AUTO_RETRIES}
-            </p>
-          )}
         </div>
       );
     }
