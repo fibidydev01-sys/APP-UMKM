@@ -15,6 +15,11 @@ import { SitemapModule } from './sitemap/sitemap.module';
 import { SeoModule } from './seo/seo.module';
 import { CategoriesModule } from './categories/categories.module';
 import { StoreModule } from './store/store.module';
+import { WhatsAppModule } from './whatsapp/whatsapp.module';
+import { ConversationsModule } from './conversations/conversations.module';
+import { MessagesModule } from './messages/messages.module';
+import { ContactsModule } from './contacts/contacts.module';
+import { AutoReplyModule } from './auto-reply/auto-reply.module';
 
 @Module({
   imports: [
@@ -39,6 +44,12 @@ import { StoreModule } from './store/store.module';
     SeoModule,
     CategoriesModule,
     StoreModule,
+    // WhatsApp Chat System Modules
+    WhatsAppModule,
+    ConversationsModule,
+    MessagesModule,
+    ContactsModule,
+    AutoReplyModule,
   ],
   controllers: [AppController],
   providers: [
