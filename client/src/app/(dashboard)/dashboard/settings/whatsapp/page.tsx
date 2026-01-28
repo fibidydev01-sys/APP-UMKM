@@ -244,24 +244,40 @@ function ConnectionContent({
   }
 
   // QR Pending state
-  if (status === 'QR_PENDING' && qrCode) {
-    return (
-      <div className="text-center py-4">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-          Scan QR code ini dengan WhatsApp di ponsel Anda
-        </p>
-        <div className="inline-block p-4 bg-white rounded-xl shadow-lg mb-4">
-          <img src={qrCode} alt="WhatsApp QR Code" className="w-64 h-64" />
+  if (status === 'QR_PENDING') {
+    if (qrCode) {
+      // QR code exists - show it
+      return (
+        <div className="text-center py-4">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+            Scan QR code ini dengan WhatsApp di ponsel Anda
+          </p>
+          <div className="inline-block p-4 bg-white rounded-xl shadow-lg mb-4">
+            <img src={qrCode} alt="WhatsApp QR Code" className="w-64 h-64" />
+          </div>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
+            QR code akan refresh otomatis jika kadaluarsa
+          </p>
+          <Button variant="outline" onClick={onRefresh}>
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh QR Code
+          </Button>
         </div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-4">
-          QR code akan refresh otomatis jika kadaluarsa
-        </p>
-        <Button variant="outline" onClick={onRefresh}>
-          <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh QR Code
-        </Button>
-      </div>
-    );
+      );
+    } else {
+      // QR code doesn't exist yet - show loading
+      return (
+        <div className="text-center py-8">
+          <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-500" />
+          <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+            Membuat QR Code...
+          </h3>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Mohon tunggu, QR code sedang dibuat
+          </p>
+        </div>
+      );
+    }
   }
 
   // Connecting state
@@ -319,13 +335,30 @@ function ConnectionContent({
     );
   }
 
-  // Fallback
+  // Fallback - treat unknown status as disconnected
   return (
     <div className="text-center py-8">
-      <p className="text-zinc-500">Status tidak diketahui</p>
-      <Button variant="outline" onClick={onRefresh} className="mt-4">
-        <RefreshCw className="h-4 w-4 mr-2" />
-        Refresh
+      <div className="w-20 h-20 mx-auto mb-4 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center">
+        <WifiOff className="w-10 h-10 text-zinc-400" />
+      </div>
+      <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+        WhatsApp Belum Terhubung
+      </h3>
+      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
+        Klik tombol di bawah untuk menghubungkan akun WhatsApp Anda
+      </p>
+      <Button onClick={onConnect} disabled={isConnecting} size="lg">
+        {isConnecting ? (
+          <>
+            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+            Menghubungkan...
+          </>
+        ) : (
+          <>
+            <Wifi className="h-5 w-5 mr-2" />
+            Hubungkan WhatsApp
+          </>
+        )}
       </Button>
     </div>
   );
