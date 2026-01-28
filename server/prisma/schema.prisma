@@ -126,6 +126,12 @@ model Tenant {
   customers     Customer[]
   orders        Order[]
 
+  // WhatsApp Chat System Relations
+  whatsappSession  WhatsAppSession?
+  conversations    Conversation[]
+  contacts         Contact[]
+  autoReplyRules   AutoReplyRule[]
+
   @@index([slug])
   @@index([category])
   @@index([status])
