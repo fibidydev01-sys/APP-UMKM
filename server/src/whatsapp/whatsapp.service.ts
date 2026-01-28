@@ -108,6 +108,18 @@ export class WhatsAppService implements OnModuleDestroy {
    * Initialize WhatsApp connection with Baileys
    */
   private async initializeConnection(tenantId: string): Promise<void> {
+    // Check if there's already an active socket - close it first to prevent duplicates
+    const existingSocket = this.sockets.get(tenantId);
+    if (existingSocket) {
+      this.logger.log(`Closing existing socket for tenant: ${tenantId} before creating new one`);
+      try {
+        existingSocket.end(undefined);
+      } catch (e) {
+        // Ignore errors when closing
+      }
+      this.sockets.delete(tenantId);
+    }
+
     const sessionPath = this.getSessionPath(tenantId);
 
     // Ensure session directory exists
