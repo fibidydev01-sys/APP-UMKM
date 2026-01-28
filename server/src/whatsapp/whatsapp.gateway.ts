@@ -6,9 +6,12 @@ import {
   SubscribeMessage,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger } from '@nestjs/common';
+import { Logger, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
+@UseGuards(ThrottlerGuard)
 @WebSocketGateway({
   namespace: '/whatsapp',
   cors: {
@@ -24,7 +27,10 @@ export class WhatsAppGateway
 
   private readonly logger = new Logger(WhatsAppGateway.name);
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async handleConnection(client: Socket) {
     try {
@@ -38,8 +44,15 @@ export class WhatsAppGateway
       }
 
       // Verify JWT token
+      const jwtSecret = this.configService.get<string>('JWT_SECRET');
+      if (!jwtSecret) {
+        this.logger.error('JWT_SECRET is not configured in environment');
+        client.disconnect();
+        return;
+      }
+
       const payload = await this.jwtService.verifyAsync(token, {
-        secret: process.env.JWT_SECRET,
+        secret: jwtSecret,
       });
 
       // Store user info in socket data

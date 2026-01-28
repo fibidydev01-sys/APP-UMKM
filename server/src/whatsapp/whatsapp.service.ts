@@ -24,6 +24,13 @@ export class WhatsAppService implements OnModuleDestroy {
   private readonly logger = new Logger(WhatsAppService.name);
   private sockets: Map<string, WASocket> = new Map();
   private qrCodeCallbacks: Map<string, (qr: string) => void> = new Map();
+  // Track event listeners for cleanup to prevent memory leaks
+  private eventListeners: Map<
+    string,
+    Array<{ event: string; handler: (...args: any[]) => any }>
+  > = new Map();
+  // Track pending connections to prevent race conditions
+  private pendingConnections: Set<string> = new Set();
 
   constructor(
     private prisma: PrismaService,
@@ -32,11 +39,27 @@ export class WhatsAppService implements OnModuleDestroy {
   ) {}
 
   async onModuleDestroy() {
-    // Close all connections
+    // Close all connections and clean up listeners
     for (const [tenantId, socket] of this.sockets.entries()) {
       this.logger.log(`Closing WhatsApp connection for tenant: ${tenantId}`);
+
+      // Clean up event listeners
+      const listeners = this.eventListeners.get(tenantId);
+      if (listeners && listeners.length > 0) {
+        listeners.forEach(({ event, handler }) => {
+          try {
+            socket.ev.off(event, handler);
+          } catch (e) {
+            // Ignore errors when removing listeners
+          }
+        });
+        this.eventListeners.delete(tenantId);
+      }
+
       socket.end(undefined);
     }
+    this.sockets.clear();
+    this.eventListeners.clear();
   }
 
   /**
@@ -51,7 +74,18 @@ export class WhatsAppService implements OnModuleDestroy {
     phoneNumber?: string;
     sessionId: string;
   }> {
+    // Prevent race condition - check if connection is already in progress
+    if (this.pendingConnections.has(tenantId)) {
+      this.logger.warn(
+        `Connection already in progress for tenant: ${tenantId}`,
+      );
+      throw new Error('Connection already in progress. Please wait.');
+    }
+
     try {
+      // Mark as pending
+      this.pendingConnections.add(tenantId);
+
       // Check if already connected
       const existingSession = await this.prisma.whatsAppSession.findUnique({
         where: { tenantId },
@@ -101,6 +135,9 @@ export class WhatsAppService implements OnModuleDestroy {
         error.stack,
       );
       throw error;
+    } finally {
+      // Remove from pending connections
+      this.pendingConnections.delete(tenantId);
     }
   }
 
@@ -111,7 +148,26 @@ export class WhatsAppService implements OnModuleDestroy {
     // Check if there's already an active socket - close it first to prevent duplicates
     const existingSocket = this.sockets.get(tenantId);
     if (existingSocket) {
-      this.logger.log(`Closing existing socket for tenant: ${tenantId} before creating new one`);
+      this.logger.log(
+        `Closing existing socket for tenant: ${tenantId} before creating new one`,
+      );
+
+      // Clean up event listeners to prevent memory leaks
+      const listeners = this.eventListeners.get(tenantId);
+      if (listeners && listeners.length > 0) {
+        this.logger.log(
+          `Removing ${listeners.length} event listeners for tenant: ${tenantId}`,
+        );
+        listeners.forEach(({ event, handler }) => {
+          try {
+            existingSocket.ev.off(event, handler);
+          } catch (e) {
+            // Ignore errors when removing listeners
+          }
+        });
+        this.eventListeners.delete(tenantId);
+      }
+
       try {
         existingSocket.end(undefined);
       } catch (e) {
@@ -140,8 +196,12 @@ export class WhatsAppService implements OnModuleDestroy {
     // Store socket
     this.sockets.set(tenantId, socket);
 
+    // Initialize listener tracking for this tenant
+    const listeners: Array<{ event: string; handler: (...args: any[]) => any }> =
+      [];
+
     // Handle QR code
-    socket.ev.on('connection.update', async (update) => {
+    const connectionUpdateHandler = async (update) => {
       const { connection, lastDisconnect, qr } = update;
 
       if (qr) {
@@ -236,15 +296,27 @@ export class WhatsAppService implements OnModuleDestroy {
         // Clean up callback
         this.qrCodeCallbacks.delete(tenantId);
       }
-    });
+    };
+    socket.ev.on('connection.update', connectionUpdateHandler);
+    listeners.push({ event: 'connection.update', handler: connectionUpdateHandler });
 
     // Save credentials on update
-    socket.ev.on('creds.update', saveCreds);
+    const credsUpdateHandler = saveCreds;
+    socket.ev.on('creds.update', credsUpdateHandler);
+    listeners.push({ event: 'creds.update', handler: credsUpdateHandler });
 
     // Handle incoming messages
-    socket.ev.on('messages.upsert', async (messageUpdate) => {
+    const messagesUpsertHandler = async (messageUpdate) => {
       await this.handleIncomingMessages(tenantId, messageUpdate);
-    });
+    };
+    socket.ev.on('messages.upsert', messagesUpsertHandler);
+    listeners.push({ event: 'messages.upsert', handler: messagesUpsertHandler });
+
+    // Store all listeners for cleanup
+    this.eventListeners.set(tenantId, listeners);
+    this.logger.log(
+      `Registered ${listeners.length} event listeners for tenant: ${tenantId}`,
+    );
   }
 
   /**
@@ -336,6 +408,22 @@ export class WhatsAppService implements OnModuleDestroy {
       const socket = this.sockets.get(tenantId);
 
       if (socket) {
+        // Clean up event listeners before disconnect
+        const listeners = this.eventListeners.get(tenantId);
+        if (listeners && listeners.length > 0) {
+          this.logger.log(
+            `Cleaning up ${listeners.length} event listeners for tenant: ${tenantId}`,
+          );
+          listeners.forEach(({ event, handler }) => {
+            try {
+              socket.ev.off(event, handler);
+            } catch (e) {
+              // Ignore errors when removing listeners
+            }
+          });
+          this.eventListeners.delete(tenantId);
+        }
+
         socket.logout();
         socket.end(undefined);
         this.sockets.delete(tenantId);
