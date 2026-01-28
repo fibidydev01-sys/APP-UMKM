@@ -357,29 +357,29 @@ function ConnectionContent({
 
   // 2. Disconnected state
   if (status === 'DISCONNECTED') {
-    // If disconnect came from WebSocket (connection failed), show reconnect button
+    // If disconnect came from WebSocket (session closed), show reconnect button
     if (isWebSocketDisconnect) {
       return (
         <div className="text-center py-8">
-          <div className="w-16 h-16 mx-auto mb-4 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
-            <WifiOff className="w-8 h-8 text-red-500" />
+          <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
+            <WifiOff className="w-8 h-8 text-orange-500" />
           </div>
           <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-            Koneksi Terputus
+            Sesi WhatsApp Terputus
           </h3>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-            Koneksi ke WhatsApp gagal. Silakan coba lagi.
+            Sesi WhatsApp ditutup oleh server. Klik tombol di bawah untuk membuat QR code baru.
           </p>
           <Button onClick={onConnect} disabled={isConnecting} size="lg">
             {isConnecting ? (
               <>
                 <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                Menghubungkan...
+                Memuat QR Code...
               </>
             ) : (
               <>
-                <RefreshCw className="h-5 w-5 mr-2" />
-                Hubungkan Ulang
+                <QrCode className="h-5 w-5 mr-2" />
+                Buat QR Code Baru
               </>
             )}
           </Button>
