@@ -44,7 +44,7 @@ export class WhatsAppGateway
 
       // Store user info in socket data
       client.data.user = payload;
-      const tenantId = payload.id;
+      const tenantId = payload.sub; // JWT payload uses 'sub' field for tenant ID
 
       // Join room based on tenantId
       client.join(tenantId);
@@ -60,7 +60,7 @@ export class WhatsAppGateway
   }
 
   handleDisconnect(client: Socket) {
-    const tenantId = client.data.user?.id;
+    const tenantId = client.data.user?.sub; // JWT payload uses 'sub' field
     this.logger.log(
       `WhatsApp WebSocket client disconnected: ${client.id} (tenant: ${tenantId})`,
     );
@@ -68,7 +68,7 @@ export class WhatsAppGateway
 
   @SubscribeMessage('join-room')
   handleJoinRoom(client: Socket, payload: { tenantId: string }) {
-    const authenticatedTenantId = client.data.user?.id;
+    const authenticatedTenantId = client.data.user?.sub; // JWT payload uses 'sub' field
 
     // Verify that the user is trying to join their own room
     if (payload.tenantId !== authenticatedTenantId) {
