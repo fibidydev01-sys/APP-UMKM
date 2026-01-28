@@ -256,13 +256,14 @@ function ConnectionContent({
       // QR code still not arrived after timeout
       if (!qrCode && status === 'QR_PENDING') {
         if (autoRetryCount < MAX_AUTO_RETRIES) {
-          // Auto-retry
+          // Auto-retry by calling connect() to trigger new QR generation
           setIsAutoRetrying(true);
           setAutoRetryCount((prev) => prev + 1);
 
-          // Small delay before retry
+          // Small delay before retry - use onConnect() NOT onRefresh()
+          // onRefresh() only checks status, doesn't generate new QR
           retryTimeoutRef.current = setTimeout(() => {
-            onRefresh();
+            onConnect();
             setIsAutoRetrying(false);
           }, 1000);
         } else {
@@ -281,7 +282,7 @@ function ConnectionContent({
         clearTimeout(retryTimeoutRef.current);
       }
     };
-  }, [status, qrCode, autoRetryCount, onRefresh]);
+  }, [status, qrCode, autoRetryCount, onConnect]);
 
   // Handle manual retry
   const handleManualRetry = useCallback(() => {
