@@ -48,7 +48,7 @@ export class WhatsAppService implements OnModuleDestroy {
       if (listeners && listeners.length > 0) {
         listeners.forEach(({ event, handler }) => {
           try {
-            socket.ev.off(event, handler);
+            socket.ev.off(event as any, handler);
           } catch (e) {
             // Ignore errors when removing listeners
           }
@@ -160,7 +160,7 @@ export class WhatsAppService implements OnModuleDestroy {
         );
         listeners.forEach(({ event, handler }) => {
           try {
-            existingSocket.ev.off(event, handler);
+            existingSocket.ev.off(event as any, handler);
           } catch (e) {
             // Ignore errors when removing listeners
           }
@@ -416,7 +416,7 @@ export class WhatsAppService implements OnModuleDestroy {
           );
           listeners.forEach(({ event, handler }) => {
             try {
-              socket.ev.off(event, handler);
+              socket.ev.off(event as any, handler);
             } catch (e) {
               // Ignore errors when removing listeners
             }
