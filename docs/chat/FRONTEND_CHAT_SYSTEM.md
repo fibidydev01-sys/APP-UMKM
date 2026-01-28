@@ -1,55 +1,38 @@
-# 🎨 FRONTEND: WhatsApp Chat Management System
+# 🎨 FRONTEND: WhatsApp Chat - SIMPLE VERSION
 
 **Project:** UMKM Multi-Tenant - WhatsApp Chat UI  
-**Focus:** Professional chat interface, Real-time updates, Team collaboration  
+**Focus:** Phase 1 & 2 ONLY - Basic chat + Auto-reply builder  
 **Stack:** Next.js 14 + TypeScript + Shadcn UI + Tailwind CSS
 
 ---
 
-## 📋 TABLE OF CONTENTS
+## 📋 FOKUS FITUR
 
-1. [UI Overview](#ui-overview)
-2. [Design System](#design-system)
-3. [Page Structure](#page-structure)
-4. [Component Architecture](#component-architecture)
-5. [State Management](#state-management)
-6. [Real-time Integration](#real-time-integration)
-7. [Phase Roadmap](#phase-roadmap)
-8. [UI Specifications](#ui-specifications)
+### ✅ YANG DIBUAT (Phase 1 & 2)
 
----
+**Phase 1: Basic Chat Interface**
+- WhatsApp connection (QR code)
+- Conversation list
+- Chat window (send/receive messages)
+- Real-time updates via WebSocket
 
-## 🎯 UI OVERVIEW
+**Phase 2: Auto-Reply Builder**
+- Auto-reply rule management
+- Keyword-based rules
+- Welcome message setup
+- Outside hours auto-reply
 
-### **Marketing Positioning**
+### ❌ YANG TIDAK DIBUAT
 
-```
-"Professional WhatsApp Inbox untuk UMKM Indonesia"
+- ❌ Team collaboration (multi-CS)
+- ❌ Quick replies management
+- ❌ Advanced filters
+- ❌ Analytics dashboard
+- ❌ Customer profile sidebar (detailed)
+- ❌ Internal notes
+- ❌ Tags & assignments
 
-Seperti WhatsApp Web, tapi lebih powerful:
-✅ Multi-CS collaboration
-✅ Smart auto-reply chatbot
-✅ Customer CRM & insights
-✅ Analytics dashboard
-✅ Zero risk banned (customer-initiated only!)
-```
-
-### **User Personas**
-
-**1. Tenant/Owner (Admin)**
-- Wants: Overview analytics, team performance, auto-reply setup
-- Access: Full dashboard, settings, reports
-- Key pages: Dashboard, Analytics, Auto-Reply Builder, CS Management
-
-**2. CS Operator**
-- Wants: Fast response, customer context, collaboration
-- Access: Inbox, customer profiles, quick replies
-- Key pages: Inbox, Conversations, Quick Replies
-
-**3. Customer (External)**
-- Wants: Fast response, helpful answers, easy ordering
-- Access: WhatsApp app only (not web interface)
-- Interaction: Chat via WhatsApp → Auto-reply/CS responds
+**Single user mode:** 1 tenant = 1 owner (no team)
 
 ---
 
@@ -58,54 +41,37 @@ Seperti WhatsApp Web, tapi lebih powerful:
 ### **Color Palette**
 
 ```typescript
-// Base Colors (WhatsApp-inspired but customized)
 const colors = {
-  // Primary (WhatsApp green, slightly adjusted)
+  // Primary (WhatsApp green)
   primary: {
-    50: '#E8F5E9',
-    100: '#C8E6C9',
-    200: '#A5D6A7',
-    300: '#81C784',
-    400: '#66BB6A',
-    500: '#25D366', // Main WhatsApp green
+    500: '#25D366', // Main green
     600: '#1EBD5C',
-    700: '#17A54D',
-    800: '#128C3F',
-    900: '#0D7330',
   },
   
-  // Neutral (Clean, professional)
+  // Neutral
   neutral: {
     50: '#FAFAFA',
     100: '#F5F5F5',
     200: '#EEEEEE',
-    300: '#E0E0E0',
-    400: '#BDBDBD',
-    500: '#9E9E9E',
     600: '#757575',
-    700: '#616161',
-    800: '#424242',
     900: '#212121',
   },
   
-  // Status Colors
-  success: '#10B981', // Green
-  warning: '#F59E0B', // Orange
-  error: '#EF4444',   // Red
-  info: '#3B82F6',    // Blue
+  // Status
+  success: '#10B981',
+  error: '#EF4444',
   
-  // Chat Bubble Colors
+  // Chat Bubbles
   bubble: {
-    sent: '#DCF8C6',     // Light green (like WA)
+    sent: '#DCF8C6',     // Light green
     received: '#FFFFFF', // White
-    system: '#F3F4F6',   // Light gray
-    autoReply: '#E0F2FE', // Light blue (to differentiate)
+    autoReply: '#E0F2FE', // Light blue
   },
   
   // Background
   bg: {
-    default: '#F0F2F5',  // Light gray (like WA Web)
-    chat: '#E5DDD5',     // Beige pattern (like WA chat bg)
+    default: '#F0F2F5',
+    chat: '#E5DDD5', // Beige (like WhatsApp)
     sidebar: '#FFFFFF',
   },
 };
@@ -116,227 +82,115 @@ const colors = {
 ```typescript
 const typography = {
   fontFamily: {
-    sans: ['Inter', 'system-ui', 'sans-serif'],
-    mono: ['Fira Code', 'monospace'],
+    sans: ['Inter', 'system-ui'],
   },
-  
   fontSize: {
     xs: '0.75rem',   // 12px
     sm: '0.875rem',  // 14px
     base: '1rem',    // 16px
     lg: '1.125rem',  // 18px
-    xl: '1.25rem',   // 20px
-    '2xl': '1.5rem', // 24px
-    '3xl': '1.875rem', // 30px
   },
-  
-  fontWeight: {
-    normal: 400,
-    medium: 500,
-    semibold: 600,
-    bold: 700,
-  },
-};
-```
-
-### **Spacing**
-
-```typescript
-const spacing = {
-  1: '0.25rem',  // 4px
-  2: '0.5rem',   // 8px
-  3: '0.75rem',  // 12px
-  4: '1rem',     // 16px
-  5: '1.25rem',  // 20px
-  6: '1.5rem',   // 24px
-  8: '2rem',     // 32px
-  10: '2.5rem',  // 40px
-  12: '3rem',    // 48px
-  16: '4rem',    // 64px
-};
-```
-
-### **Shadows**
-
-```typescript
-const shadows = {
-  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
-  DEFAULT: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
-  md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
-  lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-  xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-};
-```
-
-### **Border Radius**
-
-```typescript
-const borderRadius = {
-  none: '0',
-  sm: '0.25rem',   // 4px
-  DEFAULT: '0.5rem', // 8px
-  md: '0.75rem',   // 12px
-  lg: '1rem',      // 16px
-  xl: '1.5rem',    // 24px
-  full: '9999px',
 };
 ```
 
 ---
 
-## 📱 PAGE STRUCTURE
+## 📱 PAGE STRUCTURE (SIMPLIFIED)
 
-### **Main Layout**
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│ HEADER (Fixed)                                    [Profile] │
-│ Logo | Dashboard | Inbox | Analytics | Settings             │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│                        PAGE CONTENT                          │
-│                     (Dynamic per route)                      │
-│                                                              │
-│                                                              │
-│                                                              │
-│                                                              │
-│                                                              │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
-```
-
-### **Routes & Pages**
+### **Routes**
 
 ```typescript
-// app/ directory structure (Next.js 14 App Router)
-
 app/
-├── (auth)/                    # Auth pages (no layout)
+├── (auth)/
 │   ├── login/
-│   │   └── page.tsx          # Login page
+│   │   └── page.tsx          # Login
 │   └── register/
-│       └── page.tsx          # Registration
+│       └── page.tsx          # Register
 │
-├── (dashboard)/               # Main app (with layout)
-│   ├── layout.tsx            # Dashboard layout (sidebar, header)
+├── (dashboard)/
+│   ├── layout.tsx            # Main layout
 │   │
-│   ├── page.tsx              # Dashboard home (analytics overview)
+│   ├── page.tsx              # Home (redirect to /inbox)
 │   │
-│   ├── inbox/                # 🔥 MAIN: Chat inbox
-│   │   ├── page.tsx          # Conversation list + chat window
-│   │   └── [conversationId]/ # Single conversation (optional route)
-│   │       └── page.tsx
+│   ├── inbox/                # 🔥 MAIN: Chat interface
+│   │   └── page.tsx          # Conversation list + chat window
 │   │
-│   ├── contacts/             # Contact management
-│   │   ├── page.tsx          # Contact list
-│   │   └── [contactId]/      # Contact detail
-│   │       └── page.tsx
-│   │
-│   ├── auto-reply/           # Auto-reply rule builder
+│   ├── auto-reply/           # Auto-reply management
 │   │   ├── page.tsx          # Rule list
-│   │   ├── new/              # Create rule
-│   │   │   └── page.tsx
-│   │   └── [ruleId]/         # Edit rule
-│   │       └── page.tsx
+│   │   ├── new/
+│   │   │   └── page.tsx      # Create rule
+│   │   └── [ruleId]/
+│   │       └── page.tsx      # Edit rule
 │   │
-│   ├── quick-replies/        # Quick reply templates
-│   │   └── page.tsx
-│   │
-│   ├── team/                 # CS operators management
-│   │   ├── page.tsx          # Team list
-│   │   └── [operatorId]/     # Operator detail
-│   │       └── page.tsx
-│   │
-│   ├── analytics/            # Analytics & reports
-│   │   ├── page.tsx          # Main analytics dashboard
-│   │   ├── conversations/    # Conversation analytics
-│   │   │   └── page.tsx
-│   │   ├── auto-reply/       # Auto-reply performance
-│   │   │   └── page.tsx
-│   │   └── team/             # Team performance
-│   │       └── page.tsx
-│   │
-│   ├── settings/             # Settings
-│   │   ├── page.tsx          # General settings
-│   │   ├── whatsapp/         # WhatsApp connection
-│   │   │   └── page.tsx
-│   │   ├── profile/          # Tenant profile
-│   │   │   └── page.tsx
-│   │   └── billing/          # Subscription & billing
-│   │       └── page.tsx
-│   │
-│   └── onboarding/           # First-time setup wizard
-│       └── page.tsx          # Connect WhatsApp + setup auto-reply
-│
-└── api/                      # API routes (if needed for client-side)
-    └── [...catchall]/
-        └── route.ts          # Proxy to backend API
+│   └── settings/
+│       ├── page.tsx          # General settings
+│       └── whatsapp/
+│           └── page.tsx      # WhatsApp connection
 ```
 
 ---
 
-## 🧩 COMPONENT ARCHITECTURE
+## 🧩 COMPONENT STRUCTURE
+
+### **Inbox Layout (2-Column)**
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ HEADER                                      [Profile]   │
+│ Logo | Inbox | Auto-Reply | Settings                   │
+├──────────┬──────────────────────────────────────────────┤
+│          │                                              │
+│  CONVS   │          CHAT WINDOW                         │
+│  LIST    │                                              │
+│          │                                              │
+│  320px   │           Flexible                           │
+│          │                                              │
+│          │                                              │
+└──────────┴──────────────────────────────────────────────┘
+```
+
+**Responsive:**
+- Desktop (>= 1024px): 2-column
+- Mobile (< 1024px): Single column (stack)
+
+---
 
 ### **Component Hierarchy**
 
 ```
-pages/
-└── inbox/
-    └── page.tsx
-        ├── <InboxLayout>                    # Main 3-column layout
-        │   ├── <ConversationListSidebar>    # Left: Conversation list
-        │   │   ├── <SearchBar>
-        │   │   ├── <FilterTabs>
-        │   │   └── <ConversationItem>[]     # List of conversations
-        │   │       ├── <Avatar>
-        │   │       ├── <CustomerInfo>
-        │   │       ├── <LastMessage>
-        │   │       ├── <UnreadBadge>
-        │   │       └── <Timestamp>
-        │   │
-        │   ├── <ChatWindow>                 # Center: Active chat
-        │   │   ├── <ChatHeader>
-        │   │   │   ├── <CustomerProfile>
-        │   │   │   ├── <AssignedCS>
-        │   │   │   └── <ConversationActions>
-        │   │   │
-        │   │   ├── <MessageList>
-        │   │   │   └── <MessageBubble>[]
-        │   │   │       ├── <MessageContent>
-        │   │   │       ├── <MessageStatus>  # Read receipts
-        │   │   │       ├── <Timestamp>
-        │   │   │       └── <QuotedMessage>  # If replying
-        │   │   │
-        │   │   ├── <TypingIndicator>        # "Customer is typing..."
-        │   │   │
-        │   │   └── <MessageInput>
-        │   │       ├── <TextArea>
-        │   │       ├── <EmojiPicker>
-        │   │       ├── <MediaUpload>
-        │   │       ├── <QuickReplyDropdown>
-        │   │       └── <SendButton>
-        │   │
-        │   └── <CustomerProfileSidebar>     # Right: Customer info
-        │       ├── <ContactCard>
-        │       │   ├── <Avatar>
-        │       │   ├── <ContactInfo>
-        │       │   └── <Tags>
-        │       │
-        │       ├── <OrderHistory>
-        │       │   └── <OrderCard>[]
-        │       │
-        │       ├── <InternalNotes>
-        │       │   └── <NoteEditor>
-        │       │
-        │       └── <ConversationMetadata>
-        │           ├── <CreatedAt>
-        │           ├── <TotalMessages>
-        │           └── <ConversationActions>
+pages/inbox/page.tsx
+└── <InboxLayout>
+    ├── <ConversationListSidebar>      # Left
+    │   ├── <SearchBar>
+    │   ├── <FilterTabs>
+    │   └── <ConversationItem>[]
+    │       ├── <Avatar>
+    │       ├── <CustomerInfo>
+    │       ├── <LastMessage>
+    │       └── <UnreadBadge>
+    │
+    └── <ChatWindow>                    # Right
+        ├── <ChatHeader>
+        │   ├── <CustomerProfile>
+        │   └── <StatusIndicator>
+        │
+        ├── <MessageList>
+        │   └── <MessageBubble>[]
+        │       ├── <MessageContent>
+        │       ├── <MessageStatus>     # Checkmarks
+        │       └── <Timestamp>
+        │
+        └── <MessageInput>
+            ├── <TextArea>
+            ├── <EmojiPicker>
+            └── <SendButton>
 ```
 
-### **Core Components (Reusable)**
+---
 
-#### **1. MessageBubble Component**
+## 🎨 CORE COMPONENTS
+
+### **1. MessageBubble**
 
 ```typescript
 // components/chat/MessageBubble.tsx
@@ -344,18 +198,12 @@ pages/
 interface MessageBubbleProps {
   message: {
     id: string;
-    senderType: 'customer' | 'cs' | 'system' | 'auto_reply';
-    senderName: string;
+    senderType: 'customer' | 'owner' | 'auto_reply';
     content: string;
-    messageType: 'text' | 'image' | 'audio' | 'document';
+    messageType: 'text' | 'image';
     mediaUrl?: string;
-    status: 'sent' | 'delivered' | 'read' | 'failed';
+    status: 'sent' | 'delivered' | 'read';
     sentAt: string;
-    quotedMessage?: {
-      id: string;
-      content: string;
-      senderName: string;
-    };
   };
 }
 
@@ -367,32 +215,18 @@ export function MessageBubble({ message }: MessageBubbleProps) {
       "flex gap-2 mb-2",
       isSent ? "justify-end" : "justify-start"
     )}>
-      {/* Avatar (customer only) */}
-      {!isSent && <Avatar src={message.senderAvatar} />}
-      
       <div className={cn(
         "max-w-[70%] rounded-lg px-4 py-2 shadow-sm",
         isSent ? "bg-bubble-sent" : "bg-bubble-received",
         message.senderType === 'auto_reply' && "bg-bubble-autoReply"
       )}>
-        {/* Quoted message (if replying) */}
-        {message.quotedMessage && (
-          <div className="bg-black/10 rounded p-2 mb-2 text-sm">
-            <p className="font-semibold">{message.quotedMessage.senderName}</p>
-            <p className="truncate">{message.quotedMessage.content}</p>
-          </div>
-        )}
-        
-        {/* Message content */}
+        {/* Content */}
         {message.messageType === 'text' && (
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
         )}
         
         {message.messageType === 'image' && (
-          <div>
-            <img src={message.mediaUrl} className="rounded max-w-full" />
-            {message.content && <p className="mt-2">{message.content}</p>}
-          </div>
+          <img src={message.mediaUrl} className="rounded max-w-full" />
         )}
         
         {/* Timestamp + Status */}
@@ -400,10 +234,7 @@ export function MessageBubble({ message }: MessageBubbleProps) {
           <span className="text-xs text-gray-600">
             {formatTime(message.sentAt)}
           </span>
-          
-          {isSent && (
-            <MessageStatus status={message.status} />
-          )}
+          {isSent && <MessageStatus status={message.status} />}
         </div>
       </div>
     </div>
@@ -411,7 +242,9 @@ export function MessageBubble({ message }: MessageBubbleProps) {
 }
 ```
 
-#### **2. ConversationItem Component**
+---
+
+### **2. ConversationItem**
 
 ```typescript
 // components/inbox/ConversationItem.tsx
@@ -423,16 +256,10 @@ interface ConversationItemProps {
     customerAvatar?: string;
     lastMessage: {
       content: string;
-      from: 'customer' | 'cs';
+      from: 'customer' | 'owner';
       timestamp: string;
     };
     unreadCount: number;
-    status: 'active' | 'pending' | 'resolved';
-    assignedCs?: {
-      name: string;
-      avatar?: string;
-    };
-    tags: string[];
   };
   isActive: boolean;
   onClick: () => void;
@@ -448,7 +275,7 @@ export function ConversationItem({ conversation, isActive, onClick }: Props) {
         isActive && "bg-gray-100"
       )}
     >
-      {/* Avatar + Online Status */}
+      {/* Avatar */}
       <div className="relative">
         <Avatar src={conversation.customerAvatar} />
         {conversation.unreadCount > 0 && (
@@ -469,66 +296,25 @@ export function ConversationItem({ conversation, isActive, onClick }: Props) {
           </span>
         </div>
         
-        <div className="flex items-center gap-2">
-          {conversation.lastMessage.from === 'cs' && (
-            <CheckIcon className="h-3 w-3 text-primary-500" />
-          )}
-          <p className="text-sm text-gray-600 truncate">
-            {conversation.lastMessage.content}
-          </p>
-        </div>
-        
-        {/* Tags */}
-        {conversation.tags.length > 0 && (
-          <div className="flex gap-1 mt-1">
-            {conversation.tags.slice(0, 2).map(tag => (
-              <Badge key={tag} variant="outline" size="sm">{tag}</Badge>
-            ))}
-          </div>
-        )}
+        <p className="text-sm text-gray-600 truncate">
+          {conversation.lastMessage.content}
+        </p>
       </div>
-      
-      {/* Assigned CS indicator */}
-      {conversation.assignedCs && (
-        <Avatar 
-          src={conversation.assignedCs.avatar} 
-          size="xs"
-          title={`Assigned to ${conversation.assignedCs.name}`}
-        />
-      )}
     </div>
   );
 }
 ```
 
-#### **3. MessageInput Component**
+---
+
+### **3. MessageInput**
 
 ```typescript
 // components/chat/MessageInput.tsx
 
 export function MessageInput({ conversationId }: { conversationId: string }) {
   const [message, setMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [showQuickReplies, setShowQuickReplies] = useState(false);
-  
   const { mutate: sendMessage, isPending } = useSendMessage();
-  
-  // Typing indicator (debounced)
-  useEffect(() => {
-    if (message.length > 0 && !isTyping) {
-      setIsTyping(true);
-      socket.emit('typing-start', { conversationId });
-    }
-    
-    const timeout = setTimeout(() => {
-      if (isTyping) {
-        setIsTyping(false);
-        socket.emit('typing-stop', { conversationId });
-      }
-    }, 1000);
-    
-    return () => clearTimeout(timeout);
-  }, [message]);
   
   const handleSend = () => {
     if (!message.trim()) return;
@@ -544,16 +330,6 @@ export function MessageInput({ conversationId }: { conversationId: string }) {
   
   return (
     <div className="border-t border-gray-200 p-4 bg-white">
-      {/* Quick Reply Dropdown */}
-      <QuickReplyDropdown 
-        open={showQuickReplies}
-        onSelect={(template) => {
-          setMessage(template.message);
-          setShowQuickReplies(false);
-        }}
-      />
-      
-      {/* Input Area */}
       <div className="flex items-end gap-2">
         {/* Emoji Picker */}
         <EmojiPicker onSelect={(emoji) => setMessage(m => m + emoji)} />
@@ -567,109 +343,73 @@ export function MessageInput({ conversationId }: { conversationId: string }) {
               e.preventDefault();
               handleSend();
             }
-            
-            if (e.key === '/' && message === '') {
-              setShowQuickReplies(true);
-            }
           }}
           placeholder="Type a message..."
           className="flex-1 min-h-[40px] max-h-[120px]"
           rows={1}
         />
         
-        {/* Media Upload */}
-        <MediaUploadButton conversationId={conversationId} />
-        
         {/* Send Button */}
         <Button 
           onClick={handleSend}
           disabled={!message.trim() || isPending}
           size="icon"
-          className="h-10 w-10"
         >
           <SendIcon className="h-5 w-5" />
         </Button>
       </div>
+    </div>
+  );
+}
+```
+
+---
+
+### **4. AutoReplyRuleCard**
+
+```typescript
+// components/auto-reply/RuleCard.tsx
+
+interface RuleCardProps {
+  rule: {
+    id: string;
+    name: string;
+    triggerType: 'welcome' | 'keyword' | 'time_based';
+    isActive: boolean;
+    totalTriggered: number;
+  };
+}
+
+export function RuleCard({ rule }: RuleCardProps) {
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <CardTitle className="text-base">{rule.name}</CardTitle>
+            <CardDescription>
+              Trigger: {rule.triggerType === 'welcome' && 'First contact'}
+              {rule.triggerType === 'keyword' && 'Keywords'}
+              {rule.triggerType === 'time_based' && 'Outside hours'}
+            </CardDescription>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Switch checked={rule.isActive} />
+            <Button variant="ghost" size="icon">
+              <MoreVerticalIcon className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </CardHeader>
       
-      {/* Character count (if > 500) */}
-      {message.length > 500 && (
-        <p className="text-xs text-gray-500 mt-1 text-right">
-          {message.length} / 1000
-        </p>
-      )}
-    </div>
-  );
-}
-```
-
-#### **4. TypingIndicator Component**
-
-```typescript
-// components/chat/TypingIndicator.tsx
-
-export function TypingIndicator({ customerName }: { customerName: string }) {
-  return (
-    <div className="flex items-center gap-2 px-4 py-2 bg-gray-50 border-t">
-      <div className="flex gap-1">
-        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-      </div>
-      <span className="text-sm text-gray-600">
-        {customerName} is typing...
-      </span>
-    </div>
-  );
-}
-```
-
-#### **5. QuickReplyDropdown Component**
-
-```typescript
-// components/chat/QuickReplyDropdown.tsx
-
-export function QuickReplyDropdown({ open, onSelect }: Props) {
-  const { data: quickReplies } = useQuickReplies();
-  const [search, setSearch] = useState('');
-  
-  const filtered = quickReplies?.filter(qr => 
-    qr.title.toLowerCase().includes(search.toLowerCase()) ||
-    qr.shortcut.toLowerCase().includes(search.toLowerCase())
-  );
-  
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverContent className="w-80 p-0" align="start">
-        <Command>
-          <CommandInput 
-            placeholder="Search quick replies..." 
-            value={search}
-            onValueChange={setSearch}
-          />
-          <CommandList>
-            <CommandEmpty>No quick replies found.</CommandEmpty>
-            <CommandGroup heading="Quick Replies">
-              {filtered?.map((qr) => (
-                <CommandItem
-                  key={qr.id}
-                  onSelect={() => onSelect(qr)}
-                >
-                  <div className="flex flex-col">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline">{qr.shortcut}</Badge>
-                      <span className="font-medium">{qr.title}</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1 line-clamp-1">
-                      {qr.message}
-                    </p>
-                  </div>
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+      <CardContent>
+        <div className="flex items-center gap-2 text-sm text-gray-600">
+          <ActivityIcon className="h-4 w-4" />
+          <span>Triggered {rule.totalTriggered} times</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 ```
@@ -691,41 +431,27 @@ interface ChatState {
   // Conversations
   conversations: Conversation[];
   setConversations: (convs: Conversation[]) => void;
-  updateConversation: (id: string, updates: Partial<Conversation>) => void;
   incrementUnread: (id: string) => void;
   markAsRead: (id: string) => void;
   
   // Messages
-  messages: Record<string, Message[]>; // conversationId → messages[]
+  messages: Record<string, Message[]>;
   addMessage: (conversationId: string, message: Message) => void;
-  updateMessageStatus: (messageId: string, status: MessageStatus) => void;
-  
-  // Typing indicators
-  typingUsers: Record<string, boolean>; // conversationId → isTyping
-  setTyping: (conversationId: string, isTyping: boolean) => void;
   
   // Filters
   filters: {
-    status: 'all' | 'active' | 'pending' | 'resolved';
-    assignedTo: string | null;
-    unreadOnly: boolean;
+    status: 'all' | 'active' | 'resolved';
     search: string;
   };
   setFilters: (filters: Partial<ChatState['filters']>) => void;
 }
 
-export const useChatStore = create<ChatState>((set, get) => ({
+export const useChatStore = create<ChatState>((set) => ({
   activeConversationId: null,
   setActiveConversation: (id) => set({ activeConversationId: id }),
   
   conversations: [],
   setConversations: (convs) => set({ conversations: convs }),
-  
-  updateConversation: (id, updates) => set((state) => ({
-    conversations: state.conversations.map(conv =>
-      conv.id === id ? { ...conv, ...updates } : conv
-    ),
-  })),
   
   incrementUnread: (id) => set((state) => ({
     conversations: state.conversations.map(conv =>
@@ -753,27 +479,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
     },
   })),
   
-  updateMessageStatus: (messageId, status) => set((state) => {
-    const newMessages = { ...state.messages };
-    
-    for (const convId in newMessages) {
-      newMessages[convId] = newMessages[convId].map(msg =>
-        msg.id === messageId ? { ...msg, status } : msg
-      );
-    }
-    
-    return { messages: newMessages };
-  }),
-  
-  typingUsers: {},
-  setTyping: (conversationId, isTyping) => set((state) => ({
-    typingUsers: { ...state.typingUsers, [conversationId]: isTyping },
-  })),
-  
   filters: {
     status: 'all',
-    assignedTo: null,
-    unreadOnly: false,
     search: '',
   },
   setFilters: (filters) => set((state) => ({
@@ -781,6 +488,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
   })),
 }));
 ```
+
+---
 
 ### **Server State (React Query)**
 
@@ -814,15 +523,10 @@ export function useSendMessage() {
   
   return useMutation({
     mutationFn: (data: SendMessageData) => api.sendMessage(data),
+    
+    // Optimistic update
     onMutate: async (newMessage) => {
-      // Optimistic update
       const conversationId = newMessage.conversationId;
-      
-      await queryClient.cancelQueries({ 
-        queryKey: ['messages', conversationId] 
-      });
-      
-      const previousMessages = queryClient.getQueryData(['messages', conversationId]);
       
       queryClient.setQueryData(['messages', conversationId], (old: Message[]) => [
         ...old,
@@ -833,18 +537,9 @@ export function useSendMessage() {
           sentAt: new Date().toISOString(),
         },
       ]);
-      
-      return { previousMessages };
     },
-    onError: (err, newMessage, context) => {
-      // Rollback on error
-      queryClient.setQueryData(
-        ['messages', newMessage.conversationId],
-        context?.previousMessages
-      );
-    },
+    
     onSuccess: (data, variables) => {
-      // Update with real message from server
       queryClient.invalidateQueries({ 
         queryKey: ['messages', variables.conversationId] 
       });
@@ -862,7 +557,7 @@ export function useSendMessage() {
 ```typescript
 // lib/socket.ts
 
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 let socket: Socket | null = null;
 
@@ -875,44 +570,40 @@ export function initializeSocket(token: string) {
   });
   
   socket.on('connect', () => {
-    console.log('✅ WebSocket connected');
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('❌ WebSocket disconnected');
+    console.log('✅ Connected');
   });
   
   return socket;
 }
 
 export function getSocket() {
-  if (!socket) {
-    throw new Error('Socket not initialized');
-  }
+  if (!socket) throw new Error('Socket not initialized');
   return socket;
 }
 ```
 
-### **Real-time Event Handlers**
+---
+
+### **Event Handlers**
 
 ```typescript
 // hooks/use-realtime-chat.ts
 
 export function useRealtimeChat() {
+  const { addMessage, incrementUnread } = useChatStore();
   const queryClient = useQueryClient();
-  const { incrementUnread, addMessage, updateMessageStatus, setTyping } = useChatStore();
   
   useEffect(() => {
     const socket = getSocket();
     
-    // New message received
+    // New message
     socket.on('new-message', (data: NewMessageEvent) => {
       const { conversationId, message } = data;
       
-      // Add to local state
+      // Add to state
       addMessage(conversationId, message);
       
-      // Increment unread if not active conversation
+      // Increment unread if not active
       const activeConvId = useChatStore.getState().activeConversationId;
       if (conversationId !== activeConvId) {
         incrementUnread(conversationId);
@@ -921,462 +612,432 @@ export function useRealtimeChat() {
         showNotification({
           title: message.senderName,
           body: message.content,
-          onClick: () => {
-            // Navigate to conversation
-            router.push(`/inbox?conversation=${conversationId}`);
-          },
         });
       }
       
       // Invalidate queries
-      queryClient.invalidateQueries({ 
-        queryKey: ['messages', conversationId] 
-      });
-      queryClient.invalidateQueries({ 
-        queryKey: ['conversations'] 
-      });
+      queryClient.invalidateQueries({ queryKey: ['messages', conversationId] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
     });
     
     // Message status updated
-    socket.on('message-status-updated', (data: MessageStatusEvent) => {
-      updateMessageStatus(data.messageId, data.status);
+    socket.on('message-status-updated', (data) => {
+      queryClient.invalidateQueries({ queryKey: ['messages'] });
     });
     
-    // Typing indicator
-    socket.on('customer-typing', (data: TypingEvent) => {
-      setTyping(data.conversationId, data.isTyping);
-    });
-    
-    // Conversation updated
-    socket.on('conversation-updated', (data: ConversationUpdateEvent) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['conversations'] 
-      });
-    });
-    
-    // New conversation created
-    socket.on('new-conversation', (data: NewConversationEvent) => {
-      queryClient.invalidateQueries({ 
-        queryKey: ['conversations'] 
-      });
-      
-      // Show notification
-      showNotification({
-        title: 'New Chat',
-        body: `${data.conversation.customerName} started a conversation`,
-      });
+    // New conversation
+    socket.on('new-conversation', () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
     });
     
     return () => {
       socket.off('new-message');
       socket.off('message-status-updated');
-      socket.off('customer-typing');
-      socket.off('conversation-updated');
       socket.off('new-conversation');
     };
   }, []);
 }
 ```
 
-### **Join/Leave Conversation Rooms**
+---
+
+## 📄 PAGE EXAMPLES
+
+### **1. Inbox Page**
 
 ```typescript
-// hooks/use-conversation-room.ts
+// app/(dashboard)/inbox/page.tsx
 
-export function useConversationRoom(conversationId: string | null) {
-  useEffect(() => {
-    if (!conversationId) return;
-    
-    const socket = getSocket();
-    
-    // Join room
-    socket.emit('join-conversation', { conversationId });
-    
-    // Mark as read
-    socket.emit('mark-as-read', { conversationId });
-    
-    return () => {
-      // Leave room
-      socket.emit('leave-conversation', { conversationId });
-    };
-  }, [conversationId]);
+export default function InboxPage() {
+  const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
+  const { data: conversations, isLoading } = useConversations();
+  const { data: messagesData } = useMessages(selectedConversation);
+  
+  // Real-time updates
+  useRealtimeChat();
+  
+  return (
+    <div className="flex h-screen">
+      {/* Conversation List */}
+      <div className="w-80 border-r bg-white">
+        <div className="p-4 border-b">
+          <SearchBar />
+          <FilterTabs />
+        </div>
+        
+        <div className="overflow-y-auto h-[calc(100vh-120px)]">
+          {conversations?.data.map((conv) => (
+            <ConversationItem
+              key={conv.id}
+              conversation={conv}
+              isActive={selectedConversation === conv.id}
+              onClick={() => setSelectedConversation(conv.id)}
+            />
+          ))}
+        </div>
+      </div>
+      
+      {/* Chat Window */}
+      <div className="flex-1 flex flex-col">
+        {selectedConversation ? (
+          <>
+            <ChatHeader conversation={messagesData?.conversation} />
+            <MessageList messages={messagesData?.messages || []} />
+            <MessageInput conversationId={selectedConversation} />
+          </>
+        ) : (
+          <EmptyState />
+        )}
+      </div>
+    </div>
+  );
 }
 ```
 
 ---
 
-## 🗺️ PHASE ROADMAP
+### **2. Auto-Reply Rules Page**
 
-### **PHASE 1: Core UI (Week 1-2)**
+```typescript
+// app/(dashboard)/auto-reply/page.tsx
 
-**Goal:** Basic chat interface working
+export default function AutoReplyPage() {
+  const { data: rules, isLoading } = useQuery({
+    queryKey: ['auto-reply-rules'],
+    queryFn: () => api.getAutoReplyRules(),
+  });
+  
+  return (
+    <div className="container mx-auto py-8">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold">Auto-Reply Rules</h1>
+          <p className="text-gray-600">Manage automated responses</p>
+        </div>
+        
+        <Button asChild>
+          <Link href="/auto-reply/new">
+            <PlusIcon className="h-4 w-4 mr-2" />
+            Create Rule
+          </Link>
+        </Button>
+      </div>
+      
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="grid gap-4">
+          {rules?.rules.map((rule) => (
+            <RuleCard key={rule.id} rule={rule} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+### **3. Create Auto-Reply Rule Page**
+
+```typescript
+// app/(dashboard)/auto-reply/new/page.tsx
+
+export default function CreateRulePage() {
+  const [triggerType, setTriggerType] = useState<'welcome' | 'keyword' | 'time_based'>('keyword');
+  
+  const { mutate: createRule, isPending } = useMutation({
+    mutationFn: (data: CreateRuleData) => api.createAutoReplyRule(data),
+    onSuccess: () => {
+      router.push('/auto-reply');
+    },
+  });
+  
+  return (
+    <div className="container max-w-2xl mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">Create Auto-Reply Rule</h1>
+      
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        {/* Rule Name */}
+        <FormField
+          label="Rule Name"
+          error={errors.name?.message}
+        >
+          <Input {...register('name')} placeholder="e.g., Welcome Message" />
+        </FormField>
+        
+        {/* Trigger Type */}
+        <FormField label="Trigger Type">
+          <Select value={triggerType} onValueChange={setTriggerType}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="welcome">First Contact (Welcome)</SelectItem>
+              <SelectItem value="keyword">Keywords</SelectItem>
+              <SelectItem value="time_based">Outside Hours</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormField>
+        
+        {/* Conditional fields based on trigger type */}
+        {triggerType === 'keyword' && (
+          <FormField label="Keywords">
+            <Input 
+              {...register('keywords')} 
+              placeholder="halo, hi, hello (comma separated)"
+            />
+          </FormField>
+        )}
+        
+        {triggerType === 'time_based' && (
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="Start Time">
+              <Input {...register('workingHours.start')} type="time" />
+            </FormField>
+            <FormField label="End Time">
+              <Input {...register('workingHours.end')} type="time" />
+            </FormField>
+          </div>
+        )}
+        
+        {/* Response Message */}
+        <FormField label="Response Message">
+          <Textarea
+            {...register('responseMessage')}
+            rows={5}
+            placeholder="Halo {{name}}! Terima kasih telah menghubungi kami..."
+          />
+          <p className="text-sm text-gray-500 mt-1">
+            Use {{'{name}'}} and {{'{phone}'}} for personalization
+          </p>
+        </FormField>
+        
+        {/* Priority */}
+        <FormField label="Priority (0-100)">
+          <Slider
+            {...register('priority')}
+            min={0}
+            max={100}
+            step={10}
+            defaultValue={[50]}
+          />
+        </FormField>
+        
+        {/* Delay */}
+        <FormField label="Delay (seconds)">
+          <Input
+            {...register('delaySeconds')}
+            type="number"
+            min={1}
+            max={10}
+            defaultValue={2}
+          />
+        </FormField>
+        
+        {/* Submit */}
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/auto-reply">Cancel</Link>
+          </Button>
+          <Button type="submit" disabled={isPending}>
+            {isPending ? 'Creating...' : 'Create Rule'}
+          </Button>
+        </div>
+      </Form>
+    </div>
+  );
+}
+```
+
+---
+
+### **4. WhatsApp Connection Page**
+
+```typescript
+// app/(dashboard)/settings/whatsapp/page.tsx
+
+export default function WhatsAppConnectionPage() {
+  const [qrCode, setQrCode] = useState<string | null>(null);
+  const [status, setStatus] = useState<'disconnected' | 'qr_pending' | 'connected'>('disconnected');
+  
+  const { mutate: connect } = useMutation({
+    mutationFn: () => api.connectWhatsApp(),
+    onSuccess: (data) => {
+      if (data.qrCode) {
+        setQrCode(data.qrCode);
+        setStatus('qr_pending');
+      }
+    },
+  });
+  
+  // Listen to WebSocket for connection updates
+  useEffect(() => {
+    const socket = getSocket();
+    
+    socket.on('qr-code', (data) => {
+      setQrCode(data.qrCode);
+      setStatus('qr_pending');
+    });
+    
+    socket.on('connection-status', (data) => {
+      setStatus(data.status);
+      if (data.status === 'connected') {
+        setQrCode(null);
+      }
+    });
+    
+    return () => {
+      socket.off('qr-code');
+      socket.off('connection-status');
+    };
+  }, []);
+  
+  return (
+    <div className="container max-w-xl mx-auto py-8">
+      <h1 className="text-2xl font-bold mb-6">WhatsApp Connection</h1>
+      
+      <Card>
+        <CardHeader>
+          <CardTitle>Connection Status</CardTitle>
+        </CardHeader>
+        
+        <CardContent>
+          {status === 'disconnected' && (
+            <div className="text-center py-8">
+              <PhoneOffIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 mb-4">Not connected to WhatsApp</p>
+              <Button onClick={() => connect()}>
+                Connect WhatsApp
+              </Button>
+            </div>
+          )}
+          
+          {status === 'qr_pending' && qrCode && (
+            <div className="text-center py-8">
+              <p className="mb-4">Scan this QR code with WhatsApp</p>
+              <img src={qrCode} alt="QR Code" className="mx-auto max-w-xs" />
+              <p className="text-sm text-gray-500 mt-4">
+                Open WhatsApp → Settings → Linked Devices → Link a Device
+              </p>
+            </div>
+          )}
+          
+          {status === 'connected' && (
+            <div className="text-center py-8">
+              <CheckCircleIcon className="h-12 w-12 text-green-500 mx-auto mb-4" />
+              <p className="text-gray-900 font-medium mb-2">Connected</p>
+              <p className="text-gray-600 mb-4">Your WhatsApp is connected</p>
+              <Button variant="outline" onClick={() => api.disconnectWhatsApp()}>
+                Disconnect
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+---
+
+## 🗺️ IMPLEMENTATION ROADMAP
+
+### **PHASE 1: Basic UI (Week 1-2)**
 
 **Tasks:**
-- [ ] Design system setup (Tailwind config, color palette)
+- [ ] Design system setup (Tailwind config)
 - [ ] Core components
   - [ ] MessageBubble
   - [ ] ConversationItem
   - [ ] MessageInput
-  - [ ] TypingIndicator
+  - [ ] ChatHeader
 - [ ] Pages
-  - [ ] Inbox layout (3-column)
-  - [ ] Conversation list
-  - [ ] Chat window
-- [ ] State management (Zustand store)
+  - [ ] Login/Register
+  - [ ] Inbox (2-column layout)
+  - [ ] WhatsApp connection page
+- [ ] State management (Zustand)
 - [ ] API integration (React Query)
-- [ ] WebSocket setup (basic)
+- [ ] WebSocket setup
 
-**Deliverable:** Can view conversations, send/receive messages
-
----
-
-### **PHASE 2: Real-time & Polish (Week 3-4)**
-
-**Goal:** Smooth real-time experience
-
-**Tasks:**
-- [ ] WebSocket event handlers
-  - [ ] New message notifications
-  - [ ] Typing indicators
-  - [ ] Read receipts
-  - [ ] Status updates
-- [ ] Optimistic updates (send message instantly)
-- [ ] Notifications (browser push)
-- [ ] Message status icons (checkmarks)
-- [ ] Smooth animations (Framer Motion)
-- [ ] Error handling & retry logic
-- [ ] Loading states & skeletons
-
-**Deliverable:** Professional real-time chat experience
+**Deliverable:** Working chat interface
 
 ---
 
-### **PHASE 3: Advanced Features (Week 5-6)**
-
-**Goal:** Team collaboration & productivity
-
-**Tasks:**
-- [ ] Customer profile sidebar
-  - [ ] Contact info
-  - [ ] Order history
-  - [ ] Internal notes
-  - [ ] Tags
-- [ ] Quick replies system
-  - [ ] Dropdown with search
-  - [ ] Keyboard shortcuts (/)
-  - [ ] Templates management
-- [ ] Conversation actions
-  - [ ] Assign to CS
-  - [ ] Change status
-  - [ ] Add tags
-  - [ ] Mark resolved
-- [ ] Filters & search
-  - [ ] Status filter
-  - [ ] Assigned CS filter
-  - [ ] Unread only
-  - [ ] Search customers
-- [ ] Media handling
-  - [ ] Image upload
-  - [ ] Document preview
-  - [ ] Audio player
-
-**Deliverable:** Full-featured inbox for teams
-
----
-
-### **PHASE 4: Auto-Reply Builder (Week 7-8)**
-
-**Goal:** Visual rule builder for auto-replies
+### **PHASE 2: Auto-Reply Builder (Week 3-4)**
 
 **Tasks:**
 - [ ] Auto-reply pages
   - [ ] Rule list
-  - [ ] Create/edit rule form
-  - [ ] Test rule interface
-- [ ] Rule components
-  - [ ] Trigger type selector
-  - [ ] Keyword input (with chips)
-  - [ ] Working hours picker
-  - [ ] Response editor (with variables)
-  - [ ] Menu builder (drag & drop)
-  - [ ] Priority slider
-  - [ ] Cooldown settings
-- [ ] Performance analytics
-  - [ ] Trigger count
-  - [ ] Success rate
-  - [ ] Most used rules
+  - [ ] Create rule form
+  - [ ] Edit rule form
+- [ ] Components
+  - [ ] RuleCard
+  - [ ] TriggerTypeSelector
+  - [ ] KeywordInput
+  - [ ] WorkingHoursPicker
+  - [ ] ResponseEditor
+- [ ] Form validation (Zod)
+- [ ] Real-time rule updates
 
-**Deliverable:** Easy-to-use chatbot builder
-
----
-
-### **PHASE 5: Analytics Dashboard (Week 9-10)**
-
-**Goal:** Insights & reporting
-
-**Tasks:**
-- [ ] Dashboard overview
-  - [ ] Key metrics cards
-  - [ ] Trend charts (Recharts)
-  - [ ] Top auto-replies
-  - [ ] CS performance
-- [ ] Detailed analytics pages
-  - [ ] Conversation analytics
-  - [ ] Auto-reply performance
-  - [ ] Team performance
-- [ ] Charts & visualizations
-  - [ ] Line charts (messages over time)
-  - [ ] Bar charts (CS comparison)
-  - [ ] Pie charts (status breakdown)
-  - [ ] Heat map (activity by hour)
-- [ ] Export reports (CSV, PDF)
-- [ ] Date range picker
-- [ ] Filter & drill-down
-
-**Deliverable:** Complete analytics system
+**Deliverable:** Auto-reply management interface
 
 ---
 
 ## 📐 UI SPECIFICATIONS
 
-### **Inbox Layout (3-Column)**
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ HEADER                                                [Profile] │
-│ Logo | Dashboard | Inbox | Analytics | Settings                │
-├─────────┬──────────────────────────────────┬─────────────────────┤
-│         │                                  │                     │
-│ CONVS   │        CHAT WINDOW               │   CUSTOMER INFO     │
-│ LIST    │                                  │                     │
-│         │                                  │                     │
-│ 320px   │           Flexible               │      360px          │
-│         │                                  │                     │
-│         │                                  │                     │
-│         │                                  │                     │
-│         │                                  │                     │
-│         │                                  │                     │
-└─────────┴──────────────────────────────────┴─────────────────────┘
-```
-
-**Responsive Breakpoints:**
-- Desktop (>= 1280px): 3-column layout
-- Tablet (768px - 1279px): 2-column (hide customer info)
-- Mobile (< 768px): Single column (stack views)
-
-### **Color Usage Guide**
+### **Color Usage**
 
 ```typescript
 // Message Bubbles
 const bubbleColors = {
-  // Customer messages (received)
-  customer: {
-    bg: 'bg-white',
-    text: 'text-gray-900',
-    border: 'border border-gray-200',
-  },
-  
-  // CS messages (sent)
-  cs: {
-    bg: 'bg-bubble-sent', // Light green
-    text: 'text-gray-900',
-  },
-  
-  // Auto-reply (differentiate from manual)
-  autoReply: {
-    bg: 'bg-bubble-autoReply', // Light blue
-    text: 'text-gray-900',
-    badge: 'Auto-reply',
-  },
-  
-  // System messages
-  system: {
-    bg: 'bg-gray-100',
-    text: 'text-gray-600',
-    style: 'italic text-center',
-  },
+  customer: 'bg-white border border-gray-200',
+  owner: 'bg-bubble-sent', // Light green
+  autoReply: 'bg-bubble-autoReply', // Light blue
 };
 
-// Status Indicators
-const statusColors = {
-  active: 'bg-green-500',    // Green dot
-  pending: 'bg-yellow-500',  // Yellow dot
-  resolved: 'bg-gray-400',   // Gray dot
-  urgent: 'bg-red-500',      // Red dot
-};
-
-// Message Status Icons
-const messageStatusIcons = {
-  sent: <CheckIcon className="text-gray-400" />,        // Single gray check
-  delivered: <CheckCheckIcon className="text-gray-400" />, // Double gray checks
-  read: <CheckCheckIcon className="text-primary-500" />,   // Double green checks
-  failed: <AlertCircleIcon className="text-red-500" />,    // Red alert
+// Status Icons
+const statusIcons = {
+  sent: <CheckIcon className="text-gray-400" />,
+  delivered: <CheckCheckIcon className="text-gray-400" />,
+  read: <CheckCheckIcon className="text-primary-500" />,
 };
 ```
 
-### **Typography Scale**
+### **Spacing**
 
 ```typescript
-// Conversation List
-const conversationItemText = {
-  name: 'text-sm font-semibold',
-  lastMessage: 'text-sm text-gray-600',
-  timestamp: 'text-xs text-gray-500',
-};
-
-// Chat Bubbles
-const messageBubbleText = {
-  content: 'text-sm',
-  timestamp: 'text-xs text-gray-600',
-};
-
-// Customer Sidebar
-const customerInfoText = {
-  name: 'text-lg font-bold',
-  label: 'text-xs font-medium text-gray-500 uppercase',
-  value: 'text-sm text-gray-900',
-};
-
-// Dashboard
-const dashboardText = {
-  cardTitle: 'text-sm font-medium text-gray-600',
-  cardValue: 'text-3xl font-bold',
-  sectionTitle: 'text-xl font-bold',
-};
-```
-
-### **Spacing System**
-
-```typescript
-// Chat bubbles
-const bubbleSpacing = {
-  padding: 'px-4 py-2',     // Inside bubble
-  gap: 'mb-2',              // Between bubbles
-  maxWidth: 'max-w-[70%]',  // Bubble max width
-};
-
-// Conversation list
-const conversationItemSpacing = {
-  padding: 'p-3',
-  gap: 'gap-3',  // Between avatar and content
-};
-
-// Input area
-const inputAreaSpacing = {
-  padding: 'p-4',
-  gap: 'gap-2',  // Between buttons
-};
-```
-
-### **Animation Guidelines**
-
-```typescript
-// Message appear animation
-const messageAnimation = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.2 },
-};
-
-// Typing indicator
-const typingAnimation = {
-  animate: {
-    scale: [1, 1.2, 1],
-    transition: {
-      duration: 0.6,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-};
-
-// Conversation item hover
-const conversationHover = {
-  hover: {
-    backgroundColor: 'rgba(0, 0, 0, 0.02)',
-    transition: { duration: 0.1 },
-  },
+const spacing = {
+  bubblePadding: 'px-4 py-2',
+  bubbleGap: 'mb-2',
+  inputPadding: 'p-4',
+  sidebarWidth: 'w-80',
 };
 ```
 
 ---
 
-## 🎨 UI MOCKUPS (Text-based)
+## ✅ SUCCESS CRITERIA
 
-### **Inbox Page**
+**Phase 1:**
+- ✅ WhatsApp QR code displays
+- ✅ Can send/receive messages
+- ✅ Real-time updates work
+- ✅ Conversation list shows correctly
+- ✅ Mobile responsive
 
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│ 🏪 UMKM Chat       Dashboard  Inbox  Analytics  Settings   [Profile] │
-├──────────┬───────────────────────────────────────┬────────────────────┤
-│          │                                       │                    │
-│ 📱 Inbox │  Chat with John Doe            [...]  │ 👤 John Doe        │
-│          │                                       │ 📞 +62 812-3456... │
-│ 🔍 Search│  🟢 John Doe • Online                 │ 📧 john@email.com  │
-│          │  ─────────────────────────────────    │                    │
-│ [All]    │                                       │ 📊 Stats           │
-│  Active  │     Halo, ada promo?            ⬅️   │ • Orders: 5        │
-│  Pending │     10:30 AM                          │ • Spent: Rp 2.5M   │
-│  Closed  │                                       │ • Last: 2 days ago │
-│          │  Ya ada! Diskon 50% 🎉                │                    │
-│ ─────    │  10:31 AM                       ➡️   │ 🏷️ Tags           │
-│          │                                       │ [VIP] [Regular]    │
-│ 🟢 John  │     Wah mantap! Info dong?           │                    │
-│    Halo..│     10:32 AM                    ⬅️   │ 📝 Notes           │
-│    2m    │                                       │ Suka beli sepatu   │
-│   [2]    │  ✍️ John is typing...                 │ size 42            │
-│          │                                       │                    │
-│ 🟡 Sarah │  ┌────────────────────────────────┐   │ 🛒 Recent Orders   │
-│    Tks.. │  │ Type a message...       [📎]  │   │ #1234 - Rp 250K    │
-│    15m   │  └────────────────────────────────┘   │ Nike Shoes         │
-│          │                                       │ 29 Jan 2026        │
-│ ⚪ Mike  │  [Quick Replies ▼] [Templates ▼]     │                    │
-│    OK    │                                       │ [Assign] [Close]   │
-│    1h    │                                       │                    │
-└──────────┴───────────────────────────────────────┴────────────────────┘
-```
-
-### **Auto-Reply Builder**
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│ 🏪 UMKM Chat       Dashboard  Inbox  Analytics  Settings   [Profile] │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  Auto-Reply Rules                                    [+ Create Rule]  │
-│  ─────────────────────────────────────────────────────────────────   │
-│                                                                       │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │ ✅ Welcome Message                      [Edit] [Test] [⋮]    │   │
-│  │ Trigger: First contact                                       │   │
-│  │ Triggered: 89 times today                                    │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │ ✅ Store Hours                          [Edit] [Test] [⋮]    │   │
-│  │ Trigger: Keywords "jam buka", "buka kapan"                   │   │
-│  │ Triggered: 34 times today                                    │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │ ✅ Outside Hours                        [Edit] [Test] [⋮]    │   │
-│  │ Trigger: Time-based (outside 09:00-21:00)                    │   │
-│  │ Triggered: 19 times today                                    │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │ ⏸️ How to Order                         [Edit] [Test] [⋮]    │   │
-│  │ Trigger: Keywords "cara order", "gimana order"               │   │
-│  │ Status: Inactive                                             │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-│                                                                       │
-└──────────────────────────────────────────────────────────────────────┘
-```
+**Phase 2:**
+- ✅ Can create auto-reply rules
+- ✅ Rules can be edited/deleted
+- ✅ Form validation works
+- ✅ Rule list shows properly
 
 ---
 
-**END OF FRONTEND DOCUMENTATION**
+**END OF SIMPLIFIED FRONTEND DOCUMENTATION**
 
-Generated: 2026-01-28  
-Version: 1.0.0  
-Status: Ready for Implementation
+Version: 1.0.0 (Simplified)  
+Focus: Phase 1 & 2 Only  
+Generated: 2026-01-28
