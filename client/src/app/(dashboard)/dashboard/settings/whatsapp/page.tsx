@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { useWhatsApp } from '@/hooks/use-whatsapp';
 import { onQRCode, onConnectionStatus } from '@/lib/socket';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +16,7 @@ import type { WhatsAppStatus } from '@/types/chat';
 // ==========================================
 
 export default function WhatsAppConnectionPage() {
+  const router = useRouter();
   const {
     status,
     phoneNumber,
@@ -29,6 +31,13 @@ export default function WhatsAppConnectionPage() {
     setQRCode,
     setPhoneNumber,
   } = useWhatsApp();
+
+  // Redirect to inbox when connected
+  useEffect(() => {
+    if (status === 'CONNECTED') {
+      router.push('/dashboard/inbox');
+    }
+  }, [status, router]);
 
   // Listen to WebSocket events
   useEffect(() => {
