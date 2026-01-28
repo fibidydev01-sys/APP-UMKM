@@ -5,7 +5,6 @@ import makeWASocket, {
   useMultiFileAuthState,
   WASocket,
   proto,
-  isJidUser,
 } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import * as QRCode from 'qrcode';
@@ -81,11 +80,15 @@ export class WhatsAppService implements OnModuleDestroy {
       return {
         status: session.status,
         qrCode: session.qrCode || undefined,
-        phoneNumber: session.phoneNumber !== 'pending' ? session.phoneNumber : undefined,
+        phoneNumber:
+          session.phoneNumber !== 'pending' ? session.phoneNumber : undefined,
         sessionId: session.id,
       };
     } catch (error) {
-      this.logger.error(`Failed to connect WhatsApp: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to connect WhatsApp: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -216,16 +219,21 @@ export class WhatsAppService implements OnModuleDestroy {
     if (type !== 'notify') return;
 
     for (const msg of messages) {
-      // Skip if not from user
-      if (!msg.key.remoteJid || !isJidUser(msg.key.remoteJid)) continue;
+      // Skip if no key
+      if (!msg.key) continue;
+
+      // Skip if not from user (check if it's a user JID, not group)
+      if (!msg.key.remoteJid || !msg.key.remoteJid.includes('@s.whatsapp.net'))
+        continue;
 
       // Skip if sent by us
       if (msg.key.fromMe) continue;
 
       const from = msg.key.remoteJid.split('@')[0];
-      const messageContent = msg.message?.conversation ||
-                            msg.message?.extendedTextMessage?.text ||
-                            '';
+      const messageContent =
+        msg.message?.conversation ||
+        msg.message?.extendedTextMessage?.text ||
+        '';
 
       this.logger.log(`Received message from ${from}: ${messageContent}`);
 
@@ -272,7 +280,10 @@ export class WhatsAppService implements OnModuleDestroy {
         messageId: sentMessage?.key?.id,
       };
     } catch (error) {
-      this.logger.error(`Failed to send message: ${error.message}`, error.stack);
+      this.logger.error(
+        `Failed to send message: ${error.message}`,
+        error.stack,
+      );
       throw error;
     }
   }
@@ -335,12 +346,14 @@ export class WhatsAppService implements OnModuleDestroy {
       };
     }
 
-    const isOnline = this.sockets.has(tenantId) &&
-                     session.status === WhatsAppSessionStatus.CONNECTED;
+    const isOnline =
+      this.sockets.has(tenantId) &&
+      session.status === WhatsAppSessionStatus.CONNECTED;
 
     return {
       status: session.status,
-      phoneNumber: session.phoneNumber !== 'pending' ? session.phoneNumber : undefined,
+      phoneNumber:
+        session.phoneNumber !== 'pending' ? session.phoneNumber : undefined,
       lastConnected: session.lastConnectedAt || undefined,
       isOnline,
     };

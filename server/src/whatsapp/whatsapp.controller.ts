@@ -1,4 +1,12 @@
-import { Controller, Post, Delete, Get, Body, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Delete,
+  Get,
+  Body,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { WhatsAppService } from './whatsapp.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { ConnectWhatsAppDto } from './dto/connect-whatsapp.dto';
@@ -73,7 +81,7 @@ export class WhatsAppController {
       tenantId,
       dto.to,
       dto.content,
-      dto.messageType,
+      dto.messageType as 'text' | 'image',
       dto.mediaUrl,
     );
 

@@ -18,7 +18,7 @@ export class TimeBasedEngine {
       return false;
     }
 
-    const workingHours = rule.workingHours as WorkingHours;
+    const workingHours = rule.workingHours as unknown as WorkingHours;
     const now = new Date();
 
     // Get current day (0 = Sunday, 6 = Saturday)
@@ -63,7 +63,7 @@ export class TimeBasedEngine {
     message: string;
   } {
     const isOutside = this.isOutsideWorkingHours(rule);
-    const workingHours = rule.workingHours as WorkingHours;
+    const workingHours = rule.workingHours as unknown as WorkingHours;
 
     if (!workingHours) {
       return {
