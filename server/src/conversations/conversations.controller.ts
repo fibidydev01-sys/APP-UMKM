@@ -10,11 +10,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { ConversationsService } from './conversations.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { QueryConversationDto } from './dto/query-conversation.dto';
 import { UpdateConversationDto } from './dto/update-conversation.dto';
 
-@Controller('api/conversations')
+@Controller('conversations')
 @UseGuards(JwtAuthGuard)
 export class ConversationsController {
   constructor(private readonly conversationsService: ConversationsService) {}

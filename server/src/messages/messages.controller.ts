@@ -8,11 +8,11 @@ import {
   Req,
 } from '@nestjs/common';
 import { MessagesService } from './messages.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { SendMessageDto } from './dto/send-message.dto';
 import { QueryMessageDto } from './dto/query-message.dto';
 
-@Controller('api/messages')
+@Controller('messages')
 @UseGuards(JwtAuthGuard)
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}

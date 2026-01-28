@@ -11,11 +11,11 @@ import {
   Patch,
 } from '@nestjs/common';
 import { AutoReplyService } from './auto-reply.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CreateRuleDto } from './dto/create-rule.dto';
 import { UpdateRuleDto } from './dto/update-rule.dto';
 
-@Controller('api/auto-reply')
+@Controller('auto-reply')
 @UseGuards(JwtAuthGuard)
 export class AutoReplyController {
   constructor(private readonly autoReplyService: AutoReplyService) {}
