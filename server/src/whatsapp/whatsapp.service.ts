@@ -1,4 +1,10 @@
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  OnModuleDestroy,
+  forwardRef,
+  Inject,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import makeWASocket, {
   DisconnectReason,
@@ -11,6 +17,7 @@ import * as QRCode from 'qrcode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { WhatsAppSessionStatus } from '@prisma/client';
+import { WhatsAppGateway } from './whatsapp.gateway';
 
 @Injectable()
 export class WhatsAppService implements OnModuleDestroy {
@@ -18,7 +25,11 @@ export class WhatsAppService implements OnModuleDestroy {
   private sockets: Map<string, WASocket> = new Map();
   private qrCodeCallbacks: Map<string, (qr: string) => void> = new Map();
 
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    @Inject(forwardRef(() => WhatsAppGateway))
+    private readonly gateway: WhatsAppGateway,
+  ) {}
 
   async onModuleDestroy() {
     // Close all connections
@@ -139,13 +150,20 @@ export class WhatsAppService implements OnModuleDestroy {
           },
         });
 
-        // Call callback
+        // Emit QR code via WebSocket
+        if (this.gateway) {
+          this.gateway.emitQrCode(tenantId, qrCode, 60);
+        }
+
+        // Call callback (legacy support)
         const callback = this.qrCodeCallbacks.get(tenantId);
         if (callback) {
           callback(qrCode);
         }
 
-        this.logger.log(`QR Code generated for tenant: ${tenantId}`);
+        this.logger.log(
+          `QR Code generated and emitted for tenant: ${tenantId}`,
+        );
       }
 
       if (connection === 'close') {
@@ -165,6 +183,11 @@ export class WhatsAppService implements OnModuleDestroy {
             lastDisconnectedAt: new Date(),
           },
         });
+
+        // Emit disconnected status via WebSocket
+        if (this.gateway) {
+          this.gateway.emitConnectionStatus(tenantId, 'disconnected');
+        }
 
         // Remove socket
         this.sockets.delete(tenantId);
@@ -192,6 +215,11 @@ export class WhatsAppService implements OnModuleDestroy {
             authStatePath: sessionPath,
           },
         });
+
+        // Emit connected status via WebSocket
+        if (this.gateway) {
+          this.gateway.emitConnectionStatus(tenantId, 'connected', phoneNumber);
+        }
 
         // Clean up callback
         this.qrCodeCallbacks.delete(tenantId);

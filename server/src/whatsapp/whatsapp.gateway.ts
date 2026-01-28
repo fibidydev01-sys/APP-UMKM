@@ -3,10 +3,11 @@ import {
   WebSocketServer,
   OnGatewayConnection,
   OnGatewayDisconnect,
+  SubscribeMessage,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger } from '@nestjs/common';
-import { WhatsAppService } from './whatsapp.service';
+import { JwtService } from '@nestjs/jwt';
 
 @WebSocketGateway({
   namespace: '/whatsapp',
@@ -15,20 +16,93 @@ import { WhatsAppService } from './whatsapp.service';
     credentials: true,
   },
 })
-export class WhatsAppGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class WhatsAppGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer()
   server: Server;
 
   private readonly logger = new Logger(WhatsAppGateway.name);
 
-  constructor(private readonly whatsappService: WhatsAppService) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  handleConnection(client: Socket) {
-    this.logger.log(`WhatsApp WebSocket client connected: ${client.id}`);
+  async handleConnection(client: Socket) {
+    try {
+      // Extract token from cookie or handshake auth
+      const token = this.extractTokenFromSocket(client);
+
+      if (!token) {
+        this.logger.warn(`Client ${client.id} connected without auth token`);
+        client.disconnect();
+        return;
+      }
+
+      // Verify JWT token
+      const payload = await this.jwtService.verifyAsync(token, {
+        secret: process.env.JWT_SECRET,
+      });
+
+      // Store user info in socket data
+      client.data.user = payload;
+      const tenantId = payload.id;
+
+      // Join room based on tenantId
+      client.join(tenantId);
+      this.logger.log(
+        `Client ${client.id} authenticated and joined room: ${tenantId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Authentication failed for client ${client.id}: ${error.message}`,
+      );
+      client.disconnect();
+    }
   }
 
   handleDisconnect(client: Socket) {
-    this.logger.log(`WhatsApp WebSocket client disconnected: ${client.id}`);
+    const tenantId = client.data.user?.id;
+    this.logger.log(
+      `WhatsApp WebSocket client disconnected: ${client.id} (tenant: ${tenantId})`,
+    );
+  }
+
+  @SubscribeMessage('join-room')
+  handleJoinRoom(client: Socket, payload: { tenantId: string }) {
+    const authenticatedTenantId = client.data.user?.id;
+
+    // Verify that the user is trying to join their own room
+    if (payload.tenantId !== authenticatedTenantId) {
+      this.logger.warn(
+        `Client ${client.id} tried to join unauthorized room: ${payload.tenantId}`,
+      );
+      return;
+    }
+
+    client.join(payload.tenantId);
+    this.logger.log(`Client ${client.id} joined room: ${payload.tenantId}`);
+  }
+
+  /**
+   * Extract JWT token from socket handshake
+   */
+  private extractTokenFromSocket(client: Socket): string | null {
+    // Try to get token from cookie
+    const cookies = client.handshake.headers.cookie;
+    if (cookies) {
+      const cookieMatch = cookies.match(/fibidy_auth=([^;]+)/);
+      if (cookieMatch) {
+        return cookieMatch[1];
+      }
+    }
+
+    // Try to get token from auth header
+    const authHeader =
+      client.handshake.auth?.token || client.handshake.headers.authorization;
+    if (authHeader) {
+      return authHeader.replace('Bearer ', '');
+    }
+
+    return null;
   }
 
   /**
@@ -56,6 +130,8 @@ export class WhatsAppGateway implements OnGatewayConnection, OnGatewayDisconnect
       phoneNumber,
     });
 
-    this.logger.log(`Connection status emitted to tenant ${tenantId}: ${status}`);
+    this.logger.log(
+      `Connection status emitted to tenant ${tenantId}: ${status}`,
+    );
   }
 }
