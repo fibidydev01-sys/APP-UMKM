@@ -9,6 +9,8 @@ import {
   ChevronRight,
   ChevronsUpDown,
   LogOut,
+  Send,
+  Bot,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -63,6 +65,21 @@ const navigation: NavGroup[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutDashboard,
+      },
+      {
+        title: 'Inbox',
+        href: '/dashboard/inbox',
+        icon: Send,
+      },
+    ],
+  },
+  {
+    title: 'Pesan',
+    items: [
+      {
+        title: 'Auto Reply',
+        href: '/dashboard/auto-reply',
+        icon: Bot,
       },
     ],
   },
