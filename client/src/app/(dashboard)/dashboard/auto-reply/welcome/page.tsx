@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Plus, AlertCircle, Loader2, Edit, Trash2, Clock, Send, MessageSquare } from 'lucide-react';
 import type { AutoReplyRule } from '@/types/chat';
+import { WelcomeRuleForm } from './components/welcome-rule-form';
 
 // ==========================================
 // WELCOME MESSAGE PAGE
@@ -238,30 +239,18 @@ export default function WelcomePage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* TODO: Create/Edit Form Modal will be added in next step */}
-      {(isCreating || editingRule) && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>
-                {editingRule ? 'Edit Welcome Message' : 'Create Welcome Message'}
-              </CardTitle>
-              <CardDescription>Form coming in next step...</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsCreating(false);
-                  setEditingRule(null);
-                }}
-              >
-                Close (Temporary)
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* Create/Edit Form Modal */}
+      <WelcomeRuleForm
+        rule={editingRule}
+        open={!!(isCreating || editingRule)}
+        onClose={() => {
+          setIsCreating(false);
+          setEditingRule(null);
+        }}
+        onSuccess={() => {
+          fetchRules();
+        }}
+      />
     </div>
   );
 }

@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Plus, AlertCircle, Loader2, Edit, Trash2, Clock, Send, Key, Hash } from 'lucide-react';
 import type { AutoReplyRule } from '@/types/chat';
+import { KeywordRuleForm } from './components/keyword-rule-form';
 
 // ==========================================
 // KEYWORDS AUTO-REPLY PAGE
@@ -269,30 +270,18 @@ export default function KeywordsPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* TODO: Create/Edit Form Modal will be added in next step */}
-      {(isCreating || editingRule) && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>
-                {editingRule ? `Edit Rule: ${editingRule.name}` : 'Create Keyword Rule'}
-              </CardTitle>
-              <CardDescription>Form coming in next step...</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsCreating(false);
-                  setEditingRule(null);
-                }}
-              >
-                Close (Temporary)
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* Create/Edit Form Modal */}
+      <KeywordRuleForm
+        rule={editingRule}
+        open={!!(isCreating || editingRule)}
+        onClose={() => {
+          setIsCreating(false);
+          setEditingRule(null);
+        }}
+        onSuccess={() => {
+          fetchRules();
+        }}
+      />
     </div>
   );
 }
