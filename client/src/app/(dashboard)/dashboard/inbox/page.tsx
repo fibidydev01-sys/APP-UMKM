@@ -108,7 +108,7 @@ export default function InboxPage() {
         {/* Conversation List (Left) */}
         <div
           className={cn(
-            'w-full lg:w-80 xl:w-96 flex-shrink-0',
+            'w-full lg:w-80 xl:w-96 flex-shrink-0 relative',
             showMobileChat && 'hidden lg:block'
           )}
         >
@@ -121,6 +121,17 @@ export default function InboxPage() {
             onFilterChange={setStatusFilter}
             currentFilter={filters.status}
           />
+
+          {/* Auto Reply FAB - Inside Conversation List */}
+          <Button
+            asChild
+            size="icon"
+            className="absolute bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-10 bg-emerald-600 hover:bg-emerald-700 text-white"
+          >
+            <Link href="/dashboard/auto-reply">
+              <Bot className="h-5 w-5" />
+            </Link>
+          </Button>
         </div>
 
         {/* Chat Window (Right) */}
@@ -152,17 +163,6 @@ export default function InboxPage() {
           )}
         </div>
       </div>
-
-      {/* Auto Reply FAB - Bottom Right */}
-      <Button
-        asChild
-        size="lg"
-        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-emerald-600 hover:bg-emerald-700 text-white"
-      >
-        <Link href="/dashboard/auto-reply">
-          <Bot className="h-6 w-6" />
-        </Link>
-      </Button>
     </div>
   );
 }
