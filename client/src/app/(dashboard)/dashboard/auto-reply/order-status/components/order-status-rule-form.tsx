@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -158,20 +158,21 @@ export function OrderStatusRuleForm({ status, rule, open, onClose, onSuccess }: 
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>
+    <Drawer open={open} onOpenChange={handleClose} direction="right">
+      <DrawerContent className="max-w-3xl">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <DrawerHeader>
+            <DrawerTitle>
               {isEdit ? 'Edit' : 'Create'} Rule: {STATUS_LABELS[currentStatus]}
-            </DialogTitle>
-            <DialogDescription>
+            </DrawerTitle>
+            <DrawerDescription>
               Buat template pesan yang akan dikirim otomatis saat order status berubah ke{' '}
               <strong>{STATUS_LABELS[currentStatus]}</strong>
-            </DialogDescription>
-          </DialogHeader>
+            </DrawerDescription>
+          </DrawerHeader>
 
-          <div className="space-y-6 py-6">
+          <div className="flex-1 overflow-y-auto px-4">
+            <div className="space-y-6 py-6">
             {/* Auto-assigned Info */}
             <Alert>
               <Info className="h-4 w-4" />
@@ -276,25 +277,28 @@ export function OrderStatusRuleForm({ status, rule, open, onClose, onSuccess }: 
                 ))}
               </div>
             </div>
+            </div>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!message.trim() || isSaving}>
-              {isSaving ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>{isEdit ? 'Update' : 'Create'} Rule</>
-              )}
-            </Button>
-          </DialogFooter>
+          <DrawerFooter className="border-t">
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!message.trim() || isSaving}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>{isEdit ? 'Update' : 'Create'} Rule</>
+                )}
+              </Button>
+            </div>
+          </DrawerFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 }

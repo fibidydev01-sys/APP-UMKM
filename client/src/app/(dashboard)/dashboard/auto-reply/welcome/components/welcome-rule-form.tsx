@@ -3,13 +3,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -117,18 +117,19 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <form onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>{isEdit ? 'Edit' : 'Create'} Welcome Message</DialogTitle>
-            <DialogDescription>
+    <Drawer open={open} onOpenChange={handleClose} direction="right">
+      <DrawerContent className="max-w-3xl">
+        <form onSubmit={handleSubmit} className="flex flex-col h-full">
+          <DrawerHeader>
+            <DrawerTitle>{isEdit ? 'Edit' : 'Create'} Welcome Message</DrawerTitle>
+            <DrawerDescription>
               Buat pesan sambutan otomatis yang akan dikirim saat customer menghubungi bisnis Anda
               untuk pertama kalinya
-            </DialogDescription>
-          </DialogHeader>
+            </DrawerDescription>
+          </DrawerHeader>
 
-          <div className="space-y-6 py-6">
+          <div className="flex-1 overflow-y-auto px-4">
+            <div className="space-y-6 py-6">
             {/* Auto-assigned Info */}
             <Alert>
               <Info className="h-4 w-4" />
@@ -243,25 +244,28 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
                 ))}
               </div>
             </div>
+            </div>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!name.trim() || !message.trim() || isSaving}>
-              {isSaving ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                <>{isEdit ? 'Update' : 'Create'} Rule</>
-              )}
-            </Button>
-          </DialogFooter>
+          <DrawerFooter className="border-t">
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!name.trim() || !message.trim() || isSaving}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>{isEdit ? 'Update' : 'Create'} Rule</>
+                )}
+              </Button>
+            </div>
+          </DrawerFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 }
