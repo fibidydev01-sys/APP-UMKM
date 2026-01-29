@@ -2,21 +2,16 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
+import { Drawer } from 'vaul';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Info, FileText, User, Phone } from 'lucide-react';
+import { Loader2, Info, FileText, User, Phone, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import type { AutoReplyRule } from '@/types/chat';
 
 // ==========================================
@@ -117,19 +112,49 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
   };
 
   return (
-    <Drawer open={open} onOpenChange={handleClose} direction="right">
-      <DrawerContent className="w-full sm:w-[540px] md:w-[720px] lg:w-[800px]">
-        <form onSubmit={handleSubmit} className="flex flex-col h-full">
-          <DrawerHeader>
-            <DrawerTitle>{isEdit ? 'Edit' : 'Create'} Welcome Message</DrawerTitle>
-            <DrawerDescription>
-              Buat pesan sambutan otomatis yang akan dikirim saat customer menghubungi bisnis Anda
-              untuk pertama kalinya
-            </DrawerDescription>
-          </DrawerHeader>
+    <Drawer.Root open={open} onOpenChange={handleClose}>
+      <Drawer.Portal>
+        {/* Overlay */}
+        <Drawer.Overlay className="fixed inset-0 bg-black/60 z-[9999]" />
 
-          <div className="flex-1 overflow-y-auto px-4">
-            <div className="space-y-6 py-6">
+        {/* Content */}
+        <Drawer.Content
+          className={cn(
+            'fixed bottom-0 left-0 right-0 z-[10000]',
+            'bg-background rounded-t-[20px]',
+            'max-h-[92vh] outline-none',
+            'flex flex-col'
+          )}
+          aria-describedby="drawer-description"
+        >
+          {/* Accessibility */}
+          <Drawer.Title asChild>
+            <VisuallyHidden.Root>
+              {isEdit ? 'Edit' : 'Create'} Welcome Message
+            </VisuallyHidden.Root>
+          </Drawer.Title>
+          <Drawer.Description asChild>
+            <VisuallyHidden.Root id="drawer-description">
+              Buat pesan sambutan otomatis yang akan dikirim saat customer menghubungi bisnis Anda untuk pertama kalinya
+            </VisuallyHidden.Root>
+          </Drawer.Description>
+
+          {/* Drag Handle */}
+          <div className="flex justify-center pt-3 pb-2 shrink-0">
+            <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+          </div>
+
+          {/* Header */}
+          <div className="px-4 pb-4 border-b shrink-0">
+            <h2 className="font-semibold text-lg">{isEdit ? 'Edit' : 'Create'} Welcome Message</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Buat pesan sambutan otomatis yang akan dikirim saat customer menghubungi bisnis Anda untuk pertama kalinya
+            </p>
+          </div>
+
+          {/* Form Content */}
+          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
+            <div className="px-4 space-y-6 py-6">
             {/* Auto-assigned Info */}
             <Alert>
               <Info className="h-4 w-4" />
@@ -245,27 +270,37 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
               </div>
             </div>
             </div>
-          </div>
 
-          <DrawerFooter className="border-t">
-            <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={!name.trim() || !message.trim() || isSaving}>
-                {isSaving ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>{isEdit ? 'Update' : 'Create'} Rule</>
-                )}
-              </Button>
+            {/* Footer inside form */}
+            <div className="px-4 py-4 border-t bg-background shrink-0 sticky bottom-0">
+              <div className="flex gap-2 justify-end">
+                <Button type="button" variant="outline" onClick={handleClose} disabled={isSaving}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={!name.trim() || !message.trim() || isSaving}>
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>{isEdit ? 'Update' : 'Create'} Rule</>
+                  )}
+                </Button>
+              </div>
             </div>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+          </form>
+
+          {/* Floating Close Button */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 right-4 p-2 rounded-full bg-background/80 backdrop-blur border shadow-sm hover:bg-muted transition-colors z-20"
+            aria-label="Tutup"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }
