@@ -7,15 +7,15 @@ import { onQRCode, onConnectionStatus } from '@/lib/socket';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wifi, WifiOff, Loader2, CheckCircle2, Phone, RefreshCw, LogOut, QrCode, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, Phone, RefreshCw, QrCode, AlertCircle } from 'lucide-react';
 import { cn, formatPhone } from '@/lib/utils';
 import type { WhatsAppStatus } from '@/types/chat';
 
 // ==========================================
-// CONSTANTS - WhatsApp Web-like timing
+// CONSTANTS
 // ==========================================
-const QR_REFRESH_INTERVAL = 20000; // 20 seconds - auto refresh QR
-const QR_TIMEOUT_DURATION = 120000; // 2 minutes - stop auto refresh, show reload button
+const QR_REFRESH_INTERVAL = 20000; // 20 seconds
+const QR_TIMEOUT_DURATION = 120000; // 2 minutes
 
 // ==========================================
 // WHATSAPP CONNECTION PAGE
@@ -28,8 +28,6 @@ export default function WhatsAppConnectionPage() {
     phoneNumber,
     qrCode,
     isConnecting,
-    isDisconnecting,
-    isCheckingStatus,
     connect,
     disconnect,
     checkStatus,
@@ -38,23 +36,20 @@ export default function WhatsAppConnectionPage() {
     setPhoneNumber,
   } = useWhatsApp();
 
-  // Track if initial auto-connect has been done (only once per page load)
   const hasAutoConnected = useRef(false);
-  // Track if status came from WebSocket (not initial check)
   const isWebSocketUpdate = useRef(false);
 
-  // Redirect to inbox when connected
+  // Redirect when connected
   useEffect(() => {
     if (status === 'CONNECTED') {
-      // Small delay for UX - show "Berhasil" briefly
       const timer = setTimeout(() => {
         router.push('/dashboard/inbox');
-      }, 1000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [status, router]);
 
-  // Listen to WebSocket events
+  // WebSocket listeners
   useEffect(() => {
     const unsubQR = onQRCode((data) => {
       setQRCode(data.qrCode);
@@ -62,7 +57,6 @@ export default function WhatsAppConnectionPage() {
     });
 
     const unsubStatus = onConnectionStatus((data) => {
-      // Mark that this status update came from WebSocket
       isWebSocketUpdate.current = true;
       setStatus(data.status as WhatsAppStatus);
       if (data.phoneNumber) {
@@ -73,7 +67,6 @@ export default function WhatsAppConnectionPage() {
       }
     });
 
-    // Check initial status first
     checkStatus();
 
     return () => {
@@ -82,25 +75,22 @@ export default function WhatsAppConnectionPage() {
     };
   }, []);
 
-  // AUTO-CONNECT: Only on initial page load when status is DISCONNECTED
-  // NOT when WebSocket emits DISCONNECTED (to prevent loop)
+  // Auto-connect on load
   useEffect(() => {
-    // Skip if:
-    // 1. Already auto-connected once
-    // 2. Currently connecting or checking status
-    // 3. Status update came from WebSocket (not initial check)
-    if (hasAutoConnected.current || isConnecting || isCheckingStatus) {
+    if (
+      hasAutoConnected.current ||
+      isConnecting ||
+      status !== 'DISCONNECTED' ||
+      isWebSocketUpdate.current
+    ) {
       return;
     }
 
-    // Only auto-connect if DISCONNECTED and this is initial check (not WebSocket update)
-    if (status === 'DISCONNECTED' && !isWebSocketUpdate.current) {
-      hasAutoConnected.current = true;
-      connect().catch((err) => {
-        console.error('Auto-connect failed:', err);
-      });
-    }
-  }, [status, isConnecting, isCheckingStatus, connect]);
+    hasAutoConnected.current = true;
+    connect().catch((err) => {
+      console.error('Auto-connect failed:', err);
+    });
+  }, [status, isConnecting, connect]);
 
   const handleConnect = useCallback(async () => {
     try {
@@ -127,7 +117,7 @@ export default function WhatsAppConnectionPage() {
         </p>
       </div>
 
-      {/* Status Card */}
+      {/* Main Card */}
       <Card className="mb-6">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -141,8 +131,6 @@ export default function WhatsAppConnectionPage() {
             phoneNumber={phoneNumber}
             qrCode={qrCode}
             isConnecting={isConnecting}
-            isDisconnecting={isDisconnecting}
-            isCheckingStatus={isCheckingStatus}
             isWebSocketDisconnect={isWebSocketUpdate.current}
             onConnect={handleConnect}
             onDisconnect={handleDisconnect}
@@ -150,37 +138,33 @@ export default function WhatsAppConnectionPage() {
         </CardContent>
       </Card>
 
-      {/* Instructions - Only show when not connected */}
+      {/* Instructions - Only when not connected */}
       {status !== 'CONNECTED' && (
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Cara Menghubungkan</CardTitle>
-            <CardDescription>
-              Ikuti langkah-langkah berikut untuk menghubungkan WhatsApp Anda
-            </CardDescription>
+            <CardDescription>Scan QR code dengan WhatsApp di ponsel Anda</CardDescription>
           </CardHeader>
           <CardContent>
-            <ol className="space-y-4">
-              <InstructionStep
-                number={1}
-                title="Buka WhatsApp di ponsel Anda"
-                description="Buka aplikasi WhatsApp di perangkat Anda"
-              />
-              <InstructionStep
-                number={2}
-                title="Buka Pengaturan > Perangkat Tertaut"
-                description="Tap menu titik tiga (⋮), pilih 'Perangkat Tertaut'"
-              />
-              <InstructionStep
-                number={3}
-                title="Tap 'Tautkan Perangkat'"
-                description="Klik tombol untuk menambah perangkat baru"
-              />
-              <InstructionStep
-                number={4}
-                title="Scan QR Code"
-                description="Arahkan kamera ke QR code yang tampil di atas"
-              />
+            <ol className="space-y-3 text-sm text-zinc-600 dark:text-zinc-400">
+              <li className="flex gap-3">
+                <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center font-medium text-xs">
+                  1
+                </span>
+                <span>Buka WhatsApp di ponsel Anda</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center font-medium text-xs">
+                  2
+                </span>
+                <span>Tap menu (⋮) → Perangkat Tertaut → Tautkan Perangkat</span>
+              </li>
+              <li className="flex gap-3">
+                <span className="flex-shrink-0 w-6 h-6 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center font-medium text-xs">
+                  3
+                </span>
+                <span>Arahkan kamera ke QR code di atas</span>
+              </li>
             </ol>
           </CardContent>
         </Card>
@@ -193,11 +177,7 @@ export default function WhatsAppConnectionPage() {
 // STATUS BADGE
 // ==========================================
 
-interface StatusBadgeProps {
-  status: WhatsAppStatus;
-}
-
-function StatusBadge({ status }: StatusBadgeProps) {
+function StatusBadge({ status }: { status: WhatsAppStatus }) {
   const config = {
     CONNECTED: {
       label: 'Terhubung',
@@ -227,7 +207,7 @@ function StatusBadge({ status }: StatusBadgeProps) {
 }
 
 // ==========================================
-// CONNECTION CONTENT
+// CONNECTION CONTENT - SIMPLIFIED
 // ==========================================
 
 interface ConnectionContentProps {
@@ -235,8 +215,6 @@ interface ConnectionContentProps {
   phoneNumber: string | null;
   qrCode: string | null;
   isConnecting: boolean;
-  isDisconnecting: boolean;
-  isCheckingStatus: boolean;
   isWebSocketDisconnect: boolean;
   onConnect: () => void;
   onDisconnect: () => void;
@@ -247,183 +225,82 @@ function ConnectionContent({
   phoneNumber,
   qrCode,
   isConnecting,
-  isDisconnecting,
-  isCheckingStatus,
   isWebSocketDisconnect,
   onConnect,
-  onDisconnect,
 }: ConnectionContentProps) {
-  // QR Timer states
   const [qrExpired, setQrExpired] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(QR_TIMEOUT_DURATION / 1000);
+  const [timeLeft, setTimeLeft] = useState(120);
 
-  // Refs for timers
-  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
-  const qrReceivedTimeRef = useRef<number>(0);
 
-  // Cleanup all timers
-  const clearAllTimers = useCallback(() => {
-    if (refreshIntervalRef.current) {
-      clearInterval(refreshIntervalRef.current);
-      refreshIntervalRef.current = null;
-    }
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    if (countdownRef.current) {
-      clearInterval(countdownRef.current);
-      countdownRef.current = null;
-    }
-  }, []);
-
-  // QR Timer Logic - Start when QR code is received
+  // QR Timer
   useEffect(() => {
     if (status === 'QR_PENDING' && qrCode) {
-      // Reset states
       setQrExpired(false);
-      setTimeLeft(QR_TIMEOUT_DURATION / 1000);
-      qrReceivedTimeRef.current = Date.now();
+      setTimeLeft(120);
 
-      // Clear any existing timers
-      clearAllTimers();
-
-      // Start auto-refresh interval (every 20 seconds)
-      refreshIntervalRef.current = setInterval(() => {
-        // Only refresh if not expired
-        if (Date.now() - qrReceivedTimeRef.current < QR_TIMEOUT_DURATION) {
-          onConnect(); // This triggers new QR generation
-        }
-      }, QR_REFRESH_INTERVAL);
-
-      // Start countdown timer
+      // Countdown
       countdownRef.current = setInterval(() => {
-        const elapsed = Date.now() - qrReceivedTimeRef.current;
-        const remaining = Math.max(0, Math.ceil((QR_TIMEOUT_DURATION - elapsed) / 1000));
-        setTimeLeft(remaining);
-
-        if (remaining <= 0) {
-          setQrExpired(true);
-          clearAllTimers();
-        }
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            setQrExpired(true);
+            return 0;
+          }
+          return prev - 1;
+        });
       }, 1000);
 
-      // Set overall timeout (2 minutes)
+      // Timeout
       timeoutRef.current = setTimeout(() => {
         setQrExpired(true);
-        clearAllTimers();
       }, QR_TIMEOUT_DURATION);
     }
 
-    // Cleanup when status changes away from QR_PENDING
-    if (status !== 'QR_PENDING') {
-      clearAllTimers();
-      setQrExpired(false);
-    }
-
     return () => {
-      clearAllTimers();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (countdownRef.current) clearInterval(countdownRef.current);
     };
-  }, [status, qrCode, onConnect, clearAllTimers]);
-
-  // Handle manual reload
-  const handleReload = useCallback(() => {
-    setQrExpired(false);
-    setTimeLeft(QR_TIMEOUT_DURATION / 1000);
-    qrReceivedTimeRef.current = Date.now();
-    onConnect();
-  }, [onConnect]);
+  }, [status, qrCode]);
 
   // ==========================================
-  // RENDER STATES
+  // RENDER: LOADING (Simple spinner in card)
   // ==========================================
 
-  // 1. Initial loading / checking status
-  if (isCheckingStatus) {
+  const isLoading =
+    isConnecting ||
+    status === 'CONNECTING' ||
+    (status === 'DISCONNECTED' && !isWebSocketDisconnect) ||
+    (status === 'QR_PENDING' && !qrCode);
+
+  if (isLoading) {
     return (
-      <div className="text-center py-8">
-        <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-zinc-400" />
-        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-          Memeriksa Status...
-        </h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Mohon tunggu sebentar
-        </p>
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="w-8 h-8 animate-spin text-zinc-400" />
       </div>
     );
   }
 
-  // 2. Disconnected state
-  if (status === 'DISCONNECTED') {
-    // If disconnect came from WebSocket (session closed), show reconnect button
-    if (isWebSocketDisconnect) {
-      return (
-        <div className="text-center py-8">
-          <div className="w-16 h-16 mx-auto mb-4 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center">
-            <WifiOff className="w-8 h-8 text-orange-500" />
-          </div>
-          <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-            Sesi WhatsApp Terputus
-          </h3>
-          <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-            Sesi WhatsApp ditutup oleh server. Klik tombol di bawah untuk membuat QR code baru.
-          </p>
-          <Button onClick={onConnect} disabled={isConnecting} size="lg">
-            {isConnecting ? (
-              <>
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                Memuat QR Code...
-              </>
-            ) : (
-              <>
-                <QrCode className="h-5 w-5 mr-2" />
-                Buat QR Code Baru
-              </>
-            )}
-          </Button>
-        </div>
-      );
-    }
+  // ==========================================
+  // RENDER: QR CODE ACTIVE
+  // ==========================================
 
-    // Initial auto-connecting (show loading)
-    return (
-      <div className="text-center py-8">
-        <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-500" />
-        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-          Memuat QR Code...
-        </h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Menyiapkan koneksi WhatsApp
-        </p>
-      </div>
-    );
-  }
-
-  // 3. QR Pending with QR code - Show QR
   if (status === 'QR_PENDING' && qrCode && !qrExpired) {
     return (
-      <div className="text-center py-4">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
-          Scan QR code ini dengan WhatsApp di ponsel Anda
-        </p>
-
+      <div className="text-center py-6">
         {/* QR Code */}
-        <div className="inline-block p-4 bg-white rounded-xl shadow-lg mb-4 relative">
+        <div className="inline-block p-4 bg-white rounded-lg shadow-sm mb-4">
           <img src={qrCode} alt="WhatsApp QR Code" className="w-64 h-64" />
         </div>
 
         {/* Timer */}
         <div className="flex items-center justify-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-4">
           <RefreshCw className="h-4 w-4" />
-          <span>
-            Auto-refresh dalam {timeLeft}s
-          </span>
+          <span>Kadaluarsa dalam {timeLeft}s</span>
         </div>
 
-        {/* Manual refresh button */}
-        <Button variant="outline" size="sm" onClick={handleReload} disabled={isConnecting}>
+        {/* Refresh Button */}
+        <Button variant="outline" size="sm" onClick={onConnect} disabled={isConnecting}>
           {isConnecting ? (
             <>
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -432,7 +309,7 @@ function ConnectionContent({
           ) : (
             <>
               <RefreshCw className="h-4 w-4 mr-2" />
-              Refresh QR Code
+              Refresh QR
             </>
           )}
         </Button>
@@ -440,29 +317,32 @@ function ConnectionContent({
     );
   }
 
-  // 4. QR Pending but QR expired - Show reload button
+  // ==========================================
+  // RENDER: QR EXPIRED
+  // ==========================================
+
   if (status === 'QR_PENDING' && qrExpired) {
     return (
-      <div className="text-center py-8">
-        <div className="w-16 h-16 mx-auto mb-4 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
-          <AlertCircle className="w-8 h-8 text-yellow-600 dark:text-yellow-400" />
+      <div className="text-center py-12">
+        <div className="w-12 h-12 mx-auto mb-3 bg-yellow-100 dark:bg-yellow-900/30 rounded-full flex items-center justify-center">
+          <AlertCircle className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
         </div>
-        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+        <h3 className="text-base font-medium text-zinc-900 dark:text-zinc-100 mb-2">
           QR Code Kadaluarsa
         </h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-          QR code sudah tidak berlaku. Klik tombol di bawah untuk memuat ulang.
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
+          Klik tombol untuk memuat ulang
         </p>
-        <Button onClick={handleReload} disabled={isConnecting} size="lg">
+        <Button onClick={onConnect} disabled={isConnecting}>
           {isConnecting ? (
             <>
-              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-              Memuat QR...
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Memuat...
             </>
           ) : (
             <>
-              <RefreshCw className="h-5 w-5 mr-2" />
-              Muat Ulang QR Code
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Muat Ulang
             </>
           )}
         </Button>
@@ -470,44 +350,17 @@ function ConnectionContent({
     );
   }
 
-  // 5. QR Pending but no QR code yet - Loading QR
-  if (status === 'QR_PENDING' && !qrCode) {
-    return (
-      <div className="text-center py-8">
-        <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-blue-500" />
-        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-          Memuat QR Code...
-        </h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Mohon tunggu, QR code sedang dibuat
-        </p>
-      </div>
-    );
-  }
+  // ==========================================
+  // RENDER: CONNECTED
+  // ==========================================
 
-  // 6. Connecting state - After scan detected
-  if (status === 'CONNECTING') {
-    return (
-      <div className="text-center py-8">
-        <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-emerald-500" />
-        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-          Menghubungkan...
-        </h3>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          QR Code berhasil dipindai, sedang menyinkronkan
-        </p>
-      </div>
-    );
-  }
-
-  // 7. Connected state - Show success briefly before redirect
   if (status === 'CONNECTED') {
     return (
-      <div className="text-center py-8">
-        <div className="w-20 h-20 mx-auto mb-4 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center animate-pulse">
-          <CheckCircle2 className="w-10 h-10 text-green-500" />
+      <div className="text-center py-12">
+        <div className="w-16 h-16 mx-auto mb-3 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+          <CheckCircle2 className="w-8 h-8 text-green-500" />
         </div>
-        <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+        <h3 className="text-base font-medium text-zinc-900 dark:text-zinc-100 mb-2">
           Berhasil Terhubung!
         </h3>
         {phoneNumber && (
@@ -516,63 +369,41 @@ function ConnectionContent({
             {formatPhone(phoneNumber)}
           </p>
         )}
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">Mengalihkan ke Inbox...</p>
+      </div>
+    );
+  }
+
+  // ==========================================
+  // RENDER: DISCONNECTED (WebSocket)
+  // ==========================================
+
+  if (status === 'DISCONNECTED' && isWebSocketDisconnect) {
+    return (
+      <div className="text-center py-12">
+        <h3 className="text-base font-medium text-zinc-900 dark:text-zinc-100 mb-2">
+          Sesi Terputus
+        </h3>
         <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-          Mengalihkan ke Inbox...
+          Klik tombol untuk membuat QR code baru
         </p>
-        <Loader2 className="w-6 h-6 mx-auto animate-spin text-zinc-400" />
+        <Button onClick={onConnect} disabled={isConnecting}>
+          {isConnecting ? (
+            <>
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              Memuat QR...
+            </>
+          ) : (
+            <>
+              <QrCode className="h-4 w-4 mr-2" />
+              Buat QR Code
+            </>
+          )}
+        </Button>
       </div>
     );
   }
 
   // Fallback
-  return (
-    <div className="text-center py-8">
-      <div className="w-20 h-20 mx-auto mb-4 bg-zinc-100 dark:bg-zinc-800 rounded-full flex items-center justify-center">
-        <WifiOff className="w-10 h-10 text-zinc-400" />
-      </div>
-      <h3 className="text-lg font-medium text-zinc-900 dark:text-zinc-100 mb-2">
-        Terjadi Kesalahan
-      </h3>
-      <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-        Tidak dapat memuat status koneksi
-      </p>
-      <Button onClick={onConnect} disabled={isConnecting} size="lg">
-        {isConnecting ? (
-          <>
-            <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-            Menghubungkan...
-          </>
-        ) : (
-          <>
-            <Wifi className="h-5 w-5 mr-2" />
-            Coba Lagi
-          </>
-        )}
-      </Button>
-    </div>
-  );
-}
-
-// ==========================================
-// INSTRUCTION STEP
-// ==========================================
-
-interface InstructionStepProps {
-  number: number;
-  title: string;
-  description: string;
-}
-
-function InstructionStep({ number, title, description }: InstructionStepProps) {
-  return (
-    <li className="flex gap-4">
-      <div className="flex-shrink-0 w-8 h-8 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center font-semibold text-sm">
-        {number}
-      </div>
-      <div>
-        <h4 className="font-medium text-zinc-900 dark:text-zinc-100">{title}</h4>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
-      </div>
-    </li>
-  );
+  return null;
 }
