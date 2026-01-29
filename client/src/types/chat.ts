@@ -30,7 +30,7 @@ export type MessageStatus = 'PENDING' | 'SENT' | 'DELIVERED' | 'READ' | 'FAILED'
 /**
  * Auto-Reply Trigger Type
  */
-export type TriggerType = 'WELCOME' | 'KEYWORD' | 'TIME_BASED';
+export type TriggerType = 'WELCOME' | 'KEYWORD' | 'TIME_BASED' | 'ORDER_STATUS' | 'PAYMENT_STATUS';
 
 /**
  * Keyword Match Type
@@ -223,6 +223,7 @@ export interface AutoReplyRule {
   matchType?: MatchType;
   caseSensitive: boolean;
   workingHours?: WorkingHours;
+  statusTrigger?: string; // For ORDER_STATUS & PAYMENT_STATUS
   responseMessage: string;
   priority: number;
   delaySeconds: number;
@@ -261,6 +262,7 @@ export interface CreateAutoReplyRuleInput {
   matchType?: MatchType;
   caseSensitive?: boolean;
   workingHours?: WorkingHours;
+  statusTrigger?: string; // For ORDER_STATUS & PAYMENT_STATUS
   responseMessage: string;
   priority?: number;
   delaySeconds?: number;

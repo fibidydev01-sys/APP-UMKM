@@ -18,8 +18,10 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Plus, X, Info } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, Plus, X, Info, AlertCircle } from 'lucide-react';
 import { useState, useCallback } from 'react';
+import { MessageEditor } from './message-editor';
 import type { AutoReplyRule, TriggerType, MatchType, CreateAutoReplyRuleInput } from '@/types/chat';
 
 // ==========================================
@@ -29,7 +31,7 @@ import type { AutoReplyRule, TriggerType, MatchType, CreateAutoReplyRuleInput } 
 const ruleFormSchema = z.object({
   name: z.string().min(1, 'Nama aturan wajib diisi'),
   description: z.string().optional(),
-  triggerType: z.enum(['WELCOME', 'KEYWORD', 'TIME_BASED']),
+  triggerType: z.enum(['WELCOME', 'KEYWORD', 'TIME_BASED', 'ORDER_STATUS', 'PAYMENT_STATUS']),
   keywords: z.array(z.string()).optional(),
   matchType: z.enum(['EXACT', 'CONTAINS', 'STARTS_WITH']).optional(),
   caseSensitive: z.boolean().optional(),
@@ -37,6 +39,7 @@ const ruleFormSchema = z.object({
   workingHoursEnd: z.string().optional(),
   workingHoursTimezone: z.string().optional(),
   workingHoursDays: z.array(z.number()).optional(),
+  statusTrigger: z.string().optional(), // For ORDER_STATUS & PAYMENT_STATUS
   responseMessage: z.string().min(1, 'Pesan balasan wajib diisi'),
   priority: z.number().min(0).max(100).optional(),
   delaySeconds: z.number().min(1).max(60).optional(),
@@ -79,6 +82,7 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
       workingHoursStart: initialData?.workingHours?.start || '09:00',
       workingHoursEnd: initialData?.workingHours?.end || '21:00',
       workingHoursTimezone: initialData?.workingHours?.timezone || 'Asia/Jakarta',
+      statusTrigger: initialData?.statusTrigger || '',
       responseMessage: initialData?.responseMessage || '',
       priority: initialData?.priority ?? 50,
       delaySeconds: initialData?.delaySeconds ?? 2,
@@ -87,6 +91,8 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
   });
 
   const triggerType = watch('triggerType');
+  const statusTrigger = watch('statusTrigger');
+  const responseMessage = watch('responseMessage');
   const priority = watch('priority');
   const delaySeconds = watch('delaySeconds');
 
@@ -142,6 +148,10 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
         };
       }
 
+      if (data.triggerType === 'ORDER_STATUS' || data.triggerType === 'PAYMENT_STATUS') {
+        payload.statusTrigger = data.statusTrigger;
+      }
+
       await onSubmit(payload);
     },
     [keywords, selectedDays, onSubmit]
@@ -194,6 +204,8 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
                 <SelectItem value="WELCOME">Pesan Pertama (Welcome)</SelectItem>
                 <SelectItem value="KEYWORD">Kata Kunci (Keyword)</SelectItem>
                 <SelectItem value="TIME_BASED">Di Luar Jam Kerja (Time-Based)</SelectItem>
+                <SelectItem value="ORDER_STATUS">Status Pesanan (Order Status)</SelectItem>
+                <SelectItem value="PAYMENT_STATUS">Status Pembayaran (Payment Status)</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -208,6 +220,10 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
                 'Akan membalas otomatis ketika pesan mengandung kata kunci tertentu.'}
               {triggerType === 'TIME_BASED' &&
                 'Akan membalas otomatis ketika pesan diterima di luar jam kerja.'}
+              {triggerType === 'ORDER_STATUS' &&
+                'Akan mengirim notifikasi otomatis ketika status pesanan diubah (PENDING, PROCESSING, COMPLETED, CANCELLED).'}
+              {triggerType === 'PAYMENT_STATUS' &&
+                'Akan mengirim notifikasi otomatis ketika status pembayaran diubah (PAID, PARTIAL, FAILED).'}
             </p>
           </div>
 
@@ -318,6 +334,73 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
               </div>
             </div>
           )}
+
+          {/* Order Status options */}
+          {triggerType === 'ORDER_STATUS' && (
+            <div className="space-y-4 pt-4 border-t">
+              <div className="space-y-2">
+                <Label>Status Pemicu *</Label>
+                <Select
+                  value={statusTrigger || ''}
+                  onValueChange={(value) => setValue('statusTrigger', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih status pesanan" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PENDING">Pending (Menunggu)</SelectItem>
+                    <SelectItem value="PROCESSING">Processing (Diproses)</SelectItem>
+                    <SelectItem value="COMPLETED">Completed (Selesai)</SelectItem>
+                    <SelectItem value="CANCELLED">Cancelled (Dibatalkan)</SelectItem>
+                  </SelectContent>
+                </Select>
+                {!statusTrigger && (
+                  <p className="text-sm text-yellow-600">Pilih status yang akan memicu notifikasi</p>
+                )}
+              </div>
+
+              {/* Auto-assigned info */}
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-sm">
+                  Priority dan delay akan diatur otomatis oleh sistem untuk pengalaman chat yang natural.
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
+
+          {/* Payment Status options */}
+          {triggerType === 'PAYMENT_STATUS' && (
+            <div className="space-y-4 pt-4 border-t">
+              <div className="space-y-2">
+                <Label>Status Pemicu *</Label>
+                <Select
+                  value={statusTrigger || ''}
+                  onValueChange={(value) => setValue('statusTrigger', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih status pembayaran" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PAID">Paid (Lunas)</SelectItem>
+                    <SelectItem value="PARTIAL">Partial (Sebagian)</SelectItem>
+                    <SelectItem value="FAILED">Failed (Gagal)</SelectItem>
+                  </SelectContent>
+                </Select>
+                {!statusTrigger && (
+                  <p className="text-sm text-yellow-600">Pilih status yang akan memicu notifikasi</p>
+                )}
+              </div>
+
+              {/* Auto-assigned info */}
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-sm">
+                  Priority dan delay akan diatur otomatis oleh sistem untuk pengalaman chat yang natural.
+                </AlertDescription>
+              </Alert>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -327,26 +410,24 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
           <CardTitle>Pesan Balasan</CardTitle>
           <CardDescription>Pesan yang akan dikirim secara otomatis</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="responseMessage">Pesan Balasan *</Label>
-            <Textarea
-              id="responseMessage"
-              placeholder="Halo {{name}}! Terima kasih telah menghubungi kami..."
-              rows={5}
-              {...register('responseMessage')}
+        <CardContent>
+          <Label htmlFor="responseMessage">Pesan Balasan *</Label>
+          <div className="mt-2">
+            <MessageEditor
+              value={responseMessage}
+              onChange={(value) => setValue('responseMessage', value)}
+              triggerType={triggerType}
+              error={errors.responseMessage?.message}
+              placeholder={
+                triggerType === 'WELCOME'
+                  ? 'Halo {{name}}! Terima kasih telah menghubungi kami...'
+                  : triggerType === 'ORDER_STATUS'
+                    ? 'Hi {{name}}! Order {{order_number}} sedang diproses...\n\nCek status: {{tracking_link}}'
+                    : triggerType === 'PAYMENT_STATUS'
+                      ? 'Terima kasih {{name}}! Pembayaran order {{order_number}} sudah diterima.\n\nTotal: {{total}}'
+                      : 'Halo {{name}}! Terima kasih telah menghubungi kami...'
+              }
             />
-            {errors.responseMessage && (
-              <p className="text-sm text-red-500">{errors.responseMessage.message}</p>
-            )}
-          </div>
-
-          <div className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-            <p className="text-sm font-medium mb-2">Variabel yang tersedia:</p>
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline">{'{{name}}'} - Nama pelanggan</Badge>
-              <Badge variant="outline">{'{{phone}}'} - Nomor telepon</Badge>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -355,46 +436,69 @@ export function RuleForm({ initialData, onSubmit, isSubmitting }: RuleFormProps)
       <Card>
         <CardHeader>
           <CardTitle>Pengaturan</CardTitle>
-          <CardDescription>Prioritas dan delay</CardDescription>
+          <CardDescription>
+            {triggerType === 'ORDER_STATUS' || triggerType === 'PAYMENT_STATUS'
+              ? 'Status aturan'
+              : 'Prioritas dan delay'}
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Priority */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label>Prioritas</Label>
-              <span className="text-sm font-medium">{priority}</span>
-            </div>
-            <Slider
-              value={[priority]}
-              onValueChange={([value]) => setValue('priority', value)}
-              min={0}
-              max={100}
-              step={5}
-            />
-            <p className="text-xs text-zinc-500">
-              Prioritas lebih tinggi akan diproses lebih dulu. Jika ada beberapa aturan yang cocok,
-              hanya aturan dengan prioritas tertinggi yang akan dijalankan.
-            </p>
-          </div>
+          {/* Priority & Delay - Hidden for ORDER_STATUS & PAYMENT_STATUS */}
+          {triggerType !== 'ORDER_STATUS' && triggerType !== 'PAYMENT_STATUS' && (
+            <>
+              {/* Priority */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label>Prioritas</Label>
+                  <span className="text-sm font-medium">{priority}</span>
+                </div>
+                <Slider
+                  value={[priority || 50]}
+                  onValueChange={([value]) => setValue('priority', value)}
+                  min={0}
+                  max={100}
+                  step={5}
+                />
+                <p className="text-xs text-zinc-500">
+                  Prioritas lebih tinggi akan diproses lebih dulu. Jika ada beberapa aturan yang cocok,
+                  hanya aturan dengan prioritas tertinggi yang akan dijalankan.
+                </p>
+              </div>
 
-          {/* Delay */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label>Delay (detik)</Label>
-              <span className="text-sm font-medium">{delaySeconds}s</span>
-            </div>
-            <Slider
-              value={[delaySeconds]}
-              onValueChange={([value]) => setValue('delaySeconds', value)}
-              min={1}
-              max={60}
-              step={1}
-            />
-            <p className="text-xs text-zinc-500">
-              Waktu tunggu sebelum mengirim balasan otomatis. Delay yang wajar membuat balasan
-              terasa lebih natural.
-            </p>
-          </div>
+              {/* Delay */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <Label>Delay (detik)</Label>
+                  <span className="text-sm font-medium">{delaySeconds}s</span>
+                </div>
+                <Slider
+                  value={[delaySeconds || 2]}
+                  onValueChange={([value]) => setValue('delaySeconds', value)}
+                  min={1}
+                  max={60}
+                  step={1}
+                />
+                <p className="text-xs text-zinc-500">
+                  Waktu tunggu sebelum mengirim balasan otomatis. Delay yang wajar membuat balasan
+                  terasa lebih natural.
+                </p>
+              </div>
+            </>
+          )}
+
+          {/* Auto-assigned info for ORDER_STATUS & PAYMENT_STATUS */}
+          {(triggerType === 'ORDER_STATUS' || triggerType === 'PAYMENT_STATUS') && (
+            <Alert>
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                <p className="font-medium mb-2">Priority dan delay diatur otomatis:</p>
+                <ul className="text-sm space-y-1 list-disc list-inside">
+                  <li>Priority: 70-80 (urgensi tinggi untuk notifikasi order)</li>
+                  <li>Delay: 2-5 detik (disesuaikan dengan jenis status untuk efek natural)</li>
+                </ul>
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Active */}
           <div className="flex items-center justify-between pt-4 border-t">
