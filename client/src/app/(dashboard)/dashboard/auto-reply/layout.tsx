@@ -8,8 +8,7 @@ import {
   MessageSquare,
   Key,
   Package,
-  CreditCard,
-  List
+  CreditCard
 } from 'lucide-react';
 
 // ==========================================
@@ -24,12 +23,6 @@ interface TabItem {
 }
 
 const tabs: TabItem[] = [
-  {
-    label: 'All Rules',
-    href: '/dashboard/auto-reply',
-    icon: List,
-    description: 'View all auto-reply rules',
-  },
   {
     label: 'Welcome',
     href: '/dashboard/auto-reply/welcome',
