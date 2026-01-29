@@ -3,9 +3,11 @@ import {
   NotFoundException,
   BadRequestException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService, CACHE_KEYS } from '../redis/redis.service';
 import { CustomersService } from '../customers/customers.service';
+import { AutoReplyService } from '../auto-reply/auto-reply.service';
 import {
   CreateOrderDto,
   UpdateOrderDto,
@@ -22,6 +24,8 @@ export class OrdersService {
     private prisma: PrismaService,
     private redis: RedisService,
     private customersService: CustomersService,
+    private autoReply: AutoReplyService,
+    private config: ConfigService,
   ) {}
 
   // ==========================================
@@ -332,17 +336,55 @@ export class OrdersService {
     const order = await this.prisma.order.update({
       where: { id: orderId },
       data: updateData,
-      select: {
-        id: true,
-        orderNumber: true,
-        status: true,
-        completedAt: true,
+      include: {
+        customer: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
       },
     });
 
     // 🔥 Invalidate stats and low stock cache
     await this.redis.invalidateStats(tenantId);
     await this.redis.del(CACHE_KEYS.PRODUCT_LOW_STOCK(tenantId));
+
+    // ✅ Trigger auto-reply notification for order status change
+    const phone = order.customer?.phone || order.customerPhone;
+
+    if (phone) {
+      // Get tenant slug for tracking link
+      const tenant = await this.prisma.tenant.findUnique({
+        where: { id: tenantId },
+        select: { slug: true },
+      });
+
+      if (tenant) {
+        const trackingLink = `${this.config.get('FRONTEND_URL')}/store/${tenant.slug}/track/${order.id}`;
+
+        // Skip PENDING (will be handled by WELCOME auto-reply when integrated)
+        if (dto.status !== 'PENDING') {
+          await this.autoReply
+            .triggerOrderStatusNotification(
+              tenantId,
+              phone,
+              'ORDER_STATUS',
+              dto.status,
+              {
+                name: order.customer?.name || order.customerName || 'Customer',
+                orderNumber: order.orderNumber,
+                total: order.total,
+                trackingLink,
+              },
+            )
+            .catch((error) => {
+              // Don't block order update if notification fails
+              console.error('Failed to send order status notification:', error);
+            });
+        }
+      }
+    }
 
     return { message: `Status order diubah ke ${dto.status}`, order };
   }
@@ -369,17 +411,51 @@ export class OrdersService {
         paymentStatus: dto.paymentStatus,
         paidAmount: dto.paidAmount ?? existing.paidAmount,
       },
-      select: {
-        id: true,
-        orderNumber: true,
-        total: true,
-        paymentStatus: true,
-        paidAmount: true,
+      include: {
+        customer: {
+          select: {
+            name: true,
+            phone: true,
+          },
+        },
       },
     });
 
     // 🔥 Invalidate stats
     await this.redis.invalidateStats(tenantId);
+
+    // ✅ Trigger auto-reply notification for payment status change
+    const phone = order.customer?.phone || order.customerPhone;
+
+    if (phone) {
+      // Get tenant slug for tracking link
+      const tenant = await this.prisma.tenant.findUnique({
+        where: { id: tenantId },
+        select: { slug: true },
+      });
+
+      if (tenant) {
+        const trackingLink = `${this.config.get('FRONTEND_URL')}/store/${tenant.slug}/track/${order.id}`;
+
+        await this.autoReply
+          .triggerOrderStatusNotification(
+            tenantId,
+            phone,
+            'PAYMENT_STATUS',
+            dto.paymentStatus,
+            {
+              name: order.customer?.name || order.customerName || 'Customer',
+              orderNumber: order.orderNumber,
+              total: order.total,
+              trackingLink,
+            },
+          )
+          .catch((error) => {
+            // Don't block order update if notification fails
+            console.error('Failed to send payment status notification:', error);
+          });
+      }
+    }
 
     return {
       message: `Status pembayaran diubah ke ${dto.paymentStatus}`,

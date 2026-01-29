@@ -66,6 +66,11 @@ export class CreateRuleDto {
   @Type(() => WorkingHoursDto)
   workingHours?: WorkingHoursDto;
 
+  // For order_status & payment_status type
+  @IsOptional()
+  @IsString()
+  statusTrigger?: string;
+
   // Response
   @IsString()
   @IsNotEmpty()

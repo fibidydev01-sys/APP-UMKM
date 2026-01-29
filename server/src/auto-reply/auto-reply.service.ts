@@ -7,6 +7,7 @@ import { UpdateRuleDto } from './dto/update-rule.dto';
 import { KeywordEngine } from './engines/keyword-engine';
 import { TimeBasedEngine } from './engines/time-based-engine';
 import { WelcomeEngine } from './engines/welcome-engine';
+import { OrderStatusEngine } from './engines/order-status-engine';
 import {
   AutoReplyRule,
   AutoReplyTriggerType,
@@ -25,6 +26,7 @@ export class AutoReplyService {
     private keywordEngine: KeywordEngine,
     private timeBasedEngine: TimeBasedEngine,
     private welcomeEngine: WelcomeEngine,
+    private orderStatusEngine: OrderStatusEngine,
   ) {}
 
   /**
@@ -298,6 +300,16 @@ export class AutoReplyService {
    * Create new auto-reply rule
    */
   async createRule(tenantId: string, dto: CreateRuleDto) {
+    // Auto-assign priority and delay based on trigger type
+    const priority = this.getDefaultPriority(
+      dto.triggerType as AutoReplyTriggerType,
+      dto.statusTrigger,
+    );
+    const delaySeconds = this.getDefaultDelay(
+      dto.triggerType as AutoReplyTriggerType,
+      dto.statusTrigger,
+    );
+
     const rule = await this.prisma.autoReplyRule.create({
       data: {
         tenantId,
@@ -308,9 +320,10 @@ export class AutoReplyService {
         matchType: dto.matchType,
         caseSensitive: dto.caseSensitive ?? false,
         workingHours: dto.workingHours as any,
+        statusTrigger: dto.statusTrigger,
         responseMessage: dto.responseMessage,
-        priority: dto.priority ?? 50,
-        delaySeconds: dto.delaySeconds ?? 2,
+        priority, // Auto-assigned
+        delaySeconds, // Auto-assigned
         isActive: dto.isActive ?? true,
       },
     });
@@ -344,6 +357,23 @@ export class AutoReplyService {
       throw new NotFoundException('Auto-reply rule not found');
     }
 
+    // Auto-assign priority and delay if trigger type or status changed
+    const priority =
+      dto.triggerType && dto.triggerType !== rule.triggerType
+        ? this.getDefaultPriority(
+            dto.triggerType as AutoReplyTriggerType,
+            dto.statusTrigger,
+          )
+        : dto.priority;
+
+    const delaySeconds =
+      dto.triggerType && dto.triggerType !== rule.triggerType
+        ? this.getDefaultDelay(
+            dto.triggerType as AutoReplyTriggerType,
+            dto.statusTrigger,
+          )
+        : dto.delaySeconds;
+
     const updated = await this.prisma.autoReplyRule.update({
       where: { id: ruleId },
       data: {
@@ -354,9 +384,10 @@ export class AutoReplyService {
         matchType: dto.matchType,
         caseSensitive: dto.caseSensitive,
         workingHours: dto.workingHours as any,
+        statusTrigger: dto.statusTrigger,
         responseMessage: dto.responseMessage,
-        priority: dto.priority,
-        delaySeconds: dto.delaySeconds,
+        priority,
+        delaySeconds,
         isActive: dto.isActive,
         updatedAt: new Date(),
       },
@@ -433,5 +464,196 @@ export class AutoReplyService {
       success: true,
       isActive: updated.isActive,
     };
+  }
+
+  // ============================================
+  // ORDER STATUS NOTIFICATIONS
+  // ============================================
+
+  /**
+   * Trigger auto-reply notification for order/payment status change
+   */
+  async triggerOrderStatusNotification(
+    tenantId: string,
+    customerPhone: string,
+    statusType: 'ORDER_STATUS' | 'PAYMENT_STATUS',
+    status: string,
+    variables: {
+      name: string;
+      orderNumber: string;
+      total: number;
+      trackingLink: string;
+    },
+  ): Promise<{ sent: boolean; reason?: string }> {
+    try {
+      // Get active rules for this status
+      const rules = await this.prisma.autoReplyRule.findMany({
+        where: {
+          tenantId,
+          triggerType: statusType as any,
+          statusTrigger: status,
+          isActive: true,
+        },
+        orderBy: { priority: 'desc' },
+      });
+
+      if (rules.length === 0) {
+        this.logger.log(`No active rule for ${statusType}:${status}`);
+        return { sent: false, reason: 'No active rule found' };
+      }
+
+      // Use first matching rule (highest priority)
+      const rule = rules[0];
+
+      this.logger.log(
+        `Triggering order status notification: ${rule.name} (${statusType}:${status})`,
+      );
+
+      // Generate response with variables
+      const message = this.replaceOrderVariables(rule.responseMessage, {
+        ...variables,
+        phone: customerPhone,
+      });
+
+      // Delay (human-like typing effect)
+      await this.sleep(rule.delaySeconds * 1000);
+
+      // Send message
+      const result = await this.whatsappService.sendMessage(
+        tenantId,
+        customerPhone,
+        message,
+        'text',
+      );
+
+      if (result.success) {
+        // Update rule stats
+        await this.updateRuleStats(rule);
+
+        this.logger.log(
+          `Order status notification sent: ${rule.name} to ${customerPhone}`,
+        );
+
+        return { sent: true };
+      } else {
+        return { sent: false, reason: 'Failed to send WhatsApp message' };
+      }
+    } catch (error) {
+      this.logger.error(
+        `Failed to send order status notification: ${error.message}`,
+        error.stack,
+      );
+      return { sent: false, reason: error.message };
+    }
+  }
+
+  /**
+   * Replace order-specific variables in message template
+   */
+  private replaceOrderVariables(
+    template: string,
+    vars: {
+      name: string;
+      phone: string;
+      orderNumber: string;
+      total: number;
+      trackingLink: string;
+    },
+  ): string {
+    let message = template;
+
+    // Replace variables
+    message = message
+      .replace(/\{\{name\}\}/g, vars.name || 'Customer')
+      .replace(/\{\{phone\}\}/g, vars.phone || '')
+      .replace(/\{\{order_number\}\}/g, vars.orderNumber)
+      .replace(/\{\{total\}\}/g, this.formatPrice(vars.total))
+      .replace(/\{\{tracking_link\}\}/g, vars.trackingLink);
+
+    return message;
+  }
+
+  /**
+   * Format price to Indonesian Rupiah
+   */
+  private formatPrice(amount: number): string {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  }
+
+  /**
+   * Get default priority based on trigger type
+   */
+  getDefaultPriority(
+    triggerType: AutoReplyTriggerType,
+    statusTrigger?: string,
+  ): number {
+    switch (triggerType) {
+      case AutoReplyTriggerType.WELCOME:
+        return 100;
+      case AutoReplyTriggerType.PAYMENT_STATUS:
+        return 80;
+      case AutoReplyTriggerType.ORDER_STATUS:
+        return 70;
+      case AutoReplyTriggerType.KEYWORD:
+        return 50;
+      case AutoReplyTriggerType.TIME_BASED:
+        return 40;
+      default:
+        return 50;
+    }
+  }
+
+  /**
+   * Get default delay based on trigger type and status
+   */
+  getDefaultDelay(
+    triggerType: AutoReplyTriggerType,
+    statusTrigger?: string,
+  ): number {
+    // Order Status specific delays
+    if (triggerType === AutoReplyTriggerType.ORDER_STATUS) {
+      switch (statusTrigger) {
+        case 'PENDING':
+          return 3;
+        case 'PROCESSING':
+          return 5;
+        case 'COMPLETED':
+          return 2; // Good news, fast!
+        case 'CANCELLED':
+          return 4;
+        default:
+          return 3;
+      }
+    }
+
+    // Payment Status specific delays
+    if (triggerType === AutoReplyTriggerType.PAYMENT_STATUS) {
+      switch (statusTrigger) {
+        case 'PAID':
+          return 2; // Good news!
+        case 'PARTIAL':
+          return 3;
+        case 'FAILED':
+          return 4;
+        default:
+          return 3;
+      }
+    }
+
+    // Other trigger types
+    switch (triggerType) {
+      case AutoReplyTriggerType.WELCOME:
+        return 2;
+      case AutoReplyTriggerType.KEYWORD:
+        return 2;
+      case AutoReplyTriggerType.TIME_BASED:
+        return 3;
+      default:
+        return 2;
+    }
   }
 }

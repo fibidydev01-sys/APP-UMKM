@@ -353,6 +353,8 @@ enum AutoReplyTriggerType {
   WELCOME
   KEYWORD
   TIME_BASED
+  ORDER_STATUS
+  PAYMENT_STATUS
 }
 
 enum KeywordMatchType {
@@ -546,6 +548,9 @@ model AutoReplyRule {
 
   // Time-based (for outside hours)
   workingHours      Json?
+
+  // Order/Payment Status (for ORDER_STATUS & PAYMENT_STATUS type)
+  statusTrigger     String?
 
   // Response
   responseMessage   String                @db.Text

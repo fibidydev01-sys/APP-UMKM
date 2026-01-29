@@ -7,6 +7,7 @@ import { ConversationsModule } from '../conversations/conversations.module';
 import { KeywordEngine } from './engines/keyword-engine';
 import { TimeBasedEngine } from './engines/time-based-engine';
 import { WelcomeEngine } from './engines/welcome-engine';
+import { OrderStatusEngine } from './engines/order-status-engine';
 
 @Module({
   imports: [PrismaModule, WhatsAppModule, ConversationsModule],
@@ -16,6 +17,7 @@ import { WelcomeEngine } from './engines/welcome-engine';
     KeywordEngine,
     TimeBasedEngine,
     WelcomeEngine,
+    OrderStatusEngine,
   ],
   exports: [AutoReplyService],
 })

@@ -6,6 +6,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { AutoReplyService } from '../auto-reply/auto-reply.service';
 import makeWASocket, {
   DisconnectReason,
   useMultiFileAuthState,
@@ -38,6 +39,8 @@ export class WhatsAppService implements OnModuleDestroy {
     @Inject(forwardRef(() => WhatsAppGateway))
     private readonly gateway: WhatsAppGateway,
     private readonly hybridAuthState: HybridAuthStateService,
+    @Inject(forwardRef(() => AutoReplyService))
+    private readonly autoReply: AutoReplyService,
   ) {}
 
   async onModuleDestroy() {
@@ -359,8 +362,19 @@ export class WhatsAppService implements OnModuleDestroy {
 
       this.logger.log(`Received message from ${from}: ${messageContent}`);
 
-      // TODO: Process message (will be handled by Messages module)
-      // For now, just log it
+      // ✅ Process auto-reply (WELCOME, KEYWORD, TIME_BASED)
+      try {
+        await this.autoReply.processIncomingMessage(
+          tenantId,
+          from,
+          messageContent,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Failed to process auto-reply: ${error.message}`,
+          error.stack,
+        );
+      }
     }
   }
 
