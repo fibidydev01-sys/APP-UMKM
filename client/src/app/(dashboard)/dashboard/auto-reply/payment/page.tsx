@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Plus, AlertCircle, Loader2, Edit, Trash2, Clock, Send, DollarSign } from 'lucide-react';
 import type { AutoReplyRule } from '@/types/chat';
+import { PaymentStatusRuleForm } from './components/payment-status-rule-form';
 
 // ==========================================
 // PAYMENT STATUS PAGE
@@ -265,27 +266,19 @@ export default function PaymentStatusPage() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* TODO: Create/Edit Form Modal will be added in next step */}
-      {(creatingStatus || editingRule) && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>
-                {editingRule ? 'Edit Rule' : `Create Rule: ${creatingStatus}`}
-              </CardTitle>
-              <CardDescription>Form coming in next step...</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" onClick={() => {
-                setCreatingStatus(null);
-                setEditingRule(null);
-              }}>
-                Close (Temporary)
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* Create/Edit Form Modal */}
+      <PaymentStatusRuleForm
+        status={creatingStatus}
+        rule={editingRule}
+        open={!!(creatingStatus || editingRule)}
+        onClose={() => {
+          setCreatingStatus(null);
+          setEditingRule(null);
+        }}
+        onSuccess={() => {
+          fetchRules();
+        }}
+      />
     </div>
   );
 }
