@@ -118,7 +118,7 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
 
   return (
     <Drawer open={open} onOpenChange={handleClose} direction="right">
-      <DrawerContent className="max-w-3xl">
+      <DrawerContent className="w-full sm:w-[540px] md:w-[720px] lg:w-[800px]">
         <form onSubmit={handleSubmit} className="flex flex-col h-full">
           <DrawerHeader>
             <DrawerTitle>{isEdit ? 'Edit' : 'Create'} Welcome Message</DrawerTitle>
