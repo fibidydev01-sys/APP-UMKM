@@ -386,6 +386,7 @@ model WhatsAppSession {
   // Metadata
   lastConnectedAt      DateTime?
   lastDisconnectedAt   DateTime?
+  lastBackupAt         DateTime?
 
   // Timestamps
   createdAt            DateTime              @default(now())

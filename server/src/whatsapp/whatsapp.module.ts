@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { WhatsAppService } from './whatsapp.service';
 import { WhatsAppController } from './whatsapp.controller';
 import { WhatsAppGateway } from './whatsapp.gateway';
+import { HybridAuthStateService } from './hybrid-auth-state.service';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
@@ -14,7 +15,7 @@ import { PrismaModule } from '../prisma/prisma.module';
     }),
   ],
   controllers: [WhatsAppController],
-  providers: [WhatsAppService, WhatsAppGateway],
-  exports: [WhatsAppService, WhatsAppGateway],
+  providers: [WhatsAppService, WhatsAppGateway, HybridAuthStateService],
+  exports: [WhatsAppService, WhatsAppGateway, HybridAuthStateService],
 })
 export class WhatsAppModule {}

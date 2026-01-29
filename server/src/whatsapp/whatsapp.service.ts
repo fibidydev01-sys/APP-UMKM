@@ -18,6 +18,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { WhatsAppSessionStatus } from '@prisma/client';
 import { WhatsAppGateway } from './whatsapp.gateway';
+import { HybridAuthStateService } from './hybrid-auth-state.service';
 
 @Injectable()
 export class WhatsAppService implements OnModuleDestroy {
@@ -36,6 +37,7 @@ export class WhatsAppService implements OnModuleDestroy {
     private prisma: PrismaService,
     @Inject(forwardRef(() => WhatsAppGateway))
     private readonly gateway: WhatsAppGateway,
+    private readonly hybridAuthState: HybridAuthStateService,
   ) {}
 
   async onModuleDestroy() {
@@ -176,12 +178,8 @@ export class WhatsAppService implements OnModuleDestroy {
       this.sockets.delete(tenantId);
     }
 
-    const sessionPath = this.getSessionPath(tenantId);
-
-    // Ensure session directory exists
-    if (!fs.existsSync(sessionPath)) {
-      fs.mkdirSync(sessionPath, { recursive: true });
-    }
+    // Initialize hybrid auth state (auto-restores from Supabase if needed)
+    const sessionPath = await this.hybridAuthState.initialize(tenantId);
 
     // Load auth state
     const { state, saveCreds } = await useMultiFileAuthState(sessionPath);
@@ -197,8 +195,10 @@ export class WhatsAppService implements OnModuleDestroy {
     this.sockets.set(tenantId, socket);
 
     // Initialize listener tracking for this tenant
-    const listeners: Array<{ event: string; handler: (...args: any[]) => any }> =
-      [];
+    const listeners: Array<{
+      event: string;
+      handler: (...args: any[]) => any;
+    }> = [];
 
     // Handle QR code
     const connectionUpdateHandler = async (update) => {
@@ -298,10 +298,17 @@ export class WhatsAppService implements OnModuleDestroy {
       }
     };
     socket.ev.on('connection.update', connectionUpdateHandler);
-    listeners.push({ event: 'connection.update', handler: connectionUpdateHandler });
+    listeners.push({
+      event: 'connection.update',
+      handler: connectionUpdateHandler,
+    });
 
     // Save credentials on update
-    const credsUpdateHandler = saveCreds;
+    const credsUpdateHandler = async () => {
+      await saveCreds();
+      // Trigger backup after credentials are saved
+      await this.hybridAuthState.backupToSupabase(tenantId);
+    };
     socket.ev.on('creds.update', credsUpdateHandler);
     listeners.push({ event: 'creds.update', handler: credsUpdateHandler });
 
@@ -310,7 +317,10 @@ export class WhatsAppService implements OnModuleDestroy {
       await this.handleIncomingMessages(tenantId, messageUpdate);
     };
     socket.ev.on('messages.upsert', messagesUpsertHandler);
-    listeners.push({ event: 'messages.upsert', handler: messagesUpsertHandler });
+    listeners.push({
+      event: 'messages.upsert',
+      handler: messagesUpsertHandler,
+    });
 
     // Store all listeners for cleanup
     this.eventListeners.set(tenantId, listeners);
@@ -429,11 +439,8 @@ export class WhatsAppService implements OnModuleDestroy {
         this.sockets.delete(tenantId);
       }
 
-      // Clear session files
-      const sessionPath = this.getSessionPath(tenantId);
-      if (fs.existsSync(sessionPath)) {
-        fs.rmSync(sessionPath, { recursive: true, force: true });
-      }
+      // Delete session (local + Supabase backup)
+      await this.hybridAuthState.deleteSession(tenantId);
 
       // Update database
       await this.prisma.whatsAppSession.update({
@@ -492,14 +499,6 @@ export class WhatsAppService implements OnModuleDestroy {
    */
   getSocket(tenantId: string): WASocket | undefined {
     return this.sockets.get(tenantId);
-  }
-
-  /**
-   * Get session path
-   */
-  private getSessionPath(tenantId: string): string {
-    const basePath = process.env.WHATSAPP_SESSION_PATH || './whatsapp-sessions';
-    return path.join(basePath, tenantId);
   }
 
   /**
