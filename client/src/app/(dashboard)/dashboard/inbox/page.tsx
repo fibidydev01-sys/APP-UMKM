@@ -14,7 +14,7 @@ import { useRealtimeChat } from '@/hooks/use-realtime-chat';
 import { useWhatsApp } from '@/hooks/use-whatsapp';
 import { useChatStore, selectFilteredConversations } from '@/stores/chat-store';
 import { Button } from '@/components/ui/button';
-import { Wifi, WifiOff, QrCode } from 'lucide-react';
+import { Wifi, WifiOff, QrCode, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -152,6 +152,17 @@ export default function InboxPage() {
           )}
         </div>
       </div>
+
+      {/* Auto Reply FAB - Bottom Right */}
+      <Button
+        asChild
+        size="lg"
+        className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50 bg-emerald-600 hover:bg-emerald-700 text-white"
+      >
+        <Link href="/dashboard/auto-reply">
+          <Bot className="h-6 w-6" />
+        </Link>
+      </Button>
     </div>
   );
 }
