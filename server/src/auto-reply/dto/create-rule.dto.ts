@@ -46,7 +46,10 @@ export class CreateRuleDto {
   @IsNotEmpty()
   triggerType: AutoReplyTriggerType;
 
-  // For keyword type
+  // Keywords Array (used for multiple trigger types)
+  // - KEYWORD: ["harga", "promo", "order"] - array of keywords to match
+  // - ORDER_STATUS: ["PENDING"] - single status value in array
+  // - PAYMENT_STATUS: ["PAID"] - single status value in array
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
@@ -65,11 +68,6 @@ export class CreateRuleDto {
   @ValidateNested()
   @Type(() => WorkingHoursDto)
   workingHours?: WorkingHoursDto;
-
-  // For order_status & payment_status type
-  @IsOptional()
-  @IsString()
-  statusTrigger?: string;
 
   // Response
   @IsString()

@@ -9,28 +9,30 @@ import { AutoReplyRule } from '@prisma/client';
 export class OrderStatusEngine {
   /**
    * Check if rule matches the current status
+   * For ORDER_STATUS/PAYMENT_STATUS, the status is stored in keywords array
    */
   matchesStatus(rule: AutoReplyRule, currentStatus: string): boolean {
-    if (!rule.statusTrigger) {
+    if (!rule.keywords || rule.keywords.length === 0) {
       return false;
     }
 
-    return rule.statusTrigger === currentStatus;
+    // Check if currentStatus exists in keywords array
+    return rule.keywords.includes(currentStatus);
   }
 
   /**
-   * Validate status trigger value based on trigger type
+   * Validate status value based on trigger type
    */
-  isValidStatusTrigger(triggerType: string, statusTrigger: string): boolean {
+  isValidStatus(triggerType: string, status: string): boolean {
     const validOrderStatuses = ['PENDING', 'PROCESSING', 'COMPLETED', 'CANCELLED'];
     const validPaymentStatuses = ['PAID', 'PARTIAL', 'FAILED'];
 
     if (triggerType === 'ORDER_STATUS') {
-      return validOrderStatuses.includes(statusTrigger);
+      return validOrderStatuses.includes(status);
     }
 
     if (triggerType === 'PAYMENT_STATUS') {
-      return validPaymentStatuses.includes(statusTrigger);
+      return validPaymentStatuses.includes(status);
     }
 
     return false;

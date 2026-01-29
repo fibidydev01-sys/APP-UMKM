@@ -541,16 +541,16 @@ model AutoReplyRule {
   // Trigger Type
   triggerType       AutoReplyTriggerType
 
-  // Keyword Matching (for keyword type)
+  // Keywords Array (used for multiple trigger types)
+  // - KEYWORD: ["harga", "promo", "order"] - multiple keywords to match
+  // - ORDER_STATUS: ["PENDING"] or ["PROCESSING"] - single status value
+  // - PAYMENT_STATUS: ["PAID"] or ["FAILED"] - single status value
   keywords          String[]
   matchType         KeywordMatchType      @default(CONTAINS)
   caseSensitive     Boolean               @default(false)
 
   // Time-based (for outside hours)
   workingHours      Json?
-
-  // Order/Payment Status (for ORDER_STATUS & PAYMENT_STATUS type)
-  statusTrigger     String?
 
   // Response
   responseMessage   String                @db.Text
@@ -573,9 +573,14 @@ model AutoReplyRule {
   // Relations
   logs              AutoReplyLog[]
 
+  // Indexes
   @@index([tenantId])
   @@index([tenantId, isActive])
   @@index([tenantId, priority(sort: Desc)])
+
+  // Unique Constraint: Prevent duplicate rules per status per tenant
+  // Ensures: 1 tenant can only create 1 rule per ORDER_STATUS/PAYMENT_STATUS
+  @@unique([tenantId, triggerType, keywords])
 }
 
 // ==========================================

@@ -300,14 +300,20 @@ export class AutoReplyService {
    * Create new auto-reply rule
    */
   async createRule(tenantId: string, dto: CreateRuleDto) {
+    // For ORDER_STATUS/PAYMENT_STATUS, status is stored in keywords[0]
+    const status =
+      dto.triggerType === 'ORDER_STATUS' || dto.triggerType === 'PAYMENT_STATUS'
+        ? dto.keywords?.[0]
+        : undefined;
+
     // Auto-assign priority and delay based on trigger type
     const priority = this.getDefaultPriority(
       dto.triggerType as AutoReplyTriggerType,
-      dto.statusTrigger,
+      status,
     );
     const delaySeconds = this.getDefaultDelay(
       dto.triggerType as AutoReplyTriggerType,
-      dto.statusTrigger,
+      status,
     );
 
     const rule = await this.prisma.autoReplyRule.create({
@@ -320,7 +326,6 @@ export class AutoReplyService {
         matchType: dto.matchType,
         caseSensitive: dto.caseSensitive ?? false,
         workingHours: dto.workingHours as any,
-        statusTrigger: dto.statusTrigger,
         responseMessage: dto.responseMessage,
         priority, // Auto-assigned
         delaySeconds, // Auto-assigned
@@ -357,12 +362,18 @@ export class AutoReplyService {
       throw new NotFoundException('Auto-reply rule not found');
     }
 
+    // For ORDER_STATUS/PAYMENT_STATUS, status is stored in keywords[0]
+    const status =
+      dto.triggerType === 'ORDER_STATUS' || dto.triggerType === 'PAYMENT_STATUS'
+        ? dto.keywords?.[0]
+        : undefined;
+
     // Auto-assign priority and delay if trigger type or status changed
     const priority =
       dto.triggerType && dto.triggerType !== rule.triggerType
         ? this.getDefaultPriority(
             dto.triggerType as AutoReplyTriggerType,
-            dto.statusTrigger,
+            status,
           )
         : dto.priority;
 
@@ -370,7 +381,7 @@ export class AutoReplyService {
       dto.triggerType && dto.triggerType !== rule.triggerType
         ? this.getDefaultDelay(
             dto.triggerType as AutoReplyTriggerType,
-            dto.statusTrigger,
+            status,
           )
         : dto.delaySeconds;
 
@@ -384,7 +395,6 @@ export class AutoReplyService {
         matchType: dto.matchType,
         caseSensitive: dto.caseSensitive,
         workingHours: dto.workingHours as any,
-        statusTrigger: dto.statusTrigger,
         responseMessage: dto.responseMessage,
         priority,
         delaySeconds,
@@ -487,11 +497,12 @@ export class AutoReplyService {
   ): Promise<{ sent: boolean; reason?: string }> {
     try {
       // Get active rules for this status
+      // For ORDER_STATUS/PAYMENT_STATUS, status is stored in keywords array
       const rules = await this.prisma.autoReplyRule.findMany({
         where: {
           tenantId,
           triggerType: statusType as any,
-          statusTrigger: status,
+          keywords: { has: status }, // Check if status exists in keywords array
           isActive: true,
         },
         orderBy: { priority: 'desc' },
@@ -589,7 +600,7 @@ export class AutoReplyService {
    */
   getDefaultPriority(
     triggerType: AutoReplyTriggerType,
-    statusTrigger?: string,
+    status?: string,
   ): number {
     switch (triggerType) {
       case AutoReplyTriggerType.WELCOME:
@@ -612,11 +623,11 @@ export class AutoReplyService {
    */
   getDefaultDelay(
     triggerType: AutoReplyTriggerType,
-    statusTrigger?: string,
+    status?: string,
   ): number {
     // Order Status specific delays
     if (triggerType === AutoReplyTriggerType.ORDER_STATUS) {
-      switch (statusTrigger) {
+      switch (status) {
         case 'PENDING':
           return 3;
         case 'PROCESSING':
@@ -632,7 +643,7 @@ export class AutoReplyService {
 
     // Payment Status specific delays
     if (triggerType === AutoReplyTriggerType.PAYMENT_STATUS) {
-      switch (statusTrigger) {
+      switch (status) {
         case 'PAID':
           return 2; // Good news!
         case 'PARTIAL':
