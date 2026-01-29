@@ -54,3 +54,8 @@ next-env.d.ts
 # Prisma
 prisma/dev.db
 prisma/dev.db-journal
+
+# WhatsApp Sessions (contains sensitive credentials)
+whatsapp-sessions/
+server/whatsapp-sessions/
+**/whatsapp-sessions/
