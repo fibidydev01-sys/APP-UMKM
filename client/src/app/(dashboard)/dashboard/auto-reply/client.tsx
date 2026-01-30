@@ -66,19 +66,28 @@ const TABS = [
     label: 'Welcome',
     icon: MessageSquare,
     triggerType: 'WELCOME' as TriggerType,
+    description: 'Pesan otomatis yang dikirim saat customer kontak pertama kali.',
   },
-  { id: 'keywords' as const, label: 'Keywords', icon: Key, triggerType: 'KEYWORD' as TriggerType },
+  {
+    id: 'keywords' as const,
+    label: 'Keywords',
+    icon: Key,
+    triggerType: 'KEYWORD' as TriggerType,
+    description: 'Balas otomatis berdasarkan kata kunci tertentu.',
+  },
   {
     id: 'order-status' as const,
     label: 'Order Status',
     icon: ShoppingCart,
     triggerType: 'ORDER_STATUS' as TriggerType,
+    description: 'Notifikasi otomatis saat status order berubah.',
   },
   {
     id: 'payment' as const,
     label: 'Payment',
     icon: DollarSign,
     triggerType: 'PAYMENT_STATUS' as TriggerType,
+    description: 'Notifikasi otomatis saat status pembayaran berubah.',
   },
 ];
 
@@ -88,6 +97,7 @@ const TABS = [
 
 export function AutoReplyClient() {
   const [activeTab, setActiveTab] = useState<TabType>('welcome');
+  const currentTab = TABS.find((t) => t.id === activeTab)!;
 
   return (
     <div>
@@ -117,9 +127,19 @@ export function AutoReplyClient() {
       </div>
 
       {/* ════════════════════════════════════════════════════════ */}
+      {/* STATIC HEADER - No layout shift                         */}
+      {/* ════════════════════════════════════════════════════════ */}
+      <Alert className="mb-6">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
+          <strong>{currentTab.label}</strong> - {currentTab.description}
+        </AlertDescription>
+      </Alert>
+
+      {/* ════════════════════════════════════════════════════════ */}
       {/* TAB CONTENT                                             */}
       {/* ════════════════════════════════════════════════════════ */}
-      <div className="mt-6">
+      <div>
         {activeTab === 'welcome' && <WelcomeTabContent />}
         {activeTab === 'keywords' && <KeywordsTabContent />}
         {activeTab === 'order-status' && <OrderStatusTabContent />}
@@ -457,14 +477,6 @@ function WelcomeTabContent() {
 
   return (
     <>
-      <Alert className="mb-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Welcome Message</strong> - Pesan otomatis yang dikirim saat customer kontak
-          pertama kali.
-        </AlertDescription>
-      </Alert>
-
       <TabHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -562,13 +574,6 @@ function KeywordsTabContent() {
 
   return (
     <>
-      <Alert className="mb-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Keyword Auto-Reply</strong> - Balas otomatis berdasarkan kata kunci tertentu.
-        </AlertDescription>
-      </Alert>
-
       <TabHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -666,13 +671,6 @@ function OrderStatusTabContent() {
 
   return (
     <>
-      <Alert className="mb-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Order Status Auto-Reply</strong> - Notifikasi otomatis saat status order berubah.
-        </AlertDescription>
-      </Alert>
-
       <TabHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
@@ -770,14 +768,6 @@ function PaymentTabContent() {
 
   return (
     <>
-      <Alert className="mb-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Payment Status Auto-Reply</strong> - Notifikasi otomatis saat status pembayaran
-          berubah.
-        </AlertDescription>
-      </Alert>
-
       <TabHeader
         viewMode={viewMode}
         onViewModeChange={setViewMode}
