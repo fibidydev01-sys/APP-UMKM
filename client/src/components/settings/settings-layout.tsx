@@ -1,15 +1,12 @@
 'use client';
 
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { SettingsNav } from './settings-nav';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -18,12 +15,19 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import {
+  Store,
+  Search,
+  CreditCard,
+  Truck,
+  ArrowLeft,
+  type LucideIcon,
+} from 'lucide-react';
 
 // ==========================================
 // SETTINGS LAYOUT COMPONENT
 // Wraps all /settings routes with sidebar
-// Pattern: Same as DashboardLayout
+// Pattern: Same as DashboardLayout with hover overlay
 // ==========================================
 
 interface SettingsLayoutProps {
@@ -33,13 +37,15 @@ interface SettingsLayoutProps {
 export interface SettingsMenuItem {
   key: string;
   label: string;
+  icon: LucideIcon;
+  route: string;
 }
 
 export const SETTINGS_MENU: SettingsMenuItem[] = [
-  { key: 'store', label: 'Toko' },
-  { key: 'seo', label: 'SEO' },
-  { key: 'payment', label: 'Pembayaran' },
-  { key: 'shipping', label: 'Pengiriman' },
+  { key: 'store', label: 'Toko', icon: Store, route: '/settings/toko' },
+  { key: 'seo', label: 'SEO', icon: Search, route: '/settings/seo' },
+  { key: 'payment', label: 'Pembayaran', icon: CreditCard, route: '/settings/pembayaran' },
+  { key: 'shipping', label: 'Pengiriman', icon: Truck, route: '/settings/pengiriman' },
 ];
 
 // ==========================================
@@ -72,72 +78,49 @@ function SettingsSidebar() {
   const pathname = usePathname();
   const { setOpenMobile } = useSidebar();
 
-  const handleTabClick = (key: string) => {
-    // All tabs now navigate to separate routes (like dashboard pattern)
-    const routeMap: Record<string, string> = {
-      store: '/settings/toko',
-      seo: '/settings/seo',
-      payment: '/settings/pembayaran',
-      shipping: '/settings/pengiriman',
-    };
-
-    const route = routeMap[key] || '/settings/pembayaran'; // Default to pembayaran
+  const handleTabClick = (route: string) => {
     router.push(route);
     setOpenMobile(false);
   };
 
   // Determine active tab based on pathname
-  const getActiveTab = () => {
-    if (pathname.startsWith('/settings/toko')) return 'store';
-    if (pathname.startsWith('/settings/seo')) return 'seo';
-    if (pathname.startsWith('/settings/pembayaran')) return 'payment';
-    if (pathname.startsWith('/settings/pengiriman')) return 'shipping';
-    // Default fallback
-    return 'payment';
-  };
-
-  const activeTab = getActiveTab();
+  const isActive = (route: string) => pathname.startsWith(route);
 
   return (
-    <Sidebar className="border-r min-h-screen">
-      <SidebarHeader className="border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.push('/dashboard')}
-            className="h-8 w-8 p-0"
-          >
-            &larr;
-          </Button>
-          <div>
-            <h2 className="font-semibold text-lg">Pengaturan</h2>
-            <p className="text-sm text-muted-foreground">Kelola preferensi toko</p>
-          </div>
-        </div>
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="border-b p-2">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              className={cn(
+                'data-[active=true]:bg-transparent data-[active=true]:font-normal'
+              )}
+            >
+              <button onClick={() => router.push('/dashboard')}>
+                <ArrowLeft className="h-4 w-4" />
+                <span>Kembali</span>
+              </button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="pt-2">
         <SidebarGroup>
-          <SidebarGroupLabel>Menu</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {SETTINGS_MENU.map((item) => (
-                <SidebarMenuItem key={item.key}>
-                  <SidebarMenuButton
-                    isActive={activeTab === item.key}
-                    onClick={() => handleTabClick(item.key)}
-                    className={cn(
-                      'w-full justify-start',
-                      activeTab === item.key && 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
-                    )}
-                  >
-                    <span>{item.label}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
+          <SidebarMenu>
+            {SETTINGS_MENU.map((item) => (
+              <SidebarMenuItem key={item.key}>
+                <SidebarMenuButton
+                  isActive={isActive(item.route)}
+                  onClick={() => handleTabClick(item.route)}
+                >
+                  <item.icon className="h-4 w-4" />
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            ))}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
