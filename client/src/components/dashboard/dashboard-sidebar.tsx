@@ -178,19 +178,18 @@ export function DashboardSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              {/* Onboarding Dropdown - below Inbox */}
+              <SidebarMenuItem>
+                <OnboardingDropdown />
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
         ))}
       </SidebarContent>
 
-      {/* Footer with Onboarding + Hamburger Menu */}
+      {/* Footer with Hamburger Menu */}
       <SidebarFooter>
         <SidebarMenu>
-          {/* Onboarding Dropdown */}
-          <SidebarMenuItem>
-            <OnboardingDropdown />
-          </SidebarMenuItem>
-
           {/* Hamburger Menu Button */}
           <SidebarMenuItem>
             <DropdownMenu>
