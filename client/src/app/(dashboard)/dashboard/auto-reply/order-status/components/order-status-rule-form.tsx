@@ -384,7 +384,7 @@ export function OrderStatusRuleForm({ status, rule, open, onClose, onSuccess }: 
                       .replace(/\{\{name\}\}/g, 'Budi Santoso')
                       .replace(/\{\{order_number\}\}/g, 'ORD-20260130-001')
                       .replace(/\{\{total\}\}/g, 'Rp 150.000')
-                      .replace(/\{\{tracking_link\}\}/g, 'https://tokosaya.com/track/ORD-20260130-001')}
+                      .replace(/\{\{tracking_link\}\}/g, 'https://tokosaya.com/store/toko-saya/track/550e8400-e29b-41d4-a716-446655440000')}
                   </pre>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
