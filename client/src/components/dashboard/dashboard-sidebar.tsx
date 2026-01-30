@@ -10,6 +10,7 @@ import {
   ChevronsUpDown,
   LogOut,
   Send,
+  Palette,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -209,6 +210,12 @@ export function DashboardSidebar() {
                   <Link href="/settings">
                     <Settings className="mr-2 h-4 w-4" />
                     Pengaturan
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/landing-builder">
+                    <Palette className="mr-2 h-4 w-4" />
+                    Playground
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
