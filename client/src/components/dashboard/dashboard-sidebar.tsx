@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -7,9 +8,12 @@ import {
   Settings,
   Store,
   ChevronRight,
-  ChevronsUpDown,
   LogOut,
   Send,
+  Menu,
+  Layout,
+  Moon,
+  Sun,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -30,13 +34,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth, useLogout } from '@/hooks';
-import { getInitials } from '@/lib/format';
+import { OnboardingDropdown } from '@/components/onboarding';
 
 // ==========================================
 // NAVIGATION ITEMS
@@ -82,6 +84,30 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const { tenant } = useAuth();
   const { logout } = useLogout();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  };
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -157,52 +183,38 @@ export function DashboardSidebar() {
         ))}
       </SidebarContent>
 
-      {/* User Avatar Footer */}
+      {/* Footer with Onboarding + Hamburger Menu */}
       <SidebarFooter>
         <SidebarMenu>
+          {/* Onboarding Dropdown */}
+          <SidebarMenuItem>
+            <OnboardingDropdown />
+          </SidebarMenuItem>
+
+          {/* Hamburger Menu Button */}
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  size="lg"
+                  tooltip="Menu"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={tenant?.logo || undefined} />
-                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                      {tenant?.name ? getInitials(tenant.name) : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{tenant?.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">{tenant?.email}</span>
-                  </div>
-                  <ChevronsUpDown className="ml-auto size-4" />
+                  <Menu className="h-4 w-4" />
+                  <span>Menu</span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="bottom"
-                align="end"
+                className="w-56 rounded-lg"
+                side="top"
+                align="start"
                 sideOffset={4}
               >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={tenant?.logo || undefined} />
-                      <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                        {tenant?.name ? getInitials(tenant.name) : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">{tenant?.name}</span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        {tenant?.email}
-                      </span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/landing-builder">
+                    <Layout className="mr-2 h-4 w-4" />
+                    Landing Builder
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/settings">
                     <Settings className="mr-2 h-4 w-4" />
@@ -214,6 +226,20 @@ export function DashboardSidebar() {
                     <Store className="mr-2 h-4 w-4" />
                     Lihat Toko
                   </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={toggleTheme}>
+                  {isDark ? (
+                    <>
+                      <Sun className="mr-2 h-4 w-4" />
+                      Mode Terang
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="mr-2 h-4 w-4" />
+                      Mode Gelap
+                    </>
+                  )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-destructive">
