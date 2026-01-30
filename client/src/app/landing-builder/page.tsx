@@ -33,7 +33,7 @@ import { useTenant } from '@/hooks';
 import { useLandingConfig } from '@/hooks/use-landing-config';
 import { productsApi } from '@/lib/api';
 import { mergeWithTemplateDefaults, type TemplateId } from '@/lib/landing';
-import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw, Smartphone, Tablet, Monitor, Menu } from 'lucide-react';
+import { Save, Home, PanelLeftClose, PanelLeft, RotateCcw, Smartphone, Tablet, Monitor, Menu, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import type { TenantLandingConfig, Product } from '@/types';
 
@@ -321,6 +321,18 @@ export default function LandingBuilderPage() {
                 >
                   <Save className="h-4 w-4" />
                   {isSaving ? 'Publishing...' : 'Publish'}
+                </MenubarItem>
+                <MenubarSeparator />
+                <MenubarItem asChild>
+                  <a
+                    href={`/store/${tenant?.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="cursor-pointer"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Open Landing Page
+                  </a>
                 </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
