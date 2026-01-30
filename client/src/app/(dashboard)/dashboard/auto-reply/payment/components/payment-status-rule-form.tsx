@@ -373,10 +373,10 @@ export function PaymentStatusRuleForm({ status, rule, open, onClose, onSuccess }
                 <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-md border border-zinc-200 dark:border-zinc-800">
                   <pre className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap font-sans">
                     {message
-                      .replace(/\{\{name\}\}/g, 'Siti')
-                      .replace(/\{\{order_number\}\}/g, 'ORD-20260129-002')
-                      .replace(/\{\{total\}\}/g, 'Rp 250.000')
-                      .replace(/\{\{tracking_link\}\}/g, 'https://toko.com/track/xyz789')}
+                      .replace(/\{\{name\}\}/g, 'Budi Santoso')
+                      .replace(/\{\{order_number\}\}/g, 'ORD-20260130-001')
+                      .replace(/\{\{total\}\}/g, 'Rp 150.000')
+                      .replace(/\{\{tracking_link\}\}/g, 'https://tokosaya.com/track/ORD-20260130-001')}
                   </pre>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
