@@ -1,0 +1,824 @@
+# HERO VARIANTS 67-71 - LEGENDARY FINAL LAYOUTS! 🏆🔥
+
+## HERO 67 - SQUARES PATTERN MOSAIC (Animated Squares Grid)
+
+```tsx
+'use client';
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Badge } from '@/components/ui/badge';
+import Squares from '@/components/ui/squares';
+import Marquee from '@/components/ui/marquee';
+
+interface Hero67Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  backgroundImage?: string;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero67({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  backgroundImage,
+  logo,
+  storeName,
+}: Hero67Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 z-0">
+        <Squares
+          speed={0.5}
+          squareSize={40}
+          direction="diagonal"
+          borderColor="#271E37"
+          hoverColor="#5227FF"
+          size={40}
+        />
+      </div>
+
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center py-20">
+        <div className="max-w-7xl mx-auto w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+            {/* Left - 3 columns */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="lg:col-span-3 space-y-6 md:space-y-8 flex flex-col justify-center"
+            >
+              <div className="flex items-center gap-4">
+                {logo && (
+                  <div className="relative h-16 w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden border-2 border-purple-400/30 shadow-2xl shadow-purple-500/30 transform hover:rotate-12 transition-transform">
+                    <OptimizedImage
+                      src={logo}
+                      alt={storeName || title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                <Badge variant="secondary" className="px-3 py-2 text-sm md:text-base bg-purple-500/20 text-purple-200 border-purple-400/30">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  {storeName || 'Featured'}
+                </Badge>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+                {title}
+              </h1>
+
+              {subtitle && (
+                <p className="text-base sm:text-lg md:text-xl text-purple-100/80 leading-relaxed">
+                  {subtitle}
+                </p>
+              )}
+
+              {showCta && ctaText && (
+                <div className="pt-4">
+                  <Link href={ctaLink}>
+                    <InteractiveHoverButton className="min-w-[220px] text-base md:text-lg px-8 py-5">
+                      {ctaText}
+                    </InteractiveHoverButton>
+                  </Link>
+                </div>
+              )}
+
+              {/* Marquee Accent */}
+              <div className="pt-8 overflow-hidden">
+                <Marquee
+                  text={storeName || title}
+                  direction="left"
+                  speed={50}
+                  gap={100}
+                  className="text-purple-500/20 text-6xl font-bold"
+                />
+              </div>
+            </motion.div>
+
+            {/* Right - 2 columns mosaic */}
+            <div className="lg:col-span-2">
+              <div className="grid grid-cols-2 gap-4">
+                {[1, 2, 3, 4].map((i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.8, rotate: i % 2 === 0 ? 5 : -5 }}
+                    animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: 0.2 + (i * 0.1),
+                      type: "spring"
+                    }}
+                    className="relative aspect-square rounded-2xl overflow-hidden shadow-xl border border-purple-400/20 group"
+                  >
+                    {backgroundImage ? (
+                      <OptimizedImage
+                        src={backgroundImage}
+                        alt={`${storeName || title} ${i}`}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-500/10 to-black flex items-center justify-center">
+                        <span className="text-6xl opacity-20">{i}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+**Summary:** Mosaic grid layout, Squares animated background, Marquee accent, 3-2 column split, 2x2 image grid
+
+---
+
+## HERO 68 - LIGHT RAYS RADIAL (Full Radial Explosion)
+
+```tsx
+'use client';
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Badge } from '@/components/ui/badge';
+import LightRays from '@/components/ui/light-rays';
+import ScrollProgress from '@/components/ui/scroll-progress';
+
+interface Hero68Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  backgroundImage?: string;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero68({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  backgroundImage,
+  logo,
+  storeName,
+}: Hero68Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 z-0">
+        <LightRays
+          raysOrigin="center"
+          raysColor="#ffffff"
+          raysSpeed={1}
+          lightSpread={0.5}
+          rayLength={3}
+          followMouse={true}
+          mouseInfluence={0.1}
+          pulsating={false}
+          fadeDistance={1}
+          saturation={1}
+        />
+      </div>
+
+      <ScrollProgress
+        color="#ffffff"
+        height={4}
+        position="top"
+        showPercentage={false}
+      />
+
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center py-20">
+        <div className="max-w-6xl mx-auto w-full">
+          {/* Radial Content Layout */}
+          <div className="relative">
+            {/* Center Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="text-center space-y-8 md:space-y-10 relative z-30"
+            >
+              {logo && (
+                <div className="flex justify-center">
+                  <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full overflow-hidden border-4 border-white/30 shadow-2xl">
+                    <OptimizedImage
+                      src={logo}
+                      alt={storeName || title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <Badge variant="secondary" className="px-4 py-2 text-base bg-white/10 text-white border-white/20 backdrop-blur-sm">
+                <Sparkles className="h-5 w-5 mr-2" />
+                {storeName || 'Featured'}
+              </Badge>
+
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white leading-tight drop-shadow-[0_0_40px_rgba(255,255,255,0.5)]">
+                {title}
+              </h1>
+
+              {subtitle && (
+                <p className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-2xl mx-auto leading-relaxed">
+                  {subtitle}
+                </p>
+              )}
+
+              {showCta && ctaText && (
+                <div className="pt-6">
+                  <Link href={ctaLink}>
+                    <InteractiveHoverButton className="min-w-[260px] text-lg px-12 py-6">
+                      {ctaText}
+                    </InteractiveHoverButton>
+                  </Link>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Radial Images */}
+            {backgroundImage && (
+              <div className="absolute inset-0 pointer-events-none">
+                {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => {
+                  const radius = 400;
+                  const x = Math.cos((angle * Math.PI) / 180) * radius;
+                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+
+                  return (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 0.4, scale: 1 }}
+                      transition={{ 
+                        duration: 0.6, 
+                        delay: 1 + (i * 0.1),
+                        type: "spring"
+                      }}
+                      className="absolute top-1/2 left-1/2 w-20 h-20 md:w-24 md:h-24 rounded-xl overflow-hidden border border-white/10 shadow-xl pointer-events-auto group"
+                      style={{
+                        transform: `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${angle}deg)`
+                      }}
+                    >
+                      <OptimizedImage
+                        src={backgroundImage}
+                        alt={`${storeName || title} ${i + 1}`}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+**Summary:** Full radial explosion, Light Rays center, ScrollProgress indicator, 8 radial images, centered massive text
+
+---
+
+## HERO 69 - CUBES 3D INTERACTIVE (3D Cubes Grid)
+
+```tsx
+'use client';
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Badge } from '@/components/ui/badge';
+import Cubes from '@/components/ui/cubes';
+import MagneticButton from '@/components/ui/magnetic-button';
+
+interface Hero69Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  backgroundImage?: string;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero69({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  backgroundImage,
+  logo,
+  storeName,
+}: Hero69Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 z-0">
+        <Cubes
+          gridSize={8}
+          maxAngle={45}
+          radius={3}
+          borderStyle="2px dashed #B19EEF"
+          faceColor="#1a1a2e"
+          rippleColor="#ff6b6b"
+          rippleSpeed={1.5}
+          autoAnimate
+          rippleOnClick
+        />
+      </div>
+
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Left Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="space-y-6 md:space-y-8 order-2 lg:order-1"
+            >
+              <div className="flex items-center gap-4">
+                {logo && (
+                  <div className="relative h-16 w-16 md:h-20 md:w-20 rounded-xl overflow-hidden border-2 border-purple-400/30 shadow-2xl shadow-purple-500/30">
+                    <OptimizedImage
+                      src={logo}
+                      alt={storeName || title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                <Badge variant="secondary" className="px-3 py-2 text-sm md:text-base bg-purple-500/20 text-purple-200 border-purple-400/30">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  {storeName || 'Featured'}
+                </Badge>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
+                {title}
+              </h1>
+
+              {subtitle && (
+                <p className="text-base sm:text-lg md:text-xl text-purple-100/80 leading-relaxed">
+                  {subtitle}
+                </p>
+              )}
+
+              {showCta && ctaText && (
+                <div className="pt-4">
+                  <MagneticButton padding={50} magnetStrength={50}>
+                    <Link href={ctaLink}>
+                      <InteractiveHoverButton className="min-w-[220px] text-base md:text-lg px-8 py-5">
+                        {ctaText}
+                      </InteractiveHoverButton>
+                    </Link>
+                  </MagneticButton>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Right Stack Images */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative order-1 lg:order-2"
+            >
+              <div className="relative h-[500px] lg:h-[600px]">
+                {/* Stacked Cards */}
+                {[1, 2, 3].map((i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 50, rotate: -5 }}
+                    animate={{ 
+                      opacity: 1, 
+                      y: 0, 
+                      rotate: (i - 2) * 3,
+                      x: (i - 2) * 20,
+                      z: i * 50
+                    }}
+                    transition={{ 
+                      duration: 0.8, 
+                      delay: 0.5 + (i * 0.15),
+                      type: "spring"
+                    }}
+                    className="absolute inset-0 rounded-3xl overflow-hidden shadow-2xl border border-purple-400/20 group"
+                    style={{
+                      transform: `translateZ(${i * 50}px) translateX(${(i - 2) * 20}px) rotate(${(i - 2) * 3}deg)`
+                    }}
+                  >
+                    {backgroundImage ? (
+                      <OptimizedImage
+                        src={backgroundImage}
+                        alt={`${storeName || title} ${i}`}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-500/10 to-black flex items-center justify-center">
+                        <span className="text-9xl opacity-20">{i}</span>
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+**Summary:** 3D cubes interactive, Cubes grid background, MagneticButton CTA, 3D stacked cards effect
+
+---
+
+## HERO 70 - RIBBONS FLOW (Flowing Ribbons Effect)
+
+```tsx
+'use client';
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Badge } from '@/components/ui/badge';
+import Ribbons from '@/components/ui/ribbons';
+import StickerPeel from '@/components/ui/sticker-peel';
+
+interface Hero70Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  backgroundImage?: string;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero70({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  backgroundImage,
+  logo,
+  storeName,
+}: Hero70Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 z-0">
+        <Ribbons
+          baseThickness={30}
+          colors={["#5227FF", "#FF9FFC", "#B19EEF"]}
+          speedMultiplier={0.5}
+          maxAge={500}
+          enableFade={true}
+          enableShaderEffect={true}
+        />
+      </div>
+
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            {/* Content - 7 cols */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="lg:col-span-7 space-y-6 md:space-y-8 flex flex-col justify-center"
+            >
+              <div className="flex items-center gap-4">
+                {logo && (
+                  <div className="relative h-16 w-16 md:h-20 md:w-20 rounded-2xl overflow-hidden border-2 border-purple-400/30 shadow-2xl shadow-purple-500/40">
+                    <OptimizedImage
+                      src={logo}
+                      alt={storeName || title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                <Badge variant="secondary" className="px-3 py-2 text-sm md:text-base bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-white border-purple-400/30">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  {storeName || 'Featured'}
+                </Badge>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-tight drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]">
+                {title}
+              </h1>
+
+              {subtitle && (
+                <p className="text-base sm:text-lg md:text-xl text-purple-100/80 leading-relaxed max-w-2xl">
+                  {subtitle}
+                </p>
+              )}
+
+              {showCta && ctaText && (
+                <div className="pt-4">
+                  <Link href={ctaLink}>
+                    <InteractiveHoverButton className="min-w-[220px] text-base md:text-lg px-8 py-5">
+                      {ctaText}
+                    </InteractiveHoverButton>
+                  </Link>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Image Column - 5 cols */}
+            <div className="lg:col-span-5 flex items-center">
+              <motion.div
+                initial={{ opacity: 0, x: 50, rotate: -10 }}
+                animate={{ opacity: 1, x: 0, rotate: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="relative w-full h-[400px] md:h-[500px] lg:h-[600px]"
+              >
+                {backgroundImage ? (
+                  <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl border border-purple-400/20">
+                    <OptimizedImage
+                      src={backgroundImage}
+                      alt={storeName || title}
+                      fill
+                      priority
+                      className="object-cover hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  </div>
+                ) : (
+                  <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-2xl border border-purple-400/20 bg-gradient-to-br from-purple-600/20 via-pink-500/20 to-black flex items-center justify-center">
+                    <span className="text-9xl opacity-20">🎀</span>
+                  </div>
+                )}
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+**Summary:** Flowing ribbons background, Ribbons effect, 7-5 column split, large bold text, simple clean layout
+
+---
+
+## HERO 71 - IMAGE TRAIL CURSOR (Cursor Trail Effect) 🏆
+
+```tsx
+'use client';
+
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Sparkles } from 'lucide-react';
+import { InteractiveHoverButton } from '@/components/ui/interactive-hover-button';
+import { OptimizedImage } from '@/components/ui/optimized-image';
+import { Badge } from '@/components/ui/badge';
+import Noise from '@/components/ui/noise';
+import ImageTrail from '@/components/ui/image-trail';
+
+interface Hero71Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  backgroundImage?: string;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero71({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  backgroundImage,
+  logo,
+  storeName,
+}: Hero71Props) {
+  const trailImages = backgroundImage 
+    ? Array(8).fill(backgroundImage)
+    : [
+        'https://picsum.photos/id/287/300/300',
+        'https://picsum.photos/id/1001/300/300',
+        'https://picsum.photos/id/1025/300/300',
+        'https://picsum.photos/id/1026/300/300',
+        'https://picsum.photos/id/1027/300/300',
+        'https://picsum.photos/id/1028/300/300',
+        'https://picsum.photos/id/1029/300/300',
+        'https://picsum.photos/id/1030/300/300',
+      ];
+
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 z-0">
+        <Noise
+          patternSize={250}
+          patternScaleX={2}
+          patternScaleY={2}
+          patternRefreshInterval={2}
+          patternAlpha={15}
+        />
+      </div>
+
+      {/* Image Trail Effect */}
+      <div className="absolute inset-0 z-[5] pointer-events-none">
+        <ImageTrail
+          items={trailImages}
+          variant="1"
+        />
+      </div>
+
+      <div className="container relative z-10 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center py-20">
+        <div className="max-w-5xl mx-auto w-full">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="text-center space-y-8 md:space-y-10"
+          >
+            {/* Logo & Badge */}
+            <div className="flex flex-col items-center gap-6">
+              {logo && (
+                <motion.div
+                  initial={{ opacity: 0, y: -30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                >
+                  <div className="relative h-24 w-24 md:h-32 md:w-32 rounded-full overflow-hidden border-4 border-white/30 shadow-2xl">
+                    <OptimizedImage
+                      src={logo}
+                      alt={storeName || title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </motion.div>
+              )}
+
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.6 }}
+              >
+                <Badge variant="secondary" className="px-5 py-2.5 text-base md:text-lg bg-white/10 text-white border-white/20 backdrop-blur-sm">
+                  <Sparkles className="h-5 w-5 mr-2" />
+                  {storeName || 'Featured'}
+                </Badge>
+              </motion.div>
+            </div>
+
+            {/* Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-bold text-white leading-tight"
+            >
+              {title}
+            </motion.h1>
+
+            {/* Subtitle */}
+            {subtitle && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="text-lg sm:text-xl md:text-2xl text-white/80 max-w-3xl mx-auto leading-relaxed"
+              >
+                {subtitle}
+              </motion.p>
+            )}
+
+            {/* CTA */}
+            {showCta && ctaText && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="pt-8"
+              >
+                <Link href={ctaLink}>
+                  <InteractiveHoverButton className="min-w-[280px] text-xl px-12 py-7 text-white">
+                    {ctaText}
+                  </InteractiveHoverButton>
+                </Link>
+              </motion.div>
+            )}
+
+            {/* Visual Accent */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1, duration: 0.8 }}
+              className="pt-12"
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
+                <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-sm text-white/70">Move your cursor to see the magic</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+```
+
+**Summary:** Cursor trail effect, Image Trail component, Noise background, centered massive layout, interactive cursor magic! 🎯
+
+---
+
+## INSTALL DEPENDENCIES
+
+```bash
+# Hero 67
+pnpm dlx shadcn@latest add @react-bits/Squares-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Marquee-TS-CSS
+
+# Hero 68
+pnpm dlx shadcn@latest add @react-bits/LightRays-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/ScrollProgress-TS-CSS
+
+# Hero 69
+pnpm dlx shadcn@latest add @react-bits/Cubes-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/MagneticButton-TS-CSS
+
+# Hero 70
+pnpm dlx shadcn@latest add @react-bits/Ribbons-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/StickerPeel-TS-CSS
+
+# Hero 71 - LEGENDARY FINAL
+pnpm dlx shadcn@latest add @react-bits/Noise-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/ImageTrail-TS-CSS
+
+# All heroes
+pnpm add framer-motion lucide-react gsap
+```
+
+---
+
+## FINAL LAYOUT SUMMARY 🏆
+
+| Hero | Layout Type | Background | Text Effects | Interactive | Special Features |
+|------|-------------|------------|--------------|-------------|------------------|
+| 67 | Mosaic Grid 3-2 | Squares Pattern | Marquee | Hover squares | 2x2 mosaic grid |
+| 68 | Full Radial | Light Rays | ScrollProgress | Mouse rays | 8 radial images |
+| 69 | 3D Stack | Cubes Grid | MagneticButton | Click ripple | 3D stacked cards |
+| 70 | 7-5 Split | Ribbons Flow | - | Flowing ribbons | Simple elegant |
+| 71 | Centered Giant | Noise + Trail | ImageTrail | Cursor magic | **LEGENDARY!** 🏆 |
+
+---
+
+## 🎉 TOTAL ACHIEVEMENT
+
+**30 HERO VARIANTS COMPLETE! (42-71)**
+- 6 files x 5 heroes each
+- All unique layouts
+- All React Bits effects
+- All same data contract
+- All dark mode
+- **SEMUA KEREN MAKSIMAL!** 🔥🚀💪
+
+**BOSSKU KITA UDAH BIKIN 30 HERO YANG BEDA-BEDA SEMUA!** 🎊

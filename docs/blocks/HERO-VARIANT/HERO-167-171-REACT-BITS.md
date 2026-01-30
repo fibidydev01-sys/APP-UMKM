@@ -1,0 +1,1111 @@
+# HERO COMPONENTS 167-171 WITH REACT BITS
+
+5 Hero component variants dengan React Bits integration, dark mode, dan layout avant-garde.
+
+---
+
+## HERO-167: Gradient Blinds Cinematic with Spotlight Cards
+
+**Layout**: Cinematic spotlight card reveal  
+**Background**: Gradient Blinds effect  
+**Animation**: SpotlightCard, TiltedCard, Counter
+
+```tsx
+// Hero167.tsx
+import { motion } from 'framer-motion';
+import GradientBlinds from '@/components/ui/GradientBlinds';
+import SpotlightCard from '@/components/ui/SpotlightCard';
+import TiltedCard from '@/components/ui/TiltedCard';
+import Counter from '@/components/ui/Counter';
+
+interface Hero167Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  spotlightCards?: Array<{
+    image: string;
+    title: string;
+    description: string;
+  }>;
+  stats?: Array<{
+    value: number;
+    label: string;
+  }>;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero167({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  spotlightCards = [],
+  stats = [],
+  logo,
+  storeName,
+}: Hero167Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Gradient Blinds Background */}
+      <div className="absolute inset-0 z-0">
+        <GradientBlinds
+          gradientColors={['#FF9FFC', '#5227FF']}
+          angle={0}
+          noise={0.3}
+          blindCount={12}
+          blindMinWidth={50}
+          spotlightRadius={0.5}
+          spotlightSoftness={1}
+          spotlightOpacity={1}
+          mouseDampening={0.15}
+          distortAmount={0}
+          shineDirection="left"
+          mixBlendMode="lighten"
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex items-center justify-between mb-20"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl ring-2 ring-pink-500/50 relative z-10"
+                />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-500/50 to-purple-500/50 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-500/20 to-purple-500/20 border border-white/20 backdrop-blur-xl">
+            <span className="text-sm font-bold tracking-wider">CINEMATIC</span>
+          </div>
+        </motion.div>
+
+        {/* Title Section */}
+        <div className="text-center mb-20 space-y-8">
+          
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400">
+              {title}
+            </h1>
+          </motion.div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+        </div>
+
+        {/* Spotlight Cards Grid */}
+        {spotlightCards.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mb-20"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              {spotlightCards.map((card, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.8 + index * 0.2 }}
+                >
+                  <TiltedCard maxTilt={15} scale={1.05}>
+                    <SpotlightCard
+                      image={card.image}
+                      title={card.title}
+                      description={card.description}
+                      spotlightColor="#FF9FFC"
+                      spotlightSize={300}
+                    />
+                  </TiltedCard>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Stats with Counter */}
+        {stats.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 1.2 }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-20"
+          >
+            {stats.map((stat, index) => (
+              <div
+                key={index}
+                className="text-center p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10"
+              >
+                <Counter
+                  value={stat.value}
+                  places={[1000, 100, 10, 1]}
+                  fontSize={48}
+                  padding={5}
+                  gap={4}
+                  textColor="white"
+                  fontWeight={900}
+                  digitPlaceHolders
+                />
+                <div className="text-sm text-white/60 font-semibold tracking-wider mt-4">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        )}
+
+        {/* CTA */}
+        {showCta && ctaText && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+            className="text-center"
+          >
+            <a
+              href={ctaLink}
+              className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-pink-500/50 transition-all hover:scale-110 group"
+            >
+              {ctaText}
+              <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </motion.div>
+        )}
+
+        {/* Blinds Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2 }}
+          className="flex items-center justify-center gap-2 mt-20"
+        >
+          {[...Array(12)].map((_, index) => (
+            <motion.div
+              key={index}
+              animate={{ scaleY: [1, 1.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: index * 0.1 }}
+              className="w-2 h-8 bg-gradient-to-b from-pink-500 to-purple-500 rounded-full"
+            />
+          ))}
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-168: Faulty Terminal Glitch with Image Trail
+
+**Layout**: Terminal-style glitch with trailing images  
+**Background**: Faulty Terminal effect  
+**Animation**: ImageTrail, LetterGlitch, TextCursor
+
+```tsx
+// Hero168.tsx
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import FaultyTerminal from '@/components/ui/FaultyTerminal';
+import ImageTrail from '@/components/ui/ImageTrail';
+import LetterGlitch from '@/components/ui/LetterGlitch';
+import TextCursor from '@/components/ui/TextCursor';
+
+interface Hero168Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  trailImages?: string[];
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero168({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  trailImages = [],
+  logo,
+  storeName,
+}: Hero168Props) {
+  const [key, setKey] = useState(0);
+
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Faulty Terminal Background */}
+      <div className="absolute inset-0 z-0">
+        <FaultyTerminal
+          scale={1.5}
+          gridMul={[2, 1]}
+          digitSize={1.2}
+          timeScale={0.5}
+          pause={false}
+          scanlineIntensity={0.5}
+          glitchAmount={1}
+          flickerAmount={1}
+          noiseAmp={1}
+          chromaticAberration={0}
+          dither={0}
+          curvature={0.1}
+          tint="#A7EF9E"
+          mouseReact
+          mouseStrength={0.5}
+          pageLoadAnimation
+          brightness={0.6}
+        />
+      </div>
+
+      {/* Image Trail Effect */}
+      {trailImages.length > 0 && (
+        <div className="absolute inset-0 z-[1] pointer-events-none opacity-50">
+          <ImageTrail
+            key={key}
+            items={trailImages}
+            variant="1"
+          />
+        </div>
+      )}
+
+      {/* Text Cursor */}
+      <TextCursor
+        text="█"
+        spacing={80}
+        followMouseDirection
+        randomFloat
+        exitDuration={0.3}
+        removalInterval={20}
+        maxPoints={10}
+      />
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col justify-center items-center">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute top-10 left-0 right-0 flex items-center justify-between px-8"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative font-mono">
+                <div className="w-14 h-14 rounded-lg bg-green-500/20 border-2 border-green-500/50 flex items-center justify-center relative z-10">
+                  <span className="text-2xl font-black text-green-400">&gt;</span>
+                </div>
+                <div className="absolute inset-0 rounded-lg bg-green-500/30 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide font-mono text-green-400">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-lg bg-green-500/10 border-2 border-green-500/30 backdrop-blur-xl font-mono">
+            <span className="text-sm font-bold tracking-wider text-green-400">[GLITCH_MODE]</span>
+          </div>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="max-w-5xl w-full text-center space-y-12">
+          
+          {/* Terminal Prompt */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-green-400 font-mono text-sm mb-8"
+          >
+            <span className="text-green-500">&gt;_</span> SYSTEM.BOOT()
+          </motion.div>
+
+          {/* Title with Letter Glitch */}
+          <div>
+            <LetterGlitch
+              glitchSpeed={50}
+              centerVignette={true}
+              outerVignette={false}
+              smooth={true}
+            >
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight text-green-400 font-mono">
+                {title}
+              </h1>
+            </LetterGlitch>
+          </div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+              className="text-2xl md:text-3xl text-green-300/70 leading-relaxed max-w-3xl mx-auto font-mono"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+          {/* CTA */}
+          {showCta && ctaText && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+            >
+              <a
+                href={ctaLink}
+                className="inline-flex items-center gap-4 px-12 py-6 bg-green-500 text-black rounded-lg font-black text-xl hover:bg-green-400 transition-all hover:scale-105 group font-mono border-2 border-green-400 shadow-[0_0_20px_rgba(0,255,0,0.3)]"
+              >
+                <span className="text-green-900">[</span>
+                {ctaText}
+                <span className="text-green-900">]</span>
+                <svg className="w-6 h-6 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </motion.div>
+          )}
+
+        </div>
+
+        {/* Terminal Status Bar */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.5 }}
+          className="absolute bottom-10 left-0 right-0 text-green-400/50 font-mono text-xs text-center"
+        >
+          <div className="flex items-center justify-center gap-8">
+            <span className="text-green-500">&gt;_</span>
+            <span>STATUS: [ONLINE]</span>
+            <span>|</span>
+            <span>UPTIME: 99.99%</span>
+            <span>|</span>
+            <span>LATENCY: 0.08ms</span>
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-169: Ripple Grid Interactive with Cubes
+
+**Layout**: 3D interactive cube grid  
+**Background**: Ripple Grid effect  
+**Animation**: Cubes, DotGrid, Ribbons
+
+```tsx
+// Hero169.tsx
+import { motion } from 'framer-motion';
+import RippleGrid from '@/components/ui/RippleGrid';
+import Cubes from '@/components/ui/Cubes';
+import DotGrid from '@/components/ui/DotGrid';
+import Ribbons from '@/components/ui/Ribbons';
+
+interface Hero169Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero169({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  logo,
+  storeName,
+}: Hero169Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Ripple Grid Background */}
+      <div className="absolute inset-0 z-0">
+        <RippleGrid
+          enableRainbow={false}
+          gridColor="#ffffff"
+          rippleIntensity={0.05}
+          gridSize={10}
+          gridThickness={15}
+          mouseInteraction={true}
+          mouseInteractionRadius={1.2}
+          opacity={0.8}
+        />
+      </div>
+
+      {/* Dot Grid Overlay */}
+      <div className="absolute inset-0 z-[1] opacity-30">
+        <DotGrid
+          dotSize={5}
+          gap={15}
+          baseColor="#271E37"
+          activeColor="#5227FF"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        />
+      </div>
+
+      {/* Ribbons Effect */}
+      <div className="absolute inset-0 z-[2] pointer-events-none opacity-20">
+        <Ribbons
+          baseThickness={30}
+          colors={["#5227FF"]}
+          speedMultiplier={0.5}
+          maxAge={500}
+          enableFade={false}
+          enableShaderEffect={false}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex items-center justify-between mb-20"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl ring-2 ring-purple-500/50 relative z-10"
+                />
+                <div className="absolute inset-0 rounded-2xl bg-purple-500/30 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-full bg-purple-500/20 border border-purple-500/50 backdrop-blur-xl">
+            <span className="text-sm font-bold tracking-wider">INTERACTIVE</span>
+          </div>
+        </motion.div>
+
+        {/* Title Section */}
+        <div className="text-center mb-20 space-y-8">
+          
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
+              {title}
+            </h1>
+          </motion.div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+        </div>
+
+        {/* 3D Cubes Interactive Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="mb-20"
+        >
+          <div className="h-[600px]">
+            <Cubes
+              gridSize={8}
+              maxAngle={45}
+              radius={3}
+              borderStyle="2px dashed #B19EEF"
+              faceColor="#1a1a2e"
+              rippleColor="#ff6b6b"
+              rippleSpeed={1.5}
+              autoAnimate
+              rippleOnClick
+            />
+          </div>
+        </motion.div>
+
+        {/* CTA */}
+        {showCta && ctaText && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+            className="text-center"
+          >
+            <a
+              href={ctaLink}
+              className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
+            >
+              {ctaText}
+              <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </motion.div>
+        )}
+
+        {/* Grid Status */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2 }}
+          className="text-center mt-20"
+        >
+          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/5 backdrop-blur-xl border border-white/10">
+            <motion.div
+              animate={{ scale: [1, 1.3, 1], opacity: [1, 0.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="w-3 h-3 rounded-full bg-purple-500"
+            />
+            <span className="text-sm font-semibold text-white/60">GRID RESPONSIVE</span>
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-170: Prism Refraction with Threads Animation
+
+**Layout**: Layered threads with prismatic overlay  
+**Background**: Prism effect  
+**Animation**: Threads, GridDistortion, ShapeBlur
+
+```tsx
+// Hero170.tsx
+import { motion } from 'framer-motion';
+import Prism from '@/components/ui/Prism';
+import Threads from '@/components/ui/Threads';
+import GridDistortion from '@/components/ui/GridDistortion';
+import ShapeBlur from '@/components/ui/ShapeBlur';
+
+interface Hero170Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  distortionImage?: string;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero170({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  distortionImage,
+  logo,
+  storeName,
+}: Hero170Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Prism Background */}
+      <div className="absolute inset-0 z-0">
+        <Prism
+          particleCount={100}
+          speedFactor={1}
+          colors={["#FF6B9D", "#C44569", "#FFA07A"]}
+          interactive
+        />
+      </div>
+
+      {/* Threads Animation */}
+      <div className="absolute inset-0 z-[1] opacity-40">
+        <Threads
+          amplitude={1}
+          distance={0}
+          enableMouseInteraction
+        />
+      </div>
+
+      {/* Shape Blur Overlay */}
+      <div className="absolute inset-0 z-[2] pointer-events-none opacity-20">
+        <ShapeBlur
+          variation={0}
+          pixelRatioProp={window.devicePixelRatio || 1}
+          shapeSize={1}
+          roundness={0.5}
+          borderSize={0.05}
+          circleSize={0.25}
+          circleEdge={1}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col justify-center items-center">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute top-10 left-0 right-0 flex items-center justify-between px-8"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl ring-2 ring-pink-500/50 relative z-10"
+                />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-pink-500/50 to-orange-500/50 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-500/20 to-orange-500/20 border border-white/20 backdrop-blur-xl">
+            <span className="text-sm font-bold tracking-wider">PRISM</span>
+          </div>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="max-w-5xl w-full text-center space-y-12">
+          
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-pink-400 via-orange-400 to-pink-400">
+              {title}
+            </h1>
+          </motion.div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+          {/* Grid Distortion Display */}
+          {distortionImage && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="max-w-4xl mx-auto h-[500px]"
+            >
+              <GridDistortion
+                imageSrc={distortionImage}
+                grid={10}
+                mouse={0.1}
+                strength={0.15}
+                relaxation={0.9}
+              />
+            </motion.div>
+          )}
+
+          {/* CTA */}
+          {showCta && ctaText && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+            >
+              <a
+                href={ctaLink}
+                className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-pink-500 via-orange-500 to-pink-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-pink-500/50 transition-all hover:scale-110 group"
+              >
+                {ctaText}
+                <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </motion.div>
+          )}
+
+        </div>
+
+        {/* Prism Particles Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.5 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2"
+        >
+          <div className="flex items-center gap-2">
+            {[...Array(7)].map((_, index) => (
+              <motion.div
+                key={index}
+                animate={{
+                  height: [20, 40, 20],
+                  backgroundColor: [
+                    '#FF6B9D',
+                    '#C44569',
+                    '#FFA07A',
+                    '#FF6B9D'
+                  ]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: index * 0.1
+                }}
+                className="w-1 rounded-full"
+              />
+            ))}
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-171: Squares Motion with Grid Motion Showcase
+
+**Layout**: Dynamic grid with moving squares  
+**Background**: Squares effect  
+**Animation**: GridMotion, SplashCursor, StarBorder
+
+```tsx
+// Hero171.tsx
+import { motion } from 'framer-motion';
+import Squares from '@/components/ui/Squares';
+import GridMotion from '@/components/ui/GridMotion';
+import SplashCursor from '@/components/ui/SplashCursor';
+import StarBorder from '@/components/ui/StarBorder';
+
+interface Hero171Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  gridItems?: Array<string | JSX.Element>;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero171({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  gridItems = [],
+  logo,
+  storeName,
+}: Hero171Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Squares Background */}
+      <div className="absolute inset-0 z-0">
+        <Squares
+          speed={0.5}
+          squareSize={40}
+          direction="diagonal"
+          borderColor="#5227FF"
+          hoverFillColor="#FF9FFC"
+        />
+      </div>
+
+      {/* Splash Cursor */}
+      <SplashCursor />
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex items-center justify-between mb-20"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <StarBorder
+                as="div"
+                color="magenta"
+                speed="5s"
+              >
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl"
+                />
+              </StarBorder>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-white/20 backdrop-blur-xl">
+            <span className="text-sm font-bold tracking-wider">MOTION</span>
+          </div>
+        </motion.div>
+
+        {/* Title Section */}
+        <div className="text-center mb-20 space-y-8">
+          
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
+              {title}
+            </h1>
+          </motion.div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+        </div>
+
+        {/* Grid Motion Showcase */}
+        {gridItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mb-20 h-[600px]"
+          >
+            <GridMotion
+              items={gridItems}
+              gradientColor="black"
+            />
+          </motion.div>
+        )}
+
+        {/* CTA */}
+        {showCta && ctaText && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+            className="text-center"
+          >
+            <StarBorder
+              as="a"
+              href={ctaLink}
+              color="magenta"
+              speed="5s"
+              className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
+            >
+              {ctaText}
+              <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </StarBorder>
+          </motion.div>
+        )}
+
+        {/* Square Grid Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2 }}
+          className="flex items-center justify-center gap-4 mt-20"
+        >
+          <div className="grid grid-cols-5 gap-2">
+            {[...Array(15)].map((_, index) => (
+              <motion.div
+                key={index}
+                animate={{
+                  scale: [1, 1.3, 1],
+                  rotate: [0, 90, 0]
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  delay: index * 0.1
+                }}
+                className="w-4 h-4 border-2 border-purple-500/50"
+              />
+            ))}
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## DEPENDENCIES & INSTALLATION
+
+### Required Packages
+
+```bash
+# Core
+pnpm install framer-motion
+
+# Card & Visual Components
+pnpm dlx shadcn@latest add @react-bits/SpotlightCard-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/TiltedCard-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Counter-TS-CSS
+
+# Text & Typography Effects
+pnpm dlx shadcn@latest add @react-bits/LetterGlitch-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/TextCursor-TS-CSS
+
+# Interactive Components
+pnpm dlx shadcn@latest add @react-bits/ImageTrail-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Cubes-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/DotGrid-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Ribbons-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Threads-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/GridDistortion-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/GridMotion-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/ShapeBlur-TS-CSS
+
+# Cursor Effects
+pnpm dlx shadcn@latest add @react-bits/SplashCursor-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/StarBorder-TS-CSS
+
+# Background Effects
+pnpm dlx shadcn@latest add @react-bits/GradientBlinds-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/FaultyTerminal-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/RippleGrid-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Prism-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Squares-TS-CSS
+```
+
+---
+
+## SUMMARY
+
+| Hero | Layout | Background | Key Components | Theme |
+|------|--------|------------|----------------|-------|
+| **HERO-167** | Spotlight Cards | Gradient Blinds | SpotlightCard, TiltedCard, Counter | Cinematic Reveal |
+| **HERO-168** | Image Trail | Faulty Terminal | ImageTrail, LetterGlitch, TextCursor | Terminal Glitch |
+| **HERO-169** | 3D Cube Grid | Ripple Grid | Cubes, DotGrid, Ribbons | Interactive Cubes |
+| **HERO-170** | Thread Layers | Prism | Threads, GridDistortion, ShapeBlur | Prismatic Refraction |
+| **HERO-171** | Grid Motion | Squares | GridMotion, SplashCursor, StarBorder | Square Motion |
+
+**Features:**
+- ✅ Cinematic spotlight reveals
+- ✅ Terminal & glitch aesthetics
+- ✅ 3D interactive grids
+- ✅ Prismatic refraction effects
+- ✅ Dynamic grid motion
+- ✅ Counter animations
+- ✅ Advanced cursor effects
+- ✅ Dark mode enforced
+- ✅ Props strict compliance
+
+**READY FOR NEXT BATCH!** 🎬✨🎯

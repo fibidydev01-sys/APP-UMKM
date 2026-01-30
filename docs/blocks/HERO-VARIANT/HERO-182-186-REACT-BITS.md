@@ -1,0 +1,1112 @@
+# HERO COMPONENTS 182-186 WITH REACT BITS
+
+5 Hero component variants dengan React Bits integration, dark mode, dan layout avant-garde.
+
+---
+
+## HERO-182: Dither Noise Art with Circular Gallery
+
+**Layout**: Artistic dither with rotating circular gallery  
+**Background**: Dither effect  
+**Animation**: CircularGallery, TextPressure, FadeContent
+
+```tsx
+// Hero182.tsx
+import { motion } from 'framer-motion';
+import Dither from '@/components/ui/Dither';
+import CircularGallery from '@/components/ui/CircularGallery';
+import TextPressure from '@/components/ui/TextPressure';
+import FadeContent from '@/components/ui/FadeContent';
+
+interface Hero182Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  galleryImages?: string[];
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero182({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  galleryImages = [],
+  logo,
+  storeName,
+}: Hero182Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Dither Background */}
+      <div className="absolute inset-0 z-0">
+        <Dither
+          waveColor={[0.5, 0.5, 0.5]}
+          disableAnimation={false}
+          enableMouseInteraction
+          mouseRadius={0.3}
+          colorNum={4}
+          waveAmplitude={0.3}
+          waveFrequency={3}
+          waveSpeed={0.05}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex items-center justify-between mb-20"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl ring-2 ring-gray-500/50 relative z-10"
+                  style={{ imageRendering: 'pixelated' }}
+                />
+                <div className="absolute inset-0 rounded-2xl bg-gray-500/30 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide font-mono">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-lg bg-gray-800/50 border border-gray-500/30 backdrop-blur-xl font-mono">
+            <span className="text-sm font-bold tracking-wider">NOISE ART</span>
+          </div>
+        </motion.div>
+
+        {/* Main Layout */}
+        <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
+          
+          {/* Left - Title with Text Pressure */}
+          <div className="space-y-12">
+            
+            <FadeContent
+              fadeDirection="up"
+              duration={1}
+              delay={0.2}
+            >
+              <div className="h-[300px]">
+                <TextPressure
+                  text={title}
+                  flex
+                  alpha={false}
+                  stroke={false}
+                  width
+                  weight
+                  italic
+                  textColor="#ffffff"
+                  strokeColor="#5227FF"
+                  minFontSize={36}
+                />
+              </div>
+            </FadeContent>
+
+            {/* Subtitle */}
+            {subtitle && (
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="text-2xl md:text-3xl text-white/70 leading-relaxed font-mono"
+              >
+                {subtitle}
+              </motion.p>
+            )}
+
+            {/* CTA */}
+            {showCta && ctaText && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+              >
+                <a
+                  href={ctaLink}
+                  className="inline-flex items-center gap-4 px-12 py-6 bg-gray-800 border-2 border-gray-500/50 text-white rounded-lg font-black text-xl hover:bg-gray-700 hover:border-gray-400 transition-all hover:scale-105 group font-mono"
+                >
+                  {ctaText}
+                  <svg className="w-7 h-7 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+              </motion.div>
+            )}
+
+          </div>
+
+          {/* Right - Circular Gallery */}
+          {galleryImages.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.4 }}
+              className="h-[600px]"
+            >
+              <CircularGallery
+                items={galleryImages}
+                itemWidth={250}
+                itemHeight={350}
+                radius={400}
+                autoRotate
+                rotationSpeed={0.3}
+              />
+            </motion.div>
+          )}
+
+        </div>
+
+        {/* Dither Pattern Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.5 }}
+          className="grid grid-cols-8 gap-2 max-w-2xl mx-auto h-16"
+        >
+          {[...Array(32)].map((_, index) => (
+            <motion.div
+              key={index}
+              animate={{
+                opacity: [0.2, 1, 0.2],
+                backgroundColor: [
+                  '#1a1a1a',
+                  '#4a4a4a',
+                  '#1a1a1a'
+                ]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                delay: index * 0.1
+              }}
+              className="rounded-sm"
+              style={{ imageRendering: 'pixelated' }}
+            />
+          ))}
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-183: Dot Grid Shockwave with Masonry Gallery
+
+**Layout**: Masonry gallery with dot grid interactions  
+**Background**: Dot Grid effect  
+**Animation**: Masonry, GlareHover, ClickSpark
+
+```tsx
+// Hero183.tsx
+import { motion } from 'framer-motion';
+import DotGrid from '@/components/ui/DotGrid';
+import Masonry from '@/components/ui/Masonry';
+import GlareHover from '@/components/ui/GlareHover';
+import ClickSpark from '@/components/ui/ClickSpark';
+
+interface Hero183Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  masonryItems?: Array<{
+    image: string;
+    title: string;
+    category: string;
+  }>;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero183({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  masonryItems = [],
+  logo,
+  storeName,
+}: Hero183Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Dot Grid Background */}
+      <div className="absolute inset-0 z-0">
+        <DotGrid
+          dotSize={5}
+          gap={15}
+          baseColor="#271E37"
+          activeColor="#5227FF"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        />
+      </div>
+
+      {/* Content */}
+      <ClickSpark
+        sparkColor="#5227FF"
+        sparkSize={10}
+        sparkRadius={15}
+        sparkCount={8}
+        duration={400}
+      >
+        <div className="relative z-10 container mx-auto px-4 py-20">
+          
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="flex items-center justify-between mb-20"
+          >
+            {/* Logo & Store */}
+            <div className="flex items-center gap-4">
+              {logo && (
+                <GlareHover
+                  glareColor="#5227FF"
+                  glareIntensity={0.8}
+                  rotationIntensity={10}
+                >
+                  <div className="relative">
+                    <img 
+                      src={logo} 
+                      alt="Logo" 
+                      className="w-14 h-14 rounded-2xl ring-2 ring-purple-500/50"
+                    />
+                  </div>
+                </GlareHover>
+              )}
+              {storeName && (
+                <span className="text-xl font-black tracking-wide">
+                  {storeName}
+                </span>
+              )}
+            </div>
+
+            {/* Badge */}
+            <div className="px-5 py-2.5 rounded-full bg-purple-500/20 border border-purple-500/50 backdrop-blur-xl">
+              <span className="text-sm font-bold tracking-wider">SHOCKWAVE</span>
+            </div>
+          </motion.div>
+
+          {/* Title Section */}
+          <div className="text-center mb-20 space-y-8">
+            
+            {/* Dot Pattern Decoration */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="grid grid-cols-10 gap-3 max-w-md mx-auto mb-8"
+            >
+              {[...Array(30)].map((_, index) => (
+                <motion.div
+                  key={index}
+                  animate={{
+                    scale: [1, 1.5, 1],
+                    opacity: [0.3, 1, 0.3]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.05
+                  }}
+                  className="w-2 h-2 rounded-full bg-purple-500"
+                />
+              ))}
+            </motion.div>
+
+            {/* Title */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
+                {title}
+              </h1>
+            </motion.div>
+
+            {/* Subtitle */}
+            {subtitle && (
+              <motion.p
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+                className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+              >
+                {subtitle}
+              </motion.p>
+            )}
+
+          </div>
+
+          {/* Masonry Gallery */}
+          {masonryItems.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="mb-20"
+            >
+              <Masonry
+                items={masonryItems}
+                columns={3}
+                gap={20}
+              />
+            </motion.div>
+          )}
+
+          {/* CTA */}
+          {showCta && ctaText && (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1.5 }}
+              className="text-center"
+            >
+              <GlareHover
+                glareColor="#5227FF"
+                glareIntensity={1}
+                rotationIntensity={5}
+              >
+                <a
+                  href={ctaLink}
+                  className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
+                >
+                  {ctaText}
+                  <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+              </GlareHover>
+            </motion.div>
+          )}
+
+        </div>
+      </ClickSpark>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-184: Ribbons Flow with Flying Posters
+
+**Layout**: Dynamic ribbon flow with 3D floating posters  
+**Background**: Ribbons effect  
+**Animation**: FlyingPosters, ImageTrail, ShapeBlur
+
+```tsx
+// Hero184.tsx
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import Ribbons from '@/components/ui/Ribbons';
+import FlyingPosters from '@/components/ui/FlyingPosters';
+import ImageTrail from '@/components/ui/ImageTrail';
+import ShapeBlur from '@/components/ui/ShapeBlur';
+
+interface Hero184Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  posterImages?: string[];
+  trailImages?: string[];
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero184({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  posterImages = [],
+  trailImages = [],
+  logo,
+  storeName,
+}: Hero184Props) {
+  const [key, setKey] = useState(0);
+
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Ribbons Background */}
+      <div className="absolute inset-0 z-0">
+        <Ribbons
+          baseThickness={30}
+          colors={["#5227FF", "#FF9FFC", "#00ffd1"]}
+          speedMultiplier={0.5}
+          maxAge={500}
+          enableFade={true}
+          enableShaderEffect={false}
+        />
+      </div>
+
+      {/* Flying Posters */}
+      {posterImages.length > 0 && (
+        <div className="absolute inset-0 z-[1] opacity-40">
+          <FlyingPosters
+            images={posterImages}
+            count={8}
+            speed={0.5}
+            scale={0.8}
+            rotation={15}
+          />
+        </div>
+      )}
+
+      {/* Image Trail */}
+      {trailImages.length > 0 && (
+        <div className="absolute inset-0 z-[2] pointer-events-none opacity-30">
+          <ImageTrail
+            key={key}
+            items={trailImages}
+            variant="1"
+          />
+        </div>
+      )}
+
+      {/* Shape Blur Overlay */}
+      <div className="absolute inset-0 z-[3] pointer-events-none opacity-20">
+        <ShapeBlur
+          variation={0}
+          pixelRatioProp={window.devicePixelRatio || 1}
+          shapeSize={1}
+          roundness={0.5}
+          borderSize={0.05}
+          circleSize={0.25}
+          circleEdge={1}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 min-h-screen flex flex-col justify-center items-center">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute top-10 left-0 right-0 flex items-center justify-between px-8"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl ring-2 ring-purple-500/50 relative z-10"
+                />
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-500/50 to-cyan-500/50 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-500/20 to-cyan-500/20 border border-white/20 backdrop-blur-xl">
+            <span className="text-sm font-bold tracking-wider">FLOW</span>
+          </div>
+        </motion.div>
+
+        {/* Main Content */}
+        <div className="max-w-5xl w-full text-center space-y-12">
+          
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">
+              {title}
+            </h1>
+          </motion.div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+          {/* CTA */}
+          {showCta && ctaText && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              <a
+                href={ctaLink}
+                className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
+              >
+                {ctaText}
+                <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </a>
+            </motion.div>
+          )}
+
+        </div>
+
+        {/* Ribbon Flow Indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1.2 }}
+          className="absolute bottom-10 left-0 right-0"
+        >
+          <div className="flex items-center justify-center gap-2">
+            {[...Array(12)].map((_, index) => (
+              <motion.div
+                key={index}
+                animate={{
+                  scaleX: [1, 2, 1],
+                  opacity: [0.3, 1, 0.3]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: index * 0.1
+                }}
+                className="h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 rounded-full"
+                style={{ width: `${20 + index * 2}px` }}
+              />
+            ))}
+          </div>
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-185: Grid Motion Showcase with Chrome Grid
+
+**Layout**: Dynamic grid motion with chroma effects  
+**Background**: Grid Motion base  
+**Animation**: GridMotion, ChromaGrid, PixelTrail
+
+```tsx
+// Hero185.tsx
+import { motion } from 'framer-motion';
+import GridMotion from '@/components/ui/GridMotion';
+import ChromaGrid from '@/components/ui/ChromaGrid';
+import PixelTrail from '@/components/ui/PixelTrail';
+
+interface Hero185Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  gridItems?: Array<string | JSX.Element>;
+  chromaItems?: Array<{
+    image: string;
+    title: string;
+  }>;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero185({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  gridItems = [],
+  chromaItems = [],
+  logo,
+  storeName,
+}: Hero185Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Pixel Trail Background */}
+      <div className="absolute inset-0 z-0">
+        <PixelTrail
+          gridSize={50}
+          trailSize={0.1}
+          maxAge={250}
+          interpolate={5}
+          color="#5227FF"
+          gooeyEnabled
+          gooStrength={2}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 container mx-auto px-4 py-20">
+        
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="flex items-center justify-between mb-20"
+        >
+          {/* Logo & Store */}
+          <div className="flex items-center gap-4">
+            {logo && (
+              <div className="relative">
+                <img 
+                  src={logo} 
+                  alt="Logo" 
+                  className="w-14 h-14 rounded-2xl ring-2 ring-purple-500/50 relative z-10"
+                />
+                <div className="absolute inset-0 rounded-2xl bg-purple-500/30 blur-xl animate-pulse"></div>
+              </div>
+            )}
+            {storeName && (
+              <span className="text-xl font-black tracking-wide">
+                {storeName}
+              </span>
+            )}
+          </div>
+
+          {/* Badge */}
+          <div className="px-5 py-2.5 rounded-full bg-purple-500/20 border border-purple-500/50 backdrop-blur-xl">
+            <span className="text-sm font-bold tracking-wider">GRID MOTION</span>
+          </div>
+        </motion.div>
+
+        {/* Title Section */}
+        <div className="text-center mb-20 space-y-8">
+          
+          {/* Title */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400">
+              {title}
+            </h1>
+          </motion.div>
+
+          {/* Subtitle */}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+              className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+            >
+              {subtitle}
+            </motion.p>
+          )}
+
+        </div>
+
+        {/* Grid Motion Showcase */}
+        {gridItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mb-20 h-[600px]"
+          >
+            <GridMotion
+              items={gridItems}
+              gradientColor="black"
+            />
+          </motion.div>
+        )}
+
+        {/* Chroma Grid */}
+        {chromaItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.2 }}
+            className="mb-20"
+          >
+            <ChromaGrid
+              items={chromaItems}
+              columns={4}
+              gap={24}
+              hoverEffect="glow"
+              chromaIntensity={0.8}
+            />
+          </motion.div>
+        )}
+
+        {/* CTA */}
+        {showCta && ctaText && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.5 }}
+            className="text-center"
+          >
+            <a
+              href={ctaLink}
+              className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
+            >
+              {ctaText}
+              <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </a>
+          </motion.div>
+        )}
+
+        {/* Grid Pattern */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2 }}
+          className="grid grid-cols-8 gap-2 max-w-2xl mx-auto mt-20"
+        >
+          {[...Array(32)].map((_, index) => (
+            <motion.div
+              key={index}
+              animate={{
+                scale: [1, 1.5, 1],
+                rotate: [0, 90, 0]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                delay: index * 0.1
+              }}
+              className="w-6 h-6 border-2 border-purple-500/50 rounded-sm"
+            />
+          ))}
+        </motion.div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## HERO-186: Ballpit Playground with Bubble Navigation
+
+**Layout**: Physics playground with bubble menu  
+**Background**: Ballpit effect  
+**Animation**: Ballpit, BubbleMenu, Counter
+
+```tsx
+// Hero186.tsx
+import { motion } from 'framer-motion';
+import Ballpit from '@/components/ui/Ballpit';
+import BubbleMenu from '@/components/ui/BubbleMenu';
+import Counter from '@/components/ui/Counter';
+
+interface Hero186Props {
+  title: string;
+  subtitle?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  showCta?: boolean;
+  bubbleItems?: Array<{
+    label: string;
+    href: string;
+    ariaLabel: string;
+    rotation: number;
+    hoverStyles: {
+      bgColor: string;
+      textColor: string;
+    };
+  }>;
+  stats?: Array<{
+    value: number;
+    label: string;
+  }>;
+  logo?: string;
+  storeName?: string;
+}
+
+export function Hero186({
+  title,
+  subtitle,
+  ctaText,
+  ctaLink = '/products',
+  showCta = true,
+  bubbleItems = [],
+  stats = [],
+  logo,
+  storeName,
+}: Hero186Props) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black text-white">
+      {/* Ballpit Background */}
+      <div className="absolute inset-0 z-0">
+        <Ballpit
+          count={50}
+          gravity={0.5}
+          friction={0.95}
+          ballColors={['#5227FF', '#FF9FFC', '#B19EEF', '#00ffd1', '#FFD93D']}
+          interactive={true}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 min-h-screen flex flex-col">
+        
+        {/* Bubble Menu Navigation */}
+        {bubbleItems.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <BubbleMenu
+              logo={
+                logo ? (
+                  <img src={logo} alt="Logo" className="w-10 h-10 rounded-full" />
+                ) : (
+                  <span className="font-black text-xl">{storeName?.substring(0, 2) || 'PG'}</span>
+                )
+              }
+              items={bubbleItems}
+              menuAriaLabel="Toggle navigation"
+              menuBg="#ffffff"
+              menuContentColor="#111111"
+              useFixedPosition={false}
+              animationEase="back.out(1.5)"
+              animationDuration={0.5}
+              staggerDelay={0.12}
+            />
+          </motion.div>
+        )}
+
+        {/* Main Content */}
+        <div className="flex-1 container mx-auto px-4 flex items-center justify-center">
+          <div className="max-w-6xl w-full">
+            
+            {/* Title Section */}
+            <div className="text-center mb-20 space-y-8">
+              
+              {/* Badge */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-white/20 backdrop-blur-xl mb-8"
+              >
+                <div className="w-3 h-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-pulse"></div>
+                <span className="text-sm font-bold tracking-wider">PLAYGROUND</span>
+              </motion.div>
+
+              {/* Title */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-tight bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">
+                  {title}
+                </h1>
+              </motion.div>
+
+              {/* Subtitle */}
+              {subtitle && (
+                <motion.p
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.5 }}
+                  className="text-2xl md:text-3xl text-white/70 leading-relaxed max-w-3xl mx-auto"
+                >
+                  {subtitle}
+                </motion.p>
+              )}
+
+            </div>
+
+            {/* Stats with Counter */}
+            {stats.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.8 }}
+                className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-20"
+              >
+                {stats.map((stat, index) => (
+                  <div
+                    key={index}
+                    className="text-center p-8 rounded-3xl bg-white/5 backdrop-blur-xl border border-white/10"
+                  >
+                    <Counter
+                      value={stat.value}
+                      places={[1000, 100, 10, 1]}
+                      fontSize={48}
+                      padding={5}
+                      gap={4}
+                      textColor="white"
+                      fontWeight={900}
+                      digitPlaceHolders
+                    />
+                    <div className="text-sm text-white/60 font-semibold tracking-wider mt-4">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </motion.div>
+            )}
+
+            {/* CTA */}
+            {showCta && ctaText && (
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 1.2 }}
+                className="text-center"
+              >
+                <a
+                  href={ctaLink}
+                  className="inline-flex items-center gap-4 px-14 py-7 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500 text-white rounded-full font-black text-2xl hover:shadow-2xl hover:shadow-purple-500/50 transition-all hover:scale-110 group"
+                >
+                  {ctaText}
+                  <svg className="w-8 h-8 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </a>
+              </motion.div>
+            )}
+
+            {/* Ball Indicators */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 1.5 }}
+              className="flex items-center justify-center gap-4 mt-20"
+            >
+              {['#5227FF', '#FF9FFC', '#B19EEF', '#00ffd1', '#FFD93D'].map((color, index) => (
+                <motion.div
+                  key={index}
+                  animate={{
+                    y: [0, -15, 0],
+                    scale: [1, 1.2, 1]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.2
+                  }}
+                  className="w-8 h-8 rounded-full shadow-lg"
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+            </motion.div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+## DEPENDENCIES & INSTALLATION
+
+### Required Packages
+
+```bash
+# Core
+pnpm install framer-motion
+
+# Text & Typography Components
+pnpm dlx shadcn@latest add @react-bits/TextPressure-TS-CSS
+
+# Gallery & Display Components
+pnpm dlx shadcn@latest add @react-bits/CircularGallery-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Masonry-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/FlyingPosters-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/GridMotion-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/ChromaGrid-TS-CSS
+
+# Interactive Components
+pnpm dlx shadcn@latest add @react-bits/FadeContent-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/GlareHover-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/ClickSpark-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/ImageTrail-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/PixelTrail-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Counter-TS-CSS
+
+# Navigation Components
+pnpm dlx shadcn@latest add @react-bits/BubbleMenu-TS-CSS
+
+# Visual Effects
+pnpm dlx shadcn@latest add @react-bits/ShapeBlur-TS-CSS
+
+# Background Effects
+pnpm dlx shadcn@latest add @react-bits/Dither-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/DotGrid-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Ribbons-TS-CSS
+pnpm dlx shadcn@latest add @react-bits/Ballpit-TS-CSS
+```
+
+---
+
+## SUMMARY
+
+| Hero | Layout | Background | Key Components | Theme |
+|------|--------|------------|----------------|-------|
+| **HERO-182** | Circular Gallery | Dither | CircularGallery, TextPressure, FadeContent | Noise Art |
+| **HERO-183** | Masonry Grid | Dot Grid | Masonry, GlareHover, ClickSpark | Shockwave Grid |
+| **HERO-184** | Flying Posters | Ribbons | FlyingPosters, ImageTrail, ShapeBlur | Ribbon Flow |
+| **HERO-185** | Grid Motion | Pixel Trail | GridMotion, ChromaGrid, PixelTrail | Dynamic Grid |
+| **HERO-186** | Bubble Nav | Ballpit | Ballpit, BubbleMenu, Counter | Physics Play |
+
+**Features:**
+- ✅ Noise art aesthetics
+- ✅ Shockwave interactions
+- ✅ Ribbon flow dynamics
+- ✅ Dynamic grid motion
+- ✅ Physics playground
+- ✅ Circular galleries
+- ✅ Masonry layouts
+- ✅ 3D flying posters
+- ✅ Dark mode enforced
+- ✅ Props strict compliance
+
+**READY FOR FINAL BATCHES!** 🎨⚡✨
