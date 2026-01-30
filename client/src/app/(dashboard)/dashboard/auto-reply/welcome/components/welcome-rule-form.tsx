@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Info, FileText, User, Phone, X } from 'lucide-react';
+import { Loader2, Info, FileText, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { AutoReplyRule } from '@/types/chat';
 
@@ -25,8 +25,8 @@ Terima kasih sudah menghubungi kami.
 Ada yang bisa kami bantu? Silakan sampaikan kebutuhan Anda, kami siap membantu! 😊`;
 
 const VARIABLES = [
-  { key: '{{name}}', label: 'NAMA', icon: User, description: 'Nama customer (jika tersedia)' },
-  { key: '{{phone}}', label: 'TELEPON', icon: Phone, description: 'Nomor WhatsApp customer' },
+  { key: '{{name}}', label: 'NAMA', description: 'Nama customer (jika tersedia)' },
+  { key: '{{phone}}', label: 'TELEPON', description: 'Nomor WhatsApp customer' },
 ];
 
 interface Props {
@@ -92,15 +92,8 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
     const chip = document.createElement('span');
     chip.setAttribute('data-variable', variable.key);
     chip.setAttribute('contenteditable', 'false');
-    chip.className = 'inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default';
-    chip.innerHTML = `
-      <span class="inline-flex items-center gap-1">
-        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          ${variable.icon === User ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>'}
-        </svg>
-        <span>${variable.label}</span>
-      </span>
-    `;
+    chip.className = 'inline-flex items-center px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default';
+    chip.innerHTML = `<span>${variable.label}</span>`;
 
     // Insert chip
     const currentRange = window.getSelection()?.getRangeAt(0);
@@ -135,12 +128,7 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
     // Replace {{variable}} with chip HTML
     VARIABLES.forEach((variable) => {
       const regex = new RegExp(variable.key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-      const iconSvg = variable.icon === User
-        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>'
-        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>';
-
-      const chipHtml = `<span data-variable="${variable.key}" contenteditable="false" class="inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default"><span class="inline-flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconSvg}</svg><span>${variable.label}</span></span></span>`;
-
+      const chipHtml = `<span data-variable="${variable.key}" contenteditable="false" class="inline-flex items-center px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default"><span>${variable.label}</span></span>`;
       html = html.replace(regex, chipHtml);
     });
 
@@ -323,7 +311,6 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
                 </Label>
                 <div className="flex flex-wrap gap-2">
                   {VARIABLES.map((variable) => {
-                    const Icon = variable.icon;
                     const isUsed = hasVariable(variable.key);
                     return (
                       <Button
@@ -336,7 +323,6 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
                         title={isUsed ? `${variable.label} sudah digunakan` : variable.description}
                         className="h-7 text-xs"
                       >
-                        <Icon className="h-3 w-3 mr-1" />
                         {variable.label}
                       </Button>
                     );

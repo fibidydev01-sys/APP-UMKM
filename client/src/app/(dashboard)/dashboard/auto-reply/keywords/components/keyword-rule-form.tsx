@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Loader2, Info, FileText, User, Phone, X, Plus } from 'lucide-react';
+import { Loader2, Info, FileText, X, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { AutoReplyRule } from '@/types/chat';
 
@@ -27,8 +27,8 @@ import type { AutoReplyRule } from '@/types/chat';
 // ==========================================
 
 const VARIABLES = [
-  { key: '{{name}}', label: 'NAMA', icon: User, description: 'Nama customer (jika tersedia)' },
-  { key: '{{phone}}', label: 'TELEPON', icon: Phone, description: 'Nomor WhatsApp customer' },
+  { key: '{{name}}', label: 'NAMA', description: 'Nama customer (jika tersedia)' },
+  { key: '{{phone}}', label: 'TELEPON', description: 'Nomor WhatsApp customer' },
 ];
 
 const MATCH_TYPES = [
@@ -53,7 +53,7 @@ export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
   const [matchType, setMatchType] = useState<'EXACT' | 'CONTAINS' | 'STARTS_WITH'>('CONTAINS');
   const [caseSensitive, setCaseSensitive] = useState(false);
   const [message, setMessage] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const isEdit = !!rule;
 
@@ -62,14 +62,85 @@ export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
     return message.includes(varKey);
   };
 
-  // Helper: Get active variables in message
-  const getActiveVariables = () => {
-    return VARIABLES.filter((v) => message.includes(v.key));
+  // Helper: Convert HTML content to message format
+  const getMessageFromEditor = () => {
+    if (!editorRef.current) return '';
+
+    const clonedContent = editorRef.current.cloneNode(true) as HTMLElement;
+
+    // Replace chip spans with {{variable}} format
+    clonedContent.querySelectorAll('[data-variable]').forEach((chip) => {
+      const varKey = chip.getAttribute('data-variable');
+      const textNode = document.createTextNode(varKey || '');
+      chip.parentNode?.replaceChild(textNode, chip);
+    });
+
+    return clonedContent.innerText.trim();
   };
 
-  // Helper: Remove variable from message
-  const removeVariable = (varKey: string) => {
-    setMessage(message.replace(new RegExp(varKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), ''));
+  // Helper: Insert variable chip at cursor
+  const insertVariableChip = (variable: typeof VARIABLES[0]) => {
+    if (!editorRef.current) return;
+    if (hasVariable(variable.key)) return;
+
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
+
+    if (!range || !editorRef.current.contains(range.commonAncestorContainer)) {
+      // If no selection or selection outside editor, append to end
+      editorRef.current.focus();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(editorRef.current);
+      newRange.collapse(false);
+      selection?.removeAllRanges();
+      selection?.addRange(newRange);
+    }
+
+    // Create chip element
+    const chip = document.createElement('span');
+    chip.setAttribute('data-variable', variable.key);
+    chip.setAttribute('contenteditable', 'false');
+    chip.className = 'inline-flex items-center px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default';
+    chip.innerHTML = `<span>${variable.label}</span>`;
+
+    // Insert chip
+    const currentRange = window.getSelection()?.getRangeAt(0);
+    if (currentRange) {
+      currentRange.deleteContents();
+      currentRange.insertNode(chip);
+
+      // Move cursor after chip
+      currentRange.setStartAfter(chip);
+      currentRange.setEndAfter(chip);
+      selection?.removeAllRanges();
+      selection?.addRange(currentRange);
+    }
+
+    // Update message state
+    updateMessageFromEditor();
+    editorRef.current?.focus();
+  };
+
+  // Helper: Update message state from editor
+  const updateMessageFromEditor = () => {
+    const msg = getMessageFromEditor();
+    setMessage(msg);
+  };
+
+  // Helper: Render message with chips in editor
+  const renderMessageWithChips = (text: string) => {
+    if (!editorRef.current) return;
+
+    let html = text;
+
+    // Replace {{variable}} with chip HTML
+    VARIABLES.forEach((variable) => {
+      const regex = new RegExp(variable.key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+      const chipHtml = `<span data-variable="${variable.key}" contenteditable="false" class="inline-flex items-center px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default"><span>${variable.label}</span></span>`;
+      html = html.replace(regex, chipHtml);
+    });
+
+    editorRef.current.innerHTML = html || '<br>';
   };
 
   // Initialize form
@@ -82,6 +153,7 @@ export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
         setMatchType(rule.matchType as any || 'CONTAINS');
         setCaseSensitive(rule.caseSensitive || false);
         setMessage(rule.responseMessage);
+        setTimeout(() => renderMessageWithChips(rule.responseMessage), 0);
       } else {
         setName('');
         setDescription('');
@@ -90,28 +162,47 @@ export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
         setMatchType('CONTAINS');
         setCaseSensitive(false);
         setMessage('');
+        setTimeout(() => renderMessageWithChips(''), 0);
       }
     }
   }, [open, rule]);
 
-  const insertVariable = (variable: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+  // Handle editor content changes
+  const handleEditorInput = () => {
+    updateMessageFromEditor();
+  };
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = message;
-    const before = text.substring(0, start);
-    const after = text.substring(end);
+  // Handle backspace to delete chips
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Backspace') {
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
 
-    const newText = before + variable + after;
-    setMessage(newText);
+      if (range && range.collapsed) {
+        // Check if cursor is right after a chip
+        const cursorNode = range.startContainer;
+        const cursorOffset = range.startOffset;
 
-    // Set cursor position after inserted variable
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + variable.length, start + variable.length);
-    }, 0);
+        if (cursorNode.nodeType === Node.TEXT_NODE && cursorOffset === 0) {
+          const prevSibling = cursorNode.previousSibling;
+          if (prevSibling && (prevSibling as HTMLElement).hasAttribute?.('data-variable')) {
+            e.preventDefault();
+            prevSibling.remove();
+            updateMessageFromEditor();
+            return;
+          }
+        } else if (cursorNode.nodeType === Node.ELEMENT_NODE) {
+          const element = cursorNode as HTMLElement;
+          const prevChild = element.childNodes[cursorOffset - 1];
+          if (prevChild && (prevChild as HTMLElement).hasAttribute?.('data-variable')) {
+            e.preventDefault();
+            prevChild.remove();
+            updateMessageFromEditor();
+            return;
+          }
+        }
+      }
+    }
   };
 
   const addKeyword = () => {
@@ -348,75 +439,39 @@ export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
               </Label>
 
               {/* Add Variable Buttons */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Tambah Variabel:
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    {VARIABLES.map((variable) => {
-                      const Icon = variable.icon;
-                      const isUsed = hasVariable(variable.key);
-                      return (
-                        <Button
-                          key={variable.key}
-                          type="button"
-                          variant={isUsed ? "secondary" : "outline"}
-                          size="sm"
-                          onClick={() => insertVariable(variable.key)}
-                          disabled={isUsed}
-                          title={isUsed ? `${variable.label} sudah digunakan` : variable.description}
-                          className="h-7 text-xs"
-                        >
-                          <Icon className="h-3 w-3 mr-1" />
-                          {variable.label}
-                        </Button>
-                      );
-                    })}
-                  </div>
+              <div className="flex items-center gap-2">
+                <Label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                  Tambah Variabel:
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {VARIABLES.map((variable) => {
+                    const isUsed = hasVariable(variable.key);
+                    return (
+                      <Button
+                        key={variable.key}
+                        type="button"
+                        variant={isUsed ? "secondary" : "outline"}
+                        size="sm"
+                        onClick={() => insertVariableChip(variable)}
+                        disabled={isUsed}
+                        title={isUsed ? `${variable.label} sudah digunakan` : variable.description}
+                        className="h-7 text-xs"
+                      >
+                        {variable.label}
+                      </Button>
+                    );
+                  })}
                 </div>
-
-                {/* Active Variables Chips */}
-                {getActiveVariables().length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Variabel Aktif:
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {getActiveVariables().map((variable) => {
-                        const Icon = variable.icon;
-                        return (
-                          <Badge
-                            key={variable.key}
-                            variant="default"
-                            className="pl-2 pr-1 py-1 gap-1 text-xs font-medium rounded-full"
-                          >
-                            <Icon className="h-3 w-3" />
-                            <span>{variable.label}</span>
-                            <button
-                              type="button"
-                              onClick={() => removeVariable(variable.key)}
-                              className="ml-1 rounded-full hover:bg-white/20 p-0.5 transition-colors"
-                              title={`Hapus ${variable.label}`}
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
 
-              <Textarea
-                ref={textareaRef}
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Ketik pesan balasan..."
-                className="min-h-[200px] font-mono text-sm"
-                required
+              <div
+                ref={editorRef}
+                contentEditable
+                onInput={handleEditorInput}
+                onKeyDown={handleEditorKeyDown}
+                className="min-h-[200px] p-3 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-background"
+                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                suppressContentEditableWarning
               />
 
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
