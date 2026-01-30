@@ -246,9 +246,10 @@ export function BuilderSidebar({
 }: BuilderSidebarProps) {
   const sensors = useSensors(
     useSensor(PointerSensor, {
-      // ✅ Require 5px movement before drag starts (allows clicks to work!)
+      // ✅ Use delay to distinguish click from drag (better for vertical dragging)
       activationConstraint: {
-        distance: 5,
+        delay: 150,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
