@@ -264,8 +264,8 @@ export function BuilderSidebar({
     <div
       className={cn(
         'border-r bg-muted/30 p-3 space-y-2 transition-all duration-300',
-        // 🚀 Icon-only sidebar - horizontal layout with 2 separators
-        collapsed ? 'w-16' : 'w-36',
+        // 🚀 Full collapse (w-0) for maximum live preview space!
+        collapsed ? 'w-0 p-0 border-0 opacity-0 overflow-hidden' : 'w-36',
         className
       )}
     >
