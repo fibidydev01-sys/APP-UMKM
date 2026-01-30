@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
-import { useSampleOrder } from '@/hooks/use-orders';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,15 +19,24 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Plus, AlertCircle, Loader2, Edit, Trash2, Clock, Send, Key, Hash } from 'lucide-react';
 import type { AutoReplyRule } from '@/types/chat';
-import { KeywordRuleForm } from './components/keyword-rule-form';
+import { KeywordRuleForm } from '../../keywords/components/keyword-rule-form';
 
 // ==========================================
-// KEYWORDS AUTO-REPLY PAGE
+// KEYWORDS AUTO-REPLY TAB
 // ==========================================
 
-export default function KeywordsPage() {
+interface KeywordsTabProps {
+  sampleData: {
+    name: string;
+    phone: string;
+    orderNumber: string;
+    total: string;
+    trackingLink: string;
+  };
+}
+
+export function KeywordsTab({ sampleData }: KeywordsTabProps) {
   const { rules, isLoading, isDeleting, fetchRules, deleteRule } = useAutoReply();
-  const { sampleData } = useSampleOrder();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [editingRule, setEditingRule] = useState<AutoReplyRule | null>(null);

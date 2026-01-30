@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
-import { useSampleOrder } from '@/hooks/use-orders';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,15 +19,24 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Plus, AlertCircle, Loader2, Edit, Trash2, Clock, Send, MessageSquare } from 'lucide-react';
 import type { AutoReplyRule } from '@/types/chat';
-import { WelcomeRuleForm } from './components/welcome-rule-form';
+import { WelcomeRuleForm } from '../../welcome/components/welcome-rule-form';
 
 // ==========================================
-// WELCOME MESSAGE PAGE
+// WELCOME MESSAGE TAB
 // ==========================================
 
-export default function WelcomePage() {
+interface WelcomeTabProps {
+  sampleData: {
+    name: string;
+    phone: string;
+    orderNumber: string;
+    total: string;
+    trackingLink: string;
+  };
+}
+
+export function WelcomeTab({ sampleData }: WelcomeTabProps) {
   const { rules, isLoading, isDeleting, fetchRules, deleteRule } = useAutoReply();
-  const { sampleData } = useSampleOrder();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [editingRule, setEditingRule] = useState<AutoReplyRule | null>(null);

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
-import { useSampleOrder } from '@/hooks/use-orders';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,7 +19,17 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Plus, AlertCircle, Loader2, Edit, Trash2, Clock, Send } from 'lucide-react';
 import type { AutoReplyRule } from '@/types/chat';
-import { OrderStatusRuleForm } from './components/order-status-rule-form';
+import { OrderStatusRuleForm } from '../../order-status/components/order-status-rule-form';
+
+interface OrderStatusTabProps {
+  sampleData: {
+    name: string;
+    phone: string;
+    orderNumber: string;
+    total: string;
+    trackingLink: string;
+  };
+}
 
 // ==========================================
 // ORDER STATUS PAGE
@@ -34,9 +43,8 @@ const ORDER_STATUSES = [
   { value: 'CANCELLED', label: 'Cancelled (Dibatalkan)', color: 'red', description: 'Order dibatalkan' },
 ] as const;
 
-export default function OrderStatusPage() {
+export function OrderStatusTab({ sampleData }: OrderStatusTabProps) {
   const { rules, isLoading, isDeleting, fetchRules, deleteRule } = useAutoReply();
-  const { sampleData } = useSampleOrder();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [creatingStatus, setCreatingStatus] = useState<string | null>(null);
   const [editingRule, setEditingRule] = useState<AutoReplyRule | null>(null);
