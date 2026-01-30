@@ -490,7 +490,7 @@ function SidebarMenuButton({
   isActive = false,
   variant = "default",
   size = "default",
-  tooltip,
+  tooltip: _tooltip,
   className,
   ...props
 }: React.ComponentProps<"button"> & {
@@ -499,9 +499,8 @@ function SidebarMenuButton({
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot : "button"
-  const { isMobile, state } = useSidebar()
 
-  const button = (
+  return (
     <Comp
       data-slot="sidebar-menu-button"
       data-sidebar="menu-button"
@@ -510,28 +509,6 @@ function SidebarMenuButton({
       className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
       {...props}
     />
-  )
-
-  if (!tooltip) {
-    return button
-  }
-
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
-  }
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>{button}</TooltipTrigger>
-      <TooltipContent
-        side="right"
-        align="center"
-        hidden={state !== "collapsed" || isMobile}
-        {...tooltip}
-      />
-    </Tooltip>
   )
 }
 

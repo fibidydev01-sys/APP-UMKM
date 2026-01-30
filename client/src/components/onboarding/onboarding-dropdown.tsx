@@ -19,7 +19,7 @@ export function OnboardingDropdown() {
   // Loading state
   if (isLoading || !progress) {
     return (
-      <SidebarMenuButton asChild tooltip="Setup Toko" isActive={isActive}>
+      <SidebarMenuButton asChild isActive={isActive}>
         <Link href="/dashboard/onboarding">
           <IconRocket className="h-4 w-4 animate-pulse" />
           <span>Setup Toko</span>
@@ -31,7 +31,7 @@ export function OnboardingDropdown() {
   // 100% complete - show trophy
   if (progress.percentage >= 100) {
     return (
-      <SidebarMenuButton asChild tooltip="Setup Toko" isActive={isActive}>
+      <SidebarMenuButton asChild isActive={isActive}>
         <Link href="/dashboard/onboarding">
           <IconTrophy className="h-4 w-4 text-primary" />
           <span>Selesai!</span>
@@ -44,7 +44,7 @@ export function OnboardingDropdown() {
 
   // In progress - show rocket with badge
   return (
-    <SidebarMenuButton asChild tooltip="Setup Toko" isActive={isActive}>
+    <SidebarMenuButton asChild isActive={isActive}>
       <Link href="/dashboard/onboarding">
         <IconRocket className="h-4 w-4" />
         <span>Setup Toko</span>

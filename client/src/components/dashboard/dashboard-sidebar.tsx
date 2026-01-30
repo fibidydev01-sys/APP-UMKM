@@ -136,7 +136,7 @@ export function DashboardSidebar() {
                     >
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                          <SidebarMenuButton tooltip={item.title} isActive={active}>
+                          <SidebarMenuButton isActive={active}>
                             <item.icon className="h-4 w-4" />
                             <span>{item.title}</span>
                             <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -163,7 +163,7 @@ export function DashboardSidebar() {
                 // Simple item
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild tooltip={item.title} isActive={active}>
+                    <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
@@ -194,7 +194,6 @@ export function DashboardSidebar() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  tooltip="Menu"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <Menu className="h-4 w-4" />
