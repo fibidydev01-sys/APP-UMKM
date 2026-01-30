@@ -113,13 +113,13 @@ export function LivePreview({
     heroEnabled || aboutEnabled || productsEnabled || testimonialsEnabled || ctaEnabled || contactEnabled;
 
   // 🚀 Section rendering map with refs for auto-scroll
-  // ✅ All sections have consistent min-height for accurate scrolling
+  // ✅ Each section has appropriate height based on content type
   const sectionComponents: Record<SectionKey, React.ReactNode> = {
     hero: heroEnabled ? (
       <div
         key="hero"
         ref={(el) => (sectionRefs.current.hero = el)}
-        className="min-h-[600px] flex items-center"
+        className="min-h-[70vh] flex items-center py-8"
       >
         <TenantHero config={config.hero} tenant={tenant} />
       </div>
@@ -128,7 +128,7 @@ export function LivePreview({
       <div
         key="about"
         ref={(el) => (sectionRefs.current.about = el)}
-        className="min-h-[600px] flex items-center"
+        className="min-h-[60vh] py-12"
       >
         <TenantAbout config={config.about} tenant={tenant} />
       </div>
@@ -137,7 +137,7 @@ export function LivePreview({
       <div
         key="products"
         ref={(el) => (sectionRefs.current.products = el)}
-        className="min-h-[600px] flex items-center"
+        className="min-h-[80vh] py-12"
       >
         <TenantProducts
           products={products}
@@ -150,7 +150,7 @@ export function LivePreview({
       <div
         key="testimonials"
         ref={(el) => (sectionRefs.current.testimonials = el)}
-        className="min-h-[600px] flex items-center"
+        className="min-h-[60vh] py-12"
       >
         <TenantTestimonials config={config.testimonials} tenant={tenant} />
       </div>
@@ -159,7 +159,7 @@ export function LivePreview({
       <div
         key="cta"
         ref={(el) => (sectionRefs.current.cta = el)}
-        className="min-h-[600px] flex items-center"
+        className="min-h-[50vh] flex items-center py-12"
       >
         <TenantCta config={config.cta} tenant={tenant} />
       </div>
@@ -168,7 +168,7 @@ export function LivePreview({
       <div
         key="contact"
         ref={(el) => (sectionRefs.current.contact = el)}
-        className="min-h-[600px] flex items-center"
+        className="min-h-[60vh] py-12"
       >
         <TenantContact config={config.contact} tenant={tenant} />
       </div>
