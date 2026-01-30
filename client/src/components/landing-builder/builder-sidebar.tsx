@@ -7,6 +7,7 @@
 
 'use client';
 
+import React from 'react';
 // Button removed - using div to avoid nested button issue with Switch
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
@@ -134,6 +135,9 @@ function SortableSectionItem({
 
   const Icon = section.icon;
 
+  // Track if user is actually dragging (not just clicking)
+  const [hasMoved, setHasMoved] = React.useState(false);
+
   return (
     <div
       ref={setNodeRef}
@@ -160,9 +164,19 @@ function SortableSectionItem({
           // ✅ Disabled state = visual only (grayscale + opacity)
           !enabled && 'opacity-50 grayscale'
         )}
+        onPointerDown={() => {
+          // Reset movement tracking
+          setHasMoved(false);
+        }}
+        onPointerMove={() => {
+          // User is dragging, not clicking
+          if (isDragging) {
+            setHasMoved(true);
+          }
+        }}
         onClick={(e) => {
-          // ✅ Click handler for section navigation (only when not dragging)
-          if (!isDragging) {
+          // ✅ Only trigger click if user didn't drag (pure click)
+          if (!hasMoved && !isDragging) {
             onSectionClick(section.id);
           }
         }}
@@ -231,7 +245,12 @@ export function BuilderSidebar({
   onToggleSection,
 }: BuilderSidebarProps) {
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      // ✅ Require 5px movement before drag starts (allows clicks to work!)
+      activationConstraint: {
+        distance: 5,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
