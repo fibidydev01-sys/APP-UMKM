@@ -32,6 +32,8 @@ import { toast } from 'sonner';
 import { useTenant } from '@/hooks';
 import { tenantsApi } from '@/lib/api';
 import type { FeatureItem, Testimonial } from '@/types';
+import { Drawer } from 'vaul';
+import { Eye } from 'lucide-react';
 
 // ══════════════════════════════════════════════════════════════
 // TYPES & CONSTANTS
@@ -159,6 +161,7 @@ function HeroSectionTabContent() {
   const [isSaving, setIsSaving] = useState(false);
   const [isRemovingLogo, setIsRemovingLogo] = useState(false);
   const [isRemovingHeroBackground, setIsRemovingHeroBackground] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [formData, setFormData] = useState<{
     name: string;
@@ -444,28 +447,53 @@ function HeroSectionTabContent() {
               </div>
             </div>
 
-            {/* Live Preview */}
+            {/* Preview Button with Drawer */}
             <div className="space-y-2 pt-6 mt-6 border-t">
-              <Label className="text-lg font-semibold">Live Preview</Label>
+              <Label className="text-lg font-semibold">Preview</Label>
               <p className="text-sm text-muted-foreground mb-4">
-                Pratinjau real-time dari Hero Section Anda
+                Lihat pratinjau Hero Section Anda
               </p>
-              {/* Inject Theme CSS for Real-time Preview */}
-              <style
-                dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }}
-              />
-              <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
-                <Hero1
-                  title={formData.heroTitle || formData.name || ''}
-                  subtitle={formData.heroSubtitle || formData.description}
-                  ctaText={formData.heroCtaText || 'Lihat Produk'}
-                  ctaLink={formData.heroCtaLink || '/products'}
-                  showCta={true}
-                  backgroundImage={formData.heroBackgroundImage}
-                  logo={formData.logo}
-                  storeName={formData.name}
-                />
-              </div>
+              <Drawer.Root open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <Drawer.Trigger asChild>
+                  <Button variant="outline" size="lg" className="w-full md:w-auto">
+                    <Eye className="mr-2 h-4 w-4" />
+                    Buka Preview
+                  </Button>
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
+                  <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+                    <div className="p-4 bg-background rounded-t-[10px] flex-1 overflow-y-auto">
+                      <div className="mx-auto w-full max-w-5xl">
+                        <Drawer.Title className="font-semibold text-lg mb-2">
+                          Preview Hero Section
+                        </Drawer.Title>
+                        <Drawer.Description className="text-sm text-muted-foreground mb-4">
+                          Pratinjau real-time dari Hero Section Anda
+                        </Drawer.Description>
+                        {/* Inject Theme CSS for Real-time Preview */}
+                        <style
+                          dangerouslySetInnerHTML={{
+                            __html: generateThemeCSS(formData.primaryColor),
+                          }}
+                        />
+                        <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
+                          <Hero1
+                            title={formData.heroTitle || formData.name || ''}
+                            subtitle={formData.heroSubtitle || formData.description}
+                            ctaText={formData.heroCtaText || 'Lihat Produk'}
+                            ctaLink={formData.heroCtaLink || '/products'}
+                            showCta={true}
+                            backgroundImage={formData.heroBackgroundImage}
+                            logo={formData.logo}
+                            storeName={formData.name}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
             </div>
 
             {/* Save Button */}
@@ -489,6 +517,7 @@ function AboutTabContent() {
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
   const [isRemovingAboutImage, setIsRemovingAboutImage] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [formData, setFormData] = useState<{
     aboutTitle: string;
@@ -734,27 +763,50 @@ function AboutTabContent() {
               </div>
             </div>
 
-            {/* Live Preview */}
+            {/* Preview Button with Drawer */}
             <div className="space-y-2 pt-6 mt-6 border-t">
-              <Label className="text-lg font-semibold">Live Preview</Label>
+              <Label className="text-lg font-semibold">Preview</Label>
               <p className="text-sm text-muted-foreground mb-4">
-                Pratinjau real-time dari About Section Anda
+                Lihat pratinjau About Section Anda
               </p>
-              {/* Inject Theme CSS */}
-              <style
-                dangerouslySetInnerHTML={{
-                  __html: generateThemeCSS(tenant?.theme?.primaryColor),
-                }}
-              />
-              <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
-                <About1
-                  title={formData.aboutTitle || 'Tentang Kami'}
-                  subtitle={formData.aboutSubtitle}
-                  content={formData.aboutContent}
-                  image={formData.aboutImage}
-                  features={formData.aboutFeatures}
-                />
-              </div>
+              <Drawer.Root open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <Drawer.Trigger asChild>
+                  <Button variant="outline" size="lg" className="w-full md:w-auto">
+                    <Eye className="mr-2 h-4 w-4" />
+                    Buka Preview
+                  </Button>
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
+                  <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+                    <div className="p-4 bg-background rounded-t-[10px] flex-1 overflow-y-auto">
+                      <div className="mx-auto w-full max-w-5xl">
+                        <Drawer.Title className="font-semibold text-lg mb-2">
+                          Preview About Section
+                        </Drawer.Title>
+                        <Drawer.Description className="text-sm text-muted-foreground mb-4">
+                          Pratinjau real-time dari About Section Anda
+                        </Drawer.Description>
+                        {/* Inject Theme CSS */}
+                        <style
+                          dangerouslySetInnerHTML={{
+                            __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                          }}
+                        />
+                        <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
+                          <About1
+                            title={formData.aboutTitle || 'Tentang Kami'}
+                            subtitle={formData.aboutSubtitle}
+                            content={formData.aboutContent}
+                            image={formData.aboutImage}
+                            features={formData.aboutFeatures}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
             </div>
 
             {/* Save Button */}
@@ -777,6 +829,7 @@ function AboutTabContent() {
 function TestimonialsTabContent() {
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [formData, setFormData] = useState<{
     testimonialsTitle: string;
@@ -983,33 +1036,56 @@ function TestimonialsTabContent() {
               </div>
             </div>
 
-            {/* Live Preview */}
+            {/* Preview Button with Drawer */}
             <div className="space-y-2 pt-6 mt-6 border-t">
-              <Label className="text-lg font-semibold">Live Preview</Label>
+              <Label className="text-lg font-semibold">Preview</Label>
               <p className="text-sm text-muted-foreground mb-4">
-                Pratinjau real-time dari Testimonials Section Anda
+                Lihat pratinjau Testimonials Section Anda
               </p>
-              {/* Inject Theme CSS */}
-              <style
-                dangerouslySetInnerHTML={{
-                  __html: generateThemeCSS(tenant?.theme?.primaryColor),
-                }}
-              />
-              {formData.testimonials.length === 0 ? (
-                <div className="border rounded-lg p-8 bg-muted/20 text-center">
-                  <p className="text-muted-foreground">
-                    Tambahkan minimal 1 testimonial untuk melihat preview
-                  </p>
-                </div>
-              ) : (
-                <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
-                  <Testimonials1
-                    title={formData.testimonialsTitle || 'Testimoni'}
-                    subtitle={formData.testimonialsSubtitle}
-                    items={formData.testimonials}
-                  />
-                </div>
-              )}
+              <Drawer.Root open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <Drawer.Trigger asChild>
+                  <Button variant="outline" size="lg" className="w-full md:w-auto">
+                    <Eye className="mr-2 h-4 w-4" />
+                    Buka Preview
+                  </Button>
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
+                  <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+                    <div className="p-4 bg-background rounded-t-[10px] flex-1 overflow-y-auto">
+                      <div className="mx-auto w-full max-w-5xl">
+                        <Drawer.Title className="font-semibold text-lg mb-2">
+                          Preview Testimonials Section
+                        </Drawer.Title>
+                        <Drawer.Description className="text-sm text-muted-foreground mb-4">
+                          Pratinjau real-time dari Testimonials Section Anda
+                        </Drawer.Description>
+                        {/* Inject Theme CSS */}
+                        <style
+                          dangerouslySetInnerHTML={{
+                            __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                          }}
+                        />
+                        {formData.testimonials.length === 0 ? (
+                          <div className="border rounded-lg p-8 bg-muted/20 text-center">
+                            <p className="text-muted-foreground">
+                              Tambahkan minimal 1 testimonial untuk melihat preview
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
+                            <Testimonials1
+                              title={formData.testimonialsTitle || 'Testimoni'}
+                              subtitle={formData.testimonialsSubtitle}
+                              items={formData.testimonials}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
             </div>
 
             {/* Save Button */}
@@ -1032,6 +1108,7 @@ function TestimonialsTabContent() {
 function ContactTabContent() {
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [formData, setFormData] = useState<{
     contactTitle: string;
@@ -1240,28 +1317,51 @@ function ContactTabContent() {
               </div>
             </div>
 
-            {/* Live Preview */}
+            {/* Preview Button with Drawer */}
             <div className="space-y-2 pt-6 mt-6 border-t">
-              <Label className="text-lg font-semibold">Live Preview</Label>
+              <Label className="text-lg font-semibold">Preview</Label>
               <p className="text-sm text-muted-foreground mb-4">
-                Pratinjau real-time dari Contact Section Anda
+                Lihat pratinjau Contact Section Anda
               </p>
-              {/* Inject Theme CSS */}
-              <style
-                dangerouslySetInnerHTML={{
-                  __html: generateThemeCSS(tenant?.theme?.primaryColor),
-                }}
-              />
-              <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
-                <Contact1
-                  title={formData.contactTitle || 'Hubungi Kami'}
-                  subtitle={formData.contactSubtitle}
-                  whatsapp={formData.whatsapp}
-                  phone={formData.phone}
-                  address={formData.address}
-                  storeName={tenant?.name || ''}
-                />
-              </div>
+              <Drawer.Root open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <Drawer.Trigger asChild>
+                  <Button variant="outline" size="lg" className="w-full md:w-auto">
+                    <Eye className="mr-2 h-4 w-4" />
+                    Buka Preview
+                  </Button>
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
+                  <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+                    <div className="p-4 bg-background rounded-t-[10px] flex-1 overflow-y-auto">
+                      <div className="mx-auto w-full max-w-5xl">
+                        <Drawer.Title className="font-semibold text-lg mb-2">
+                          Preview Contact Section
+                        </Drawer.Title>
+                        <Drawer.Description className="text-sm text-muted-foreground mb-4">
+                          Pratinjau real-time dari Contact Section Anda
+                        </Drawer.Description>
+                        {/* Inject Theme CSS */}
+                        <style
+                          dangerouslySetInnerHTML={{
+                            __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                          }}
+                        />
+                        <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
+                          <Contact1
+                            title={formData.contactTitle || 'Hubungi Kami'}
+                            subtitle={formData.contactSubtitle}
+                            whatsapp={formData.whatsapp}
+                            phone={formData.phone}
+                            address={formData.address}
+                            storeName={tenant?.name || ''}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
             </div>
 
             {/* Save Button */}
@@ -1284,6 +1384,7 @@ function ContactTabContent() {
 function CtaTabContent() {
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const [formData, setFormData] = useState<{
     ctaTitle: string;
@@ -1441,33 +1542,56 @@ function CtaTabContent() {
               </div>
             </div>
 
-            {/* Live Preview */}
+            {/* Preview Button with Drawer */}
             <div className="space-y-2 pt-6 mt-6 border-t">
-              <Label className="text-lg font-semibold">Live Preview</Label>
+              <Label className="text-lg font-semibold">Preview</Label>
               <p className="text-sm text-muted-foreground mb-4">
-                Pratinjau real-time dari CTA Section Anda
+                Lihat pratinjau CTA Section Anda
               </p>
-              {/* Inject Theme CSS */}
-              <style
-                dangerouslySetInnerHTML={{
-                  __html: generateThemeCSS(tenant?.theme?.primaryColor),
-                }}
-              />
-              <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
-                <Cta1
-                  title={formData.ctaTitle || 'Siap Memulai?'}
-                  subtitle={formData.ctaSubtitle}
-                  buttonText={formData.ctaButtonText || 'Mulai Sekarang'}
-                  buttonLink={formData.ctaButtonLink || '/products'}
-                  buttonVariant={
-                    formData.ctaButtonStyle === 'outline'
-                      ? 'outline'
-                      : formData.ctaButtonStyle === 'secondary'
-                        ? 'secondary'
-                        : 'default'
-                  }
-                />
-              </div>
+              <Drawer.Root open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <Drawer.Trigger asChild>
+                  <Button variant="outline" size="lg" className="w-full md:w-auto">
+                    <Eye className="mr-2 h-4 w-4" />
+                    Buka Preview
+                  </Button>
+                </Drawer.Trigger>
+                <Drawer.Portal>
+                  <Drawer.Overlay className="fixed inset-0 bg-black/40 z-50" />
+                  <Drawer.Content className="bg-background flex flex-col rounded-t-[10px] h-[90vh] mt-24 fixed bottom-0 left-0 right-0 z-50">
+                    <div className="p-4 bg-background rounded-t-[10px] flex-1 overflow-y-auto">
+                      <div className="mx-auto w-full max-w-5xl">
+                        <Drawer.Title className="font-semibold text-lg mb-2">
+                          Preview CTA Section
+                        </Drawer.Title>
+                        <Drawer.Description className="text-sm text-muted-foreground mb-4">
+                          Pratinjau real-time dari CTA Section Anda
+                        </Drawer.Description>
+                        {/* Inject Theme CSS */}
+                        <style
+                          dangerouslySetInnerHTML={{
+                            __html: generateThemeCSS(tenant?.theme?.primaryColor),
+                          }}
+                        />
+                        <div className="tenant-theme border rounded-lg overflow-hidden bg-muted/20">
+                          <Cta1
+                            title={formData.ctaTitle || 'Siap Memulai?'}
+                            subtitle={formData.ctaSubtitle}
+                            buttonText={formData.ctaButtonText || 'Mulai Sekarang'}
+                            buttonLink={formData.ctaButtonLink || '/products'}
+                            buttonVariant={
+                              formData.ctaButtonStyle === 'outline'
+                                ? 'outline'
+                                : formData.ctaButtonStyle === 'secondary'
+                                  ? 'secondary'
+                                  : 'default'
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Drawer.Content>
+                </Drawer.Portal>
+              </Drawer.Root>
             </div>
 
             {/* Save Button */}
