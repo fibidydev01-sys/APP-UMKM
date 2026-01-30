@@ -198,12 +198,41 @@ function RulesGridSkeleton() {
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {[1, 2, 3].map((i) => (
         <Card key={i}>
-          <CardHeader>
-            <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-48" />
+          {/* Header - same as RulesGrid CardHeader */}
+          <CardHeader className="pb-3">
+            <div className="flex items-start justify-between">
+              <div className="space-y-1 flex-1 min-w-0">
+                <Skeleton className="h-5 w-32" /> {/* Title */}
+                <Skeleton className="h-4 w-48" /> {/* Description */}
+              </div>
+              <Skeleton className="h-5 w-16 rounded-full ml-2" /> {/* Badge */}
+            </div>
           </CardHeader>
-          <CardContent>
-            <Skeleton className="h-20 w-full" />
+
+          {/* Content - same as RulesGrid CardContent */}
+          <CardContent className="space-y-4">
+            {/* Message Preview - same bg and padding */}
+            <div className="bg-muted/50 p-3 rounded-md">
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-3/4" />
+            </div>
+
+            {/* Stats Row */}
+            <div className="flex items-center gap-4">
+              <Skeleton className="h-4 w-12" />
+              <Skeleton className="h-4 w-10" />
+              <Skeleton className="h-4 w-8" />
+            </div>
+
+            {/* Actions - same border-t and padding */}
+            <div className="flex items-center justify-between pt-2 border-t">
+              <Skeleton className="h-5 w-10 rounded-full" /> {/* Switch */}
+              <div className="flex gap-2">
+                <Skeleton className="h-8 w-8 rounded" /> {/* Edit */}
+                <Skeleton className="h-8 w-8 rounded" /> {/* Delete */}
+              </div>
+            </div>
           </CardContent>
         </Card>
       ))}
