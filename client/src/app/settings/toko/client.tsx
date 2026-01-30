@@ -92,9 +92,19 @@ export function TokoClient() {
   return (
     <div>
       {/* ════════════════════════════════════════════════════════ */}
+      {/* PAGE HEADER - Static section (like dashboard profile)   */}
+      {/* ════════════════════════════════════════════════════════ */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight">Informasi Toko</h1>
+        <p className="text-muted-foreground mt-2">
+          Kelola informasi toko dan konten landing page. Semua data disimpan ke database yang sama.
+        </p>
+      </div>
+
+      {/* ════════════════════════════════════════════════════════ */}
       {/* STICKY TABS                                             */}
       {/* ════════════════════════════════════════════════════════ */}
-      <div className="sticky top-0 z-20 bg-background border-b -mx-4 md:-mx-6 lg:-mx-8 -mt-4 md:-mt-6 lg:-mt-8 mb-6">
+      <div className="sticky top-0 z-20 bg-background border-b -mx-4 md:-mx-6 lg:-mx-8 mb-6">
         <div className="px-4 md:px-6 lg:px-8">
           <div className="flex overflow-x-auto">
             {TABS.map((tab) => (
