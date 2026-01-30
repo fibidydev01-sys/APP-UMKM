@@ -29,6 +29,16 @@ import { BLOCK_OPTIONS_MAP } from './block-options'; // 🚀 Auto-generated bloc
 
 export type DrawerState = 'collapsed' | 'expanded';
 
+/**
+ * 🎯 UI DISPLAY LIMIT
+ *
+ * Limits the number of blocks shown in the UI for better UX.
+ * - Data remains 200 blocks per section (unchanged)
+ * - UI only displays first 10 blocks per section
+ * - This prevents overwhelming users with too many options
+ */
+const UI_DISPLAY_LIMIT = 10;
+
 interface BlockDrawerProps {
   state: DrawerState;
   onStateChange: (state: DrawerState) => void;
@@ -131,17 +141,23 @@ function DrawerMode({
     );
   }, [allBlocks, debouncedSearch]);
 
+  // 🎯 LIMIT DISPLAY: Only show first 10 blocks in UI
+  // Data remains 200, but we slice to improve UX
+  const displayedBlocks = useMemo(() => {
+    return filteredBlocks.slice(0, UI_DISPLAY_LIMIT);
+  }, [filteredBlocks]);
+
   // 🎨 CANVA-STYLE: Virtual scrolling config
   // Grid: Responsive (2 mobile, 3 tablet, 4 desktop)
   // We calculate rows based on max columns (4) for virtual scrolling
   const MAX_COLUMNS = 4; // Desktop max
   const rows = useMemo(() => {
     const result: BlockOption[][] = [];
-    for (let i = 0; i < filteredBlocks.length; i += MAX_COLUMNS) {
-      result.push(filteredBlocks.slice(i, i + MAX_COLUMNS));
+    for (let i = 0; i < displayedBlocks.length; i += MAX_COLUMNS) {
+      result.push(displayedBlocks.slice(i, i + MAX_COLUMNS));
     }
     return result;
-  }, [filteredBlocks]);
+  }, [displayedBlocks]);
 
   // 🚀 Virtual scrolling (only renders visible rows!)
   const rowVirtualizer = useVirtualizer({
@@ -211,13 +227,13 @@ function DrawerMode({
                 <h3 className="capitalize font-semibold text-foreground">
                   {section} Blocks
                   <span className="ml-2 text-xs text-muted-foreground">
-                    ({filteredBlocks.length})
+                    ({displayedBlocks.length})
                   </span>
                 </h3>
                 <p className="text-xs text-muted-foreground">
                   {state === 'expanded'
-                    ? 'Scroll to browse all blocks'
-                    : 'Drag up to see all blocks'}
+                    ? 'Showing first 10 blocks'
+                    : 'Drag up to see blocks'}
                 </p>
               </div>
               {/* Toggle Button */}
@@ -259,7 +275,7 @@ function DrawerMode({
               className="flex-1 overflow-auto p-4"
               style={{ contain: 'strict' }} // Performance hint for browser
             >
-              {filteredBlocks.length > 0 ? (
+              {displayedBlocks.length > 0 ? (
                 <div
                   style={{
                     height: `${rowVirtualizer.getTotalSize()}px`,
@@ -348,15 +364,21 @@ function SheetMode({
     );
   }, [allBlocks, debouncedSearch]);
 
+  // 🎯 LIMIT DISPLAY: Only show first 10 blocks in UI
+  // Data remains 200, but we slice to improve UX
+  const displayedBlocks = useMemo(() => {
+    return filteredBlocks.slice(0, UI_DISPLAY_LIMIT);
+  }, [filteredBlocks]);
+
   // 🎨 CANVA-STYLE: Virtual scrolling config
   const MAX_COLUMNS = 3; // 3 columns for sheet (narrower than drawer)
   const rows = useMemo(() => {
     const result: BlockOption[][] = [];
-    for (let i = 0; i < filteredBlocks.length; i += MAX_COLUMNS) {
-      result.push(filteredBlocks.slice(i, i + MAX_COLUMNS));
+    for (let i = 0; i < displayedBlocks.length; i += MAX_COLUMNS) {
+      result.push(displayedBlocks.slice(i, i + MAX_COLUMNS));
     }
     return result;
-  }, [filteredBlocks]);
+  }, [displayedBlocks]);
 
   // 🚀 Virtual scrolling (only renders visible rows!)
   const rowVirtualizer = useVirtualizer({
@@ -418,11 +440,11 @@ function SheetMode({
                 <SheetTitle className="capitalize text-foreground">
                   {section} Blocks
                   <span className="ml-2 text-xs text-muted-foreground font-normal">
-                    ({filteredBlocks.length})
+                    ({displayedBlocks.length})
                   </span>
                 </SheetTitle>
                 <SheetDescription className="text-xs">
-                  Choose a block design for your section
+                  Showing first 10 blocks for your section
                 </SheetDescription>
               </div>
               {/* Close Button (arrow) */}
@@ -458,7 +480,7 @@ function SheetMode({
             className="flex-1 overflow-auto p-4"
             style={{ contain: 'strict' }}
           >
-            {filteredBlocks.length > 0 ? (
+            {displayedBlocks.length > 0 ? (
               <div
                 style={{
                   height: `${rowVirtualizer.getTotalSize()}px`,
