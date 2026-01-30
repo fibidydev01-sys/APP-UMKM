@@ -13,8 +13,16 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { Drawer } from 'vaul';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Check, Minimize2, Grid3x3, Search, Loader2 } from 'lucide-react';
+import { Check, Minimize2, Grid3x3, Search, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { SectionType } from './builder-sidebar';
 import type { BlockOption } from './block-options';
 import { BLOCK_OPTIONS_MAP } from './block-options'; // 🚀 Auto-generated blocks!
@@ -49,7 +57,45 @@ function useDebounce<T>(value: T, delay: number): T {
 }
 
 /**
- * 🎨 Canva-Style Block Drawer with Virtual Scrolling
+ * Custom hook for media query detection
+ */
+function useMediaQuery(query: string): boolean {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+
+    // Set initial value
+    setMatches(media.matches);
+
+    // Create listener
+    const listener = (e: MediaQueryListEvent) => setMatches(e.matches);
+
+    // Add listener
+    media.addEventListener('change', listener);
+
+    // Cleanup
+    return () => media.removeEventListener('change', listener);
+  }, [query]);
+
+  return matches;
+}
+
+/**
+ * 🚀 MAIN EXPORT: Responsive Block Selector
+ *
+ * Renders different UI based on screen size:
+ * - Mobile (<768px): Drawer from bottom (Vaul)
+ * - Tablet/Desktop (≥768px): Sheet from right (Radix Dialog)
+ */
+export function BlockDrawer(props: BlockDrawerProps) {
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  return isMobile ? <DrawerMode {...props} /> : <SheetMode {...props} />;
+}
+
+/**
+ * 📱 MOBILE MODE: Drawer from bottom (Vaul)
  *
  * Features:
  * - Virtual scrolling (only renders ~15 visible items at a time)
@@ -58,7 +104,7 @@ function useDebounce<T>(value: T, delay: number): T {
  * - Memoized components
  * - Buttery 60fps performance
  */
-export function BlockDrawer({
+function DrawerMode({
   state,
   onStateChange,
   section,
@@ -266,6 +312,203 @@ export function BlockDrawer({
 }
 
 /**
+ * 💻 TABLET/DESKTOP MODE: Sheet from right (Radix Dialog)
+ *
+ * Features:
+ * - Collapsible with arrow button (48px collapsed, 400px expanded)
+ * - Fixed position on right side
+ * - High z-index (above content)
+ * - Same virtual scrolling as DrawerMode
+ * - No modal overlay (doesn't block clicks)
+ */
+function SheetMode({
+  state,
+  onStateChange,
+  section,
+  currentBlock,
+  onBlockSelect,
+}: BlockDrawerProps) {
+  const [search, setSearch] = useState('');
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // 🚀 OPTIMIZATION: Debounce search input (300ms delay)
+  const debouncedSearch = useDebounce(search, 300);
+
+  // Get all blocks for current section (memoized)
+  const allBlocks = useMemo(() => BLOCK_OPTIONS_MAP[section] || [], [section]);
+
+  // Filter by search (uses debounced value for performance)
+  const filteredBlocks = useMemo(() => {
+    if (!debouncedSearch.trim()) return allBlocks;
+    const searchLower = debouncedSearch.toLowerCase();
+    return allBlocks.filter(
+      (block) =>
+        block.value.toLowerCase().includes(searchLower) ||
+        block.label.toLowerCase().includes(searchLower)
+    );
+  }, [allBlocks, debouncedSearch]);
+
+  // 🎨 CANVA-STYLE: Virtual scrolling config
+  const MAX_COLUMNS = 3; // 3 columns for sheet (narrower than drawer)
+  const rows = useMemo(() => {
+    const result: BlockOption[][] = [];
+    for (let i = 0; i < filteredBlocks.length; i += MAX_COLUMNS) {
+      result.push(filteredBlocks.slice(i, i + MAX_COLUMNS));
+    }
+    return result;
+  }, [filteredBlocks]);
+
+  // 🚀 Virtual scrolling (only renders visible rows!)
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => scrollContainerRef.current,
+    estimateSize: () => 120,
+    overscan: 3,
+  });
+
+  // Reset scroll when search or section changes
+  useEffect(() => {
+    if (state === 'expanded') {
+      rowVirtualizer.scrollToIndex(0, { align: 'start' });
+    }
+  }, [debouncedSearch, section, state, rowVirtualizer]);
+
+  // 🚀 OPTIMIZATION: Memoize handlers
+  const handleBlockSelect = useCallback(
+    (blockValue: string) => {
+      onBlockSelect(blockValue);
+    },
+    [onBlockSelect]
+  );
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  }, []);
+
+  const isCollapsed = state === 'collapsed';
+
+  return (
+    <>
+      {/* 🚀 Collapsed State: Arrow button strip (always visible) */}
+      {isCollapsed && (
+        <div className="fixed right-0 top-14 bottom-0 w-12 bg-background border-l shadow-lg z-40 flex items-center justify-center">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onStateChange('expanded')}
+            className="h-auto py-8"
+            title="Open block selector"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </Button>
+        </div>
+      )}
+
+      {/* 🚀 Expanded State: Full Sheet */}
+      <Sheet open={!isCollapsed} onOpenChange={() => onStateChange('collapsed')} modal={false}>
+        <SheetContent
+          side="right"
+          className="w-[400px] p-0 flex flex-col z-50"
+          // Prevent close on outside click (only arrow button can close)
+          onInteractOutside={(e) => e.preventDefault()}
+        >
+          <SheetHeader className="p-4 border-b shrink-0">
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <SheetTitle className="capitalize text-foreground">
+                  {section} Blocks
+                  <span className="ml-2 text-xs text-muted-foreground font-normal">
+                    ({filteredBlocks.length})
+                  </span>
+                </SheetTitle>
+                <SheetDescription className="text-xs">
+                  Choose a block design for your section
+                </SheetDescription>
+              </div>
+              {/* Close Button (arrow) */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onStateChange('collapsed')}
+                title="Close block selector"
+              >
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            </div>
+
+            {/* Search Bar */}
+            <div className="relative mt-3">
+              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+              <Input
+                type="text"
+                placeholder="Search blocks..."
+                value={search}
+                onChange={handleSearchChange}
+                className="pl-8 h-9"
+              />
+              {debouncedSearch !== search && (
+                <Loader2 className="absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground animate-spin" />
+              )}
+            </div>
+          </SheetHeader>
+
+          {/* 🎨 CANVA-STYLE: Virtual Scrolling Grid */}
+          <div
+            ref={scrollContainerRef}
+            className="flex-1 overflow-auto p-4"
+            style={{ contain: 'strict' }}
+          >
+            {filteredBlocks.length > 0 ? (
+              <div
+                style={{
+                  height: `${rowVirtualizer.getTotalSize()}px`,
+                  width: '100%',
+                  position: 'relative',
+                }}
+              >
+                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                  const rowBlocks = rows[virtualRow.index];
+                  return (
+                    <div
+                      key={virtualRow.index}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: `${virtualRow.size}px`,
+                        transform: `translateY(${virtualRow.start}px)`,
+                      }}
+                    >
+                      <div className="grid grid-cols-3 gap-3 w-full">
+                        {rowBlocks.map((block) => (
+                          <BlockCard
+                            key={block.value}
+                            block={block}
+                            isSelected={currentBlock === block.value}
+                            onSelect={handleBlockSelect}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+                <Search className="h-12 w-12 mb-3 opacity-50" />
+                <p className="text-sm">No blocks found matching "{search}"</p>
+                <p className="text-xs mt-1">Try a different search term</p>
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </>
+  );
+}
+
+/**
  * 🚀 OPTIMIZED: Memoized block card component
  * Prevents unnecessary re-renders when parent re-renders
  */
@@ -276,8 +519,6 @@ interface BlockCardProps {
 }
 
 const BlockCard = memo(function BlockCard({ block, isSelected, onSelect }: BlockCardProps) {
-  const Icon = block.icon;
-
   const handleClick = useCallback(() => {
     onSelect(block.value);
   }, [block.value, onSelect]);
@@ -292,10 +533,9 @@ const BlockCard = memo(function BlockCard({ block, isSelected, onSelect }: Block
           : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
       )}
     >
-      <Icon className="h-6 w-6 mb-2 flex-shrink-0" />
-      <span className="text-xs font-medium line-clamp-2 text-center">{block.label}</span>
+      <span className="text-sm font-semibold line-clamp-3 text-center">{block.label}</span>
       {isSelected && (
-        <Check className="h-4 w-4 mt-1 text-primary animate-in fade-in zoom-in duration-200" />
+        <Check className="h-4 w-4 mt-2 text-primary animate-in fade-in zoom-in duration-200" />
       )}
     </button>
   );
