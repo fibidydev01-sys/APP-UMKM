@@ -40,7 +40,7 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
   const { createRule, updateRule, isSaving } = useAutoReply();
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
   const isEdit = !!rule;
 
@@ -54,9 +54,97 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
     return VARIABLES.filter((v) => message.includes(v.key));
   };
 
-  // Helper: Remove variable from message
-  const removeVariable = (varKey: string) => {
-    setMessage(message.replace(new RegExp(varKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), ''));
+  // Helper: Convert HTML content to message format
+  const getMessageFromEditor = () => {
+    if (!editorRef.current) return '';
+
+    const clonedContent = editorRef.current.cloneNode(true) as HTMLElement;
+
+    // Replace chip spans with {{variable}} format
+    clonedContent.querySelectorAll('[data-variable]').forEach((chip) => {
+      const varKey = chip.getAttribute('data-variable');
+      const textNode = document.createTextNode(varKey || '');
+      chip.parentNode?.replaceChild(textNode, chip);
+    });
+
+    return clonedContent.innerText.trim();
+  };
+
+  // Helper: Insert variable chip at cursor
+  const insertVariableChip = (variable: typeof VARIABLES[0]) => {
+    if (!editorRef.current) return;
+    if (hasVariable(variable.key)) return;
+
+    const selection = window.getSelection();
+    const range = selection?.getRangeAt(0);
+
+    if (!range || !editorRef.current.contains(range.commonAncestorContainer)) {
+      // If no selection or selection outside editor, append to end
+      editorRef.current.focus();
+      const newRange = document.createRange();
+      newRange.selectNodeContents(editorRef.current);
+      newRange.collapse(false);
+      selection?.removeAllRanges();
+      selection?.addRange(newRange);
+    }
+
+    // Create chip element
+    const chip = document.createElement('span');
+    chip.setAttribute('data-variable', variable.key);
+    chip.setAttribute('contenteditable', 'false');
+    chip.className = 'inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default';
+    chip.innerHTML = `
+      <span class="inline-flex items-center gap-1">
+        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          ${variable.icon === User ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>' : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>'}
+        </svg>
+        <span>${variable.label}</span>
+      </span>
+    `;
+
+    // Insert chip
+    const currentRange = window.getSelection()?.getRangeAt(0);
+    if (currentRange) {
+      currentRange.deleteContents();
+      currentRange.insertNode(chip);
+
+      // Move cursor after chip
+      currentRange.setStartAfter(chip);
+      currentRange.setEndAfter(chip);
+      selection?.removeAllRanges();
+      selection?.addRange(currentRange);
+    }
+
+    // Update message state
+    updateMessageFromEditor();
+    editorRef.current?.focus();
+  };
+
+  // Helper: Update message state from editor
+  const updateMessageFromEditor = () => {
+    const msg = getMessageFromEditor();
+    setMessage(msg);
+  };
+
+  // Helper: Render message with chips in editor
+  const renderMessageWithChips = (text: string) => {
+    if (!editorRef.current) return;
+
+    let html = text;
+
+    // Replace {{variable}} with chip HTML
+    VARIABLES.forEach((variable) => {
+      const regex = new RegExp(variable.key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+      const iconSvg = variable.icon === User
+        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>'
+        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>';
+
+      const chipHtml = `<span data-variable="${variable.key}" contenteditable="false" class="inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-full bg-primary text-primary-foreground text-xs font-medium cursor-default"><span class="inline-flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">${iconSvg}</svg><span>${variable.label}</span></span></span>`;
+
+      html = html.replace(regex, chipHtml);
+    });
+
+    editorRef.current.innerHTML = html || '<br>';
   };
 
   // Initialize form
@@ -65,31 +153,51 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
       if (rule) {
         setName(rule.name);
         setMessage(rule.responseMessage);
+        setTimeout(() => renderMessageWithChips(rule.responseMessage), 0);
       } else {
         setName('Welcome Message');
         setMessage(DEFAULT_TEMPLATE);
+        setTimeout(() => renderMessageWithChips(DEFAULT_TEMPLATE), 0);
       }
     }
   }, [open, rule]);
 
-  const insertVariable = (variable: string) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+  // Handle editor content changes
+  const handleEditorInput = () => {
+    updateMessageFromEditor();
+  };
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = message;
-    const before = text.substring(0, start);
-    const after = text.substring(end);
+  // Handle backspace to delete chips
+  const handleEditorKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Backspace') {
+      const selection = window.getSelection();
+      const range = selection?.getRangeAt(0);
 
-    const newText = before + variable + after;
-    setMessage(newText);
+      if (range && range.collapsed) {
+        // Check if cursor is right after a chip
+        const cursorNode = range.startContainer;
+        const cursorOffset = range.startOffset;
 
-    // Set cursor position after inserted variable
-    setTimeout(() => {
-      textarea.focus();
-      textarea.setSelectionRange(start + variable.length, start + variable.length);
-    }, 0);
+        if (cursorNode.nodeType === Node.TEXT_NODE && cursorOffset === 0) {
+          const prevSibling = cursorNode.previousSibling;
+          if (prevSibling && (prevSibling as HTMLElement).hasAttribute?.('data-variable')) {
+            e.preventDefault();
+            prevSibling.remove();
+            updateMessageFromEditor();
+            return;
+          }
+        } else if (cursorNode.nodeType === Node.ELEMENT_NODE) {
+          const element = cursorNode as HTMLElement;
+          const prevChild = element.childNodes[cursorOffset - 1];
+          if (prevChild && (prevChild as HTMLElement).hasAttribute?.('data-variable')) {
+            e.preventDefault();
+            prevChild.remove();
+            updateMessageFromEditor();
+            return;
+          }
+        }
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -224,7 +332,7 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
                           type="button"
                           variant={isUsed ? "secondary" : "outline"}
                           size="sm"
-                          onClick={() => insertVariable(variable.key)}
+                          onClick={() => insertVariableChip(variable)}
                           disabled={isUsed}
                           title={isUsed ? `${variable.label} sudah digunakan` : variable.description}
                           className="h-7 text-xs"
@@ -270,14 +378,14 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
                 )}
               </div>
 
-              <Textarea
-                ref={textareaRef}
-                id="message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Ketik pesan sambutan..."
-                className="min-h-[250px] font-mono text-sm"
-                required
+              <div
+                ref={editorRef}
+                contentEditable
+                onInput={handleEditorInput}
+                onKeyDown={handleEditorKeyDown}
+                className="min-h-[250px] p-3 text-sm border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-background"
+                style={{ whiteSpace: 'pre-wrap', wordWrap: 'break-word' }}
+                suppressContentEditableWarning
               />
 
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
