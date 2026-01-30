@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
+import { useSampleOrder } from '@/hooks/use-orders';
 import { Drawer } from 'vaul';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
@@ -46,6 +47,7 @@ interface Props {
 
 export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
   const { createRule, updateRule, isSaving } = useAutoReply();
+  const { sampleData } = useSampleOrder();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [keywords, setKeywords] = useState<string[]>([]);
@@ -484,15 +486,18 @@ export function KeywordRuleForm({ rule, open, onClose, onSuccess }: Props) {
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
-                  Preview (Contoh):
+                  Preview (Real Data):
                 </Label>
                 <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-md border border-zinc-200 dark:border-zinc-800">
                   <pre className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap font-sans">
                     {message
-                      .replace(/\{\{name\}\}/g, 'Budi Santoso')
-                      .replace(/\{\{phone\}\}/g, '+628123456789')}
+                      .replace(/\{\{name\}\}/g, sampleData.name)
+                      .replace(/\{\{phone\}\}/g, sampleData.phone)}
                   </pre>
                 </div>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                  * Preview dengan data real dari order terbaru Anda
+                </p>
               </div>
             )}
             </div>

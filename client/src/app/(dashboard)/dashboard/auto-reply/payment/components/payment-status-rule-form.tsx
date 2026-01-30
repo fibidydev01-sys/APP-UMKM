@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
+import { useSampleOrder } from '@/hooks/use-orders';
 import { Drawer } from 'vaul';
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { Button } from '@/components/ui/button';
@@ -75,6 +76,7 @@ interface Props {
 
 export function PaymentStatusRuleForm({ status, rule, open, onClose, onSuccess }: Props) {
   const { createRule, updateRule, isSaving } = useAutoReply();
+  const { sampleData } = useSampleOrder();
   const [message, setMessage] = useState('');
   const editorRef = useRef<HTMLDivElement>(null);
 
@@ -368,19 +370,19 @@ export function PaymentStatusRuleForm({ status, rule, open, onClose, onSuccess }
               <div className="space-y-2">
                 <Label className="flex items-center gap-2">
                   <FileText className="h-4 w-4" />
-                  Preview (Contoh):
+                  Preview (Real Data):
                 </Label>
                 <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-md border border-zinc-200 dark:border-zinc-800">
                   <pre className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap font-sans">
                     {message
-                      .replace(/\{\{name\}\}/g, 'Budi Santoso')
-                      .replace(/\{\{order_number\}\}/g, 'ORD-20260130-001')
-                      .replace(/\{\{total\}\}/g, 'Rp 150.000')
-                      .replace(/\{\{tracking_link\}\}/g, 'https://tokosaya.com/store/toko-saya/track/550e8400-e29b-41d4-a716-446655440000')}
+                      .replace(/\{\{name\}\}/g, sampleData.name)
+                      .replace(/\{\{order_number\}\}/g, sampleData.orderNumber)
+                      .replace(/\{\{total\}\}/g, sampleData.total)
+                      .replace(/\{\{tracking_link\}\}/g, sampleData.trackingLink)}
                   </pre>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  * Contoh preview dengan data dummy
+                  * Preview dengan data real dari order terbaru Anda
                 </p>
               </div>
             )}

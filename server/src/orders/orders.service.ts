@@ -657,4 +657,59 @@ export class OrdersService {
 
     return order;
   }
+
+  // ==========================================
+  // GET SAMPLE ORDER FOR PREVIEW
+  // ==========================================
+  async getSampleOrderForPreview(tenantId: string) {
+    // Get most recent order for this tenant
+    const order = await this.prisma.order.findFirst({
+      where: { tenantId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+        tenant: {
+          select: {
+            slug: true,
+          },
+        },
+      },
+    });
+
+    // If no orders exist, return dummy data as fallback
+    if (!order) {
+      return {
+        name: 'Budi Santoso',
+        phone: '+628123456789',
+        orderNumber: 'ORD-20260130-001',
+        total: 'Rp 150.000',
+        trackingLink: 'https://tokosaya.com/store/toko-saya/track/550e8400-e29b-41d4-a716-446655440000',
+      };
+    }
+
+    // Format tracking link with tenant slug and order UUID
+    const FRONTEND_URL = this.config.get('FRONTEND_URL') || 'http://localhost:3000';
+    const trackingLink = `${FRONTEND_URL}/store/${order.tenant.slug}/track/${order.id}`;
+
+    // Format price
+    const formattedTotal = new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(order.total);
+
+    return {
+      name: order.customer?.name || order.customerName || 'Customer',
+      phone: order.customer?.phone || order.customerPhone || '+62',
+      orderNumber: order.orderNumber,
+      total: formattedTotal,
+      trackingLink,
+    };
+  }
 }
