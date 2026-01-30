@@ -73,22 +73,26 @@ function SettingsSidebar() {
   const { setOpenMobile } = useSidebar();
 
   const handleTabClick = (key: string) => {
-    if (key === 'store') {
-      router.push('/settings/toko');
-      setOpenMobile(false);
-      return;
-    }
+    // All tabs now navigate to separate routes (like dashboard pattern)
+    const routeMap: Record<string, string> = {
+      store: '/settings/toko',
+      seo: '/settings/seo',
+      payment: '/settings/pembayaran',
+      shipping: '/settings/pengiriman',
+    };
 
-    router.push('/settings');
-    // For other tabs, navigate to settings with hash or state
-    // For now just navigate to /settings
+    const route = routeMap[key] || '/settings/pembayaran'; // Default to pembayaran
+    router.push(route);
     setOpenMobile(false);
   };
 
   // Determine active tab based on pathname
   const getActiveTab = () => {
     if (pathname.startsWith('/settings/toko')) return 'store';
-    // Default for /settings main page - you might want to add state management
+    if (pathname.startsWith('/settings/seo')) return 'seo';
+    if (pathname.startsWith('/settings/pembayaran')) return 'payment';
+    if (pathname.startsWith('/settings/pengiriman')) return 'shipping';
+    // Default fallback
     return 'payment';
   };
 
