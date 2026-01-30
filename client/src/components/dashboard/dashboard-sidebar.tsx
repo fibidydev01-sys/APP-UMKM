@@ -129,8 +129,8 @@ export function DashboardSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      {/* Navigation */}
-      <SidebarContent className="pt-4">
+      {/* Navigation - Centered vertically */}
+      <SidebarContent className="flex flex-col justify-center">
         {navigation.map((group) => (
           <SidebarGroup key={group.title}>
             <SidebarMenu>
