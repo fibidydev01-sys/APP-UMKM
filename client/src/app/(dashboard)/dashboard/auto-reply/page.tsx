@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { MessageSquare, Key, ShoppingCart, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSampleOrder } from '@/hooks/use-orders';
@@ -12,6 +13,7 @@ import { PaymentTab } from './components/tabs/payment-tab';
 // ══════════════════════════════════════════════════════════════
 // AUTO-REPLY PAGE - Sticky Tabs Pattern (like Dashboard)
 // Tabs: Welcome, Keywords, Order Status, Payment
+// Individual routes STILL accessible: /auto-reply/welcome, etc.
 // ══════════════════════════════════════════════════════════════
 
 type TabType = 'welcome' | 'keywords' | 'order-status' | 'payment';
@@ -66,6 +68,27 @@ export default function AutoReplyPage() {
         {activeTab === 'keywords' && <KeywordsTab sampleData={sampleData} />}
         {activeTab === 'order-status' && <OrderStatusTab sampleData={sampleData} />}
         {activeTab === 'payment' && <PaymentTab sampleData={sampleData} />}
+      </div>
+
+      {/* Info: Direct routes still accessible */}
+      <div className="mt-8 p-4 bg-muted/20 rounded-lg border text-sm">
+        <p className="font-medium mb-2 text-muted-foreground">
+          💡 <strong>Pro Tip:</strong> Individual pages masih bisa diakses langsung:
+        </p>
+        <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+          <Link href="/dashboard/auto-reply/welcome" className="hover:text-foreground hover:underline">
+            → /auto-reply/welcome
+          </Link>
+          <Link href="/dashboard/auto-reply/keywords" className="hover:text-foreground hover:underline">
+            → /auto-reply/keywords
+          </Link>
+          <Link href="/dashboard/auto-reply/order-status" className="hover:text-foreground hover:underline">
+            → /auto-reply/order-status
+          </Link>
+          <Link href="/dashboard/auto-reply/payment" className="hover:text-foreground hover:underline">
+            → /auto-reply/payment
+          </Link>
+        </div>
       </div>
     </div>
   );
