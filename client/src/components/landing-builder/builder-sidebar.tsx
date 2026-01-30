@@ -135,9 +135,6 @@ function SortableSectionItem({
 
   const Icon = section.icon;
 
-  // Track if user is actually dragging (not just clicking)
-  const [hasMoved, setHasMoved] = React.useState(false);
-
   return (
     <div
       ref={setNodeRef}
@@ -164,19 +161,9 @@ function SortableSectionItem({
           // ✅ Disabled state = visual only (grayscale + opacity)
           !enabled && 'opacity-50 grayscale'
         )}
-        onPointerDown={() => {
-          // Reset movement tracking
-          setHasMoved(false);
-        }}
-        onPointerMove={() => {
-          // User is dragging, not clicking
-          if (isDragging) {
-            setHasMoved(true);
-          }
-        }}
         onClick={(e) => {
-          // ✅ Only trigger click if user didn't drag (pure click)
-          if (!hasMoved && !isDragging) {
+          // ✅ Only trigger click if not dragging (dnd-kit handles delay)
+          if (!isDragging) {
             onSectionClick(section.id);
           }
         }}
