@@ -1,48 +1,42 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { IconRocket, IconTrophy } from '@tabler/icons-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { useOnboarding } from '@/hooks/use-onboarding';
 
 // ============================================
 // ONBOARDING LINK COMPONENT (Sidebar)
-// Now navigates to /dashboard/onboarding page
+// Same pattern as Dashboard and Inbox nav items
 // ============================================
 
 export function OnboardingDropdown() {
+  const pathname = usePathname();
   const { progress, isLoading } = useOnboarding();
+  const isActive = pathname === '/dashboard/onboarding';
 
   // Loading state
   if (isLoading || !progress) {
     return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-9 w-9"
-        asChild
-      >
+      <SidebarMenuButton asChild tooltip="Setup Toko" isActive={isActive}>
         <Link href="/dashboard/onboarding">
-          <IconRocket className="h-5 w-5 animate-pulse" />
+          <IconRocket className="h-4 w-4 animate-pulse" />
+          <span>Setup Toko</span>
         </Link>
-      </Button>
+      </SidebarMenuButton>
     );
   }
 
   // 100% complete - show trophy
   if (progress.percentage >= 100) {
     return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-9 w-9"
-        asChild
-      >
+      <SidebarMenuButton asChild tooltip="Setup Toko" isActive={isActive}>
         <Link href="/dashboard/onboarding">
-          <IconTrophy className="h-5 w-5 text-primary" />
+          <IconTrophy className="h-4 w-4 text-primary" />
+          <span>Selesai!</span>
         </Link>
-      </Button>
+      </SidebarMenuButton>
     );
   }
 
@@ -50,22 +44,16 @@ export function OnboardingDropdown() {
 
   // In progress - show rocket with badge
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className={cn('h-9 w-9 relative')}
-      asChild
-    >
+    <SidebarMenuButton asChild tooltip="Setup Toko" isActive={isActive}>
       <Link href="/dashboard/onboarding">
-        <IconRocket className="h-5 w-5" />
+        <IconRocket className="h-4 w-4" />
+        <span>Setup Toko</span>
         {remainingSteps > 0 && (
-          <div className="absolute -top-0.5 -right-0.5">
-            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-              {remainingSteps}
-            </div>
-          </div>
+          <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
+            {remainingSteps}
+          </span>
         )}
       </Link>
-    </Button>
+    </SidebarMenuButton>
   );
 }
