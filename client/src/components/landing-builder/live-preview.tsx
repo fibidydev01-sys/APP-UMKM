@@ -113,32 +113,19 @@ export function LivePreview({
     heroEnabled || aboutEnabled || productsEnabled || testimonialsEnabled || ctaEnabled || contactEnabled;
 
   // 🚀 Section rendering map with refs for auto-scroll
-  // ✅ Each section has appropriate height based on content type
   const sectionComponents: Record<SectionKey, React.ReactNode> = {
     hero: heroEnabled ? (
-      <div
-        key="hero"
-        ref={(el) => (sectionRefs.current.hero = el)}
-        className="min-h-[70vh] flex items-center py-8"
-      >
+      <div key="hero" ref={(el) => (sectionRefs.current.hero = el)}>
         <TenantHero config={config.hero} tenant={tenant} />
       </div>
     ) : null,
     about: aboutEnabled ? (
-      <div
-        key="about"
-        ref={(el) => (sectionRefs.current.about = el)}
-        className="min-h-[60vh] py-12"
-      >
+      <div key="about" ref={(el) => (sectionRefs.current.about = el)}>
         <TenantAbout config={config.about} tenant={tenant} />
       </div>
     ) : null,
     products: productsEnabled ? (
-      <div
-        key="products"
-        ref={(el) => (sectionRefs.current.products = el)}
-        className="min-h-[80vh] py-12"
-      >
+      <div key="products" ref={(el) => (sectionRefs.current.products = el)}>
         <TenantProducts
           products={products}
           config={config.products}
@@ -147,29 +134,17 @@ export function LivePreview({
       </div>
     ) : null,
     testimonials: testimonialsEnabled ? (
-      <div
-        key="testimonials"
-        ref={(el) => (sectionRefs.current.testimonials = el)}
-        className="min-h-[60vh] py-12"
-      >
+      <div key="testimonials" ref={(el) => (sectionRefs.current.testimonials = el)}>
         <TenantTestimonials config={config.testimonials} tenant={tenant} />
       </div>
     ) : null,
     cta: ctaEnabled ? (
-      <div
-        key="cta"
-        ref={(el) => (sectionRefs.current.cta = el)}
-        className="min-h-[50vh] flex items-center py-12"
-      >
+      <div key="cta" ref={(el) => (sectionRefs.current.cta = el)}>
         <TenantCta config={config.cta} tenant={tenant} />
       </div>
     ) : null,
     contact: contactEnabled ? (
-      <div
-        key="contact"
-        ref={(el) => (sectionRefs.current.contact = el)}
-        className="min-h-[60vh] py-12"
-      >
+      <div key="contact" ref={(el) => (sectionRefs.current.contact = el)}>
         <TenantContact config={config.contact} tenant={tenant} />
       </div>
     ) : null,
