@@ -32,6 +32,7 @@ interface LivePreviewProps {
   products: Product[];
   isLoading?: boolean;
   activeSection?: SectionKey | null; // 🚀 Active section for auto-scroll
+  device?: DeviceType; // 🚀 Device preview mode (controlled from page header)
   drawerOpen?: boolean; // 🚀 Drawer state for Buka button
   onToggleDrawer?: () => void; // 🚀 Toggle drawer handler
 }
@@ -62,10 +63,10 @@ export function LivePreview({
   products,
   isLoading = false,
   activeSection,
+  device = 'desktop', // 🚀 Controlled from page header
   drawerOpen = false,
   onToggleDrawer,
 }: LivePreviewProps) {
-  const [device, setDevice] = useState<DeviceType>('desktop');
 
   // 🚀 Section refs for auto-scroll
   const sectionRefs = useRef<Record<SectionKey, HTMLDivElement | null>>({
@@ -152,75 +153,7 @@ export function LivePreview({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Preview Header */}
-      <div className="flex items-center justify-between p-4 border-b bg-muted/30">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold">Live Preview</h3>
-          {/* 🚀 Active Section Name */}
-          {activeSection && (
-            <>
-              <div className="h-5 w-px bg-border" />
-              <h3 className="font-semibold capitalize">
-                {activeSection === 'cta' ? 'CTA' : activeSection}
-              </h3>
-              {/* 🚀 Buka/Tutup Drawer Button */}
-              {onToggleDrawer && (
-                <>
-                  <div className="h-5 w-px bg-border" />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onToggleDrawer}
-                    className="h-7 px-3"
-                  >
-                    {drawerOpen ? 'Tutup' : 'Buka'}
-                  </Button>
-                </>
-              )}
-            </>
-          )}
-          {isLoading && (
-            <Badge variant="outline" className="gap-1">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Updating...
-            </Badge>
-          )}
-        </div>
-
-        {/* Device Toggle */}
-        <div className="flex items-center gap-2">
-          {(['mobile', 'tablet', 'desktop'] as DeviceType[]).map((deviceType) => (
-            <Button
-              key={deviceType}
-              variant={device === deviceType ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setDevice(deviceType)}
-              className="gap-2"
-            >
-              {DEVICE_ICONS[deviceType]}
-              <span className="capitalize hidden sm:inline">{deviceType}</span>
-            </Button>
-          ))}
-
-          <div className="h-6 w-px bg-border mx-2" />
-
-          <Button
-            variant="outline"
-            size="sm"
-            asChild
-          >
-            <a
-              href={`/store/${tenant.slug}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="gap-2"
-            >
-              <ExternalLink className="h-4 w-4" />
-              <span className="hidden sm:inline">Open</span>
-            </a>
-          </Button>
-        </div>
-      </div>
+      {/* 🚀 No header - device controls moved to page header menubar */}
 
       {/* Preview Content */}
       <div className="flex-1 overflow-auto bg-muted/10 p-4">
