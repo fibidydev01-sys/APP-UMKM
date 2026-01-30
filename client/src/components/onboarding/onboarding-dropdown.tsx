@@ -174,11 +174,10 @@ export function OnboardingDropdown() {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            size="sm"
-            className="h-9 gap-2 px-2.5"
+            size="icon"
+            className="h-9 w-9"
           >
             <IconTrophy className="h-5 w-5 text-primary" />
-            <span className="hidden sm:inline text-sm font-medium text-primary">Complete!</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[380px] p-0">
