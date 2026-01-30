@@ -14,6 +14,8 @@ import {
   Layout,
   Moon,
   Sun,
+  Compass,
+  Film,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -69,6 +71,16 @@ const navigation: NavGroup[] = [
         title: 'Inbox',
         href: '/dashboard/inbox',
         icon: Send,
+      },
+      {
+        title: 'Explore',
+        href: '/dashboard/explore',
+        icon: Compass,
+      },
+      {
+        title: 'Reels',
+        href: '/dashboard/reels',
+        icon: Film,
       },
     ],
   },
