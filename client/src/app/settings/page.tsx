@@ -69,46 +69,6 @@ const DEFAULT_SHIPPING_METHODS: ShippingMethods = {
 
 const generateId = () => Math.random().toString(36).substring(2, 9);
 
-// Store Info Sections Navigation (no icons - pure text)
-const STORE_SECTIONS = [
-  {
-    id: 'hero-section',
-    title: 'Hero Section',
-    description: 'Banner utama dan branding toko',
-    href: '/settings/hero-section',
-  },
-  {
-    id: 'about',
-    title: 'About',
-    description: 'Tentang toko dan fitur unggulan',
-    href: '/settings/about',
-  },
-  {
-    id: 'testimonials',
-    title: 'Testimonials',
-    description: 'Testimoni pelanggan',
-    href: '/settings/testimonials',
-  },
-  {
-    id: 'contact',
-    title: 'Contact',
-    description: 'Informasi kontak dan lokasi',
-    href: '/settings/contact',
-  },
-  {
-    id: 'cta',
-    title: 'Call to Action',
-    description: 'Ajakan untuk mengambil tindakan',
-    href: '/settings/cta',
-  },
-  {
-    id: 'landing-builder',
-    title: 'Landing Builder',
-    description: 'Desain dan customize landing page',
-    href: '/landing-builder',
-  },
-];
-
 // ============================================================================
 // MAIN COMPONENT
 // ============================================================================
@@ -124,7 +84,7 @@ export default function SettingsPage() {
   // ---------------------------------------------------------------------------
   // State
   // ---------------------------------------------------------------------------
-  const [activeTab, setActiveTab] = useState('store');
+  const [activeTab, setActiveTab] = useState('payment'); // Default to 'payment' (store tab navigates to /settings/toko)
 
   // Saving states
   const [isSavingPayment, setIsSavingPayment] = useState(false);
@@ -362,42 +322,8 @@ export default function SettingsPage() {
   const renderContent = () => {
     switch (activeTab) {
       case 'store':
-        return (
-          <Card>
-            <CardHeader>
-              <CardTitle>Informasi Toko</CardTitle>
-              <CardDescription>
-                Kelola informasi toko dan konten landing page. Semua data disimpan ke database yang
-                sama.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 md:grid-cols-2">
-                {STORE_SECTIONS.map((section) => (
-                  <Card
-                    key={section.id}
-                    className="group cursor-pointer hover:border-primary hover:shadow-md transition-all"
-                    onClick={() => router.push(section.href)}
-                  >
-                    <CardContent className="flex items-start gap-4 p-6">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base mb-1 group-hover:text-primary transition-colors">
-                          {section.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground line-clamp-2">
-                          {section.description}
-                        </p>
-                      </div>
-                      <span className="flex-shrink-0 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all">
-                        &rarr;
-                      </span>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        );
+        // Redirect handled by useEffect above - show nothing while redirecting
+        return null;
 
       case 'payment':
         return (

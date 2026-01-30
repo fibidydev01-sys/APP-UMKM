@@ -71,6 +71,13 @@ export function SettingsNav({ activeTab, onTabChange }: SettingsNavProps) {
   const { setOpenMobile } = useSidebar();
 
   const handleTabClick = (key: string) => {
+    // Special handling for 'store' tab - navigate to /settings/toko instead of state switching
+    if (key === 'store') {
+      router.push('/settings/toko');
+      setOpenMobile(false);
+      return;
+    }
+
     onTabChange(key);
     setOpenMobile(false);
   };
