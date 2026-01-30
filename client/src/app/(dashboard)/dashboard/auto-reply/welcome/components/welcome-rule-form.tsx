@@ -317,65 +317,31 @@ export function WelcomeRuleForm({ rule, open, onClose, onSuccess }: Props) {
               </Label>
 
               {/* Add Variable Buttons */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                    Tambah Variabel:
-                  </Label>
-                  <div className="flex flex-wrap gap-2">
-                    {VARIABLES.map((variable) => {
-                      const Icon = variable.icon;
-                      const isUsed = hasVariable(variable.key);
-                      return (
-                        <Button
-                          key={variable.key}
-                          type="button"
-                          variant={isUsed ? "secondary" : "outline"}
-                          size="sm"
-                          onClick={() => insertVariableChip(variable)}
-                          disabled={isUsed}
-                          title={isUsed ? `${variable.label} sudah digunakan` : variable.description}
-                          className="h-7 text-xs"
-                        >
-                          <Icon className="h-3 w-3 mr-1" />
-                          {variable.label}
-                        </Button>
-                      );
-                    })}
-                  </div>
+              <div className="flex items-center gap-2">
+                <Label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                  Tambah Variabel:
+                </Label>
+                <div className="flex flex-wrap gap-2">
+                  {VARIABLES.map((variable) => {
+                    const Icon = variable.icon;
+                    const isUsed = hasVariable(variable.key);
+                    return (
+                      <Button
+                        key={variable.key}
+                        type="button"
+                        variant={isUsed ? "secondary" : "outline"}
+                        size="sm"
+                        onClick={() => insertVariableChip(variable)}
+                        disabled={isUsed}
+                        title={isUsed ? `${variable.label} sudah digunakan` : variable.description}
+                        className="h-7 text-xs"
+                      >
+                        <Icon className="h-3 w-3 mr-1" />
+                        {variable.label}
+                      </Button>
+                    );
+                  })}
                 </div>
-
-                {/* Active Variables Chips */}
-                {getActiveVariables().length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <Label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                      Variabel Aktif:
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {getActiveVariables().map((variable) => {
-                        const Icon = variable.icon;
-                        return (
-                          <Badge
-                            key={variable.key}
-                            variant="default"
-                            className="pl-2 pr-1 py-1 gap-1 text-xs font-medium rounded-full"
-                          >
-                            <Icon className="h-3 w-3" />
-                            <span>{variable.label}</span>
-                            <button
-                              type="button"
-                              onClick={() => removeVariable(variable.key)}
-                              className="ml-1 rounded-full hover:bg-white/20 p-0.5 transition-colors"
-                              title={`Hapus ${variable.label}`}
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
               </div>
 
               <div
