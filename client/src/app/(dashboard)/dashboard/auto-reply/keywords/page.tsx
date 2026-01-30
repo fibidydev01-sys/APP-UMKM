@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
+import { useSampleOrder } from '@/hooks/use-orders';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -27,6 +28,7 @@ import { KeywordRuleForm } from './components/keyword-rule-form';
 
 export default function KeywordsPage() {
   const { rules, isLoading, isDeleting, fetchRules, deleteRule } = useAutoReply();
+  const { sampleData } = useSampleOrder();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [editingRule, setEditingRule] = useState<AutoReplyRule | null>(null);
@@ -150,10 +152,12 @@ export default function KeywordsPage() {
                     )}
                   </div>
 
-                  {/* Message Preview */}
+                  {/* Message Preview - LIVE with Real Data */}
                   <div className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded-md">
                     <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2">
-                      {rule.responseMessage}
+                      {rule.responseMessage
+                        .replace(/\{\{name\}\}/g, sampleData.name)
+                        .replace(/\{\{phone\}\}/g, sampleData.phone)}
                     </p>
                   </div>
 

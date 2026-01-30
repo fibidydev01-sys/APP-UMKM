@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
+import { useSampleOrder } from '@/hooks/use-orders';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -27,6 +28,7 @@ import { WelcomeRuleForm } from './components/welcome-rule-form';
 
 export default function WelcomePage() {
   const { rules, isLoading, isDeleting, fetchRules, deleteRule } = useAutoReply();
+  const { sampleData } = useSampleOrder();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [editingRule, setEditingRule] = useState<AutoReplyRule | null>(null);
@@ -95,14 +97,16 @@ export default function WelcomePage() {
               </p>
             </div>
 
-            {/* Message Preview */}
+            {/* Message Preview - LIVE with Real Data */}
             <div>
               <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-                Message Template:
+                Live Preview:
               </p>
               <div className="bg-zinc-50 dark:bg-zinc-900 p-4 rounded-md border border-zinc-200 dark:border-zinc-800">
                 <pre className="text-sm text-zinc-600 dark:text-zinc-400 whitespace-pre-wrap font-sans">
-                  {welcomeRule.responseMessage}
+                  {welcomeRule.responseMessage
+                    .replace(/\{\{name\}\}/g, sampleData.name)
+                    .replace(/\{\{phone\}\}/g, sampleData.phone)}
                 </pre>
               </div>
             </div>

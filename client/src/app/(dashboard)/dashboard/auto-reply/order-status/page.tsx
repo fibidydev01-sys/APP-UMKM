@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useAutoReply } from '@/hooks/use-auto-reply';
+import { useSampleOrder } from '@/hooks/use-orders';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -35,6 +36,7 @@ const ORDER_STATUSES = [
 
 export default function OrderStatusPage() {
   const { rules, isLoading, isDeleting, fetchRules, deleteRule } = useAutoReply();
+  const { sampleData } = useSampleOrder();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [creatingStatus, setCreatingStatus] = useState<string | null>(null);
   const [editingRule, setEditingRule] = useState<AutoReplyRule | null>(null);
@@ -130,10 +132,14 @@ export default function OrderStatusPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {/* Message Preview */}
+                    {/* Message Preview - LIVE with Real Data */}
                     <div className="bg-zinc-50 dark:bg-zinc-900 p-3 rounded-md">
                       <p className="text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 whitespace-pre-wrap">
-                        {rule.responseMessage}
+                        {rule.responseMessage
+                          .replace(/\{\{name\}\}/g, sampleData.name)
+                          .replace(/\{\{order_number\}\}/g, sampleData.orderNumber)
+                          .replace(/\{\{total\}\}/g, sampleData.total)
+                          .replace(/\{\{tracking_link\}\}/g, sampleData.trackingLink)}
                       </p>
                     </div>
 
