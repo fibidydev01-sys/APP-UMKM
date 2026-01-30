@@ -121,11 +121,10 @@ export default function LandingBuilderPage() {
   // SIDEBAR & SHEET HANDLERS
   // ============================================================================
 
-  // Step 1: User clicks section → Switch section, AUTO EXPAND drawer
+  // Step 1: User clicks section → Switch section (drawer stays collapsed)
   const handleSectionClick = useCallback((section: SectionType) => {
     setActiveSection(section);
-    // 🚀 AUTO EXPAND drawer to show blocks immediately!
-    setDrawerState('expanded');
+    // ✅ Drawer stays collapsed - user controls expand/collapse with toggle button only
   }, []);
 
   // Step 2: User clicks block → Update config (NO form sheet - data edited in Settings)

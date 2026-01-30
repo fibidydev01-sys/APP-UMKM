@@ -128,6 +128,7 @@ export function BlockDrawer({
       onOpenChange={() => {}}
       modal={false}
       noBodyStyles
+      dismissible={false}
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-black/40 z-[9998]" />
