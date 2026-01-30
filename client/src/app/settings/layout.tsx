@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { AuthGuard } from '@/components/auth';
+import { SettingsLayout as SettingsLayoutComponent } from '@/components/settings';
 
 // ==========================================
 // SETTINGS LAYOUT
-// Isolated settings pages with AuthGuard
-// Uses SidebarProvider for desktop sidebar + mobile sheet
+// Wraps all /settings routes with sidebar (like DashboardLayout)
+// Pattern: AuthGuard → SettingsLayout (with sidebar) → children
 // ==========================================
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <AuthGuard requireAuth redirectTo="/login">
-      <div className="min-h-screen bg-background">{children}</div>
+      <SettingsLayoutComponent>{children}</SettingsLayoutComponent>
     </AuthGuard>
   );
 }

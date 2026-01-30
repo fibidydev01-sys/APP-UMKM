@@ -12,10 +12,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import {
-  SettingsNav,
-  SettingsMobileTrigger,
   PaymentSettings,
   ShippingSettings,
   SeoSettings,
@@ -390,7 +387,7 @@ export default function SettingsPage() {
   // Render
   // ---------------------------------------------------------------------------
   return (
-    <SidebarProvider defaultOpen={true}>
+    <>
       {/* Dialogs */}
       <BankAccountDialog
         open={bankDialogOpen}
@@ -405,21 +402,8 @@ export default function SettingsPage() {
         onSave={handleSaveEwallet}
       />
 
-      {/* Sidebar Navigation */}
-      <SettingsNav activeTab={activeTab} onTabChange={handleTabChange} />
-
-      {/* Main Content */}
-      <SidebarInset>
-        <div className="flex flex-col min-h-screen">
-          <div className="flex-1 p-4 md:p-6 lg:p-8">
-            {/* Mobile Trigger */}
-            <SettingsMobileTrigger />
-
-            {/* Content */}
-            {renderContent()}
-          </div>
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
+      {/* Content - Sidebar is now in layout */}
+      {renderContent()}
+    </>
   );
 }
