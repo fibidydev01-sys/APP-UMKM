@@ -1,8 +1,6 @@
 'use client';
 
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { SettingsNav } from './settings-nav';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar,
@@ -11,14 +9,14 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarProvider,
   useSidebar,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 
 // ==========================================
 // SETTINGS LAYOUT COMPONENT
@@ -129,7 +127,8 @@ function SettingsSidebar() {
                     onClick={() => handleTabClick(item.key)}
                     className={cn(
                       'w-full justify-start',
-                      activeTab === item.key && 'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
+                      activeTab === item.key &&
+                        'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground'
                     )}
                   >
                     <span>{item.label}</span>
