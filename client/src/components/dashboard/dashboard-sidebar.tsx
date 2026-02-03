@@ -178,7 +178,7 @@ export function DashboardSidebar() {
                           <img
                             src={tenant.logo}
                             alt={tenant.name || 'Toko'}
-                            className="h-5 w-5 rounded-full object-cover"
+                            className="h-5 w-5 rounded-full object-cover border-0 shadow-none"
                           />
                         ) : (
                           <item.icon className="h-5 w-5" />
