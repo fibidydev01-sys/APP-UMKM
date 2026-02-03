@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -7,9 +8,14 @@ import {
   Settings,
   Store,
   ChevronRight,
-  ChevronsUpDown,
   LogOut,
   Send,
+  Menu,
+  Layout,
+  Moon,
+  Sun,
+  Compass,
+  Film,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -17,27 +23,23 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarRail,
 } from '@/components/ui/sidebar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth, useLogout } from '@/hooks';
-import { getInitials } from '@/lib/format';
+import { OnboardingDropdown } from '@/components/onboarding';
 
 // ==========================================
 // NAVIGATION ITEMS
@@ -70,6 +72,16 @@ const navigation: NavGroup[] = [
         href: '/dashboard/inbox',
         icon: Send,
       },
+      {
+        title: 'Explore',
+        href: '/dashboard/explore',
+        icon: Compass,
+      },
+      {
+        title: 'Reels',
+        href: '/dashboard/reels',
+        icon: Film,
+      },
     ],
   },
 ];
@@ -83,6 +95,30 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const { tenant } = useAuth();
   const { logout } = useLogout();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  };
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -93,11 +129,10 @@ export function DashboardSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      {/* Navigation */}
-      <SidebarContent className="pt-4">
+      {/* Navigation - Centered vertically */}
+      <SidebarContent className="flex flex-col justify-center">
         {navigation.map((group) => (
           <SidebarGroup key={group.title}>
-            <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
             <SidebarMenu>
               {group.items.map((item) => {
                 const active = isActive(item.href);
@@ -113,7 +148,7 @@ export function DashboardSidebar() {
                     >
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
-                          <SidebarMenuButton tooltip={item.title} isActive={active}>
+                          <SidebarMenuButton isActive={active}>
                             <item.icon className="h-4 w-4" />
                             <span>{item.title}</span>
                             <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -140,7 +175,7 @@ export function DashboardSidebar() {
                 // Simple item
                 return (
                   <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton asChild tooltip={item.title} isActive={active}>
+                    <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
@@ -154,57 +189,41 @@ export function DashboardSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              {/* Onboarding Dropdown - below Inbox */}
+              <SidebarMenuItem>
+                <OnboardingDropdown />
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
         ))}
       </SidebarContent>
 
-      {/* User Avatar Footer */}
+      {/* Footer with Hamburger Menu */}
       <SidebarFooter>
         <SidebarMenu>
+          {/* Hamburger Menu Button */}
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
-                  size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={tenant?.logo || undefined} />
-                    <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                      {tenant?.name ? getInitials(tenant.name) : 'U'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{tenant?.name}</span>
-                    <span className="truncate text-xs text-muted-foreground">{tenant?.email}</span>
-                  </div>
-                  <ChevronsUpDown className="ml-auto size-4" />
+                  <Menu className="h-4 w-4" />
+                  <span>Menu</span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                side="bottom"
-                align="end"
+                className="w-56 rounded-lg"
+                side="top"
+                align="start"
                 sideOffset={4}
               >
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={tenant?.logo || undefined} />
-                      <AvatarFallback className="rounded-lg bg-primary text-primary-foreground">
-                        {tenant?.name ? getInitials(tenant.name) : 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">{tenant?.name}</span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        {tenant?.email}
-                      </span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/landing-builder">
+                    <Layout className="mr-2 h-4 w-4" />
+                    Landing Builder
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/settings">
                     <Settings className="mr-2 h-4 w-4" />
@@ -218,6 +237,20 @@ export function DashboardSidebar() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={toggleTheme}>
+                  {isDark ? (
+                    <>
+                      <Sun className="mr-2 h-4 w-4" />
+                      Mode Terang
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="mr-2 h-4 w-4" />
+                      Mode Gelap
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-destructive">
                   <LogOut className="mr-2 h-4 w-4" />
                   Keluar
@@ -227,9 +260,6 @@ export function DashboardSidebar() {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
-
-      {/* Rail for collapsed state */}
-      <SidebarRail />
     </Sidebar>
   );
 }
