@@ -155,8 +155,8 @@ export function SettingsLayout({ children }: SettingsLayoutProps) {
       <SettingsSidebar />
 
       <SidebarInset>
-        <div className="flex-1 overflow-auto">
-          <div className="container p-4 md:p-6 lg:p-8">
+        <div className="flex flex-col min-h-screen">
+          <div className="flex-1 p-4 md:p-6 lg:p-8">
             {/* Mobile Trigger */}
             <SettingsMobileTrigger />
 
