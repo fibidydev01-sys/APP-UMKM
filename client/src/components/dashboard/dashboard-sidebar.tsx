@@ -91,7 +91,7 @@ const navigation: NavGroup[] = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const { user } = useAuth();
+  const { tenant } = useAuth();
   const { logout } = useLogout();
   const [isDark, setIsDark] = useState(false);
 
@@ -177,9 +177,9 @@ export function DashboardSidebar() {
                       <Link href={item.href}>
                         {item.href === '/dashboard' ? (
                           <Avatar className="h-5 w-5">
-                            <AvatarImage src={user?.avatar} alt={user?.name || 'User'} />
+                            <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} />
                             <AvatarFallback className="text-[10px]">
-                              {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                              {tenant?.name?.charAt(0)?.toUpperCase() || 'T'}
                             </AvatarFallback>
                           </Avatar>
                         ) : (
