@@ -1,15 +1,28 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
+  User,
+  Send,
+  Compass,
+  Film,
+  Menu,
   Settings,
+  Sun,
+  Moon,
+  LogOut,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useLogout } from '@/hooks';
 
 // ==========================================
 // MOBILE NAVBAR (Bottom Navigation)
@@ -19,33 +32,53 @@ import { cn } from '@/lib/utils';
 const navItems = [
   {
     href: '/dashboard',
-    icon: LayoutDashboard,
-    label: 'Home',
+    icon: User,
+    label: 'Profil',
   },
   {
-    href: '/dashboard/products',
-    icon: Package,
-    label: 'Produk',
+    href: '/dashboard/inbox',
+    icon: Send,
+    label: 'Inbox',
   },
   {
-    href: '/dashboard/orders',
-    icon: ShoppingCart,
-    label: 'Pesanan',
+    href: '/dashboard/explore',
+    icon: Compass,
+    label: 'Explore',
   },
   {
-    href: '/dashboard/customers',
-    icon: Users,
-    label: 'Pelanggan',
-  },
-  {
-    href: '/dashboard/settings',
-    icon: Settings,
-    label: 'Setting',
+    href: '/dashboard/reels',
+    icon: Film,
+    label: 'Reels',
   },
 ];
 
 export function MobileNavbar() {
   const pathname = usePathname();
+  const { logout } = useLogout();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const updateTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+
+    updateTheme();
+
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+  };
 
   const isActive = (href: string) => {
     if (href === '/dashboard') {
@@ -89,6 +122,53 @@ export function MobileNavbar() {
             </Link>
           );
         })}
+
+        {/* Menu Dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className={cn(
+                'flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors min-w-[60px]',
+                'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <Menu className="h-5 w-5" />
+              <span className="text-[10px] font-medium">Menu</span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-56 rounded-lg"
+            side="top"
+            align="end"
+            sideOffset={8}
+          >
+            <DropdownMenuItem asChild>
+              <Link href="/settings">
+                <Settings className="mr-3 h-5 w-5" />
+                Pengaturan
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={toggleTheme}>
+              {isDark ? (
+                <>
+                  <Sun className="mr-3 h-5 w-5" />
+                  Mode Terang
+                </>
+              ) : (
+                <>
+                  <Moon className="mr-3 h-5 w-5" />
+                  Mode Gelap
+                </>
+              )}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logout} className="text-destructive">
+              <LogOut className="mr-3 h-5 w-5" />
+              Keluar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* Safe area padding for iOS */}
