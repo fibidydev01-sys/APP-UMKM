@@ -20,7 +20,7 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       {/* Desktop Sidebar - Hidden on mobile */}
       <DashboardSidebar />
 
@@ -29,9 +29,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
         <DashboardHeader />
 
         {/* Main Content */}
-        <DashboardShell>
-          {children}
-        </DashboardShell>
+        <DashboardShell>{children}</DashboardShell>
       </SidebarInset>
 
       {/* Mobile Bottom Navbar - Only on mobile */}
