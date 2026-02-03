@@ -103,7 +103,7 @@ export function MobileNavbar() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors min-w-[60px]',
+                'flex items-center justify-center px-3 py-2 rounded-lg transition-colors min-w-[60px]',
                 active
                   ? 'text-primary'
                   : 'text-muted-foreground hover:text-foreground'
@@ -127,7 +127,6 @@ export function MobileNavbar() {
                   )}
                 />
               )}
-              <span className="text-[10px] font-medium">{item.label}</span>
 
               {/* Active indicator dot */}
               {active && (
@@ -142,12 +141,11 @@ export function MobileNavbar() {
           <DropdownMenuTrigger asChild>
             <button
               className={cn(
-                'flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors min-w-[60px]',
+                'flex items-center justify-center px-3 py-2 rounded-lg transition-colors min-w-[60px]',
                 'text-muted-foreground hover:text-foreground'
               )}
             >
               <Menu className="h-5 w-5" />
-              <span className="text-[10px] font-medium">Menu</span>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
