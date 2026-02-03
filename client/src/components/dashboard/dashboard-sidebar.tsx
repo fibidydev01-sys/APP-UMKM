@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard,
+  User,
   Settings,
   Store,
   ChevronRight,
@@ -62,9 +62,9 @@ const navigation: NavGroup[] = [
     title: 'Menu Utama',
     items: [
       {
-        title: 'Dashboard',
+        title: 'Profil',
         href: '/dashboard',
-        icon: LayoutDashboard,
+        icon: User,
       },
       {
         title: 'Inbox',
