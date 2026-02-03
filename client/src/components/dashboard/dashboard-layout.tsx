@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { DashboardSidebar } from './dashboard-sidebar';
 import { DashboardShell } from './dashboard-shell';
@@ -7,7 +8,7 @@ import { MobileNavbar } from './mobile-navbar';
 
 // ==========================================
 // DASHBOARD LAYOUT COMPONENT
-// - Sidebar (Desktop)
+// - Sidebar (Desktop) — always starts expanded
 // - Mobile Bottom Navbar
 // ==========================================
 
@@ -16,8 +17,10 @@ interface DashboardLayoutProps {
 }
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
       <div className="flex h-screen w-full overflow-hidden">
         {/* Desktop Sidebar - Hidden on mobile */}
         <DashboardSidebar />

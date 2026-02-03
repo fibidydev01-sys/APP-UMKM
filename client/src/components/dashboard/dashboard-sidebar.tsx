@@ -39,7 +39,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth, useLogout } from '@/hooks';
-
+import { OnboardingDropdown } from '@/components/onboarding';
 
 // ==========================================
 // NAVIGATION ITEMS
@@ -189,6 +189,10 @@ export function DashboardSidebar() {
                   </SidebarMenuItem>
                 );
               })}
+              {/* Onboarding Dropdown - below nav items */}
+              <SidebarMenuItem>
+                <OnboardingDropdown />
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
         ))}
