@@ -3,6 +3,7 @@
 // ============================================================================
 
 export { SettingsLayout } from './settings-layout';
+export { SettingsSidebar } from './settings-sidebar';
 export { SettingsNav, SettingsMobileTrigger } from './settings-nav';
 export { StoreInfoForm } from './store-info-form';
 export { PaymentSettings } from './payment-settings';
