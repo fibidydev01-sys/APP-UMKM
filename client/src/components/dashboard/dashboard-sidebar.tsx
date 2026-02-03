@@ -28,7 +28,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
@@ -37,7 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth, useLogout } from '@/hooks';
+import { useLogout } from '@/hooks';
 
 // ==========================================
 // NAVIGATION ITEMS
@@ -91,7 +90,6 @@ const navigation: NavGroup[] = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const { tenant } = useAuth();
   const { logout } = useLogout();
   const [isDark, setIsDark] = useState(false);
 
@@ -175,16 +173,7 @@ export function DashboardSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
-                        {item.href === '/dashboard' ? (
-                          <Avatar className="h-5 w-5 shrink-0 !flex !opacity-100 !visible relative z-10 border-0 shadow-none !items-center !justify-center">
-                            <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} className="!flex !opacity-100 object-center" />
-                            <AvatarFallback className="text-[10px] !flex !opacity-100 items-center justify-center">
-                              {tenant?.name?.charAt(0)?.toUpperCase() || 'T'}
-                            </AvatarFallback>
-                          </Avatar>
-                        ) : (
-                          <item.icon className="h-5 w-5" />
-                        )}
+                        <item.icon className="h-5 w-5" />
                         <span>{item.title}</span>
                         {item.badge !== undefined && item.badge > 0 && (
                           <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">

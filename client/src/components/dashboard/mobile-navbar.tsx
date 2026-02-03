@@ -22,8 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth, useLogout } from '@/hooks';
+import { useLogout } from '@/hooks';
 
 // ==========================================
 // MOBILE NAVBAR (Bottom Navigation)
@@ -55,7 +54,6 @@ const navItems = [
 
 export function MobileNavbar() {
   const pathname = usePathname();
-  const { tenant } = useAuth();
   const { logout } = useLogout();
   const [isDark, setIsDark] = useState(false);
 
@@ -109,24 +107,12 @@ export function MobileNavbar() {
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              {item.href === '/dashboard' ? (
-                <Avatar className={cn(
+              <item.icon
+                className={cn(
                   'h-5 w-5 transition-transform',
                   active && 'scale-110'
-                )}>
-                  <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} />
-                  <AvatarFallback className="text-[10px]">
-                    {tenant?.name?.charAt(0)?.toUpperCase() || 'T'}
-                  </AvatarFallback>
-                </Avatar>
-              ) : (
-                <item.icon
-                  className={cn(
-                    'h-5 w-5 transition-transform',
-                    active && 'scale-110'
-                  )}
-                />
-              )}
+                )}
+              />
 
               {/* Active indicator dot */}
               {active && (
