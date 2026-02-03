@@ -6,12 +6,10 @@ import { usePathname } from 'next/navigation';
 import {
   User,
   Settings,
-  Store,
   ChevronRight,
   LogOut,
   Send,
   Menu,
-  Layout,
   Moon,
   Sun,
   Compass,
@@ -38,7 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useAuth, useLogout } from '@/hooks';
+import { useLogout } from '@/hooks';
 
 // ==========================================
 // NAVIGATION ITEMS
@@ -92,7 +90,6 @@ const navigation: NavGroup[] = [
 
 export function DashboardSidebar() {
   const pathname = usePathname();
-  const { tenant } = useAuth();
   const { logout } = useLogout();
   const [isDark, setIsDark] = useState(false);
 
@@ -214,21 +211,9 @@ export function DashboardSidebar() {
                 sideOffset={4}
               >
                 <DropdownMenuItem asChild>
-                  <Link href="/landing-builder">
-                    <Layout className="mr-3 h-5 w-5" />
-                    Landing Builder
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
                   <Link href="/settings">
                     <Settings className="mr-3 h-5 w-5" />
                     Pengaturan
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href={`/store/${tenant?.slug}`}>
-                    <Store className="mr-3 h-5 w-5" />
-                    Lihat Toko
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
