@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
 import { AuthGuard } from '@/components/auth';
-import { SettingsLayout as SettingsLayoutComponent } from '@/components/settings';
 
 // ==========================================
 // SETTINGS LAYOUT
-// Wraps all /settings routes with sidebar (like DashboardLayout)
-// Pattern: AuthGuard → SettingsLayout (with sidebar) → children
+// Wraps all /settings routes WITHOUT sidebar
+// Pattern: AuthGuard → children (no sidebar)
 // ==========================================
 
 export const metadata: Metadata = {
@@ -22,7 +21,7 @@ interface SettingsLayoutProps {
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
     <AuthGuard requireAuth redirectTo="/login">
-      <SettingsLayoutComponent>{children}</SettingsLayoutComponent>
+      {children}
     </AuthGuard>
   );
 }
