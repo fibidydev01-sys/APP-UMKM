@@ -17,16 +17,18 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <SidebarProvider>
-      {/* Desktop Sidebar - Hidden on mobile */}
-      <DashboardSidebar />
+    <SidebarProvider defaultOpen={true}>
+      <div className="flex h-screen w-full overflow-hidden">
+        {/* Desktop Sidebar - Hidden on mobile */}
+        <DashboardSidebar />
 
-      <SidebarInset className="pb-20 md:pb-0">
-        {/* Main Content */}
-        <DashboardShell>
-          {children}
-        </DashboardShell>
-      </SidebarInset>
+        <SidebarInset className="flex-1 overflow-hidden pb-20 md:pb-0">
+          {/* Main Content */}
+          <DashboardShell>
+            {children}
+          </DashboardShell>
+        </SidebarInset>
+      </div>
 
       {/* Mobile Bottom Navbar - Only on mobile */}
       <MobileNavbar />
