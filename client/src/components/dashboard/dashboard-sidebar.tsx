@@ -28,7 +28,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   DropdownMenu,
@@ -175,13 +174,12 @@ export function DashboardSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
-                        {item.href === '/dashboard' ? (
-                          <Avatar className="h-5 w-5 shrink-0 !flex !opacity-100 !visible relative z-10">
-                            <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} className="!flex !opacity-100" />
-                            <AvatarFallback className="text-[10px] !flex !opacity-100">
-                              {tenant?.name?.charAt(0)?.toUpperCase() || 'T'}
-                            </AvatarFallback>
-                          </Avatar>
+                        {item.href === '/dashboard' && tenant?.logo ? (
+                          <img
+                            src={tenant.logo}
+                            alt={tenant.name || 'Toko'}
+                            className="h-5 w-5 rounded-full object-cover"
+                          />
                         ) : (
                           <item.icon className="h-5 w-5" />
                         )}
