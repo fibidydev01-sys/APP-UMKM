@@ -176,9 +176,9 @@ export function DashboardSidebar() {
                     <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
                         {item.href === '/dashboard' ? (
-                          <Avatar className="h-5 w-5 shrink-0">
-                            <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} />
-                            <AvatarFallback className="text-[10px]">
+                          <Avatar className="h-5 w-5 shrink-0 !flex !opacity-100 !visible relative z-10">
+                            <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} className="!flex !opacity-100" />
+                            <AvatarFallback className="text-[10px] !flex !opacity-100">
                               {tenant?.name?.charAt(0)?.toUpperCase() || 'T'}
                             </AvatarFallback>
                           </Avatar>
