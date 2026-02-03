@@ -4,8 +4,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
+  Package,
+  Users,
+  ShoppingCart,
   Settings,
   Store,
+  Layout,
   ChevronRight,
   ChevronsUpDown,
   LogOut,
@@ -69,6 +73,45 @@ const navigation: NavGroup[] = [
         title: 'Inbox',
         href: '/dashboard/inbox',
         icon: Send,
+      },
+      {
+        title: 'Landing Builder',
+        href: '/landing-builder',
+        icon: Layout,
+      },
+      {
+        title: 'Produk',
+        href: '/dashboard/products',
+        icon: Package,
+        children: [
+          { title: 'Semua Produk', href: '/dashboard/products' },
+          { title: 'Tambah Produk', href: '/dashboard/products/new' },
+        ],
+      },
+      {
+        title: 'Pelanggan',
+        href: '/dashboard/customers',
+        icon: Users,
+      },
+      {
+        title: 'Pesanan',
+        href: '/dashboard/orders',
+        icon: ShoppingCart,
+      },
+    ],
+  },
+  {
+    title: 'Lainnya',
+    items: [
+      {
+        title: 'Lihat Toko',
+        href: '/store',
+        icon: Store,
+      },
+      {
+        title: 'Pengaturan',
+        href: '/settings',
+        icon: Settings,
       },
     ],
   },

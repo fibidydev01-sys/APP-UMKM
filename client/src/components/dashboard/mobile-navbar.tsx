@@ -2,13 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-  Settings,
-} from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, Users, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // ==========================================
@@ -38,7 +32,7 @@ const navItems = [
     label: 'Pelanggan',
   },
   {
-    href: '/dashboard/settings',
+    href: '/settings',
     icon: Settings,
     label: 'Setting',
   },
@@ -69,23 +63,14 @@ export function MobileNavbar() {
               href={item.href}
               className={cn(
                 'flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-lg transition-colors min-w-[60px]',
-                active
-                  ? 'text-primary'
-                  : 'text-muted-foreground hover:text-foreground'
+                active ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
               )}
             >
-              <item.icon
-                className={cn(
-                  'h-5 w-5 transition-transform',
-                  active && 'scale-110'
-                )}
-              />
+              <item.icon className={cn('h-5 w-5 transition-transform', active && 'scale-110')} />
               <span className="text-[10px] font-medium">{item.label}</span>
 
               {/* Active indicator dot */}
-              {active && (
-                <span className="absolute -bottom-0 w-1 h-1 rounded-full bg-primary" />
-              )}
+              {active && <span className="absolute -bottom-0 w-1 h-1 rounded-full bg-primary" />}
             </Link>
           );
         })}
