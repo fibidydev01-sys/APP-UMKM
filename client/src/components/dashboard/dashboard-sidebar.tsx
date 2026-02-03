@@ -149,9 +149,9 @@ export function DashboardSidebar() {
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton isActive={active}>
-                            <item.icon className="h-4 w-4" />
+                            <item.icon className="h-5 w-5" />
                             <span>{item.title}</span>
-                            <ChevronRight className="ml-auto h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            <ChevronRight className="ml-auto h-5 w-5 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
@@ -177,7 +177,7 @@ export function DashboardSidebar() {
                   <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
-                        <item.icon className="h-4 w-4" />
+                        <item.icon className="h-5 w-5" />
                         <span>{item.title}</span>
                         {item.badge !== undefined && item.badge > 0 && (
                           <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
@@ -208,7 +208,7 @@ export function DashboardSidebar() {
                 <SidebarMenuButton
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <Menu className="h-4 w-4" />
+                  <Menu className="h-5 w-5" />
                   <span>Menu</span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -220,19 +220,19 @@ export function DashboardSidebar() {
               >
                 <DropdownMenuItem asChild>
                   <Link href="/landing-builder">
-                    <Layout className="mr-2 h-4 w-4" />
+                    <Layout className="mr-3 h-5 w-5" />
                     Landing Builder
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/settings">
-                    <Settings className="mr-2 h-4 w-4" />
+                    <Settings className="mr-3 h-5 w-5" />
                     Pengaturan
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href={`/store/${tenant?.slug}`}>
-                    <Store className="mr-2 h-4 w-4" />
+                    <Store className="mr-3 h-5 w-5" />
                     Lihat Toko
                   </Link>
                 </DropdownMenuItem>
@@ -240,19 +240,19 @@ export function DashboardSidebar() {
                 <DropdownMenuItem onClick={toggleTheme}>
                   {isDark ? (
                     <>
-                      <Sun className="mr-2 h-4 w-4" />
+                      <Sun className="mr-3 h-5 w-5" />
                       Mode Terang
                     </>
                   ) : (
                     <>
-                      <Moon className="mr-2 h-4 w-4" />
+                      <Moon className="mr-3 h-5 w-5" />
                       Mode Gelap
                     </>
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={logout} className="text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
+                  <LogOut className="mr-3 h-5 w-5" />
                   Keluar
                 </DropdownMenuItem>
               </DropdownMenuContent>
