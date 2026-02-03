@@ -126,7 +126,7 @@ export function DashboardSidebar() {
   };
 
   return (
-    <Sidebar collapsible="none">
+    <Sidebar collapsible="icon">
       {/* Navigation - Centered vertically */}
       <SidebarContent className="flex flex-col justify-center">
         {navigation.map((group) => (
@@ -176,16 +176,12 @@ export function DashboardSidebar() {
                     <SidebarMenuButton asChild isActive={active}>
                       <Link href={item.href}>
                         {item.href === '/dashboard' ? (
-                          tenant?.logo ? (
-                            <Avatar className="h-5 w-5 shrink-0">
-                              <AvatarImage src={tenant.logo} alt={tenant.name || 'Toko'} />
-                              <AvatarFallback className="text-[10px]">
-                                {tenant.name?.charAt(0)?.toUpperCase() || 'T'}
-                              </AvatarFallback>
-                            </Avatar>
-                          ) : (
-                            <item.icon className="h-5 w-5" />
-                          )
+                          <Avatar className="h-5 w-5 shrink-0">
+                            <AvatarImage src={tenant?.logo} alt={tenant?.name || 'Toko'} />
+                            <AvatarFallback className="text-[10px]">
+                              {tenant?.name?.charAt(0)?.toUpperCase() || 'T'}
+                            </AvatarFallback>
+                          </Avatar>
                         ) : (
                           <item.icon className="h-5 w-5" />
                         )}
