@@ -23,10 +23,12 @@ export function SettingsLayout({ children }: SettingsLayoutProps) {
       <SettingsSidebar />
 
       <SidebarInset className="pb-20 md:pb-0">
-        {/* Main Content */}
-        <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
-          {children}
-        </main>
+        {/* Main Content with Container */}
+        <div className="flex-1 overflow-auto">
+          <div className="container p-4 md:p-6 lg:p-8">
+            {children}
+          </div>
+        </div>
       </SidebarInset>
 
       {/* Mobile Bottom Navbar - Only on mobile */}
