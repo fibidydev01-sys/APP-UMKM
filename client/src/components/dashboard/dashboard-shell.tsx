@@ -13,7 +13,7 @@ interface DashboardShellProps {
 export function DashboardShell({ children, className }: DashboardShellProps) {
   return (
     <div className={cn('flex-1 overflow-auto', className)}>
-      <div className="container p-4 md:p-6 lg:p-8">
+      <div className="container p-6 md:p-8 lg:p-12">
         {children}
       </div>
     </div>

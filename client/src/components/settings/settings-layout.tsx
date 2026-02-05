@@ -25,7 +25,7 @@ export function SettingsLayout({ children }: SettingsLayoutProps) {
       <SidebarInset className="pb-20 md:pb-0">
         {/* Main Content with Container */}
         <div className="flex-1 overflow-auto">
-          <div className="container p-4 md:p-6 lg:p-8">
+          <div className="container p-6 md:p-8 lg:p-12">
             {children}
           </div>
         </div>
