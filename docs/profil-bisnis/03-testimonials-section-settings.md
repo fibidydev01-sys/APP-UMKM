@@ -37,6 +37,7 @@ Setiap item dalam **Daftar Testimonial** memiliki:
 | **Role/Pekerjaan** | `Input` (text) | ❌ Tidak | Jabatan atau identitas pelanggan<br/>Contoh: "CEO Startup ABC", "Ibu Rumah Tangga", "Mahasiswa UI" |
 | **Avatar** | `ImageUpload` | ❌ Tidak | Foto pelanggan (opsional)<br/>📐 Rekomendasi: Square 200x200px, format PNG/JPG<br/>💡 Jika kosong, tampilkan initial letter avatar |
 | **Isi Testimoni** | `Textarea` (3 rows) | ✅ Ya | Isi testimoni pelanggan<br/>💡 Rekomendasi: 50-150 kata untuk readability |
+| **Rating** | `Number` (1-5) | ❌ Tidak | Rating bintang dari pelanggan<br/>💡 Contoh: 5 untuk 5 bintang |
 
 ### Contoh Testimonial
 
@@ -46,19 +47,22 @@ Setiap item dalam **Daftar Testimonial** memiliki:
     "name": "Sarah Wijaya",
     "role": "Owner Kafe Aroma",
     "avatar": "https://cdn.fibidy.com/avatars/sarah.jpg",
-    "testimonial": "Pelayanan sangat memuaskan! Bunga datang tepat waktu dan masih sangat segar. Pelanggan saya juga sangat suka dengan dekorasi bunga untuk grand opening kemarin. Highly recommended!"
+    "content": "Pelayanan sangat memuaskan! Bunga datang tepat waktu dan masih sangat segar. Pelanggan saya juga sangat suka dengan dekorasi bunga untuk grand opening kemarin. Highly recommended!",
+    "rating": 5
   },
   {
     "name": "Rudi Hermawan",
     "role": "Marketing Manager PT XYZ",
     "avatar": null,
-    "testimonial": "Sudah 3 kali order untuk acara kantor, tidak pernah mengecewakan. Harga kompetitif, kualitas premium. Tim support juga fast response. Terima kasih Toko Bunga Mawar!"
+    "content": "Sudah 3 kali order untuk acara kantor, tidak pernah mengecewakan. Harga kompetitif, kualitas premium. Tim support juga fast response. Terima kasih Toko Bunga Mawar!",
+    "rating": 5
   },
   {
     "name": "Linda",
     "role": "Ibu Rumah Tangga",
     "avatar": "https://cdn.fibidy.com/avatars/linda.jpg",
-    "testimonial": "Beli bunga untuk anniversary, suami saya sampai speechless liat rangkaiannya. Cantik banget dan wanginya semerbak! Pasti bakal order lagi next year. 5 stars!"
+    "content": "Beli bunga untuk anniversary, suami saya sampai speechless liat rangkaiannya. Cantik banget dan wanginya semerbak! Pasti bakal order lagi next year. 5 stars!",
+    "rating": 5
   }
 ]
 ```
@@ -78,13 +82,15 @@ Setiap item dalam **Daftar Testimonial** memiliki:
       "name": "Sarah Wijaya",
       "role": "Owner Kafe Aroma",
       "avatar": "https://cdn.fibidy.com/avatars/sarah.jpg",
-      "testimonial": "Pelayanan sangat memuaskan! Bunga datang tepat waktu dan masih sangat segar. Pelanggan saya juga sangat suka dengan dekorasi bunga untuk grand opening kemarin. Highly recommended!"
+      "content": "Pelayanan sangat memuaskan! Bunga datang tepat waktu dan masih sangat segar. Pelanggan saya juga sangat suka dengan dekorasi bunga untuk grand opening kemarin. Highly recommended!",
+      "rating": 5
     },
     {
       "name": "Rudi Hermawan",
       "role": "Marketing Manager PT XYZ",
       "avatar": null,
-      "testimonial": "Sudah 3 kali order untuk acara kantor, tidak pernah mengecewakan. Harga kompetitif, kualitas premium. Tim support juga fast response. Terima kasih Toko Bunga Mawar!"
+      "content": "Sudah 3 kali order untuk acara kantor, tidak pernah mengecewakan. Harga kompetitif, kualitas premium. Tim support juga fast response. Terima kasih Toko Bunga Mawar!",
+      "rating": 4
     }
   ]
 }
@@ -106,7 +112,8 @@ PATCH /api/tenants/{tenantId}
 | ↳ Nama Pelanggan | `testimonials[].name` | string |
 | ↳ Role/Pekerjaan | `testimonials[].role` | string |
 | ↳ Avatar | `testimonials[].avatar` | string (URL) atau null |
-| ↳ Isi Testimoni | `testimonials[].testimonial` | string |
+| ↳ Isi Testimoni | `testimonials[].content` | string |
+| ↳ Rating | `testimonials[].rating` | number (1-5, nullable) |
 
 ---
 
@@ -179,17 +186,17 @@ testimonials.forEach((item, index) => {
     return;
   }
   
-  if (!item.testimonial || item.testimonial.trim() === '') {
+  if (!item.content || item.content.trim() === '') {
     toast.error(`Isi testimonial #${index + 1} harus diisi`);
     return;
   }
-  
+
   // Validasi panjang testimoni
-  if (item.testimonial.length < 20) {
+  if (item.content.length < 20) {
     toast.warning(`Testimoni #${index + 1} terlalu pendek (minimal 20 karakter)`);
   }
-  
-  if (item.testimonial.length > 500) {
+
+  if (item.content.length > 500) {
     toast.warning(`Testimoni #${index + 1} terlalu panjang (maksimal 500 karakter)`);
   }
 });
@@ -199,8 +206,8 @@ if (testimonials.length === 0) {
   toast.info('Belum ada testimonial. Tambahkan minimal 1 untuk menampilkan section ini.');
 }
 
-if (testimonials.length > 12) {
-  toast.warning('Terlalu banyak testimoni (> 12). Sebaiknya tampilkan 6-9 yang terbaik.');
+if (testimonials.length > 20) {
+  toast.warning('Terlalu banyak testimoni (> 20). Sebaiknya tampilkan 6-9 yang terbaik.');
 }
 ```
 
@@ -401,16 +408,15 @@ Future: Drag-and-drop sorting
 
 Fitur yang bisa ditambahkan:
 
-1. **Star Rating System** (1-5 stars per testimonial)
-2. **Video Testimonials** support (embed YouTube/Vimeo)
-3. **Verified Badge** untuk testimonial dari order real
-4. **Filter by Product/Category** jika ada banyak testimonial
-5. **Auto-import from Google Reviews** atau platform review lain
-6. **Social Media Integration** (pull reviews dari Facebook/Instagram)
-7. **Rich Snippets** untuk SEO (schema.org Review markup)
-8. **Drag-and-drop** untuk sorting testimonial
-9. **Highlight/Featured** testimonial (tampilkan lebih besar)
-10. **Date Added** untuk menampilkan "Recent Reviews"
+1. **Video Testimonials** support (embed YouTube/Vimeo)
+2. **Verified Badge** untuk testimonial dari order real
+3. **Filter by Product/Category** jika ada banyak testimonial
+4. **Auto-import from Google Reviews** atau platform review lain
+5. **Social Media Integration** (pull reviews dari Facebook/Instagram)
+6. **Rich Snippets** untuk SEO (schema.org Review markup)
+7. **Drag-and-drop** untuk sorting testimonial
+8. **Highlight/Featured** testimonial (tampilkan lebih besar)
+9. **Date Added** untuk menampilkan "Recent Reviews"
 
 ---
 

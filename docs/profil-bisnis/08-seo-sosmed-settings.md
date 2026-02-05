@@ -5,7 +5,7 @@
 
 **Access**: Standalone page
 
-**Sidebar Menu**: "SEO & Sosmed" (icon: 🔍)
+**Sidebar Menu**: "SEO" (icon: 🔍)
 
 ---
 

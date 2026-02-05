@@ -45,6 +45,9 @@ Pengaturan ini akan mempengaruhi perhitungan ongkir di halaman checkout.
 | **Pos Indonesia** | `Switch` | `Input` (text, opsional) | Pos Indonesia<br/>Catatan: "Paket Kilat Khusus" |
 | **ID Express** | `Switch` | `Input` (text, opsional) | ID Express<br/>Catatan: "Reguler & Cargo" |
 | **Lion Parcel** | `Switch` | `Input` (text, opsional) | Lion Parcel<br/>Catatan: "Regpack & One Day Service" |
+| **SAP Express** | `Switch` | `Input` (text, opsional) | SAP Express<br/>Catatan: "Standard & Express" |
+| **TIKI** | `Switch` | `Input` (text, opsional) | TIKI<br/>Catatan: "Reguler & Ekspres" |
+| **Other** | `Switch` | `Input` (text, opsional) | Kurir lainnya<br/>Catatan: Isi nama kurir di field catatan |
 
 **Catatan**:
 - **Enabled**: Switch ON = kurir muncul di pilihan checkout

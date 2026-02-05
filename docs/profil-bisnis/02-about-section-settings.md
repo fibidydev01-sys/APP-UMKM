@@ -291,7 +291,7 @@ Feature Icons:
 **1. Fitur tidak bisa ditambahkan**
 ```
 Cek:
-- Apakah sudah ada 10 fitur? (batas maksimal)
+- Apakah sudah ada 6 fitur? (batas maksimal)
 - Apakah ada error di console browser?
 ```
 

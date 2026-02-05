@@ -39,7 +39,7 @@ Ini adalah **halaman wajib** yang harus dikonfigurasi sebelum toko bisa menerima
 
 | Sub-Field | Tipe | Required | Keterangan |
 |-----------|------|----------|------------|
-| **Nama Bank** | `Input` (text) | ✅ Ya | Contoh: "BCA", "Mandiri", "BRI" |
+| **Nama Bank** | `Select` dropdown | ✅ Ya | Pilihan: BCA, Mandiri, BNI, BRI, BSI, CIMB, Permata, Danamon, Other |
 | **Nomor Rekening** | `Input` (text) | ✅ Ya | Contoh: "1234567890"<br/>💡 Validasi: hanya angka |
 | **Atas Nama** | `Input` (text) | ✅ Ya | Nama pemilik rekening<br/>Contoh: "PT Toko Bunga Mawar" |
 | **Enabled** | `Switch` toggle | - | Status aktif/nonaktif<br/>Hanya rekening aktif yang muncul di checkout |
@@ -58,7 +58,7 @@ Ini adalah **halaman wajib** yang harus dikonfigurasi sebelum toko bisa menerima
 
 | Sub-Field | Tipe | Required | Keterangan |
 |-----------|------|----------|------------|
-| **Provider** | `Input` atau `Select` | ✅ Ya | Nama e-wallet<br/>Contoh: "OVO", "GoPay", "DANA", "ShopeePay", "LinkAja" |
+| **Provider** | `Select` dropdown | ✅ Ya | Pilihan: GoPay, OVO, DANA, ShopeePay, LinkAja, Other |
 | **Nomor** | `Input` (text) | ✅ Ya | Nomor e-wallet<br/>Contoh: "081234567890"<br/>💡 Biasanya sama dengan nomor HP |
 | **Nama Pemilik** | `Input` (text) | ❌ Tidak | Nama pemilik e-wallet (opsional)<br/>Contoh: "Budi Santoso" |
 | **Enabled** | `Switch` toggle | - | Status aktif/nonaktif<br/>Hanya e-wallet aktif yang muncul di checkout |
@@ -92,14 +92,14 @@ Ini adalah **halaman wajib** yang harus dikonfigurasi sebelum toko bisa menerima
     "bankAccounts": [
       {
         "id": "bank_001",
-        "bankName": "BCA",
+        "bank": "BCA",
         "accountNumber": "1234567890",
         "accountName": "PT Toko Bunga Mawar",
         "enabled": true
       },
       {
         "id": "bank_002",
-        "bankName": "Mandiri",
+        "bank": "Mandiri",
         "accountNumber": "9876543210",
         "accountName": "PT Toko Bunga Mawar",
         "enabled": false
@@ -142,7 +142,7 @@ PATCH /api/tenants/{tenantId}
 | Mata Uang | `currency` | string (enum) |
 | Tarif Pajak | `taxRate` | number (0-100) |
 | Rekening Bank | `paymentMethods.bankAccounts[]` | array of objects |
-| ↳ Nama Bank | `.bankName` | string |
+| ↳ Nama Bank | `.bank` | string (enum) |
 | ↳ Nomor Rekening | `.accountNumber` | string |
 | ↳ Atas Nama | `.accountName` | string |
 | ↳ Enabled | `.enabled` | boolean |
@@ -250,8 +250,8 @@ if (taxRate < 0 || taxRate > 100) {
 
 // Validasi Rekening Bank
 bankAccounts.forEach((account, index) => {
-  if (!account.bankName || account.bankName.trim() === '') {
-    toast.error(`Nama bank rekening #${index + 1} harus diisi`);
+  if (!account.bank) {
+    toast.error(`Nama bank rekening #${index + 1} harus dipilih`);
     return;
   }
   
