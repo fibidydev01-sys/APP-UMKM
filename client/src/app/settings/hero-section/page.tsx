@@ -37,7 +37,7 @@ const STEPS = [
 // ─── Step Indicator ────────────────────────────────────────────────────────
 function StepIndicator({ currentStep }: { currentStep: number }) {
   return (
-    <div className="flex items-center justify-center mb-5">
+    <div className="flex items-center">
       {STEPS.map((_, i) => (
         <div key={i} className="flex items-center">
           <div
@@ -239,7 +239,22 @@ export default function HeroSectionPage() {
           <div className="flex flex-col">
             {/* ── Header ──────────────────────────────────────────── */}
             <div>
-              <StepIndicator currentStep={currentStep} />
+              <div className="flex items-center justify-between mb-5">
+                {currentStep > 0 ? (
+                  <Button variant="ghost" size="icon" onClick={handlePrev}>
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                ) : (
+                  <div className="w-10" />
+                )}
+
+                <StepIndicator currentStep={currentStep} />
+
+                <Button variant="ghost" size="icon" onClick={handleNext}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+
               <div className="text-center mb-6">
                 <h3 className="text-sm font-semibold">{STEPS[currentStep].title}</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">{STEPS[currentStep].desc}</p>
@@ -389,22 +404,6 @@ export default function HeroSectionPage() {
                   </div>
                 </div>
               )}
-            </div>
-
-            {/* ── Footer ──────────────────────────────────────────── */}
-            <div className="flex items-center justify-between border-t pt-6 mt-6">
-              {currentStep > 0 ? (
-                <Button variant="ghost" size="sm" onClick={handlePrev}>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Sebelumnya
-                </Button>
-              ) : (
-                <div />
-              )}
-              <Button size="sm" onClick={handleNext}>
-                {currentStep < STEPS.length - 1 ? 'Berikutnya' : 'Preview'}
-                <ChevronRight className="h-4 w-4 ml-1" />
-              </Button>
             </div>
           </div>
         )}
