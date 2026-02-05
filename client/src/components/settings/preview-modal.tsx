@@ -34,6 +34,7 @@ export function PreviewModal({ open, onClose, title, children }: PreviewModalPro
       <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
         <SheetContent
           side="right"
+          hideClose
           className="max-w-none sm:max-w-none overflow-y-auto"
           style={{ width: 'calc(100vw - 5rem)' }}
         >
