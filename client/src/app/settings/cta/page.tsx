@@ -155,23 +155,25 @@ export default function CTAPage() {
             <Skeleton className="h-10 w-full max-w-sm mx-auto" />
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col pb-16 lg:pb-0">
             {/* ── Header ──────────────────────────────────────────── */}
             <div>
-              <div className="flex items-center justify-between mb-5">
-                {currentStep > 0 ? (
-                  <Button variant="ghost" size="icon" onClick={handlePrev}>
-                    <ChevronLeft className="h-4 w-4" />
+              <div className="flex items-center justify-center lg:justify-between mb-5">
+                <div className="hidden lg:flex">
+                  <Button variant="ghost" size="sm" onClick={handlePrev} className={currentStep > 0 ? '' : 'invisible'}>
+                    <ChevronLeft className="h-4 w-4 mr-1" />
+                    Sebelumnya
                   </Button>
-                ) : (
-                  <div className="w-10" />
-                )}
+                </div>
 
                 <StepIndicator currentStep={currentStep} />
 
-                <Button variant="ghost" size="icon" onClick={handleNext}>
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+                <div className="hidden lg:flex">
+                  <Button variant="ghost" size="sm" onClick={handleNext}>
+                    Selanjutnya
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </Button>
+                </div>
               </div>
 
               <div className="text-center mb-6">
@@ -283,6 +285,18 @@ export default function CTAPage() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* ── Mobile Nav ───────────────────────────────────────────── */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t p-3 flex items-center justify-between z-40">
+        <Button variant="ghost" size="sm" onClick={handlePrev} className={currentStep > 0 ? '' : 'invisible'}>
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Sebelumnya
+        </Button>
+        <Button variant="ghost" size="sm" onClick={handleNext}>
+          Selanjutnya
+          <ChevronRight className="h-4 w-4 ml-1" />
+        </Button>
       </div>
 
       {/* ── Preview ──────────────────────────────────────────────── */}
