@@ -321,7 +321,7 @@ export default function TestimonialsPage() {
       </div>
 
       {/* ── Preview ──────────────────────────────────────────────── */}
-      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} title="Preview Testimonials Section">
+      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} onSave={handleSave} isSaving={isSaving} title="Preview Testimonials Section">
         {formData && (
           <>
             <style
@@ -342,15 +342,6 @@ export default function TestimonialsPage() {
                 />
               </div>
             )}
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Kembali
-              </Button>
-              <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
-                {isSaving ? 'Menyimpan...' : 'Simpan'}
-              </Button>
-            </div>
           </>
         )}
       </PreviewModal>

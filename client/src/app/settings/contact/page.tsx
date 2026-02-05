@@ -337,7 +337,7 @@ export default function ContactPage() {
       </div>
 
       {/* ── Preview ──────────────────────────────────────────────── */}
-      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} title="Preview Contact Section">
+      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} onSave={handleSave} isSaving={isSaving} title="Preview Contact Section">
         {formData && (
           <>
             <style
@@ -352,15 +352,6 @@ export default function ContactPage() {
                 address={formData.address}
                 storeName={tenant?.name || ''}
               />
-            </div>
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Kembali
-              </Button>
-              <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
-                {isSaving ? 'Menyimpan...' : 'Simpan'}
-              </Button>
             </div>
           </>
         )}

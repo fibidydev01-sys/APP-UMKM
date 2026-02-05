@@ -396,7 +396,7 @@ export default function HeroSectionPage() {
       </div>
 
       {/* ── Preview ──────────────────────────────────────────────── */}
-      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} title="Preview Hero Section">
+      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} onSave={handleSave} isSaving={isSaving} title="Preview Hero Section">
         {formData && (
           <>
             <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }} />
@@ -411,15 +411,6 @@ export default function HeroSectionPage() {
                 logo={formData.logo}
                 storeName={formData.name}
               />
-            </div>
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
-                <ChevronLeft className="h-4 w-4 mr-1" />
-                Kembali
-              </Button>
-              <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
-                {isSaving ? 'Menyimpan...' : 'Simpan'}
-              </Button>
             </div>
           </>
         )}
