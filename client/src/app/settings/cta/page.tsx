@@ -155,7 +155,7 @@ export default function CTAPage() {
             <Skeleton className="h-10 w-full max-w-sm mx-auto" />
           </div>
         ) : (
-          <div className="flex flex-col pb-16 lg:pb-0">
+          <div className="flex flex-col pb-20 lg:pb-0">
             {/* ── Header ──────────────────────────────────────────── */}
             <div>
               <div className="flex items-center justify-center lg:justify-between mb-5">
@@ -288,7 +288,7 @@ export default function CTAPage() {
       </div>
 
       {/* ── Mobile Nav ───────────────────────────────────────────── */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t p-3 flex items-center justify-between z-40">
+      <div className="lg:hidden fixed bottom-16 md:bottom-0 left-0 right-0 bg-background border-t p-3 flex items-center justify-between z-40">
         <Button variant="ghost" size="sm" onClick={handlePrev} className={currentStep > 0 ? '' : 'invisible'}>
           <ChevronLeft className="h-4 w-4 mr-1" />
           Sebelumnya
