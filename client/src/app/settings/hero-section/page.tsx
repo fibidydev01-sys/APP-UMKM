@@ -246,7 +246,7 @@ export default function HeroSectionPage() {
 
               {/* ── STEP 0: Identitas Toko ──────────────────────────── */}
               {currentStep === 0 && (
-                <div className="space-y-6 max-w-sm mx-auto">
+                <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="store-name">Nama Toko</Label>
                     <Input
@@ -289,7 +289,7 @@ export default function HeroSectionPage() {
 
               {/* ── STEP 1: Cerita Toko ──────────────────────────────── */}
               {currentStep === 1 && (
-                <div className="space-y-6 max-w-sm mx-auto">
+                <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="heroTitle">Hero Title</Label>
                     <Input
@@ -327,7 +327,7 @@ export default function HeroSectionPage() {
 
               {/* ── STEP 2: Tampilan & CTA ────────────────────────────── */}
               {currentStep === 2 && (
-                <div className="space-y-6 max-w-sm mx-auto">
+                <div className="space-y-6">
                   <div className="space-y-3">
                     <Label>Warna Tema</Label>
                     <div className="grid grid-cols-6 gap-2">
@@ -390,7 +390,7 @@ export default function HeroSectionPage() {
               )}
 
               {/* ── Navigation ────────────────────────────────────────── */}
-              <div className="flex items-center justify-between mt-8 max-w-sm mx-auto">
+              <div className="flex items-center justify-between mt-8">
                 {currentStep > 0 ? (
                   <Button variant="ghost" size="sm" onClick={handlePrev}>
                     <ChevronLeft className="h-4 w-4 mr-1" />
