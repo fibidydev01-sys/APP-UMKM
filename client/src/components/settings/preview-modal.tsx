@@ -9,8 +9,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerTitle } from '@/components/ui/drawer';
 
 interface PreviewModalProps {
   open: boolean;
@@ -37,9 +37,7 @@ export function PreviewModal({ open, onClose, title, children }: PreviewModalPro
           className="max-w-none sm:max-w-none overflow-y-auto"
           style={{ width: 'calc(100vw - 5rem)' }}
         >
-          <SheetHeader>
-            <SheetTitle>{title}</SheetTitle>
-          </SheetHeader>
+          <SheetTitle className="sr-only">{title}</SheetTitle>
           {children}
         </SheetContent>
       </Sheet>
@@ -49,9 +47,7 @@ export function PreviewModal({ open, onClose, title, children }: PreviewModalPro
   return (
     <Drawer open={open} onOpenChange={(o) => !o && onClose()} direction="bottom">
       <DrawerContent className="max-h-[85vh]">
-        <DrawerHeader>
-          <DrawerTitle>{title}</DrawerTitle>
-        </DrawerHeader>
+        <DrawerTitle className="sr-only">{title}</DrawerTitle>
         <div className="overflow-y-auto px-4 pb-4">{children}</div>
       </DrawerContent>
     </Drawer>
