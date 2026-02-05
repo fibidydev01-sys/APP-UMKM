@@ -35,7 +35,7 @@ export function PreviewModal({ open, onClose, title, children }: PreviewModalPro
         <SheetContent
           side="right"
           className="max-w-none sm:max-w-none overflow-y-auto"
-          style={{ width: 'calc(100vw - 3rem)' }}
+          style={{ width: 'calc(100vw - 5rem)' }}
         >
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>
