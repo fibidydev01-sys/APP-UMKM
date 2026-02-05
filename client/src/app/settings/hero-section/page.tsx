@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -227,19 +226,18 @@ export default function HeroSectionPage() {
         description="Kelola banner utama toko Anda langkah per langkah"
       />
 
-      <Card className="mt-6">
-        <CardContent className="pt-6 pb-8 px-4 sm:px-6">
-          {isLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-2 w-24 mx-auto" />
-              <Skeleton className="h-4 w-40 mx-auto" />
-              <Skeleton className="h-10 w-full max-w-sm mx-auto" />
-              <Skeleton className="h-10 w-full max-w-sm mx-auto" />
-              <Skeleton className="h-10 w-full max-w-sm mx-auto" />
-            </div>
-          ) : (
-            <>
-              <StepIndicator currentStep={currentStep} />
+      <div className="mt-6">
+        {isLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-2 w-24 mx-auto" />
+            <Skeleton className="h-4 w-40 mx-auto" />
+            <Skeleton className="h-10 w-full max-w-sm mx-auto" />
+            <Skeleton className="h-10 w-full max-w-sm mx-auto" />
+            <Skeleton className="h-10 w-full max-w-sm mx-auto" />
+          </div>
+        ) : (
+          <>
+            <StepIndicator currentStep={currentStep} />
 
               <div className="text-center mb-6">
                 <h3 className="text-sm font-semibold">{STEPS[currentStep].title}</h3>
@@ -407,9 +405,8 @@ export default function HeroSectionPage() {
                 </Button>
               </div>
             </>
-          )}
-        </CardContent>
-      </Card>
+        )}
+      </div>
 
       {/* ── Preview Drawer ──────────────────────────────────────────── */}
       <Sheet open={showPreview} onOpenChange={setShowPreview}>
