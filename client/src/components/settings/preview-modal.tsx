@@ -32,7 +32,11 @@ export function PreviewModal({ open, onClose, title, children }: PreviewModalPro
   if (isDesktop) {
     return (
       <Sheet open={open} onOpenChange={(o) => !o && onClose()}>
-        <SheetContent side="right" className="w-[calc(100vw_-_3rem)] max-w-none overflow-y-auto">
+        <SheetContent
+          side="right"
+          className="max-w-none sm:max-w-none overflow-y-auto"
+          style={{ width: 'calc(100vw - 3rem)' }}
+        >
           <SheetHeader>
             <SheetTitle>{title}</SheetTitle>
           </SheetHeader>
