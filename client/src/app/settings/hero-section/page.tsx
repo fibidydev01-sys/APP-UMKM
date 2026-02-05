@@ -236,15 +236,18 @@ export default function HeroSectionPage() {
             <Skeleton className="h-10 w-full max-w-sm mx-auto" />
           </div>
         ) : (
-          <>
-            <StepIndicator currentStep={currentStep} />
-
+          <div className="flex flex-col">
+            {/* ── Header ──────────────────────────────────────────── */}
+            <div>
+              <StepIndicator currentStep={currentStep} />
               <div className="text-center mb-6">
                 <h3 className="text-sm font-semibold">{STEPS[currentStep].title}</h3>
                 <p className="text-xs text-muted-foreground mt-0.5">{STEPS[currentStep].desc}</p>
               </div>
+            </div>
 
-              {/* ── STEP 0: Identitas Toko ──────────────────────────── */}
+            {/* ── Body ────────────────────────────────────────────── */}
+            <div className="min-h-[280px]">
               {currentStep === 0 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
@@ -287,7 +290,6 @@ export default function HeroSectionPage() {
                 </div>
               )}
 
-              {/* ── STEP 1: Cerita Toko ──────────────────────────────── */}
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
@@ -325,7 +327,6 @@ export default function HeroSectionPage() {
                 </div>
               )}
 
-              {/* ── STEP 2: Tampilan & CTA ────────────────────────────── */}
               {currentStep === 2 && (
                 <div className="space-y-6">
                   <div className="space-y-3">
@@ -388,23 +389,24 @@ export default function HeroSectionPage() {
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* ── Navigation ────────────────────────────────────────── */}
-              <div className="flex items-center justify-between mt-8">
-                {currentStep > 0 ? (
-                  <Button variant="ghost" size="sm" onClick={handlePrev}>
-                    <ChevronLeft className="h-4 w-4 mr-1" />
-                    Sebelumnya
-                  </Button>
-                ) : (
-                  <div />
-                )}
-                <Button size="sm" onClick={handleNext}>
-                  {currentStep < STEPS.length - 1 ? 'Berikutnya' : 'Preview'}
-                  <ChevronRight className="h-4 w-4 ml-1" />
+            {/* ── Footer ──────────────────────────────────────────── */}
+            <div className="flex items-center justify-between border-t pt-6 mt-6">
+              {currentStep > 0 ? (
+                <Button variant="ghost" size="sm" onClick={handlePrev}>
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Sebelumnya
                 </Button>
-              </div>
-            </>
+              ) : (
+                <div />
+              )}
+              <Button size="sm" onClick={handleNext}>
+                {currentStep < STEPS.length - 1 ? 'Berikutnya' : 'Preview'}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          </div>
         )}
       </div>
 
