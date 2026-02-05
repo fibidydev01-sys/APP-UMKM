@@ -7,8 +7,6 @@
 import { useState } from 'react';
 import { Home, FileText, MessageSquare, MapPin, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
 
 // Import wizard pages as components
 import HeroSectionPage from '../hero-section/page';
@@ -28,31 +26,26 @@ const TABS = [
     id: 'hero-section' as const,
     label: 'Hero Section',
     icon: Home,
-    description: 'Banner utama dan branding toko',
   },
   {
     id: 'about' as const,
     label: 'About',
     icon: FileText,
-    description: 'Tentang toko dan fitur unggulan',
   },
   {
     id: 'testimonials' as const,
     label: 'Testimonials',
     icon: MessageSquare,
-    description: 'Testimoni pelanggan',
   },
   {
     id: 'contact' as const,
     label: 'Contact',
     icon: MapPin,
-    description: 'Informasi kontak dan lokasi',
   },
   {
     id: 'cta' as const,
     label: 'Call to Action',
     icon: Megaphone,
-    description: 'Ajakan untuk mengambil tindakan',
   },
 ];
 
@@ -62,7 +55,6 @@ const TABS = [
 
 export function TokoClient() {
   const [activeTab, setActiveTab] = useState<TabType>('hero-section');
-  const currentTab = TABS.find((t) => t.id === activeTab)!;
 
   return (
     <div>
@@ -90,16 +82,6 @@ export function TokoClient() {
           </div>
         </div>
       </div>
-
-      {/* ════════════════════════════════════════════════════════ */}
-      {/* TAB DESCRIPTION                                          */}
-      {/* ════════════════════════════════════════════════════════ */}
-      <Alert className="mb-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>{currentTab.label}</strong> - {currentTab.description}
-        </AlertDescription>
-      </Alert>
 
       {/* ════════════════════════════════════════════════════════ */}
       {/* TAB CONTENT - Import wizard pages as components         */}
