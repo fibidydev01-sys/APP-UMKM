@@ -1,13 +1,10 @@
 // ══════════════════════════════════════════════════════════════
-// CHANNELS CLIENT - Sticky Tabs Wrapper for Settings Pages
-// Route: /settings/channels
-// Tabs: Pencarian (SEO), Pembayaran, Pengiriman
+// CHANNELS CLIENT - Sticky Tabs Wrapper for Wizard Pages
 // ══════════════════════════════════════════════════════════════
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { Search, CreditCard, Truck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -40,35 +37,12 @@ const TABS = [
   },
 ];
 
-const isValidTab = (tab: string | null): tab is TabType => {
-  return tab === 'pencarian' || tab === 'pembayaran' || tab === 'pengiriman';
-};
-
 // ══════════════════════════════════════════════════════════════
 // MAIN CLIENT COMPONENT - WRAPPER ONLY
 // ══════════════════════════════════════════════════════════════
 
 export function ChannelsClient() {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const tabParam = searchParams.get('tab');
-
-  const [activeTab, setActiveTab] = useState<TabType>(() => {
-    return isValidTab(tabParam) ? tabParam : 'pencarian';
-  });
-
-  // Sync with URL params
-  useEffect(() => {
-    if (isValidTab(tabParam) && tabParam !== activeTab) {
-      setActiveTab(tabParam);
-    }
-  }, [tabParam, activeTab]);
-
-  // Update URL when tab changes
-  const handleTabChange = (tab: TabType) => {
-    setActiveTab(tab);
-    router.push(`/settings/channels?tab=${tab}`, { scroll: false });
-  };
+  const [activeTab, setActiveTab] = useState<TabType>('pencarian');
 
   return (
     <div>
@@ -81,7 +55,7 @@ export function ChannelsClient() {
             {TABS.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => handleTabChange(tab.id)}
+                onClick={() => setActiveTab(tab.id)}
                 className={cn(
                   'flex items-center justify-center gap-2 flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap',
                   activeTab === tab.id
