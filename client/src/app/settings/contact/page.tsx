@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +9,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { PageHeader } from '@/components/dashboard';
 import { Contact1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
@@ -53,7 +51,6 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 export default function ContactPage() {
-  const router = useRouter();
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -152,18 +149,7 @@ export default function ContactPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
-          &larr; Kembali
-        </Button>
-      </div>
-
-      <PageHeader
-        title="Contact Section"
-        description="Kelola informasi kontak dan lokasi toko langkah per langkah"
-      />
-
-      <div className="mt-6">
+      <div>
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-2 w-24 mx-auto" />

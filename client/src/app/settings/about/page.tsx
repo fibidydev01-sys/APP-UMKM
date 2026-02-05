@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -10,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { PageHeader } from '@/components/dashboard';
 import { ImageUpload } from '@/components/upload';
 import { About1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
@@ -55,7 +53,6 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 export default function AboutPage() {
-  const router = useRouter();
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
   const [isRemovingAboutImage, setIsRemovingAboutImage] = useState(false);
@@ -167,18 +164,7 @@ export default function AboutPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
-          &larr; Kembali
-        </Button>
-      </div>
-
-      <PageHeader
-        title="About Section"
-        description="Ceritakan tentang toko Anda kepada pelanggan langkah per langkah"
-      />
-
-      <div className="mt-6">
+      <div>
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-2 w-24 mx-auto" />

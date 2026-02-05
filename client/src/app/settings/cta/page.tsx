@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +14,6 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
-import { PageHeader } from '@/components/dashboard';
 import { Cta1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
@@ -57,7 +55,6 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
 
 // ─── Page ──────────────────────────────────────────────────────────────────
 export default function CTAPage() {
-  const router = useRouter();
   const { tenant, refresh } = useTenant();
   const [isSaving, setIsSaving] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -148,18 +145,7 @@ export default function CTAPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" onClick={() => router.push('/settings')}>
-          &larr; Kembali
-        </Button>
-      </div>
-
-      <PageHeader
-        title="CTA Section"
-        description="Dorong pengunjung untuk mengambil tindakan langkah per langkah"
-      />
-
-      <div className="mt-6">
+      <div>
         {isLoading ? (
           <div className="space-y-4">
             <Skeleton className="h-2 w-24 mx-auto" />

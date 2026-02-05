@@ -67,16 +67,6 @@ export function TokoClient() {
   return (
     <div>
       {/* ════════════════════════════════════════════════════════ */}
-      {/* PAGE HEADER                                             */}
-      {/* ════════════════════════════════════════════════════════ */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Informasi Toko</h1>
-        <p className="text-muted-foreground mt-2">
-          Kelola informasi toko dan konten landing page langkah per langkah.
-        </p>
-      </div>
-
-      {/* ════════════════════════════════════════════════════════ */}
       {/* STICKY TABS                                             */}
       {/* ════════════════════════════════════════════════════════ */}
       <div className="sticky top-0 z-20 bg-background border-b -mx-4 md:-mx-6 lg:-mx-8 mb-6">
