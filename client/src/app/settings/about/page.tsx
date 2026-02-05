@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ImageUpload } from '@/components/upload';
+import { PreviewModal } from '@/components/settings';
 import { About1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
@@ -369,39 +369,34 @@ export default function AboutPage() {
         )}
       </div>
 
-      {/* ── Preview Drawer ──────────────────────────────────────────── */}
-      <Sheet open={showPreview} onOpenChange={setShowPreview}>
-        <SheetContent side="right" className="sm:max-w-2xl w-full overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Preview About Section</SheetTitle>
-          </SheetHeader>
-          {formData && (
-            <>
-              <style
-                dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }}
+      {/* ── Preview ──────────────────────────────────────────────── */}
+      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} title="Preview About Section">
+        {formData && (
+          <>
+            <style
+              dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }}
+            />
+            <div className="tenant-theme border rounded-lg overflow-hidden mt-4">
+              <About1
+                title={formData.aboutTitle || 'Tentang Kami'}
+                subtitle={formData.aboutSubtitle}
+                content={formData.aboutContent}
+                image={formData.aboutImage}
+                features={formData.aboutFeatures}
               />
-              <div className="tenant-theme border rounded-lg overflow-hidden mt-4">
-                <About1
-                  title={formData.aboutTitle || 'Tentang Kami'}
-                  subtitle={formData.aboutSubtitle}
-                  content={formData.aboutContent}
-                  image={formData.aboutImage}
-                  features={formData.aboutFeatures}
-                />
-              </div>
-              <div className="flex gap-3 mt-6">
-                <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Kembali
-                </Button>
-                <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
-                  {isSaving ? 'Menyimpan...' : 'Simpan'}
-                </Button>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Kembali
+              </Button>
+              <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? 'Menyimpan...' : 'Simpan'}
+              </Button>
+            </div>
+          </>
+        )}
+      </PreviewModal>
     </div>
   );
 }

@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ImageUpload } from '@/components/upload';
+import { PreviewModal } from '@/components/settings';
 import { Hero1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
@@ -395,40 +395,35 @@ export default function HeroSectionPage() {
         )}
       </div>
 
-      {/* ── Preview Drawer ──────────────────────────────────────────── */}
-      <Sheet open={showPreview} onOpenChange={setShowPreview}>
-        <SheetContent side="right" className="sm:max-w-2xl w-full overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Preview Hero Section</SheetTitle>
-          </SheetHeader>
-          {formData && (
-            <>
-              <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }} />
-              <div className="tenant-theme border rounded-lg overflow-hidden mt-4">
-                <Hero1
-                  title={formData.heroTitle || formData.name || ''}
-                  subtitle={formData.heroSubtitle || formData.description}
-                  ctaText={formData.heroCtaText || 'Lihat Produk'}
-                  ctaLink="/products"
-                  showCta={true}
-                  backgroundImage={formData.heroBackgroundImage}
-                  logo={formData.logo}
-                  storeName={formData.name}
-                />
-              </div>
-              <div className="flex gap-3 mt-6">
-                <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Kembali
-                </Button>
-                <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
-                  {isSaving ? 'Menyimpan...' : 'Simpan'}
-                </Button>
-              </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
+      {/* ── Preview ──────────────────────────────────────────────── */}
+      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} title="Preview Hero Section">
+        {formData && (
+          <>
+            <style dangerouslySetInnerHTML={{ __html: generateThemeCSS(formData.primaryColor) }} />
+            <div className="tenant-theme border rounded-lg overflow-hidden mt-4">
+              <Hero1
+                title={formData.heroTitle || formData.name || ''}
+                subtitle={formData.heroSubtitle || formData.description}
+                ctaText={formData.heroCtaText || 'Lihat Produk'}
+                ctaLink="/products"
+                showCta={true}
+                backgroundImage={formData.heroBackgroundImage}
+                logo={formData.logo}
+                storeName={formData.name}
+              />
+            </div>
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Kembali
+              </Button>
+              <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? 'Menyimpan...' : 'Simpan'}
+              </Button>
+            </div>
+          </>
+        )}
+      </PreviewModal>
     </div>
   );
 }

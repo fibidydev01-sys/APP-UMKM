@@ -14,3 +14,4 @@ export { LandingContentSettings } from './landing-content-settings';
 export type { LandingContentData } from './landing-content-settings';
 export { BankAccountDialog } from './bank-account-dialog';
 export { EwalletDialog } from './ewallet-dialog';
+export { PreviewModal } from './preview-modal';

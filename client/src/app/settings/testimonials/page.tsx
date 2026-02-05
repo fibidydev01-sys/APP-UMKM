@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { ImageUpload } from '@/components/upload';
+import { PreviewModal } from '@/components/settings';
 import { Testimonials1 } from '@/components/landing/blocks';
 import { generateThemeCSS } from '@/lib/theme';
 import { toast } from 'sonner';
@@ -320,45 +320,40 @@ export default function TestimonialsPage() {
         )}
       </div>
 
-      {/* ── Preview Drawer ──────────────────────────────────────────── */}
-      <Sheet open={showPreview} onOpenChange={setShowPreview}>
-        <SheetContent side="right" className="sm:max-w-2xl w-full overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>Preview Testimonials Section</SheetTitle>
-          </SheetHeader>
-          {formData && (
-            <>
-              <style
-                dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }}
-              />
-              {formData.testimonials.length === 0 ? (
-                <div className="border rounded-lg p-8 bg-muted/20 text-center mt-4">
-                  <p className="text-muted-foreground">
-                    Tambahkan minimal 1 testimonial untuk melihat preview
-                  </p>
-                </div>
-              ) : (
-                <div className="tenant-theme border rounded-lg overflow-hidden mt-4">
-                  <Testimonials1
-                    title={formData.testimonialsTitle || 'Testimoni'}
-                    subtitle={formData.testimonialsSubtitle}
-                    items={formData.testimonials}
-                  />
-                </div>
-              )}
-              <div className="flex gap-3 mt-6">
-                <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  Kembali
-                </Button>
-                <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
-                  {isSaving ? 'Menyimpan...' : 'Simpan'}
-                </Button>
+      {/* ── Preview ──────────────────────────────────────────────── */}
+      <PreviewModal open={showPreview} onClose={() => setShowPreview(false)} title="Preview Testimonials Section">
+        {formData && (
+          <>
+            <style
+              dangerouslySetInnerHTML={{ __html: generateThemeCSS(tenant?.theme?.primaryColor) }}
+            />
+            {formData.testimonials.length === 0 ? (
+              <div className="border rounded-lg p-8 bg-muted/20 text-center mt-4">
+                <p className="text-muted-foreground">
+                  Tambahkan minimal 1 testimonial untuk melihat preview
+                </p>
               </div>
-            </>
-          )}
-        </SheetContent>
-      </Sheet>
+            ) : (
+              <div className="tenant-theme border rounded-lg overflow-hidden mt-4">
+                <Testimonials1
+                  title={formData.testimonialsTitle || 'Testimoni'}
+                  subtitle={formData.testimonialsSubtitle}
+                  items={formData.testimonials}
+                />
+              </div>
+            )}
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1" onClick={() => setShowPreview(false)}>
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Kembali
+              </Button>
+              <Button className="flex-1" onClick={handleSave} disabled={isSaving}>
+                {isSaving ? 'Menyimpan...' : 'Simpan'}
+              </Button>
+            </div>
+          </>
+        )}
+      </PreviewModal>
     </div>
   );
 }
