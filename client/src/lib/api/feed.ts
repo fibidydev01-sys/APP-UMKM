@@ -62,6 +62,14 @@ export const feedApi = {
     return api.delete<DeleteFeedResponse>(`/feed/${id}`);
   },
 
+  /**
+   * Get my bookmarks (private - only own bookmarks)
+   * GET /feed/bookmarks?page=1&limit=20
+   */
+  getBookmarks: async (params?: { page?: number; limit?: number }): Promise<FeedListResponse> => {
+    return api.get<FeedListResponse>('/feed/bookmarks', { params });
+  },
+
   // ==========================================
   // INTERACTIONS
   // ==========================================

@@ -46,6 +46,19 @@ export class FeedController {
   }
 
   /**
+   * Get my bookmarks (private - only own bookmarks)
+   * GET /api/feed/bookmarks?page=1&limit=20
+   */
+  @Get('bookmarks')
+  @UseGuards(JwtAuthGuard)
+  async getMyBookmarks(
+    @CurrentTenant('id') tenantId: string,
+    @Query() query: QueryFeedDto,
+  ) {
+    return this.feedService.getMyBookmarks(tenantId, query);
+  }
+
+  /**
    * Get single feed detail
    * GET /api/feed/:id
    * Optional auth: kalau login, return isLiked & isBookmarked

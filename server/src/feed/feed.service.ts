@@ -593,6 +593,81 @@ export class FeedService {
   // ══════════════════════════════════════════════════════════════
 
   /**
+   * Get my bookmarks - private, hanya user login yang bisa lihat bookmark sendiri
+   */
+  async getMyBookmarks(tenantId: string, query: QueryFeedDto) {
+    const { page = 1, limit = 20 } = query;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.feedBookmark.findMany({
+        where: { tenantId },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' }, // newest bookmark first
+        include: {
+          feed: {
+            include: {
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  price: true,
+                  comparePrice: true,
+                  images: true,
+                },
+              },
+              tenant: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  logo: true,
+                },
+              },
+              likes: {
+                where: { tenantId },
+                select: { id: true },
+              },
+              bookmarks: {
+                where: { tenantId },
+                select: { id: true },
+              },
+            },
+          },
+        },
+      }),
+      this.prisma.feedBookmark.count({ where: { tenantId } }),
+    ]);
+
+    const hasMore = skip + data.length < total;
+
+    // Map: extract feed from bookmark, add isLiked/isBookmarked flags
+    const feedsWithStatus = data.map((bookmark) => {
+      const { likes, bookmarks, ...rest } = bookmark.feed as typeof bookmark.feed & {
+        likes?: { id: string }[];
+        bookmarks?: { id: string }[];
+      };
+      return {
+        ...rest,
+        isLiked: likes ? likes.length > 0 : false,
+        isBookmarked: bookmarks ? bookmarks.length > 0 : false,
+      };
+    });
+
+    return {
+      data: feedsWithStatus,
+      meta: {
+        total,
+        page,
+        limit,
+        hasMore,
+      },
+    };
+  }
+
+  /**
    * Toggle bookmark - save/unsave feed post
    */
   async toggleBookmark(tenantId: string, feedId: string) {

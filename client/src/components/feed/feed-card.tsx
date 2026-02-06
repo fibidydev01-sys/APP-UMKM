@@ -53,9 +53,10 @@ interface FeedCardProps {
   onCardClick?: (feed: Feed) => void;
   onTenantClick?: (slug: string) => void;
   onCommentClick?: (feed: Feed) => void;
+  onBookmarkChange?: (feedId: string, bookmarked: boolean) => void;
 }
 
-export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClick, onTenantClick, onCommentClick }: FeedCardProps) {
+export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClick, onTenantClick, onCommentClick, onBookmarkChange }: FeedCardProps) {
   const isOwner = currentTenantId === feed.tenantId;
   const isLoggedIn = !!currentTenantId;
   const productImage = feed.product.images?.[0];
@@ -171,6 +172,7 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
     try {
       const res = await feedApi.toggleBookmark(feed.id);
       setBookmarked(res.bookmarked);
+      onBookmarkChange?.(feed.id, res.bookmarked);
     } catch {
       setBookmarked(prevBookmarked);
     } finally {
