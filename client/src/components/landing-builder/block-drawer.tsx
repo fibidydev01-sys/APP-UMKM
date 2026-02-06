@@ -162,7 +162,7 @@ function DrawerMode({
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollContainerRef.current,
-    estimateSize: () => 68, // h-14 (56px) + gap-3 (12px)
+    estimateSize: () => 160, // aspect-square ~149px + gap-3 (12px)
     overscan: 3, // Render 3 extra rows above/below viewport (smooth scrolling)
   });
 
@@ -307,7 +307,7 @@ function DrawerMode({
                         }}
                         className="flex justify-center"
                       >
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full justify-items-center">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full">
                           {rowBlocks.map((block) => (
                             <BlockCard
                               key={block.value}
@@ -393,7 +393,7 @@ function SheetMode({
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollContainerRef.current,
-    estimateSize: () => 68, // h-14 (56px) + gap-3 (12px)
+    estimateSize: () => 130, // aspect-square ~117px + gap-3 (12px)
     overscan: 3,
   });
 
@@ -521,7 +521,7 @@ function SheetMode({
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
                     >
-                      <div className="grid grid-cols-3 gap-3 w-full justify-items-center">
+                      <div className="grid grid-cols-3 gap-3 w-full">
                         {rowBlocks.map((block) => (
                           <BlockCard
                             key={block.value}
@@ -568,7 +568,7 @@ const BlockCard = memo(function BlockCard({ block, isSelected, onSelect }: Block
     <button
       onClick={handleClick}
       className={cn(
-        'w-14 h-14 flex items-center justify-center p-1 rounded-md border transition-colors',
+        'w-full aspect-square flex items-center justify-center p-2 rounded-md border transition-colors',
         isSelected
           ? 'border-primary bg-primary/10 text-primary'
           : 'border-border bg-muted/50 hover:bg-muted hover:border-muted-foreground/30'
