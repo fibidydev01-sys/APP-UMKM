@@ -218,7 +218,7 @@ export function TenantProfileDrawer({
 
           {/* ══════════ LOADING ══════════ */}
           {loading && (
-            <div className="flex-1 px-6 py-4 max-w-xl mx-auto w-full">
+            <div className="flex-1 px-6 py-4 max-w-2xl mx-auto w-full">
               <div className="flex items-center gap-3 mb-6">
                 <Skeleton className="w-14 h-14 rounded-full" />
                 <div className="space-y-2 flex-1">
@@ -268,7 +268,7 @@ export function TenantProfileDrawer({
           {/* ══════════ CONTENT ══════════ */}
           {tenant && !loading && !error && (
             <div ref={scrollContainerRef} className="flex-1 overflow-y-auto">
-              <div className="max-w-xl mx-auto w-full px-6 pb-8">
+              <div className="max-w-2xl mx-auto w-full px-6 pb-8">
 
                 {/* ────────────────────────────────────────────────
                      SECTION 1: HEADER

@@ -427,7 +427,7 @@ export function FeedPreviewDrawer({
 
             {/* ══════════ PREVIEW MODE ══════════ */}
             {mode === 'preview' && (
-              <div className="max-w-xl mx-auto w-full px-6 pb-8">
+              <div className="max-w-2xl mx-auto w-full px-6 pb-8">
                 {/* Caption / Quote */}
                 {isEditing ? (
                   <div className="py-4 space-y-2">
@@ -564,7 +564,7 @@ export function FeedPreviewDrawer({
 
             {/* ══════════ COMMENTS MODE ══════════ */}
             {mode === 'comments' && (
-              <div className="max-w-xl mx-auto w-full px-6 py-4 pb-8">
+              <div className="max-w-2xl mx-auto w-full px-6 py-4 pb-8">
                 <h3 className="font-semibold mb-4">Komentar ({commentCount})</h3>
 
                 {/* Comment Input */}
