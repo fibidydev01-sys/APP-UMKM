@@ -326,7 +326,7 @@ export function FeedPreviewDrawer({
           className={cn(
             'fixed bottom-0 left-0 right-0 z-[10000]',
             'bg-background rounded-t-[20px]',
-            'max-h-[92vh] outline-none',
+            'h-[85vh] outline-none',
             'flex flex-col',
           )}
           aria-describedby="feed-drawer-description"
@@ -415,10 +415,10 @@ export function FeedPreviewDrawer({
 
             {/* ══════════ PREVIEW MODE ══════════ */}
             {mode === 'preview' && (
-              <div className="pb-8">
+              <div className="max-w-xl mx-auto w-full px-6 pb-8">
                 {/* Caption / Quote */}
                 {isEditing ? (
-                  <div className="px-4 py-4 space-y-2">
+                  <div className="py-4 space-y-2">
                     <Textarea
                       value={editCaption}
                       onChange={(e) => setEditCaption(e.target.value)}
@@ -439,7 +439,7 @@ export function FeedPreviewDrawer({
                     </div>
                   </div>
                 ) : feed.caption ? (
-                  <div className="px-4 py-4 bg-muted/30">
+                  <div className="py-4 bg-muted/30 -mx-6 px-6">
                     <div className="flex gap-2">
                       <Quote className="h-4 w-4 text-primary/60 flex-shrink-0 mt-0.5" />
                       <p className="text-sm italic whitespace-pre-line">{feed.caption}</p>
@@ -448,42 +448,40 @@ export function FeedPreviewDrawer({
                 ) : null}
 
                 {/* Product Image */}
-                <div className="px-4 py-4">
-                  <div className="relative w-full max-w-2xl mx-auto">
-                    <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-muted">
-                      {currentImage ? (
-                        <Image src={currentImage} alt={feed.product.name} fill className="object-cover" priority />
-                      ) : (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
-                          <p className="text-sm text-muted-foreground mt-2">Tidak ada gambar</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Thumbnails */}
-                    {hasImages && feed.product.images.length > 1 && (
-                      <div className="grid grid-cols-4 gap-2 mt-3">
-                        {feed.product.images.map((img, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => setSelectedImageIndex(idx)}
-                            className={cn(
-                              'relative aspect-square rounded-lg overflow-hidden bg-muted',
-                              'border-2 transition-all',
-                              selectedImageIndex === idx ? 'border-primary' : 'border-transparent hover:border-muted-foreground/20',
-                            )}
-                          >
-                            <Image src={img} alt={`${feed.product.name} ${idx + 1}`} fill className="object-cover" />
-                          </button>
-                        ))}
+                <div className="py-4">
+                  <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-muted">
+                    {currentImage ? (
+                      <Image src={currentImage} alt={feed.product.name} fill className="object-cover" priority />
+                    ) : (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <ImageIcon className="h-16 w-16 text-muted-foreground/30" />
+                        <p className="text-sm text-muted-foreground mt-2">Tidak ada gambar</p>
                       </div>
                     )}
                   </div>
+
+                  {/* Thumbnails */}
+                  {hasImages && feed.product.images.length > 1 && (
+                    <div className="grid grid-cols-4 gap-2 mt-3">
+                      {feed.product.images.map((img, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedImageIndex(idx)}
+                          className={cn(
+                            'relative aspect-square rounded-lg overflow-hidden bg-muted',
+                            'border-2 transition-all',
+                            selectedImageIndex === idx ? 'border-primary' : 'border-transparent hover:border-muted-foreground/20',
+                          )}
+                        >
+                          <Image src={img} alt={`${feed.product.name} ${idx + 1}`} fill className="object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 {/* Product Details */}
-                <div className="px-4 max-w-2xl mx-auto">
+                <div>
                   <h2 className="font-bold text-lg">{feed.product.name}</h2>
 
                   {feed.product.description && (
@@ -554,7 +552,7 @@ export function FeedPreviewDrawer({
 
             {/* ══════════ COMMENTS MODE ══════════ */}
             {mode === 'comments' && (
-              <div className="max-w-lg mx-auto w-full px-6 py-4 pb-8">
+              <div className="max-w-xl mx-auto w-full px-6 py-4 pb-8">
                 <h3 className="font-semibold mb-4">Komentar ({commentCount})</h3>
 
                 {/* Comment Input */}
