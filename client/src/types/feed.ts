@@ -40,6 +40,7 @@ export interface Feed {
   viewCount: number;
   likeCount: number;
   commentCount: number;
+  isLiked: boolean;
   createdAt: string;
   updatedAt: string;
   tenant: FeedTenant;
@@ -85,4 +86,51 @@ export interface CreateFeedResponse {
  */
 export interface DeleteFeedResponse {
   message: string;
+}
+
+// ==========================================
+// INTERACTIONS - Like & Comment
+// ==========================================
+
+/**
+ * Toggle like response
+ */
+export interface ToggleLikeResponse {
+  liked: boolean;
+  message: string;
+}
+
+/**
+ * Feed comment entity
+ */
+export interface FeedComment {
+  id: string;
+  feedId: string;
+  tenantId: string;
+  content: string;
+  createdAt: string;
+  tenant: FeedTenant;
+}
+
+/**
+ * Create comment input
+ */
+export interface CreateCommentInput {
+  content: string;
+}
+
+/**
+ * Create comment response
+ */
+export interface CreateCommentResponse {
+  message: string;
+  comment: FeedComment;
+}
+
+/**
+ * Comments list response
+ */
+export interface FeedCommentsResponse {
+  data: FeedComment[];
+  meta: FeedPaginationMeta;
 }

@@ -5,7 +5,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateFeedDto, QueryFeedDto } from './dto';
+import { CreateFeedDto, QueryFeedDto, CreateCommentDto, QueryCommentDto } from './dto';
 
 @Injectable()
 export class FeedService {
@@ -81,8 +81,9 @@ export class FeedService {
 
   /**
    * Get feed list - chronological (newest first), paginated
+   * tenantId optional: kalau login, return isLiked per feed
    */
-  async findAll(query: QueryFeedDto) {
+  async findAll(query: QueryFeedDto, currentTenantId?: string) {
     const { page = 1, limit = 20 } = query;
     const skip = (page - 1) * limit;
 
@@ -110,6 +111,15 @@ export class FeedService {
               logo: true,
             },
           },
+          // Jika user login, cek apakah sudah like
+          ...(currentTenantId
+            ? {
+                likes: {
+                  where: { tenantId: currentTenantId },
+                  select: { id: true },
+                },
+              }
+            : {}),
         },
       }),
       this.prisma.feed.count(),
@@ -117,8 +127,17 @@ export class FeedService {
 
     const hasMore = skip + data.length < total;
 
+    // Map data: tambahkan isLiked flag
+    const feedsWithLikeStatus = data.map((feed) => {
+      const { likes, ...rest } = feed as typeof feed & { likes?: { id: string }[] };
+      return {
+        ...rest,
+        isLiked: likes ? likes.length > 0 : false,
+      };
+    });
+
     return {
-      data,
+      data: feedsWithLikeStatus,
       meta: {
         total,
         page,
@@ -189,6 +208,154 @@ export class FeedService {
 
     return {
       message: 'Feed berhasil dihapus',
+    };
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // INTERACTIONS - Like & Comment
+  // ══════════════════════════════════════════════════════════════
+
+  /**
+   * Toggle like - like/unlike dalam satu endpoint
+   * Atomic: pakai $transaction agar counter selalu sinkron
+   */
+  async toggleLike(tenantId: string, feedId: string) {
+    const feed = await this.prisma.feed.findUnique({
+      where: { id: feedId },
+      select: { id: true },
+    });
+
+    if (!feed) {
+      throw new NotFoundException('Feed tidak ditemukan');
+    }
+
+    // Cek apakah sudah like
+    const existing = await this.prisma.feedLike.findUnique({
+      where: {
+        feedId_tenantId: { feedId, tenantId },
+      },
+    });
+
+    if (existing) {
+      // Unlike - hapus like + decrement counter (atomic)
+      await this.prisma.$transaction([
+        this.prisma.feedLike.delete({
+          where: { id: existing.id },
+        }),
+        this.prisma.feed.update({
+          where: { id: feedId },
+          data: { likeCount: { decrement: 1 } },
+        }),
+      ]);
+
+      return { liked: false, message: 'Like dihapus' };
+    } else {
+      // Like - buat like + increment counter (atomic)
+      await this.prisma.$transaction([
+        this.prisma.feedLike.create({
+          data: { feedId, tenantId },
+        }),
+        this.prisma.feed.update({
+          where: { id: feedId },
+          data: { likeCount: { increment: 1 } },
+        }),
+      ]);
+
+      return { liked: true, message: 'Berhasil like' };
+    }
+  }
+
+  /**
+   * Add comment to feed
+   * Atomic: create comment + increment counter
+   */
+  async addComment(tenantId: string, feedId: string, dto: CreateCommentDto) {
+    const feed = await this.prisma.feed.findUnique({
+      where: { id: feedId },
+      select: { id: true },
+    });
+
+    if (!feed) {
+      throw new NotFoundException('Feed tidak ditemukan');
+    }
+
+    // Create comment + increment counter (atomic)
+    const [comment] = await this.prisma.$transaction([
+      this.prisma.feedComment.create({
+        data: {
+          feedId,
+          tenantId,
+          content: dto.content,
+        },
+        include: {
+          tenant: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              logo: true,
+            },
+          },
+        },
+      }),
+      this.prisma.feed.update({
+        where: { id: feedId },
+        data: { commentCount: { increment: 1 } },
+      }),
+    ]);
+
+    return {
+      message: 'Komentar berhasil ditambahkan',
+      comment,
+    };
+  }
+
+  /**
+   * Get comments for a feed - newest first, paginated
+   */
+  async getComments(feedId: string, query: QueryCommentDto) {
+    const feed = await this.prisma.feed.findUnique({
+      where: { id: feedId },
+      select: { id: true },
+    });
+
+    if (!feed) {
+      throw new NotFoundException('Feed tidak ditemukan');
+    }
+
+    const { page = 1, limit = 20 } = query;
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.feedComment.findMany({
+        where: { feedId },
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          tenant: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              logo: true,
+            },
+          },
+        },
+      }),
+      this.prisma.feedComment.count({ where: { feedId } }),
+    ]);
+
+    const hasMore = skip + data.length < total;
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        hasMore,
+      },
     };
   }
 }

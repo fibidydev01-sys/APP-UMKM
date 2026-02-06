@@ -126,6 +126,8 @@ model Tenant {
   customers     Customer[]
   orders        Order[]
   feeds         Feed[]
+  feedLikes     FeedLike[]
+  feedComments  FeedComment[]
 
   // WhatsApp Chat System Relations
   whatsappSession  WhatsAppSession?
@@ -631,10 +633,14 @@ model Feed {
   // Content
   caption       String?  @db.Text
 
-  // Engagement Metrics (counters - Phase 2)
+  // Engagement Metrics (counters)
   viewCount     Int      @default(0)
   likeCount     Int      @default(0)
   commentCount  Int      @default(0)
+
+  // Interaction Relations
+  likes         FeedLike[]
+  comments      FeedComment[]
 
   // Timestamps
   createdAt     DateTime @default(now())
@@ -644,4 +650,35 @@ model Feed {
   @@unique([tenantId, productId])  // 1 tenant hanya bisa post 1 produk sekali
   @@index([createdAt(sort: Desc)]) // Chronological query
   @@index([tenantId])
+}
+
+model FeedLike {
+  id        String   @id @default(cuid())
+
+  feedId    String
+  feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([feedId, tenantId])  // 1 tenant hanya bisa like 1x per feed
+  @@index([feedId])
+}
+
+model FeedComment {
+  id        String   @id @default(cuid())
+
+  feedId    String
+  feed      Feed     @relation(fields: [feedId], references: [id], onDelete: Cascade)
+
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  content   String   @db.Text
+
+  createdAt DateTime @default(now())
+
+  @@index([feedId, createdAt(sort: Desc)])  // Comments chronological per feed
 }
