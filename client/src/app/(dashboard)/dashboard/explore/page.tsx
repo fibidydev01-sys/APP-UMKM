@@ -6,7 +6,7 @@ import { Plus, RefreshCw, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
-import { FeedCard, FeedEndMessage, FeedCreateModal, FeedPreviewDrawer } from '@/components/feed';
+import { FeedCard, FeedEndMessage, FeedCreateModal, FeedPreviewDrawer, TenantProfileDrawer } from '@/components/feed';
 import { feedApi, getErrorMessage } from '@/lib/api';
 import { useCurrentTenant } from '@/stores/auth-store';
 import type { Feed, FeedPaginationMeta } from '@/types';
@@ -30,6 +30,10 @@ export default function ExplorePage() {
   // Drawer state
   const [selectedFeed, setSelectedFeed] = useState<Feed | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Tenant profile drawer state
+  const [profileSlug, setProfileSlug] = useState<string | null>(null);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   // Refs
   const hasFetched = useRef(false);
@@ -258,6 +262,16 @@ export default function ExplorePage() {
             prev.map((f) => (f.id === feedId ? { ...f, caption } : f)),
           );
         }}
+        onTenantClick={(slug) => {
+          setProfileSlug(slug);
+          setProfileOpen(true);
+        }}
+      />
+
+      <TenantProfileDrawer
+        slug={profileSlug}
+        open={profileOpen}
+        onOpenChange={setProfileOpen}
       />
     </>
   );

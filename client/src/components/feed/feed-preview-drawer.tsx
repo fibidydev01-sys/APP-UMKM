@@ -54,6 +54,7 @@ interface FeedPreviewDrawerProps {
   currentTenantId?: string | null;
   onDelete?: (feedId: string) => void;
   onUpdate?: (feedId: string, caption: string) => void;
+  onTenantClick?: (slug: string) => void;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -67,6 +68,7 @@ export function FeedPreviewDrawer({
   currentTenantId,
   onDelete,
   onUpdate,
+  onTenantClick,
 }: FeedPreviewDrawerProps) {
   const [mode, setMode] = useState<DrawerMode>('preview');
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
@@ -359,8 +361,11 @@ export function FeedPreviewDrawer({
             )}
           >
             <div className="flex items-center justify-between gap-3">
-              {/* Tenant Info */}
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+              {/* Tenant Info - clickable to open profile */}
+              <button
+                className="flex items-center gap-3 min-w-0 flex-1 text-left hover:opacity-80 transition-opacity"
+                onClick={() => onTenantClick?.(feed.tenant.slug)}
+              >
                 <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex items-center justify-center flex-shrink-0">
                   {feed.tenant.logo ? (
                     <Image src={feed.tenant.logo} alt={feed.tenant.name} width={40} height={40} className="object-cover w-full h-full" />
@@ -374,7 +379,7 @@ export function FeedPreviewDrawer({
                     {formatDistanceToNow(new Date(feed.createdAt), { addSuffix: true, locale: localeId })}
                   </p>
                 </div>
-              </div>
+              </button>
 
               {/* Mode Toggle + Actions */}
               <div className="flex items-center gap-1">
