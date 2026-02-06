@@ -172,6 +172,17 @@ function DrawerMode({
     rowVirtualizer.scrollToIndex(0, { align: 'start' });
   }, [debouncedSearch, section, rowVirtualizer]);
 
+  // Force virtualizer to re-measure when drawer mounts with expanded state
+  // Handles Sheet→Drawer transition on resize (container has 0 height initially)
+  useEffect(() => {
+    if (state === 'expanded') {
+      const timer = setTimeout(() => {
+        rowVirtualizer.measure();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [state, rowVirtualizer]);
+
   // 🚀 OPTIMIZATION: Memoize handlers
   const handleBlockSelect = useCallback(
     (blockValue: string) => {
@@ -273,7 +284,6 @@ function DrawerMode({
             <div
               ref={scrollContainerRef}
               className="flex-1 overflow-auto p-4"
-              style={{ contain: 'strict' }} // Performance hint for browser
             >
               {displayedBlocks.length > 0 ? (
                 <div
