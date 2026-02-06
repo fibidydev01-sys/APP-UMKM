@@ -123,6 +123,7 @@ function DrawerMode({
 }: BlockDrawerProps) {
   const [search, setSearch] = useState('');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isSmallMobile = useMediaQuery('(max-width: 639px)');
 
   // 🚀 OPTIMIZATION: Debounce search input (300ms delay)
   const debouncedSearch = useDebounce(search, 300);
@@ -147,9 +148,8 @@ function DrawerMode({
     return filteredBlocks.slice(0, UI_DISPLAY_LIMIT);
   }, [filteredBlocks]);
 
-  // 🎨 CANVA-STYLE: Virtual scrolling config
-  // Grid: Fixed 3 columns (matches SheetMode)
-  const MAX_COLUMNS = 3;
+  // 🎨 Responsive columns: 2 cols on small mobile (375px), 3 cols on wider (640px+)
+  const MAX_COLUMNS = isSmallMobile ? 2 : 3;
   const rows = useMemo(() => {
     const result: BlockOption[][] = [];
     for (let i = 0; i < displayedBlocks.length; i += MAX_COLUMNS) {
@@ -208,7 +208,7 @@ function DrawerMode({
         <Drawer.Content
           className={cn(
             "fixed inset-x-0 bottom-0 z-[9999] flex flex-col rounded-t-[20px] bg-background border-t shadow-2xl",
-            state === 'expanded' ? "h-[60vh]" : "h-auto min-h-[120px]"
+            state === 'expanded' ? "h-[80vh]" : "h-auto min-h-[120px]"
           )}
           aria-describedby="block-drawer-description"
         >
@@ -307,7 +307,7 @@ function DrawerMode({
                         }}
                         className="flex justify-center"
                       >
-                        <div className="grid grid-cols-3 gap-3 w-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full">
                           {rowBlocks.map((block) => (
                             <BlockCard
                               key={block.value}
