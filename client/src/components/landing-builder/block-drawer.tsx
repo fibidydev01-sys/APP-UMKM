@@ -395,6 +395,17 @@ function SheetMode({
     }
   }, [debouncedSearch, section, state, rowVirtualizer]);
 
+  // Force virtualizer to re-measure when sheet opens
+  // Sheet animation delays container layout, so virtualizer sees 0 height initially
+  useEffect(() => {
+    if (state === 'expanded') {
+      const timer = setTimeout(() => {
+        rowVirtualizer.measure();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [state, rowVirtualizer]);
+
   // 🚀 OPTIMIZATION: Memoize handlers
   const handleBlockSelect = useCallback(
     (blockValue: string) => {
@@ -478,7 +489,6 @@ function SheetMode({
           <div
             ref={scrollContainerRef}
             className="flex-1 overflow-auto p-4"
-            style={{ contain: 'strict' }}
           >
             {displayedBlocks.length > 0 ? (
               <div
