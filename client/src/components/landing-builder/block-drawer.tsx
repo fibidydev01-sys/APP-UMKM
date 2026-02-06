@@ -208,7 +208,7 @@ function DrawerMode({
         <Drawer.Content
           className={cn(
             "fixed inset-x-0 bottom-0 z-[9999] flex flex-col rounded-t-[20px] bg-background border-t shadow-2xl",
-            state === 'expanded' ? "h-[80vh]" : "h-auto min-h-[120px]"
+            state === 'expanded' ? "h-[60vh]" : "h-auto min-h-[120px]"
           )}
           aria-describedby="block-drawer-description"
         >
