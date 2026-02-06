@@ -9,10 +9,12 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { FeedService } from './feed.service';
-import { CreateFeedDto, QueryFeedDto } from './dto';
+import { CreateFeedDto, QueryFeedDto, CreateCommentDto, QueryCommentDto } from './dto';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
+import { OptionalJwtAuthGuard } from '../common/guards/optional-jwt-auth.guard';
 import { CurrentTenant } from '../common/decorators/tenant.decorator';
 
 @Controller('feed')
@@ -20,16 +22,19 @@ export class FeedController {
   constructor(private feedService: FeedService) {}
 
   // ══════════════════════════════════════════════════════════════
-  // PUBLIC ENDPOINTS
+  // PUBLIC ENDPOINTS (with optional auth for isLiked)
   // ══════════════════════════════════════════════════════════════
 
   /**
    * Get feed list (chronological, paginated)
    * GET /api/feed?page=1&limit=20
+   * Optional auth: kalau login, return isLiked per feed
    */
   @Get()
-  async findAll(@Query() query: QueryFeedDto) {
-    return this.feedService.findAll(query);
+  @UseGuards(OptionalJwtAuthGuard)
+  async findAll(@Query() query: QueryFeedDto, @Req() req: any) {
+    const tenantId = req.user?.id ?? undefined;
+    return this.feedService.findAll(query, tenantId);
   }
 
   /**
@@ -39,6 +44,18 @@ export class FeedController {
   @Get(':id')
   async findOne(@Param('id') feedId: string) {
     return this.feedService.findOne(feedId);
+  }
+
+  /**
+   * Get comments for a feed (public, paginated)
+   * GET /api/feed/:id/comments?page=1&limit=20
+   */
+  @Get(':id/comments')
+  async getComments(
+    @Param('id') feedId: string,
+    @Query() query: QueryCommentDto,
+  ) {
+    return this.feedService.getComments(feedId, query);
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -57,6 +74,34 @@ export class FeedController {
     @Body() dto: CreateFeedDto,
   ) {
     return this.feedService.create(tenantId, dto);
+  }
+
+  /**
+   * Toggle like on a feed
+   * POST /api/feed/:id/like
+   */
+  @Post(':id/like')
+  @UseGuards(JwtAuthGuard)
+  async toggleLike(
+    @CurrentTenant('id') tenantId: string,
+    @Param('id') feedId: string,
+  ) {
+    return this.feedService.toggleLike(tenantId, feedId);
+  }
+
+  /**
+   * Add comment to a feed
+   * POST /api/feed/:id/comments
+   */
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async addComment(
+    @CurrentTenant('id') tenantId: string,
+    @Param('id') feedId: string,
+    @Body() dto: CreateCommentDto,
+  ) {
+    return this.feedService.addComment(tenantId, feedId, dto);
   }
 
   /**

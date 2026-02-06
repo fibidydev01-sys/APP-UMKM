@@ -5,6 +5,10 @@ import type {
   CreateFeedInput,
   CreateFeedResponse,
   DeleteFeedResponse,
+  ToggleLikeResponse,
+  CreateCommentInput,
+  CreateCommentResponse,
+  FeedCommentsResponse,
 } from '@/types';
 
 // ==========================================
@@ -42,5 +46,33 @@ export const feedApi = {
    */
   delete: async (id: string): Promise<DeleteFeedResponse> => {
     return api.delete<DeleteFeedResponse>(`/feed/${id}`);
+  },
+
+  // ==========================================
+  // INTERACTIONS
+  // ==========================================
+
+  /**
+   * Toggle like on a feed (protected)
+   * POST /feed/:id/like
+   */
+  toggleLike: async (feedId: string): Promise<ToggleLikeResponse> => {
+    return api.post<ToggleLikeResponse>(`/feed/${feedId}/like`);
+  },
+
+  /**
+   * Get comments for a feed (public, paginated)
+   * GET /feed/:id/comments?page=1&limit=20
+   */
+  getComments: async (feedId: string, params?: { page?: number; limit?: number }): Promise<FeedCommentsResponse> => {
+    return api.get<FeedCommentsResponse>(`/feed/${feedId}/comments`, { params });
+  },
+
+  /**
+   * Add comment to a feed (protected)
+   * POST /feed/:id/comments
+   */
+  addComment: async (feedId: string, data: CreateCommentInput): Promise<CreateCommentResponse> => {
+    return api.post<CreateCommentResponse>(`/feed/${feedId}/comments`, data);
   },
 };
