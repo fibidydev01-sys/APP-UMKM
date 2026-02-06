@@ -21,8 +21,6 @@ import {
   Crown,
   Trash2,
   Reply,
-  MoreHorizontal,
-  Pencil,
   Check,
   X,
   MessageSquare,
@@ -37,12 +35,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { formatPrice } from '@/lib/format';
 import { feedApi } from '@/lib/api';
@@ -412,29 +405,6 @@ export function FeedPreviewDrawer({
                   )}
                 </Button>
 
-                {/* Owner Menu */}
-                {isOwner && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => { setEditCaption(feed.caption ?? ''); setIsEditing(true); setMode('preview'); }}>
-                        <Pencil className="h-4 w-4 mr-2" /> Edit Caption
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleDelete} className="text-destructive focus:text-destructive">
-                        <Trash2 className="h-4 w-4 mr-2" /> Hapus Feed
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-
-                {/* Close */}
-                <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground" onClick={() => onOpenChange(false)}>
-                  <X className="h-4 w-4" />
-                </Button>
               </div>
             </div>
           </div>
@@ -584,12 +554,12 @@ export function FeedPreviewDrawer({
 
             {/* ══════════ COMMENTS MODE ══════════ */}
             {mode === 'comments' && (
-              <div className="px-4 py-4 pb-8 space-y-4">
-                <h3 className="font-semibold">Komentar ({commentCount})</h3>
+              <div className="max-w-lg mx-auto w-full px-6 py-4 pb-8">
+                <h3 className="font-semibold mb-4">Komentar ({commentCount})</h3>
 
                 {/* Comment Input */}
                 {isLoggedIn && (
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 mb-4">
                     <Input
                       placeholder="Tulis komentar..."
                       value={commentText}
@@ -606,56 +576,61 @@ export function FeedPreviewDrawer({
                   </div>
                 )}
 
-                {/* Loading */}
-                {loadingComments && !commentsLoaded && (
-                  <div className="space-y-3">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <div key={i} className="flex gap-2">
-                        <Skeleton className="w-8 h-8 rounded-full flex-shrink-0" />
-                        <div className="space-y-1 flex-1">
-                          <Skeleton className="h-3 w-24" />
-                          <Skeleton className="h-4 w-full" />
-                        </div>
+                {/* Scrollable Comment Area */}
+                <ScrollArea className="max-h-[60vh]">
+                  <div className="space-y-4 pr-2">
+                    {/* Loading */}
+                    {loadingComments && !commentsLoaded && (
+                      <div className="space-y-3">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <div key={i} className="flex gap-2">
+                            <Skeleton className="w-8 h-8 rounded-full flex-shrink-0" />
+                            <div className="space-y-1 flex-1">
+                              <Skeleton className="h-3 w-24" />
+                              <Skeleton className="h-4 w-full" />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
+                    )}
 
-                {/* Comment List */}
-                {comments.length > 0 && (
-                  <div className="space-y-4">
-                    {comments.map((comment) => (
-                      <DrawerCommentItem
-                        key={comment.id}
-                        comment={comment}
-                        feedOwnerTenantId={feed.tenantId}
-                        currentTenantId={currentTenantId ?? null}
-                        isLoggedIn={isLoggedIn}
-                        replyingTo={replyingTo}
-                        replyText={replyText}
-                        submittingReply={submittingReply}
-                        onSetReplyingTo={setReplyingTo}
-                        onSetReplyText={setReplyText}
-                        onSubmitReply={handleSubmitReply}
-                        onDeleteComment={handleDeleteComment}
-                      />
-                    ))}
+                    {/* Comment List */}
+                    {comments.length > 0 && (
+                      <div className="space-y-4">
+                        {comments.map((comment) => (
+                          <DrawerCommentItem
+                            key={comment.id}
+                            comment={comment}
+                            feedOwnerTenantId={feed.tenantId}
+                            currentTenantId={currentTenantId ?? null}
+                            isLoggedIn={isLoggedIn}
+                            replyingTo={replyingTo}
+                            replyText={replyText}
+                            submittingReply={submittingReply}
+                            onSetReplyingTo={setReplyingTo}
+                            onSetReplyText={setReplyText}
+                            onSubmitReply={handleSubmitReply}
+                            onDeleteComment={handleDeleteComment}
+                          />
+                        ))}
 
-                    {commentsMeta?.hasMore && (
-                      <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground" onClick={handleLoadMoreComments} disabled={loadingComments}>
-                        {loadingComments ? 'Memuat...' : 'Lihat komentar lainnya'}
-                      </Button>
+                        {commentsMeta?.hasMore && (
+                          <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground" onClick={handleLoadMoreComments} disabled={loadingComments}>
+                            {loadingComments ? 'Memuat...' : 'Lihat komentar lainnya'}
+                          </Button>
+                        )}
+                      </div>
+                    )}
+
+                    {commentsLoaded && comments.length === 0 && (
+                      <div className="text-center py-8">
+                        <MessageCircle className="h-10 w-10 text-muted-foreground/30 mx-auto mb-2" />
+                        <p className="text-sm text-muted-foreground">Belum ada komentar</p>
+                        <p className="text-xs text-muted-foreground mt-1">Jadilah yang pertama berkomentar!</p>
+                      </div>
                     )}
                   </div>
-                )}
-
-                {commentsLoaded && comments.length === 0 && (
-                  <div className="text-center py-8">
-                    <MessageCircle className="h-10 w-10 text-muted-foreground/30 mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">Belum ada komentar</p>
-                    <p className="text-xs text-muted-foreground mt-1">Jadilah yang pertama berkomentar!</p>
-                  </div>
-                )}
+                </ScrollArea>
               </div>
             )}
           </div>
