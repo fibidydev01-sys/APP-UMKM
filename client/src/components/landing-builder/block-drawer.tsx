@@ -156,7 +156,7 @@ function DrawerMode({
       result.push(displayedBlocks.slice(i, i + MAX_COLUMNS));
     }
     return result;
-  }, [displayedBlocks]);
+  }, [displayedBlocks, MAX_COLUMNS]);
 
   // 🚀 Virtual scrolling (only renders visible rows!)
   const rowVirtualizer = useVirtualizer({
