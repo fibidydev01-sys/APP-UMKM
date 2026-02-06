@@ -307,7 +307,7 @@ function DrawerMode({
                         }}
                         className="flex justify-center"
                       >
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full">
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 w-full justify-items-center">
                           {rowBlocks.map((block) => (
                             <BlockCard
                               key={block.value}
@@ -521,7 +521,7 @@ function SheetMode({
                         transform: `translateY(${virtualRow.start}px)`,
                       }}
                     >
-                      <div className="grid grid-cols-3 gap-3 w-full">
+                      <div className="grid grid-cols-3 gap-3 w-full justify-items-center">
                         {rowBlocks.map((block) => (
                           <BlockCard
                             key={block.value}
@@ -568,7 +568,7 @@ const BlockCard = memo(function BlockCard({ block, isSelected, onSelect }: Block
     <button
       onClick={handleClick}
       className={cn(
-        'h-14 flex items-center justify-center px-2 rounded-md border transition-colors',
+        'w-14 h-14 flex items-center justify-center p-1 rounded-md border transition-colors',
         isSelected
           ? 'border-primary bg-primary/10 text-primary'
           : 'border-border bg-muted/50 hover:bg-muted hover:border-muted-foreground/30'
