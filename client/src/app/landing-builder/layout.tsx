@@ -14,7 +14,7 @@ export default function LandingBuilderLayout({
 }) {
   return (
     <AuthGuard requireAuth redirectTo="/login">
-      <div className="h-screen w-screen overflow-hidden">
+      <div className="h-screen w-full overflow-hidden">
         {children}
       </div>
     </AuthGuard>
