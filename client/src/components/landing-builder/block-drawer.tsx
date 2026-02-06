@@ -22,7 +22,7 @@ import {
   SheetDescription,
 } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { Check, Minimize2, Grid3x3, Search, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Minimize2, Grid3x3, Search, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { SectionType } from './builder-sidebar';
 import type { BlockOption } from './block-options';
 import { BLOCK_OPTIONS_MAP } from './block-options'; // 🚀 Auto-generated blocks!
@@ -162,7 +162,7 @@ function DrawerMode({
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollContainerRef.current,
-    estimateSize: () => 80, // Compact card row height
+    estimateSize: () => 68, // h-14 (56px) + gap-3 (12px)
     overscan: 3, // Render 3 extra rows above/below viewport (smooth scrolling)
   });
 
@@ -393,7 +393,7 @@ function SheetMode({
   const rowVirtualizer = useVirtualizer({
     count: rows.length,
     getScrollElement: () => scrollContainerRef.current,
-    estimateSize: () => 120,
+    estimateSize: () => 68, // h-14 (56px) + gap-3 (12px)
     overscan: 3,
   });
 
@@ -568,16 +568,13 @@ const BlockCard = memo(function BlockCard({ block, isSelected, onSelect }: Block
     <button
       onClick={handleClick}
       className={cn(
-        'flex flex-col items-center justify-center p-3 rounded-lg border-2 transition-all hover:shadow-md hover:scale-[1.02]',
+        'h-14 flex items-center justify-center px-2 rounded-md border transition-colors',
         isSelected
-          ? 'border-primary bg-primary/10 text-primary shadow-md scale-[1.02]'
-          : 'border-transparent bg-muted/50 hover:border-primary/50 hover:bg-muted'
+          ? 'border-primary bg-primary/10 text-primary'
+          : 'border-border bg-muted/50 hover:bg-muted hover:border-muted-foreground/30'
       )}
     >
-      <span className="text-xs font-semibold line-clamp-3 text-center">{block.label}</span>
-      {isSelected && (
-        <Check className="h-3.5 w-3.5 mt-1.5 text-primary animate-in fade-in zoom-in duration-200" />
-      )}
+      <span className="text-xs font-medium line-clamp-2 text-center leading-tight">{block.label}</span>
     </button>
   );
 });
