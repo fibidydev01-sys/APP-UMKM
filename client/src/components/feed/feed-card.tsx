@@ -40,9 +40,10 @@ interface FeedCardProps {
   currentTenantId?: string | null;
   onDelete?: (feedId: string) => void;
   onUpdate?: (feedId: string, caption: string) => void;
+  onCardClick?: (feed: Feed) => void;
 }
 
-export function FeedCard({ feed, currentTenantId, onDelete, onUpdate }: FeedCardProps) {
+export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClick }: FeedCardProps) {
   const isOwner = currentTenantId === feed.tenantId;
   const isLoggedIn = !!currentTenantId;
   const productImage = feed.product.images?.[0];
@@ -402,23 +403,24 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate }: FeedCard
       )}
 
       {/* Product Image */}
-      <Link href={`/dashboard/explore/${feed.id}`}>
-        <div className="relative aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-95 transition">
-          {productImage ? (
-            <Image
-              src={productImage}
-              alt={feed.product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 640px) 100vw, 640px"
-            />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <Store className="w-12 h-12 text-muted-foreground" />
-            </div>
-          )}
-        </div>
-      </Link>
+      <div
+        className="relative aspect-square rounded-lg overflow-hidden bg-muted cursor-pointer hover:opacity-95 transition"
+        onClick={() => onCardClick?.(feed)}
+      >
+        {productImage ? (
+          <Image
+            src={productImage}
+            alt={feed.product.name}
+            fill
+            className="object-cover"
+            sizes="(max-width: 640px) 100vw, 640px"
+          />
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <Store className="w-12 h-12 text-muted-foreground" />
+          </div>
+        )}
+      </div>
 
       {/* Product Info */}
       <div>

@@ -6,7 +6,7 @@ import { Plus, RefreshCw, Compass } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/dashboard';
-import { FeedCard, FeedEndMessage, FeedCreateModal } from '@/components/feed';
+import { FeedCard, FeedEndMessage, FeedCreateModal, FeedPreviewDrawer } from '@/components/feed';
 import { feedApi, getErrorMessage } from '@/lib/api';
 import { useCurrentTenant } from '@/stores/auth-store';
 import type { Feed, FeedPaginationMeta } from '@/types';
@@ -26,6 +26,10 @@ export default function ExplorePage() {
 
   // Modal state
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  // Drawer state
+  const [selectedFeed, setSelectedFeed] = useState<Feed | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Refs
   const hasFetched = useRef(false);
@@ -211,6 +215,10 @@ export default function ExplorePage() {
                 prev.map((f) => (f.id === feedId ? { ...f, caption } : f)),
               );
             }}
+            onCardClick={(f) => {
+              setSelectedFeed(f);
+              setDrawerOpen(true);
+            }}
           />
         ))}
 
@@ -237,6 +245,19 @@ export default function ExplorePage() {
         open={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSuccess={handleCreateSuccess}
+      />
+
+      <FeedPreviewDrawer
+        feed={selectedFeed}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        currentTenantId={tenant?.id ?? null}
+        onDelete={handleDelete}
+        onUpdate={(feedId, caption) => {
+          setFeeds((prev) =>
+            prev.map((f) => (f.id === feedId ? { ...f, caption } : f)),
+          );
+        }}
       />
     </>
   );
