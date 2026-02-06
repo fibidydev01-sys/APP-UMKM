@@ -7,7 +7,9 @@
 
 ## Overview
 
-Pattern ini memisahkan **server component** (metadata) dan **client component** (UI interaktif) ke dalam 2 file terpisah, dengan tabs yang dikelola via `useState` saja - **URL tidak berubah** saat berpindah tab.
+Pattern ini memisahkan **server component** (metadata) dan **client component**
+(UI interaktif) ke dalam 2 file terpisah, dengan tabs yang dikelola via
+`useState` saja - **URL tidak berubah** saat berpindah tab.
 
 ```
 /settings/toko/
@@ -20,22 +22,26 @@ Pattern ini memisahkan **server component** (metadata) dan **client component** 
 ## Kenapa Pattern Ini Performant?
 
 ### 1. Zero Network Request saat Switch Tab
+
 - Tabs hanya mengubah **state lokal** (`useState`)
 - Tidak ada `router.push()` atau `useSearchParams()`
 - Tidak ada request ke server saat pindah tab
 - **Instant switch** - user tidak menunggu
 
 ### 2. Single Page Load
+
 - Semua wizard pages di-import sebagai **components**
 - Browser load sekali, lalu switch antar komponen
 - Tidak ada re-fetch data dari server
 
 ### 3. Metadata Tetap Server-Side
+
 - `page.tsx` tetap server component
 - SEO metadata di-generate di server
 - Best of both worlds: SSR metadata + CSR interactivity
 
 ### 4. No URL Pollution
+
 - URL tetap bersih: `/settings/toko`
 - Tidak ada query params: `?tab=hero-section`
 - Tidak perlu handle browser back/forward untuk tabs
@@ -62,6 +68,7 @@ export default function TokoPage() {
 ```
 
 **Karakteristik:**
+
 - Server component (default di Next.js App Router)
 - Hanya export `metadata` dan render client component
 - Tidak ada logic, tidak ada state
@@ -129,6 +136,7 @@ export function TokoClient() {
 ```
 
 **Karakteristik:**
+
 - Client component (`'use client'`)
 - `useState` untuk active tab
 - Import pages sebagai components
@@ -142,14 +150,13 @@ export function TokoClient() {
 ```tsx
 <div className="sticky top-0 z-20 bg-background border-b -mx-4 md:-mx-6 lg:-mx-8 mb-6">
   <div className="px-4 md:px-6 lg:px-8">
-    <div className="flex overflow-x-auto">
-      {/* tabs */}
-    </div>
+    <div className="flex overflow-x-auto">{/* tabs */}</div>
   </div>
 </div>
 ```
 
 **Penjelasan:**
+
 - `sticky top-0` - tabs menempel di atas saat scroll
 - `z-20` - di atas content, di bawah modal
 - `bg-background` - background solid (tidak transparan)
@@ -162,18 +169,21 @@ export function TokoClient() {
 ## Kapan Pakai Pattern Ini?
 
 ### Gunakan pattern ini jika:
+
 - Halaman punya **2+ sub-sections** yang logically grouped
 - User sering **switch antar sections**
 - Tidak perlu **deep linking** ke specific tab
 - Ingin **instant switch** tanpa loading
 
 ### Contoh penggunaan:
+
 - Settings pages (Toko, Channels)
 - Profile pages (Info, Security, Preferences)
 - Product detail (Description, Reviews, Specs)
 - Dashboard views (Overview, Analytics, Reports)
 
 ### JANGAN gunakan jika:
+
 - Perlu **share link** ke specific tab
 - Perlu **browser back/forward** untuk tabs
 - Tabs adalah **separate routes** yang independent
@@ -286,10 +296,10 @@ Di `settings-sidebar.tsx` dan `settings-mobile-navbar.tsx`, tambahkan item baru:
 
 ## Referensi Implementasi
 
-| Halaman | Lokasi | Tabs |
-|---------|--------|------|
-| Toko | `/settings/toko` | Hero, About, Testimonials, Contact, CTA |
-| Channels | `/settings/channels` | Pencarian, Pembayaran, Pengiriman |
+| Halaman  | Lokasi               | Tabs                                    |
+| -------- | -------------------- | --------------------------------------- |
+| Toko     | `/settings/toko`     | Hero, About, Testimonials, Contact, CTA |
+| Channels | `/settings/channels` | Pencarian, Pembayaran, Pengiriman       |
 
 ---
 
@@ -318,6 +328,7 @@ URL: /settings/toko (TIDAK BERUBAH saat switch tab)
 ```
 
 **Key Points:**
+
 1. `page.tsx` = metadata only (server)
 2. `client.tsx` = UI + state (client)
 3. `useState` = tab state (no URL)
