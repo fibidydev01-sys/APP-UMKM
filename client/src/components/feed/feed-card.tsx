@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import {
   Heart,
   MessageCircle,
@@ -32,7 +31,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { feedApi } from '@/lib/api';
+import { toast } from '@/providers';
 import type { Feed, FeedComment } from '@/types';
 
 interface FeedCardProps {
@@ -41,9 +51,11 @@ interface FeedCardProps {
   onDelete?: (feedId: string) => void;
   onUpdate?: (feedId: string, caption: string) => void;
   onCardClick?: (feed: Feed) => void;
+  onTenantClick?: (slug: string) => void;
+  onCommentClick?: (feed: Feed) => void;
 }
 
-export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClick }: FeedCardProps) {
+export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClick, onTenantClick, onCommentClick }: FeedCardProps) {
   const isOwner = currentTenantId === feed.tenantId;
   const isLoggedIn = !!currentTenantId;
   const productImage = feed.product.images?.[0];
@@ -81,6 +93,9 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   const [replyText, setReplyText] = useState('');
   const [submittingReply, setSubmittingReply] = useState(false);
+
+  // Delete dialog state
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const formattedPrice = new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -202,8 +217,9 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
       feed.caption = editCaption.trim() || null;
       onUpdate?.(feed.id, editCaption.trim());
       setIsEditing(false);
+      toast.success('Caption berhasil diperbarui');
     } catch {
-      // Keep editing open on error
+      toast.error('Gagal menyimpan caption');
     } finally {
       setEditPending(false);
     }
@@ -321,7 +337,7 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
     <div ref={cardRef} className="bg-card rounded-lg border p-4 space-y-3">
       {/* Header - Tenant Info */}
       <div className="flex items-center gap-3">
-        <Link href={`/store/${feed.tenant.slug}`}>
+        <button onClick={() => onTenantClick?.(feed.tenant.slug)} className="hover:opacity-80 transition-opacity">
           <div className="w-10 h-10 rounded-full overflow-hidden bg-muted flex items-center justify-center">
             {feed.tenant.logo ? (
               <Image
@@ -335,12 +351,12 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
               <Store className="w-5 h-5 text-muted-foreground" />
             )}
           </div>
-        </Link>
+        </button>
 
         <div className="flex-1 min-w-0">
-          <Link href={`/store/${feed.tenant.slug}`} className="font-semibold text-sm hover:underline truncate block">
+          <button onClick={() => onTenantClick?.(feed.tenant.slug)} className="font-semibold text-sm hover:underline truncate block text-left">
             {feed.tenant.name}
-          </Link>
+          </button>
           <p className="text-xs text-muted-foreground">
             {formatDistanceToNow(new Date(feed.createdAt), {
               addSuffix: true,
@@ -364,7 +380,7 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
               </DropdownMenuItem>
               {onDelete && (
                 <DropdownMenuItem
-                  onClick={() => onDelete(feed.id)}
+                  onClick={() => setShowDeleteDialog(true)}
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
@@ -451,10 +467,10 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
         <Button
           variant="ghost"
           size="sm"
-          className={`gap-1.5 ${showComments ? 'text-primary' : 'text-muted-foreground'}`}
-          onClick={handleToggleComments}
+          className="gap-1.5 text-muted-foreground"
+          onClick={() => onCommentClick ? onCommentClick(feed) : handleToggleComments()}
         >
-          <MessageCircle className={`h-4 w-4 ${showComments ? 'fill-current' : ''}`} />
+          <MessageCircle className="h-4 w-4" />
           <span className="text-xs">{commentCount}</span>
         </Button>
 
@@ -574,6 +590,30 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
           )}
         </div>
       )}
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Hapus Feed?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Feed ini akan dihapus secara permanen beserta semua komentar dan interaksinya. Tindakan ini tidak dapat dibatalkan.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Batal</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                onDelete?.(feed.id);
+                toast.success('Feed berhasil dihapus');
+              }}
+            >
+              Hapus
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

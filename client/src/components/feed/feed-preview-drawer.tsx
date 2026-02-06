@@ -55,6 +55,7 @@ interface FeedPreviewDrawerProps {
   onDelete?: (feedId: string) => void;
   onUpdate?: (feedId: string, caption: string) => void;
   onTenantClick?: (slug: string) => void;
+  initialMode?: DrawerMode;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -69,8 +70,9 @@ export function FeedPreviewDrawer({
   onDelete,
   onUpdate,
   onTenantClick,
+  initialMode = 'preview',
 }: FeedPreviewDrawerProps) {
-  const [mode, setMode] = useState<DrawerMode>('preview');
+  const [mode, setMode] = useState<DrawerMode>(initialMode);
   const [isHeaderSticky, setIsHeaderSticky] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -117,7 +119,7 @@ export function FeedPreviewDrawer({
       setCommentsLoaded(false);
       setComments([]);
       setCommentsMeta(null);
-      setMode('preview');
+      setMode(initialMode);
       setIsEditing(false);
       setReplyingTo(null);
       prevFeedId.current = feed.id;
@@ -141,7 +143,7 @@ export function FeedPreviewDrawer({
     if (prevOpen.current && !open) {
       setIsHeaderSticky(false);
       setIsEditing(false);
-      setMode('preview');
+      setMode(initialMode);
       setReplyingTo(null);
       setReplyText('');
     }
@@ -182,6 +184,11 @@ export function FeedPreviewDrawer({
     };
     loadComments();
   }, [mode, feed, commentsLoaded]);
+
+  // ── Sync initialMode when parent changes it ──────────────
+  useEffect(() => {
+    if (open) setMode(initialMode);
+  }, [initialMode, open]);
 
   // ── Track view ─────────────────────────────────────────────
   const viewTracked = useRef<string | null>(null);

@@ -30,6 +30,7 @@ export default function ExplorePage() {
   // Drawer state
   const [selectedFeed, setSelectedFeed] = useState<Feed | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerMode, setDrawerMode] = useState<'preview' | 'comments'>('preview');
 
   // Tenant profile drawer state
   const [profileSlug, setProfileSlug] = useState<string | null>(null);
@@ -221,6 +222,16 @@ export default function ExplorePage() {
             }}
             onCardClick={(f) => {
               setSelectedFeed(f);
+              setDrawerMode('preview');
+              setDrawerOpen(true);
+            }}
+            onTenantClick={(slug) => {
+              setProfileSlug(slug);
+              setProfileOpen(true);
+            }}
+            onCommentClick={(f) => {
+              setSelectedFeed(f);
+              setDrawerMode('comments');
               setDrawerOpen(true);
             }}
           />
@@ -256,6 +267,7 @@ export default function ExplorePage() {
         open={drawerOpen}
         onOpenChange={setDrawerOpen}
         currentTenantId={tenant?.id ?? null}
+        initialMode={drawerMode}
         onDelete={handleDelete}
         onUpdate={(feedId, caption) => {
           setFeeds((prev) =>
