@@ -125,6 +125,7 @@ model Tenant {
   products      Product[]
   customers     Customer[]
   orders        Order[]
+  feeds         Feed[]
 
   // WhatsApp Chat System Relations
   whatsappSession  WhatsAppSession?
@@ -184,7 +185,8 @@ model Product {
   
   // Relations
   orderItems   OrderItem[]
-  
+  feeds        Feed[]
+
   @@unique([tenantId, sku])
   @@unique([tenantId, slug])  // NEW: Ensure unique slug per tenant
   @@index([tenantId])
@@ -610,4 +612,36 @@ model AutoReplyLog {
 
   @@index([ruleId, triggeredAt(sort: Desc)])
   @@index([conversationId])
+}
+
+// ==========================================
+// FEED (Product Discovery Feed)
+// ==========================================
+
+model Feed {
+  id            String   @id @default(cuid())
+
+  // Relations
+  tenantId      String
+  tenant        Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  // Content
+  caption       String?  @db.Text
+
+  // Engagement Metrics (counters - Phase 2)
+  viewCount     Int      @default(0)
+  likeCount     Int      @default(0)
+  commentCount  Int      @default(0)
+
+  // Timestamps
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Constraints
+  @@unique([tenantId, productId])  // 1 tenant hanya bisa post 1 produk sekali
+  @@index([createdAt(sort: Desc)]) // Chronological query
+  @@index([tenantId])
 }
