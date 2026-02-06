@@ -40,7 +40,9 @@ export interface Feed {
   viewCount: number;
   likeCount: number;
   commentCount: number;
+  bookmarkCount: number;
   isLiked: boolean;
+  isBookmarked: boolean;
   createdAt: string;
   updatedAt: string;
   tenant: FeedTenant;
@@ -74,9 +76,24 @@ export interface CreateFeedInput {
 }
 
 /**
+ * Update feed input (edit caption)
+ */
+export interface UpdateFeedInput {
+  caption?: string;
+}
+
+/**
  * Create feed response
  */
 export interface CreateFeedResponse {
+  message: string;
+  feed: Feed;
+}
+
+/**
+ * Update feed response
+ */
+export interface UpdateFeedResponse {
   message: string;
   feed: Feed;
 }
@@ -89,7 +106,7 @@ export interface DeleteFeedResponse {
 }
 
 // ==========================================
-// INTERACTIONS - Like & Comment
+// INTERACTIONS - Like, Comment, Bookmark, View
 // ==========================================
 
 /**
@@ -101,15 +118,33 @@ export interface ToggleLikeResponse {
 }
 
 /**
- * Feed comment entity
+ * Toggle bookmark response
+ */
+export interface ToggleBookmarkResponse {
+  bookmarked: boolean;
+  message: string;
+}
+
+/**
+ * Track view response
+ */
+export interface TrackViewResponse {
+  viewCount: number;
+}
+
+/**
+ * Feed comment entity (with nested replies)
  */
 export interface FeedComment {
   id: string;
   feedId: string;
   tenantId: string;
   content: string;
+  parentId?: string | null;
+  isOwner: boolean;
   createdAt: string;
   tenant: FeedTenant;
+  replies?: FeedComment[];
 }
 
 /**
@@ -125,6 +160,21 @@ export interface CreateCommentInput {
 export interface CreateCommentResponse {
   message: string;
   comment: FeedComment;
+}
+
+/**
+ * Reply to comment response
+ */
+export interface CreateReplyResponse {
+  message: string;
+  reply: FeedComment;
+}
+
+/**
+ * Delete comment response
+ */
+export interface DeleteCommentResponse {
+  message: string;
 }
 
 /**

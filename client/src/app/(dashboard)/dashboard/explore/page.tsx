@@ -206,6 +206,11 @@ export default function ExplorePage() {
             feed={feed}
             currentTenantId={tenant?.id ?? null}
             onDelete={handleDelete}
+            onUpdate={(feedId, caption) => {
+              setFeeds((prev) =>
+                prev.map((f) => (f.id === feedId ? { ...f, caption } : f)),
+              );
+            }}
           />
         ))}
 

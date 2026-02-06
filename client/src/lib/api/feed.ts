@@ -3,11 +3,17 @@ import type {
   FeedListResponse,
   Feed,
   CreateFeedInput,
+  UpdateFeedInput,
   CreateFeedResponse,
+  UpdateFeedResponse,
   DeleteFeedResponse,
   ToggleLikeResponse,
+  ToggleBookmarkResponse,
+  TrackViewResponse,
   CreateCommentInput,
   CreateCommentResponse,
+  CreateReplyResponse,
+  DeleteCommentResponse,
   FeedCommentsResponse,
 } from '@/types';
 
@@ -41,6 +47,14 @@ export const feedApi = {
   },
 
   /**
+   * Update feed caption (protected - owner only)
+   * PATCH /feed/:id
+   */
+  update: async (id: string, data: UpdateFeedInput): Promise<UpdateFeedResponse> => {
+    return api.patch<UpdateFeedResponse>(`/feed/${id}`, data);
+  },
+
+  /**
    * Delete own feed post (protected)
    * DELETE /feed/:id
    */
@@ -61,6 +75,22 @@ export const feedApi = {
   },
 
   /**
+   * Toggle bookmark on a feed (protected)
+   * POST /feed/:id/bookmark
+   */
+  toggleBookmark: async (feedId: string): Promise<ToggleBookmarkResponse> => {
+    return api.post<ToggleBookmarkResponse>(`/feed/${feedId}/bookmark`);
+  },
+
+  /**
+   * Track view on a feed (protected)
+   * POST /feed/:id/view
+   */
+  trackView: async (feedId: string): Promise<TrackViewResponse> => {
+    return api.post<TrackViewResponse>(`/feed/${feedId}/view`);
+  },
+
+  /**
    * Get comments for a feed (public, paginated)
    * GET /feed/:id/comments?page=1&limit=20
    */
@@ -74,5 +104,21 @@ export const feedApi = {
    */
   addComment: async (feedId: string, data: CreateCommentInput): Promise<CreateCommentResponse> => {
     return api.post<CreateCommentResponse>(`/feed/${feedId}/comments`, data);
+  },
+
+  /**
+   * Reply to a comment (protected, 1 level nesting)
+   * POST /feed/comments/:commentId/reply
+   */
+  replyToComment: async (commentId: string, data: CreateCommentInput): Promise<CreateReplyResponse> => {
+    return api.post<CreateReplyResponse>(`/feed/comments/${commentId}/reply`, data);
+  },
+
+  /**
+   * Delete a comment (protected - author or feed owner)
+   * DELETE /feed/comments/:commentId
+   */
+  deleteComment: async (commentId: string): Promise<DeleteCommentResponse> => {
+    return api.delete<DeleteCommentResponse>(`/feed/comments/${commentId}`);
   },
 };
