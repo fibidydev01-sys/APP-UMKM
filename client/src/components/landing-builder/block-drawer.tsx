@@ -148,9 +148,8 @@ function DrawerMode({
   }, [filteredBlocks]);
 
   // 🎨 CANVA-STYLE: Virtual scrolling config
-  // Grid: Responsive (2 mobile, 3 tablet, 4 desktop)
-  // We calculate rows based on max columns (4) for virtual scrolling
-  const MAX_COLUMNS = 4; // Desktop max
+  // Grid: Fixed 3 columns (matches SheetMode)
+  const MAX_COLUMNS = 3;
   const rows = useMemo(() => {
     const result: BlockOption[][] = [];
     for (let i = 0; i < displayedBlocks.length; i += MAX_COLUMNS) {
@@ -308,7 +307,7 @@ function DrawerMode({
                         }}
                         className="flex justify-center"
                       >
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 w-full max-w-4xl">
+                        <div className="grid grid-cols-3 gap-3 w-full">
                           {rowBlocks.map((block) => (
                             <BlockCard
                               key={block.value}
