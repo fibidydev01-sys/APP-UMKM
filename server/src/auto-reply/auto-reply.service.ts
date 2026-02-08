@@ -231,11 +231,13 @@ export class AutoReplyService {
     return {
       rules: rules.map((rule) => ({
         id: rule.id,
+        tenantId: rule.tenantId,
         name: rule.name,
         description: rule.description,
         triggerType: rule.triggerType,
         keywords: rule.keywords,
         matchType: rule.matchType,
+        caseSensitive: rule.caseSensitive,
         workingHours: rule.workingHours,
         responseMessage: rule.responseMessage,
         priority: rule.priority,
@@ -244,6 +246,7 @@ export class AutoReplyService {
         totalTriggered: rule.totalTriggered,
         lastTriggeredAt: rule.lastTriggeredAt?.toISOString(),
         createdAt: rule.createdAt.toISOString(),
+        updatedAt: rule.updatedAt.toISOString(),
       })),
     };
   }
@@ -273,11 +276,13 @@ export class AutoReplyService {
 
     return {
       id: rule.id,
+      tenantId: rule.tenantId,
       name: rule.name,
       description: rule.description,
       triggerType: rule.triggerType,
       keywords: rule.keywords,
       matchType: rule.matchType,
+      caseSensitive: rule.caseSensitive,
       workingHours: rule.workingHours,
       responseMessage: rule.responseMessage,
       priority: rule.priority,
@@ -286,6 +291,7 @@ export class AutoReplyService {
       totalTriggered: rule.totalTriggered,
       lastTriggeredAt: rule.lastTriggeredAt?.toISOString(),
       createdAt: rule.createdAt.toISOString(),
+      updatedAt: rule.updatedAt.toISOString(),
       recentLogs: rule.logs.map((log) => ({
         id: log.id,
         triggeredByMessage: log.triggeredByMessage,
@@ -339,10 +345,22 @@ export class AutoReplyService {
       success: true,
       rule: {
         id: rule.id,
+        tenantId: rule.tenantId,
         name: rule.name,
+        description: rule.description,
         triggerType: rule.triggerType,
+        keywords: rule.keywords,
+        matchType: rule.matchType,
+        caseSensitive: rule.caseSensitive,
+        workingHours: rule.workingHours,
+        responseMessage: rule.responseMessage,
+        priority: rule.priority,
+        delaySeconds: rule.delaySeconds,
         isActive: rule.isActive,
+        totalTriggered: rule.totalTriggered,
+        lastTriggeredAt: rule.lastTriggeredAt?.toISOString(),
         createdAt: rule.createdAt.toISOString(),
+        updatedAt: rule.updatedAt.toISOString(),
       },
     };
   }
@@ -409,9 +427,21 @@ export class AutoReplyService {
       success: true,
       rule: {
         id: updated.id,
+        tenantId: updated.tenantId,
         name: updated.name,
+        description: updated.description,
         triggerType: updated.triggerType,
+        keywords: updated.keywords,
+        matchType: updated.matchType,
+        caseSensitive: updated.caseSensitive,
+        workingHours: updated.workingHours,
+        responseMessage: updated.responseMessage,
+        priority: updated.priority,
+        delaySeconds: updated.delaySeconds,
         isActive: updated.isActive,
+        totalTriggered: updated.totalTriggered,
+        lastTriggeredAt: updated.lastTriggeredAt?.toISOString(),
+        createdAt: updated.createdAt.toISOString(),
         updatedAt: updated.updatedAt.toISOString(),
       },
     };
