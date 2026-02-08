@@ -13,7 +13,6 @@ import {
   Moon,
   Sun,
   Compass,
-  Film,
   Bookmark,
   CreditCard,
   type LucideIcon,
@@ -75,11 +74,6 @@ const navigation: NavGroup[] = [
         title: 'Explore',
         href: '/dashboard/explore',
         icon: Compass,
-      },
-      {
-        title: 'Reels',
-        href: '/dashboard/reels',
-        icon: Film,
       },
       {
         title: 'Tersimpan',

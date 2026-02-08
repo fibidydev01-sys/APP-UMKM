@@ -7,7 +7,7 @@ import {
   User,
   Send,
   Compass,
-  Film,
+  Bookmark,
   Menu,
   Settings,
   CreditCard,
@@ -47,9 +47,9 @@ const navItems = [
     label: 'Explore',
   },
   {
-    href: '/dashboard/reels',
-    icon: Film,
-    label: 'Reels',
+    href: '/dashboard/bookmarks',
+    icon: Bookmark,
+    label: 'Tersimpan',
   },
 ];
 
