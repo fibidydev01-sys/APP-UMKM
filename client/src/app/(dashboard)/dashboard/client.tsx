@@ -1,7 +1,6 @@
 // ══════════════════════════════════════════════════════════════
-// DASHBOARD CLIENT - Profile + Sticky Tabs (Facebook/Instagram style)
-// Hero background + Avatar from tenant settings
-// Tabs: Produk, Pelanggan, Pesanan
+// DASHBOARD CLIENT - Profile + Sticky Tabs
+// Avatar + Store info, Tabs: Produk, Pelanggan, Pesanan
 // ══════════════════════════════════════════════════════════════
 
 'use client';
@@ -46,65 +45,44 @@ export function DashboardClient() {
   return (
     <div>
       {/* ════════════════════════════════════════════════════════ */}
-      {/* PROFILE SECTION - Hero Background + Avatar              */}
-      {/* Breaks out of container padding for full-width          */}
+      {/* PROFILE SECTION - Avatar + Store Info                    */}
       {/* ════════════════════════════════════════════════════════ */}
-      <div className="-mx-4 -mt-4 md:-mx-6 md:-mt-6 lg:-mx-8 lg:-mt-8">
-        {/* Hero Background */}
-        <div className="relative h-32 sm:h-40 md:h-48 lg:h-56 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5 overflow-hidden">
-          {tenant?.heroBackgroundImage ? (
+      <div className="flex items-center gap-4">
+        {/* Avatar */}
+        <div className="relative h-16 w-16 sm:h-20 sm:w-20 rounded-full border-2 border-border bg-muted overflow-hidden shrink-0">
+          {tenant?.logo ? (
             <Image
-              src={tenant.heroBackgroundImage}
-              alt="Hero background"
+              src={tenant.logo}
+              alt={tenant.name || 'Store logo'}
               fill
               className="object-cover"
-              priority
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 via-primary/20 to-muted" />
+            <div className="flex items-center justify-center h-full w-full bg-muted">
+              <Store className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" />
+            </div>
           )}
         </div>
 
-        {/* Avatar + Store Info */}
-        <div className="px-4 md:px-6 lg:px-8">
-          <div className="flex items-end gap-4 -mt-10 sm:-mt-12 md:-mt-14">
-            {/* Avatar */}
-            <div className="relative h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 rounded-full border-4 border-background bg-muted overflow-hidden shrink-0 shadow-md">
-              {tenant?.logo ? (
-                <Image
-                  src={tenant.logo}
-                  alt={tenant.name || 'Store logo'}
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full w-full bg-muted">
-                  <Store className="h-8 w-8 sm:h-10 sm:w-10 text-muted-foreground" />
-                </div>
+        {/* Store Name + Description */}
+        <div className="min-w-0 flex-1">
+          {tenant ? (
+            <>
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">
+                {tenant.name}
+              </h1>
+              {tenant.description && (
+                <p className="text-sm text-muted-foreground line-clamp-1">
+                  {tenant.description}
+                </p>
               )}
-            </div>
-
-            {/* Store Name + Description */}
-            <div className="pb-1 sm:pb-2 min-w-0 flex-1">
-              {tenant ? (
-                <>
-                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold truncate">
-                    {tenant.name}
-                  </h1>
-                  {tenant.description && (
-                    <p className="text-sm text-muted-foreground line-clamp-1">
-                      {tenant.description}
-                    </p>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Skeleton className="h-6 w-40 mb-1" />
-                  <Skeleton className="h-4 w-60" />
-                </>
-              )}
-            </div>
-          </div>
+            </>
+          ) : (
+            <>
+              <Skeleton className="h-6 w-40 mb-1" />
+              <Skeleton className="h-4 w-60" />
+            </>
+          )}
         </div>
       </div>
 
@@ -112,7 +90,7 @@ export function DashboardClient() {
       {/* STICKY TABS - Produk, Pelanggan, Pesanan                */}
       {/* Sticks to top of scroll container when scrolling        */}
       {/* ════════════════════════════════════════════════════════ */}
-      <div className="sticky top-0 z-20 bg-background border-b -mx-4 md:-mx-6 lg:-mx-8 mt-4">
+      <div className="sticky top-0 z-20 bg-background border-b -mx-4 md:-mx-6 lg:-mx-8 mt-6">
         <div className="px-4 md:px-6 lg:px-8">
           <div className="flex">
             {TABS.map((tab) => (
