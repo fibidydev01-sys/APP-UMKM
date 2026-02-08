@@ -1,20 +1,14 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import { Drawer } from 'vaul';
+import * as VisuallyHidden from '@radix-ui/react-visually-hidden';
 import { MessageCircle, Minus, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { cn } from '@/lib/utils';
 import { formatPrice, generateWhatsAppLink } from '@/lib/format';
 import type { PaymentMethods } from '@/types';
 
@@ -137,8 +131,8 @@ Terima kasih! 🙏`;
   const isOutOfStock = product.trackStock && (product.stock ?? 0) <= 0;
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
+    <Drawer.Root open={open} onOpenChange={setOpen}>
+      <Drawer.Trigger asChild>
         <Button
           variant={variant}
           size={size}
@@ -152,125 +146,152 @@ Terima kasih! 🙏`;
             </>
           )}
         </Button>
-      </DialogTrigger>
+      </Drawer.Trigger>
 
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Pesan {product.name}</DialogTitle>
-          <DialogDescription>
-            Lengkapi detail pesanan untuk dikirim ke {tenant.name}
-          </DialogDescription>
-        </DialogHeader>
+      <Drawer.Portal>
+        <Drawer.Overlay className="fixed inset-0 bg-black/60 z-[9999]" />
+        <Drawer.Content
+          className={cn(
+            'fixed bottom-0 left-0 right-0 z-[10000]',
+            'bg-background rounded-t-[20px]',
+            'max-h-[92vh] outline-none',
+            'flex flex-col',
+          )}
+        >
+          <VisuallyHidden.Root>
+            <Drawer.Title>Pesan {product.name}</Drawer.Title>
+            <Drawer.Description>
+              Lengkapi detail pesanan untuk dikirim ke {tenant.name}
+            </Drawer.Description>
+          </VisuallyHidden.Root>
 
-        <div className="space-y-4 py-4">
-          {/* Product Info */}
-          <div className="rounded-lg bg-muted p-3">
-            <p className="font-medium">{product.name}</p>
+          {/* Handle bar */}
+          <div className="flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+          </div>
+
+          {/* Header */}
+          <div className="px-4 pb-3 border-b">
+            <h3 className="font-semibold text-lg">Pesan {product.name}</h3>
             <p className="text-sm text-muted-foreground">
-              {formatPrice(product.price)} / {product.unit || 'pcs'}
+              Lengkapi detail pesanan untuk dikirim ke {tenant.name}
             </p>
-            {product.trackStock && (
-              <p className="text-xs text-muted-foreground mt-1">
-                Stok tersedia: {product.stock}
-              </p>
-            )}
           </div>
 
-          {/* Quantity */}
-          <div className="space-y-2">
-            <Label>Jumlah</Label>
-            <div className="flex items-center gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={decrementQty}
-                disabled={qty <= 1}
-              >
-                <Minus className="h-4 w-4" />
-              </Button>
-              <Input
-                type="number"
-                min={1}
-                max={maxStock}
-                value={qty}
-                onChange={(e) => {
-                  const val = parseInt(e.target.value) || 1;
-                  setQty(Math.min(Math.max(val, 1), maxStock));
-                }}
-                className="w-20 text-center"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={incrementQty}
-                disabled={qty >= maxStock}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-              <span className="text-sm text-muted-foreground">
-                {product.unit || 'pcs'}
-              </span>
-            </div>
-          </div>
-
-          {/* Customer Name */}
-          <div className="space-y-2">
-            <Label htmlFor="order-name">Nama (Opsional)</Label>
-            <Input
-              id="order-name"
-              placeholder="Nama Anda"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          {/* Notes */}
-          <div className="space-y-2">
-            <Label htmlFor="order-notes">Catatan (Opsional)</Label>
-            <Textarea
-              id="order-notes"
-              placeholder="Catatan tambahan..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              rows={2}
-            />
-          </div>
-
-          {/* Total */}
-          <div className="rounded-lg border p-3 space-y-1">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Subtotal</span>
-              <span>{formatPrice(subtotal)}</span>
-            </div>
-            {tax > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Pajak ({taxRate}%)</span>
-                <span>{formatPrice(tax)}</span>
+          {/* Scrollable Body */}
+          <div className="flex-1 overflow-y-auto px-4 py-4">
+            <div className="space-y-4">
+              {/* Product Info */}
+              <div className="rounded-lg bg-muted p-3">
+                <p className="font-medium">{product.name}</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatPrice(product.price)} / {product.unit || 'pcs'}
+                </p>
+                {product.trackStock && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Stok tersedia: {product.stock}
+                  </p>
+                )}
               </div>
-            )}
-            <div className="flex justify-between font-semibold pt-1 border-t">
-              <span>Total</span>
-              <span>{formatPrice(total)}</span>
+
+              {/* Quantity */}
+              <div className="space-y-2">
+                <Label>Jumlah</Label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={decrementQty}
+                    disabled={qty <= 1}
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={maxStock}
+                    value={qty}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value) || 1;
+                      setQty(Math.min(Math.max(val, 1), maxStock));
+                    }}
+                    className="w-20 text-center"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={incrementQty}
+                    disabled={qty >= maxStock}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {product.unit || 'pcs'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Customer Name */}
+              <div className="space-y-2">
+                <Label htmlFor="order-name">Nama (Opsional)</Label>
+                <Input
+                  id="order-name"
+                  placeholder="Nama Anda"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              {/* Notes */}
+              <div className="space-y-2">
+                <Label htmlFor="order-notes">Catatan (Opsional)</Label>
+                <Textarea
+                  id="order-notes"
+                  placeholder="Catatan tambahan..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  rows={2}
+                />
+              </div>
+
+              {/* Total */}
+              <div className="rounded-lg border p-3 space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Subtotal</span>
+                  <span>{formatPrice(subtotal)}</span>
+                </div>
+                {tax > 0 && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Pajak ({taxRate}%)</span>
+                    <span>{formatPrice(tax)}</span>
+                  </div>
+                )}
+                <div className="flex justify-between font-semibold pt-1 border-t">
+                  <span>Total</span>
+                  <span>{formatPrice(total)}</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Batal
-          </Button>
-          <Button onClick={handleOrder} disabled={isSubmitting}>
-            {isSubmitting ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <MessageCircle className="mr-2 h-4 w-4" />
-            )}
-            Kirim via WhatsApp
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+          {/* Sticky Footer */}
+          <div className="border-t p-4 flex gap-2">
+            <Button variant="outline" className="flex-1" onClick={() => setOpen(false)}>
+              Batal
+            </Button>
+            <Button className="flex-1" onClick={handleOrder} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <MessageCircle className="mr-2 h-4 w-4" />
+              )}
+              Kirim via WhatsApp
+            </Button>
+          </div>
+        </Drawer.Content>
+      </Drawer.Portal>
+    </Drawer.Root>
   );
 }
