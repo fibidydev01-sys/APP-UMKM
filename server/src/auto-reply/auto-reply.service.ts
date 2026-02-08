@@ -1,4 +1,10 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { WhatsAppService } from '../whatsapp/whatsapp.service';
 import { ConversationsService } from '../conversations/conversations.service';
@@ -322,22 +328,35 @@ export class AutoReplyService {
       status,
     );
 
-    const rule = await this.prisma.autoReplyRule.create({
-      data: {
-        tenantId,
-        name: dto.name,
-        description: dto.description,
-        triggerType: dto.triggerType,
-        keywords: dto.keywords || [],
-        matchType: dto.matchType,
-        caseSensitive: dto.caseSensitive ?? false,
-        workingHours: dto.workingHours as any,
-        responseMessage: dto.responseMessage,
-        priority, // Auto-assigned
-        delaySeconds, // Auto-assigned
-        isActive: dto.isActive ?? true,
-      },
-    });
+    let rule;
+    try {
+      rule = await this.prisma.autoReplyRule.create({
+        data: {
+          tenantId,
+          name: dto.name,
+          description: dto.description,
+          triggerType: dto.triggerType,
+          keywords: dto.keywords || [],
+          matchType: dto.matchType,
+          caseSensitive: dto.caseSensitive ?? false,
+          workingHours: dto.workingHours as any,
+          responseMessage: dto.responseMessage,
+          priority, // Auto-assigned
+          delaySeconds, // Auto-assigned
+          isActive: dto.isActive ?? true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Rule untuk tipe dan status ini sudah ada. Edit rule yang sudah ada atau hapus dulu sebelum membuat baru.',
+        );
+      }
+      throw error;
+    }
 
     this.logger.log(`Auto-reply rule created: ${rule.id}`);
 
