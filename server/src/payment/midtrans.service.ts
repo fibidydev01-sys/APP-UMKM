@@ -22,10 +22,10 @@ export class MidtransService {
     private readonly prisma: PrismaService,
     private readonly subscriptionService: SubscriptionService,
   ) {
-    this.serverKey = this.configService.get<string>('midtrans.serverKey');
-    this.isProduction = this.configService.get<boolean>('midtrans.isProduction');
+    this.serverKey = this.configService.get<string>('midtrans.serverKey', '');
+    this.isProduction = this.configService.get<boolean>('midtrans.isProduction', false);
 
-    const clientKey = this.configService.get<string>('midtrans.clientKey');
+    const clientKey = this.configService.get<string>('midtrans.clientKey', '');
 
     this.snap = new midtransClient.Snap({
       isProduction: this.isProduction,
@@ -262,6 +262,6 @@ export class MidtransService {
    * Get client key untuk frontend
    */
   getClientKey(): string {
-    return this.configService.get<string>('midtrans.clientKey');
+    return this.configService.get<string>('midtrans.clientKey', '');
   }
 }
