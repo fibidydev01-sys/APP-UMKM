@@ -7,16 +7,28 @@ import {
   Rocket,
   Crown,
   Check,
-  X,
   Loader2,
   ShieldCheck,
   Calendar,
   Receipt,
+  AlertTriangle,
+  Info,
 } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 import {
   subscriptionApi,
@@ -33,34 +45,48 @@ const PLAN_FEATURES = [
   { feature: 'WhatsApp Integration', starter: 'Connect + Auto-reply', business: 'Connect + Auto-reply' },
 ] as const;
 
+const PAYMENT_STATUS_LABELS: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+  settlement: { label: 'Lunas', variant: 'default' },
+  capture: { label: 'Lunas', variant: 'default' },
+  pending: { label: 'Menunggu', variant: 'outline' },
+  expire: { label: 'Kedaluwarsa', variant: 'secondary' },
+  cancel: { label: 'Dibatalkan', variant: 'secondary' },
+  deny: { label: 'Ditolak', variant: 'destructive' },
+  failure: { label: 'Gagal', variant: 'destructive' },
+};
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('id-ID', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
 export default function SubscriptionPage() {
   const searchParams = useSearchParams();
   const [planInfo, setPlanInfo] = useState<SubscriptionInfo | null>(null);
   const [payments, setPayments] = useState<PaymentHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [upgrading, setUpgrading] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
 
   const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '';
   const isProduction = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true';
   const { isLoaded, pay } = useSnapPayment({ clientKey, isProduction });
 
+  const refreshData = async () => {
+    const [plan, history] = await Promise.all([
+      subscriptionApi.getMyPlan(),
+      subscriptionApi.getPaymentHistory(),
+    ]);
+    setPlanInfo(plan);
+    setPayments(history);
+  };
+
   // Fetch data
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [plan, history] = await Promise.all([
-          subscriptionApi.getMyPlan(),
-          subscriptionApi.getPaymentHistory(),
-        ]);
-        setPlanInfo(plan);
-        setPayments(history);
-      } catch (error) {
-        console.error('Failed to fetch subscription info:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    refreshData().catch(console.error).finally(() => setLoading(false));
   }, []);
 
   // Handle redirect dari Midtrans
@@ -68,19 +94,18 @@ export default function SubscriptionPage() {
     const paymentStatus = searchParams.get('payment');
     if (paymentStatus === 'finish') {
       toast.success('Pembayaran berhasil! Plan Business aktif.');
-      subscriptionApi.getMyPlan().then(setPlanInfo);
-      subscriptionApi.getPaymentHistory().then(setPayments);
+      refreshData();
     } else if (paymentStatus === 'unfinish') {
-      toast.info('Pembayaran belum selesai. Anda bisa melanjutkan kapan saja.');
+      toast.info('Pembayaran belum selesai. Silakan coba lagi kapan saja.');
     } else if (paymentStatus === 'error') {
       toast.error('Pembayaran gagal. Silakan coba lagi.');
     }
   }, [searchParams]);
 
-  // Handle upgrade
+  // Handle upgrade / retry payment
   const handleUpgrade = async () => {
     if (!isLoaded) {
-      toast.error('Sistem pembayaran sedang dimuat...');
+      toast.error('Sistem pembayaran sedang dimuat, tunggu sebentar...');
       return;
     }
 
@@ -91,16 +116,16 @@ export default function SubscriptionPage() {
       pay(response.token, {
         onSuccess: () => {
           toast.success('Pembayaran berhasil! Plan Business aktif.');
-          subscriptionApi.getMyPlan().then(setPlanInfo);
-          subscriptionApi.getPaymentHistory().then(setPayments);
+          refreshData();
           setUpgrading(false);
         },
         onPending: () => {
-          toast.info('Silakan selesaikan pembayaran Anda.');
+          toast.info('Selesaikan pembayaran sesuai instruksi yang diberikan.');
+          refreshData();
           setUpgrading(false);
         },
         onError: () => {
-          toast.error('Pembayaran gagal.');
+          toast.error('Pembayaran gagal. Silakan coba lagi.');
           setUpgrading(false);
         },
         onClose: () => {
@@ -113,6 +138,20 @@ export default function SubscriptionPage() {
     }
   };
 
+  // Handle cancel subscription
+  const handleCancel = async () => {
+    setCancelling(true);
+    try {
+      await subscriptionApi.cancelSubscription();
+      toast.success('Langganan dibatalkan. Akses Business tetap aktif sampai akhir periode.');
+      refreshData();
+    } catch (error: any) {
+      toast.error(error.message || 'Gagal membatalkan langganan');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -121,9 +160,16 @@ export default function SubscriptionPage() {
     );
   }
 
-  const isStarter = planInfo?.subscription.plan === 'STARTER';
-  const isBusiness = planInfo?.subscription.plan === 'BUSINESS';
-  const isExpired = isBusiness && planInfo?.subscription.status === 'EXPIRED';
+  const plan = planInfo?.subscription.plan;
+  const status = planInfo?.subscription.status;
+  const isStarter = plan === 'STARTER';
+  const isBusiness = plan === 'BUSINESS';
+  const isActive = status === 'ACTIVE';
+  const isCancelled = status === 'CANCELLED';
+  const isExpired = status === 'EXPIRED';
+  const periodEnd = planInfo?.subscription.currentPeriodEnd;
+  const showUpgrade = isStarter || isExpired;
+  const showCancel = isBusiness && isActive && !planInfo?.subscription.cancelledAt;
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
@@ -131,6 +177,34 @@ export default function SubscriptionPage() {
         <h1 className="text-2xl font-bold">Langganan</h1>
         <p className="text-muted-foreground">Kelola plan dan pembayaran Anda</p>
       </div>
+
+      {/* Cancellation Notice */}
+      {isBusiness && isCancelled && periodEnd && (
+        <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-950/20">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <AlertTriangle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-medium text-sm">Langganan dibatalkan</p>
+                <p className="text-sm text-muted-foreground">
+                  Akses Business Anda tetap aktif sampai <strong>{formatDate(periodEnd)}</strong>.
+                  Setelah itu, akun akan kembali ke plan Starter.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="mt-2"
+                  onClick={handleUpgrade}
+                  disabled={upgrading}
+                >
+                  {upgrading && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+                  Perpanjang Langganan
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Current Plan Card */}
       <Card>
@@ -143,7 +217,7 @@ export default function SubscriptionPage() {
                 <Crown className="h-6 w-6 text-primary" />
               )}
               <div>
-                <CardTitle>Plan {planInfo?.subscription.plan}</CardTitle>
+                <CardTitle>Plan {plan}</CardTitle>
                 <CardDescription>
                   {isStarter
                     ? 'Gratis selamanya'
@@ -151,8 +225,17 @@ export default function SubscriptionPage() {
                 </CardDescription>
               </div>
             </div>
-            <Badge variant={isBusiness && !isExpired ? 'default' : 'secondary'}>
-              {planInfo?.subscription.status}
+            <Badge
+              variant={
+                isBusiness && isActive ? 'default' :
+                isCancelled ? 'outline' :
+                'secondary'
+              }
+            >
+              {isActive && 'Aktif'}
+              {isCancelled && 'Dibatalkan'}
+              {isExpired && 'Kedaluwarsa'}
+              {!isActive && !isCancelled && !isExpired && status}
             </Badge>
           </div>
         </CardHeader>
@@ -186,41 +269,69 @@ export default function SubscriptionPage() {
           </div>
 
           {/* Business Period */}
-          {isBusiness && planInfo?.subscription.currentPeriodEnd && (
+          {isBusiness && periodEnd && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               <span>
-                Aktif sampai:{' '}
-                {new Date(planInfo.subscription.currentPeriodEnd).toLocaleDateString('id-ID', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
+                {isCancelled ? 'Akses aktif sampai: ' : 'Berlaku sampai: '}
+                {formatDate(periodEnd)}
               </span>
             </div>
           )}
 
           {/* Upgrade Button */}
-          {isStarter && (
+          {showUpgrade && (
             <Button onClick={handleUpgrade} disabled={upgrading} className="w-full" size="lg">
               {upgrading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Crown className="mr-2 h-4 w-4" />
-              Upgrade ke Business - Rp 100.000/bulan
+              {isExpired ? 'Aktifkan Kembali Business' : 'Upgrade ke Business'} - Rp 100.000/bulan
             </Button>
           )}
 
-          {/* Renew Button (kalau expired) */}
-          {isExpired && (
-            <Button onClick={handleUpgrade} disabled={upgrading} className="w-full" size="lg">
-              {upgrading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Perpanjang Business Plan
-            </Button>
+          {/* Cancel Button */}
+          {showCancel && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="ghost" size="sm" className="w-full text-muted-foreground">
+                  Batalkan langganan
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Batalkan Langganan Business?</AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-3">
+                    <span className="block">
+                      Akses Business Anda tetap aktif sampai akhir periode ({periodEnd ? formatDate(periodEnd) : '-'}).
+                      Setelah itu, akun akan kembali ke plan Starter.
+                    </span>
+                    <span className="block flex items-start gap-2 rounded-md border p-3 text-foreground">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0" />
+                      <span className="text-xs">
+                        Tidak ada pengembalian dana untuk periode yang sedang berjalan.
+                        Anda bisa menggunakan semua fitur Business sampai periode berakhir.
+                      </span>
+                    </span>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Tetap Berlangganan</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleCancel}
+                    disabled={cancelling}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {cancelling && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Ya, Batalkan
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </CardContent>
       </Card>
 
       {/* Plan Comparison */}
-      {(isStarter || isExpired) && (
+      {showUpgrade && (
         <Card>
           <CardHeader>
             <CardTitle>Kenapa Upgrade?</CardTitle>
@@ -245,7 +356,7 @@ export default function SubscriptionPage() {
                       row.starter ? (
                         <Check className="h-4 w-4 text-green-500" />
                       ) : (
-                        <X className="h-4 w-4 text-red-400" />
+                        <span className="text-muted-foreground">-</span>
                       )
                     ) : (
                       <span className="text-muted-foreground">{row.starter}</span>
@@ -265,13 +376,18 @@ export default function SubscriptionPage() {
         </Card>
       )}
 
-      {/* Payment Methods Info */}
-      {(isStarter || isExpired) && (
-        <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
-          <ShieldCheck className="h-4 w-4 text-green-500" />
-          <span>
-            Bank Transfer, GoPay, ShopeePay, QRIS, Kartu Kredit - diproses aman oleh Midtrans
-          </span>
+      {/* Payment Methods + Policy */}
+      {showUpgrade && (
+        <div className="space-y-2 text-center">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
+            <ShieldCheck className="h-4 w-4 text-green-500" />
+            <span>
+              Bank Transfer, GoPay, ShopeePay, QRIS, Kartu Kredit - diproses aman oleh Midtrans
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Bisa dibatalkan kapan saja. Tidak ada pengembalian dana untuk periode berjalan.
+          </p>
         </div>
       )}
 
@@ -286,37 +402,40 @@ export default function SubscriptionPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {payments.map((payment) => (
-                <div
-                  key={payment.id}
-                  className="flex items-center justify-between border-b pb-3 last:border-0"
-                >
-                  <div>
-                    <p className="text-sm font-medium">
-                      Business Plan -{' '}
-                      {new Date(payment.periodStart).toLocaleDateString('id-ID', {
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {new Date(payment.createdAt).toLocaleDateString('id-ID')}
-                      {payment.paymentType && ` - ${payment.paymentType}`}
-                    </p>
+              {payments.map((payment) => {
+                const statusInfo = PAYMENT_STATUS_LABELS[payment.paymentStatus] || {
+                  label: payment.paymentStatus,
+                  variant: 'secondary' as const,
+                };
+                return (
+                  <div
+                    key={payment.id}
+                    className="flex items-center justify-between border-b pb-3 last:border-0"
+                  >
+                    <div>
+                      <p className="text-sm font-medium">
+                        Business Plan -{' '}
+                        {new Date(payment.periodStart).toLocaleDateString('id-ID', {
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(payment.createdAt).toLocaleDateString('id-ID')}
+                        {payment.paymentType && ` - ${payment.paymentType}`}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">
+                        Rp {payment.amount.toLocaleString('id-ID')}
+                      </p>
+                      <Badge variant={statusInfo.variant} className="text-xs">
+                        {statusInfo.label}
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">
-                      Rp {payment.amount.toLocaleString('id-ID')}
-                    </p>
-                    <Badge
-                      variant={payment.paymentStatus === 'settlement' ? 'default' : 'secondary'}
-                      className="text-xs"
-                    >
-                      {payment.paymentStatus === 'settlement' ? 'Lunas' : payment.paymentStatus}
-                    </Badge>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>

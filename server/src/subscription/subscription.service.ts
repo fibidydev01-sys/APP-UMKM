@@ -1,6 +1,7 @@
 import {
   Injectable,
   Logger,
+  BadRequestException,
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
@@ -158,5 +159,38 @@ export class SubscriptionService {
       orderBy: { createdAt: 'desc' },
       take: 20,
     });
+  }
+
+  /**
+   * Cancel subscription.
+   * - Akses Business tetap aktif sampai currentPeriodEnd
+   * - Setelah expired, otomatis turun ke STARTER
+   * - NO REFUND
+   */
+  async cancelSubscription(tenantId: string, reason?: string) {
+    const subscription = await this.getSubscription(tenantId);
+
+    if (subscription.plan !== 'BUSINESS') {
+      throw new BadRequestException('Tidak ada langganan aktif yang bisa dibatalkan.');
+    }
+
+    if (subscription.cancelledAt) {
+      throw new BadRequestException('Langganan sudah dalam proses pembatalan.');
+    }
+
+    const updated = await this.prisma.subscription.update({
+      where: { tenantId },
+      data: {
+        status: 'CANCELLED',
+        cancelledAt: new Date(),
+        cancelReason: reason || 'Dibatalkan oleh user',
+      },
+    });
+
+    this.logger.log(
+      `Tenant ${tenantId} cancelled BUSINESS. Access until ${updated.currentPeriodEnd?.toISOString()}`,
+    );
+
+    return updated;
   }
 }

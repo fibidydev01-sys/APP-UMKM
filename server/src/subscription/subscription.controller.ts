@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 import { CurrentTenant } from '../common/decorators/tenant.decorator';
@@ -25,5 +25,18 @@ export class SubscriptionController {
   @UseGuards(JwtAuthGuard)
   async getPaymentHistory(@CurrentTenant('id') tenantId: string) {
     return this.subscriptionService.getPaymentHistory(tenantId);
+  }
+
+  /**
+   * Cancel subscription (no refund, access until period end)
+   * POST /api/subscription/cancel
+   */
+  @Post('cancel')
+  @UseGuards(JwtAuthGuard)
+  async cancelSubscription(
+    @CurrentTenant('id') tenantId: string,
+    @Body('reason') reason?: string,
+  ) {
+    return this.subscriptionService.cancelSubscription(tenantId, reason);
   }
 }

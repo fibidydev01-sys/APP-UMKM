@@ -61,28 +61,14 @@ export class MidtransService {
       }
     }
 
-    // 3. Check existing pending payment (reuse snap token kalau masih valid)
-    const existingPending = await this.prisma.subscriptionPayment.findFirst({
+    // 3. Expire all old pending payments, then create fresh
+    await this.prisma.subscriptionPayment.updateMany({
       where: { tenantId, paymentStatus: 'pending' },
-      orderBy: { createdAt: 'desc' },
+      data: { paymentStatus: 'expire' },
     });
 
-    if (existingPending?.snapToken) {
-      const tokenAge = Date.now() - existingPending.createdAt.getTime();
-      const isExpired = tokenAge > 24 * 60 * 60 * 1000; // 24 jam
-
-      if (!isExpired) {
-        return {
-          token: existingPending.snapToken,
-          redirect_url: existingPending.snapRedirectUrl,
-          payment_id: existingPending.id,
-          order_id: existingPending.midtransOrderId,
-        };
-      }
-    }
-
     // 4. Pricing
-    const price = parseInt(this.configService.get('SUBSCRIPTION_BUSINESS_PRICE', '149000'));
+    const price = parseInt(this.configService.get('SUBSCRIPTION_BUSINESS_PRICE', '100000'));
     const periodDays = parseInt(this.configService.get('SUBSCRIPTION_BUSINESS_PERIOD_DAYS', '30'));
 
     // 5. Generate unique order ID

@@ -20,6 +20,8 @@ export interface SubscriptionInfo {
     currentPeriodEnd: string | null;
     priceAmount: number;
     currency: string;
+    cancelledAt: string | null;
+    cancelReason: string | null;
   };
   limits: PlanLimits;
   usage: {
@@ -74,6 +76,13 @@ export const subscriptionApi = {
    * POST /api/payment/subscribe
    */
   createUpgradePayment: () => api.post<CreatePaymentResponse>('/payment/subscribe'),
+
+  /**
+   * Cancel subscription (no refund, access until period end)
+   * POST /api/subscription/cancel
+   */
+  cancelSubscription: (reason?: string) =>
+    api.post('/subscription/cancel', reason ? { reason } : undefined),
 
   /**
    * Get Midtrans client key
