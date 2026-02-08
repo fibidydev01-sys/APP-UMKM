@@ -86,11 +86,6 @@ const navigation: NavGroup[] = [
         href: '/dashboard/bookmarks',
         icon: Bookmark,
       },
-      {
-        title: 'Langganan',
-        href: '/dashboard/subscription',
-        icon: CreditCard,
-      },
     ],
   },
 ];
@@ -223,15 +218,15 @@ export function DashboardSidebar() {
                 sideOffset={4}
               >
                 <DropdownMenuItem asChild>
-                  <Link href="/dashboard/subscription">
-                    <CreditCard className="mr-3 h-5 w-5" />
-                    Langganan
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
                   <Link href="/settings">
                     <Settings className="mr-3 h-5 w-5" />
                     Pengaturan
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/subscription">
+                    <CreditCard className="mr-3 h-5 w-5" />
+                    Langganan
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

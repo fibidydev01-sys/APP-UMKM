@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Store,
   Layers,
+  CreditCard,
   LogOut,
   Menu,
   Moon,
@@ -65,6 +66,11 @@ const navigation: NavGroup[] = [
         title: 'Channels',
         href: '/settings/channels',
         icon: Layers,
+      },
+      {
+        title: 'Langganan',
+        href: '/dashboard/subscription',
+        icon: CreditCard,
       },
     ],
   },

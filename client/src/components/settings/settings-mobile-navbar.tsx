@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import {
   Store,
   Layers,
+  CreditCard,
   Menu,
   Home,
   Sun,
@@ -37,6 +38,11 @@ const navItems = [
     href: '/settings/channels',
     icon: Layers,
     label: 'Channels',
+  },
+  {
+    href: '/dashboard/subscription',
+    icon: CreditCard,
+    label: 'Langganan',
   },
 ];
 
