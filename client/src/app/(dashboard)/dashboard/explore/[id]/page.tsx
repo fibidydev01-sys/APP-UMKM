@@ -362,13 +362,12 @@ export default function FeedDetailPage({ params }: { params: Promise<{ id: strin
               <p className="text-sm text-muted-foreground line-through">{formatPrice(feed.product.comparePrice)}</p>
             )}
           </div>
-          {/* WhatsApp Order - consistent with store page */}
+          {/* WhatsApp Order - consistent with FeedPreviewDrawer */}
           {feed.tenant.whatsapp && (
             <WhatsAppOrderButton
               product={feed.product}
               tenant={feed.tenant}
-              size="sm"
-              className="mt-2"
+              className="w-full mt-4"
             />
           )}
         </div>
