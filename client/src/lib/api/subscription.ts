@@ -8,7 +8,6 @@ export interface PlanLimits {
   maxProducts: number;
   maxCustomers: number;
   componentBlockVariants: number;
-  advancedOrderTracking: boolean;
   whatsappAutoReply: boolean;
 }
 
