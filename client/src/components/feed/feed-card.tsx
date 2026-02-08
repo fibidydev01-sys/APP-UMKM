@@ -497,8 +497,8 @@ export function FeedCard({ feed, currentTenantId, onDelete, onUpdate, onCardClic
           <Share2 className="h-4 w-4" />
         </Button>
 
-        {/* WhatsApp Button - only show for non-owners when tenant has WA */}
-        {!isOwner && feed.tenant.whatsapp && (
+        {/* WhatsApp Button - show when tenant has WA number */}
+        {feed.tenant.whatsapp && (
           <Button
             variant="ghost"
             size="sm"

@@ -554,7 +554,7 @@ export function FeedPreviewDrawer({
                     </Button>
 
                     {/* WhatsApp Button */}
-                    {!isOwner && feed.tenant.whatsapp && (
+                    {feed.tenant.whatsapp && (
                       <Button
                         variant="ghost"
                         size="sm"
