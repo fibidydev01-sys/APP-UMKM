@@ -11,22 +11,16 @@ export const PLAN_LIMITS = {
   STARTER: {
     maxProducts: 50,
     maxCustomers: 200,
-    customDomain: false,
-    removeBranding: false,
-    advancedReports: false,
-    exportData: false,
-    customReceipt: false,
-    prioritySupport: false,
+    componentBlockVariants: 10,
+    advancedOrderTracking: false,
+    whatsappAutoReply: false,
   },
   BUSINESS: {
     maxProducts: Infinity,
     maxCustomers: Infinity,
-    customDomain: true,
-    removeBranding: true,
-    advancedReports: true,
-    exportData: true,
-    customReceipt: true,
-    prioritySupport: true,
+    componentBlockVariants: 50,
+    advancedOrderTracking: true,
+    whatsappAutoReply: true,
   },
 } as const;
 

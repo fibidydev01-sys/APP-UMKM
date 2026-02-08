@@ -7,12 +7,9 @@ import { api } from './client';
 export interface PlanLimits {
   maxProducts: number;
   maxCustomers: number;
-  customDomain: boolean;
-  removeBranding: boolean;
-  advancedReports: boolean;
-  exportData: boolean;
-  customReceipt: boolean;
-  prioritySupport: boolean;
+  componentBlockVariants: number;
+  advancedOrderTracking: boolean;
+  whatsappAutoReply: boolean;
 }
 
 export interface SubscriptionInfo {

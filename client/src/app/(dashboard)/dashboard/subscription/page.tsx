@@ -28,12 +28,10 @@ import { useSnapPayment } from '@/hooks/use-snap-payment';
 const PLAN_FEATURES = [
   { feature: 'Produk/Layanan', starter: 'Max 50', business: 'Unlimited' },
   { feature: 'Pelanggan/Klien', starter: 'Max 200', business: 'Unlimited' },
-  { feature: 'Custom Domain', starter: false, business: true },
-  { feature: 'Hapus Branding Fibidy', starter: false, business: true },
-  { feature: 'Laporan Lengkap', starter: false, business: true },
-  { feature: 'Export Data', starter: false, business: true },
-  { feature: 'Struk Custom + Logo', starter: false, business: true },
-  { feature: 'Support Prioritas', starter: false, business: true },
+  { feature: 'Landing Page', starter: 'Subdomain gratis', business: 'Subdomain gratis' },
+  { feature: 'Component Blocks', starter: '10 variants', business: '50+ variants + update' },
+  { feature: 'Order Management', starter: 'Basic', business: 'Advanced' },
+  { feature: 'WhatsApp Integration', starter: 'Connect', business: 'Connect + Auto-reply' },
 ] as const;
 
 export default function SubscriptionPage() {
@@ -208,7 +206,7 @@ export default function SubscriptionPage() {
             <Button onClick={handleUpgrade} disabled={upgrading} className="w-full" size="lg">
               {upgrading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Crown className="mr-2 h-4 w-4" />
-              Upgrade ke Business - Rp 149.000/bulan
+              Upgrade ke Business - Rp 100.000/bulan
             </Button>
           )}
 
