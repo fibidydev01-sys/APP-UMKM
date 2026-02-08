@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { MessageCircle, Minus, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { formatPrice, generateWhatsAppLink } from '@/lib/format';
-import type { PublicTenant, PaymentMethods } from '@/types';
+import type { PaymentMethods } from '@/types';
 
 interface Product {
   id: string;
@@ -27,12 +27,20 @@ interface Product {
   trackStock?: boolean;
 }
 
+interface OrderTenant {
+  name: string;
+  whatsapp?: string;
+  taxRate?: number;
+  paymentMethods?: PaymentMethods;
+}
+
 interface WhatsAppOrderButtonProps {
   product: Product;
-  tenant: PublicTenant;
+  tenant: OrderTenant;
   className?: string;
-  variant?: 'default' | 'secondary' | 'outline';
+  variant?: 'default' | 'secondary' | 'outline' | 'ghost';
   size?: 'default' | 'sm' | 'lg' | 'icon';
+  children?: ReactNode;
 }
 
 export function WhatsAppOrderButton({
@@ -41,6 +49,7 @@ export function WhatsAppOrderButton({
   className,
   variant = 'default',
   size = 'default',
+  children,
 }: WhatsAppOrderButtonProps) {
   const [open, setOpen] = useState(false);
   const [qty, setQty] = useState(1);
@@ -136,8 +145,12 @@ Terima kasih! 🙏`;
           className={className}
           disabled={isOutOfStock}
         >
-          <MessageCircle className="mr-2 h-4 w-4" />
-          {isOutOfStock ? 'Stok Habis' : 'Pesan via WhatsApp'}
+          {children || (
+            <>
+              <MessageCircle className="mr-2 h-4 w-4" />
+              {isOutOfStock ? 'Stok Habis' : 'Pesan via WhatsApp'}
+            </>
+          )}
         </Button>
       </DialogTrigger>
 
