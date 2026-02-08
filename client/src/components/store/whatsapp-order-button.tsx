@@ -154,19 +154,22 @@ Terima kasih! 🙏`;
           className={cn(
             'fixed bottom-0 left-0 right-0 z-[10000]',
             'bg-background rounded-t-[20px]',
-            'max-h-[92vh] outline-none',
+            'h-[85vh] outline-none',
             'flex flex-col',
           )}
+          aria-describedby="wa-order-drawer-description"
         >
-          <VisuallyHidden.Root>
-            <Drawer.Title>Pesan {product.name}</Drawer.Title>
-            <Drawer.Description>
+          <Drawer.Title asChild>
+            <VisuallyHidden.Root>Pesan {product.name}</VisuallyHidden.Root>
+          </Drawer.Title>
+          <Drawer.Description asChild>
+            <VisuallyHidden.Root id="wa-order-drawer-description">
               Lengkapi detail pesanan untuk dikirim ke {tenant.name}
-            </Drawer.Description>
-          </VisuallyHidden.Root>
+            </VisuallyHidden.Root>
+          </Drawer.Description>
 
-          {/* Handle bar */}
-          <div className="flex justify-center pt-3 pb-1">
+          {/* Drag Handle */}
+          <div className="flex justify-center pt-3 pb-2 shrink-0">
             <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
           </div>
 
