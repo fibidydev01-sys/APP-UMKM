@@ -30,7 +30,7 @@ const PLAN_FEATURES = [
   { feature: 'Pelanggan/Klien', starter: 'Max 200', business: 'Unlimited' },
   { feature: 'Landing Page', starter: 'Subdomain gratis', business: 'Subdomain gratis' },
   { feature: 'Component Blocks', starter: '10 variants', business: '50+ variants + update' },
-  { feature: 'WhatsApp Integration', starter: 'Connect', business: 'Connect + Auto-reply' },
+  { feature: 'WhatsApp Integration', starter: 'Connect + Auto-reply', business: 'Connect + Auto-reply' },
 ] as const;
 
 export default function SubscriptionPage() {

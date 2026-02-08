@@ -12,13 +12,11 @@ export const PLAN_LIMITS = {
     maxProducts: 50,
     maxCustomers: 200,
     componentBlockVariants: 10,
-    whatsappAutoReply: false,
   },
   BUSINESS: {
     maxProducts: Infinity,
     maxCustomers: Infinity,
     componentBlockVariants: 50,
-    whatsappAutoReply: true,
   },
 } as const;
 
