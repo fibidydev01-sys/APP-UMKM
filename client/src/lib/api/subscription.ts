@@ -18,6 +18,8 @@ export interface SubscriptionInfo {
     status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'PAST_DUE';
     currentPeriodStart: string | null;
     currentPeriodEnd: string | null;
+    isTrial: boolean;
+    trialEndsAt: string | null;
     priceAmount: number;
     currency: string;
     cancelledAt: string | null;

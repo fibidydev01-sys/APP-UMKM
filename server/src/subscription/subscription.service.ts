@@ -14,7 +14,8 @@ export class SubscriptionService {
   constructor(private readonly prisma: PrismaService) {}
 
   /**
-   * Get subscription tenant (auto-create Starter kalau belum ada)
+   * Get subscription tenant.
+   * New user → BUSINESS trial 30 hari (gratis, tanpa kartu kredit).
    */
   async getSubscription(tenantId: string) {
     let subscription = await this.prisma.subscription.findUnique({
@@ -22,25 +23,84 @@ export class SubscriptionService {
     });
 
     if (!subscription) {
+      const now = new Date();
+      const trialEnd = new Date(now);
+      trialEnd.setDate(trialEnd.getDate() + 30);
+
       subscription = await this.prisma.subscription.create({
         data: {
           tenantId,
-          plan: 'STARTER',
+          plan: 'BUSINESS',
           status: 'ACTIVE',
+          isTrial: true,
+          trialEndsAt: trialEnd,
+          currentPeriodStart: now,
+          currentPeriodEnd: trialEnd,
           priceAmount: 0,
         },
       });
+
+      this.logger.log(
+        `New tenant ${tenantId} → BUSINESS trial until ${trialEnd.toISOString()}`,
+      );
     }
 
     return subscription;
   }
 
   /**
-   * Get plan info + usage counts
+   * Auto-downgrade ke STARTER kalau trial/period sudah habis.
+   * Dipanggil sebelum return data ke user.
+   */
+  private async autoDowngradeIfExpired(tenantId: string) {
+    const subscription = await this.prisma.subscription.findUnique({
+      where: { tenantId },
+    });
+
+    if (!subscription || subscription.plan !== 'BUSINESS') return subscription;
+
+    const now = new Date();
+    const isExpired = subscription.currentPeriodEnd && subscription.currentPeriodEnd < now;
+    const isTrialExpired = subscription.isTrial && subscription.trialEndsAt && subscription.trialEndsAt < now;
+
+    if (isExpired || isTrialExpired) {
+      const updated = await this.prisma.subscription.update({
+        where: { tenantId },
+        data: {
+          plan: 'STARTER',
+          status: 'ACTIVE',
+          isTrial: false,
+          trialEndsAt: null,
+          currentPeriodStart: null,
+          currentPeriodEnd: null,
+          priceAmount: 0,
+          cancelledAt: null,
+          cancelReason: null,
+        },
+      });
+
+      this.logger.log(
+        `Tenant ${tenantId} auto-downgraded to STARTER (${isTrialExpired ? 'trial expired' : 'period expired'})`,
+      );
+
+      return updated;
+    }
+
+    return subscription;
+  }
+
+  /**
+   * Get plan info + usage counts.
+   * Auto-downgrade kalau trial/period expired.
    */
   async getPlanInfo(tenantId: string) {
-    const subscription = await this.getSubscription(tenantId);
-    const limits = PLAN_LIMITS[subscription.plan];
+    // Ensure subscription exists (creates trial for new users)
+    await this.getSubscription(tenantId);
+
+    // Check and auto-downgrade if expired
+    const subscription = await this.autoDowngradeIfExpired(tenantId);
+    const plan = subscription!.plan;
+    const limits = PLAN_LIMITS[plan];
 
     const [productCount, customerCount] = await Promise.all([
       this.prisma.product.count({ where: { tenantId } }),
@@ -62,16 +122,17 @@ export class SubscriptionService {
   }
 
   /**
-   * Cek apakah tenant boleh pakai fitur tertentu
+   * Cek apakah tenant boleh pakai fitur tertentu.
+   * Auto-downgrade dulu kalau expired.
    */
   async checkFeatureAccess(tenantId: string, feature: PlanFeature): Promise<boolean> {
-    const subscription = await this.getSubscription(tenantId);
+    await this.getSubscription(tenantId);
+    const subscription = await this.autoDowngradeIfExpired(tenantId);
 
-    if (subscription.plan === 'BUSINESS') {
-      if (subscription.status !== 'ACTIVE') return false;
-      if (subscription.currentPeriodEnd && subscription.currentPeriodEnd < new Date()) {
-        return false;
-      }
+    if (!subscription) return false;
+
+    if (subscription.plan === 'BUSINESS' && subscription.status !== 'ACTIVE') {
+      return false;
     }
 
     return !!PLAN_LIMITS[subscription.plan][feature];
@@ -82,7 +143,8 @@ export class SubscriptionService {
    * Throw error kalau sudah mentok.
    */
   async checkProductLimit(tenantId: string) {
-    const subscription = await this.getSubscription(tenantId);
+    await this.getSubscription(tenantId);
+    const subscription = (await this.autoDowngradeIfExpired(tenantId))!;
     const limit = PLAN_LIMITS[subscription.plan].maxProducts;
 
     if (limit === Infinity) return;
@@ -100,7 +162,8 @@ export class SubscriptionService {
    * Cek limit customer sebelum create.
    */
   async checkCustomerLimit(tenantId: string) {
-    const subscription = await this.getSubscription(tenantId);
+    await this.getSubscription(tenantId);
+    const subscription = (await this.autoDowngradeIfExpired(tenantId))!;
     const limit = PLAN_LIMITS[subscription.plan].maxCustomers;
 
     if (limit === Infinity) return;
@@ -115,7 +178,8 @@ export class SubscriptionService {
   }
 
   /**
-   * Activate Business plan (dipanggil setelah payment success via webhook)
+   * Activate Business plan (dipanggil setelah payment success via webhook).
+   * Clear trial flags - ini sekarang paid BUSINESS.
    */
   async activateBusinessPlan(tenantId: string, periodDays: number, price: number) {
     const now = new Date();
@@ -138,13 +202,15 @@ export class SubscriptionService {
         currentPeriodStart: now,
         currentPeriodEnd: periodEnd,
         priceAmount: price,
+        isTrial: false,
+        trialEndsAt: null,
         cancelledAt: null,
         cancelReason: null,
       },
     });
 
     this.logger.log(
-      `Tenant ${tenantId} upgraded to BUSINESS until ${periodEnd.toISOString()}`,
+      `Tenant ${tenantId} upgraded to BUSINESS (paid) until ${periodEnd.toISOString()}`,
     );
 
     return subscription;
@@ -162,9 +228,9 @@ export class SubscriptionService {
   }
 
   /**
-   * Cancel subscription.
-   * - Akses Business tetap aktif sampai currentPeriodEnd
-   * - Setelah expired, otomatis turun ke STARTER
+   * Cancel subscription / trial.
+   * - Akses Business tetap aktif sampai currentPeriodEnd / trialEndsAt
+   * - Setelah expired, otomatis turun ke STARTER (via autoDowngradeIfExpired)
    * - NO REFUND
    */
   async cancelSubscription(tenantId: string, reason?: string) {
@@ -178,17 +244,21 @@ export class SubscriptionService {
       throw new BadRequestException('Langganan sudah dalam proses pembatalan.');
     }
 
+    const defaultReason = subscription.isTrial
+      ? 'Trial dibatalkan oleh user'
+      : 'Dibatalkan oleh user';
+
     const updated = await this.prisma.subscription.update({
       where: { tenantId },
       data: {
         status: 'CANCELLED',
         cancelledAt: new Date(),
-        cancelReason: reason || 'Dibatalkan oleh user',
+        cancelReason: reason || defaultReason,
       },
     });
 
     this.logger.log(
-      `Tenant ${tenantId} cancelled BUSINESS. Access until ${updated.currentPeriodEnd?.toISOString()}`,
+      `Tenant ${tenantId} cancelled ${subscription.isTrial ? 'TRIAL' : 'BUSINESS'}. Access until ${updated.currentPeriodEnd?.toISOString()}`,
     );
 
     return updated;

@@ -55,7 +55,13 @@ export class MidtransService {
     // 2. Get current subscription
     const subscription = await this.subscriptionService.getSubscription(tenantId);
 
-    if (subscription.plan === 'BUSINESS' && subscription.status === 'ACTIVE') {
+    // Allow payment if: trial user (converting to paid), or expired/cancelled
+    // Block only paid BUSINESS that's still active
+    if (
+      subscription.plan === 'BUSINESS' &&
+      subscription.status === 'ACTIVE' &&
+      !subscription.isTrial
+    ) {
       if (subscription.currentPeriodEnd && subscription.currentPeriodEnd > new Date()) {
         throw new BadRequestException('Subscription Business masih aktif');
       }

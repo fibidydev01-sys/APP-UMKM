@@ -13,6 +13,8 @@ import {
   Receipt,
   AlertTriangle,
   Info,
+  Sparkles,
+  Clock,
 } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -61,6 +63,13 @@ function formatDate(dateStr: string) {
     month: 'long',
     year: 'numeric',
   });
+}
+
+function getDaysRemaining(dateStr: string): number {
+  const end = new Date(dateStr);
+  const now = new Date();
+  const diff = end.getTime() - now.getTime();
+  return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
 }
 
 export default function SubscriptionPage() {
@@ -167,9 +176,12 @@ export default function SubscriptionPage() {
   const isActive = status === 'ACTIVE';
   const isCancelled = status === 'CANCELLED';
   const isExpired = status === 'EXPIRED';
+  const isTrial = planInfo?.subscription.isTrial ?? false;
+  const trialEndsAt = planInfo?.subscription.trialEndsAt;
   const periodEnd = planInfo?.subscription.currentPeriodEnd;
-  const showUpgrade = isStarter || isExpired;
-  const showCancel = isBusiness && isActive && !planInfo?.subscription.cancelledAt;
+  const daysRemaining = trialEndsAt ? getDaysRemaining(trialEndsAt) : periodEnd ? getDaysRemaining(periodEnd) : null;
+  const showUpgrade = isStarter || isExpired || (isBusiness && isTrial);
+  const showCancel = isBusiness && isActive && !isTrial && !planInfo?.subscription.cancelledAt;
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
@@ -177,6 +189,36 @@ export default function SubscriptionPage() {
         <h1 className="text-2xl font-bold">Langganan</h1>
         <p className="text-muted-foreground">Kelola plan dan pembayaran Anda</p>
       </div>
+
+      {/* Trial Banner */}
+      {isTrial && isBusiness && isActive && trialEndsAt && (
+        <Card className="border-primary/50 bg-primary/5">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <Sparkles className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-medium text-sm">
+                  Trial Business Gratis - {daysRemaining} hari tersisa
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Nikmati semua fitur Business sampai <strong>{formatDate(trialEndsAt)}</strong>.
+                  Setelah trial berakhir, akun akan otomatis beralih ke plan Starter.
+                </p>
+                <Button
+                  size="sm"
+                  className="mt-2"
+                  onClick={handleUpgrade}
+                  disabled={upgrading}
+                >
+                  {upgrading && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+                  <Crown className="mr-2 h-3 w-3" />
+                  Upgrade ke Business - Rp 100.000/bulan
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Cancellation Notice */}
       {isBusiness && isCancelled && periodEnd && (
@@ -217,25 +259,33 @@ export default function SubscriptionPage() {
                 <Crown className="h-6 w-6 text-primary" />
               )}
               <div>
-                <CardTitle>Plan {plan}</CardTitle>
+                <CardTitle>
+                  Plan {plan}
+                  {isTrial && ' (Trial)'}
+                </CardTitle>
                 <CardDescription>
                   {isStarter
                     ? 'Gratis selamanya'
-                    : `Rp ${planInfo?.subscription.priceAmount.toLocaleString('id-ID')}/bulan`}
+                    : isTrial
+                      ? 'Trial gratis 30 hari'
+                      : `Rp ${planInfo?.subscription.priceAmount.toLocaleString('id-ID')}/bulan`}
                 </CardDescription>
               </div>
             </div>
             <Badge
               variant={
+                isTrial ? 'outline' :
                 isBusiness && isActive ? 'default' :
                 isCancelled ? 'outline' :
                 'secondary'
               }
             >
-              {isActive && 'Aktif'}
-              {isCancelled && 'Dibatalkan'}
+              {isTrial && isActive && 'Trial'}
+              {isTrial && isCancelled && 'Trial (Dibatalkan)'}
+              {!isTrial && isActive && 'Aktif'}
+              {!isTrial && isCancelled && 'Dibatalkan'}
               {isExpired && 'Kedaluwarsa'}
-              {!isActive && !isCancelled && !isExpired && status}
+              {!isActive && !isCancelled && !isExpired && !isTrial && status}
             </Badge>
           </div>
         </CardHeader>
@@ -268,13 +318,16 @@ export default function SubscriptionPage() {
             </div>
           </div>
 
-          {/* Business Period */}
-          {isBusiness && periodEnd && (
+          {/* Period / Trial countdown */}
+          {isBusiness && (trialEndsAt || periodEnd) && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
+              {isTrial ? <Clock className="h-4 w-4" /> : <Calendar className="h-4 w-4" />}
               <span>
-                {isCancelled ? 'Akses aktif sampai: ' : 'Berlaku sampai: '}
-                {formatDate(periodEnd)}
+                {isTrial
+                  ? `Trial berakhir: ${formatDate(trialEndsAt!)} (${daysRemaining} hari lagi)`
+                  : isCancelled
+                    ? `Akses aktif sampai: ${formatDate(periodEnd!)}`
+                    : `Berlaku sampai: ${formatDate(periodEnd!)}`}
               </span>
             </div>
           )}
@@ -284,7 +337,12 @@ export default function SubscriptionPage() {
             <Button onClick={handleUpgrade} disabled={upgrading} className="w-full" size="lg">
               {upgrading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Crown className="mr-2 h-4 w-4" />
-              {isExpired ? 'Aktifkan Kembali Business' : 'Upgrade ke Business'} - Rp 100.000/bulan
+              {isTrial
+                ? 'Lanjutkan Business'
+                : isExpired
+                  ? 'Aktifkan Kembali Business'
+                  : 'Upgrade ke Business'}{' '}
+              - Rp 100.000/bulan
             </Button>
           )}
 

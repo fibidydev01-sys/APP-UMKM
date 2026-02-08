@@ -655,6 +655,10 @@ model Subscription {
   currentPeriodStart DateTime?          @map("current_period_start")
   currentPeriodEnd   DateTime?          @map("current_period_end")
 
+  // Trial
+  isTrial            Boolean            @default(false) @map("is_trial")
+  trialEndsAt        DateTime?          @map("trial_ends_at")
+
   // Harga saat subscribe (snapshot)
   priceAmount        Float              @default(0) @map("price_amount")
   currency           String             @default("IDR")
