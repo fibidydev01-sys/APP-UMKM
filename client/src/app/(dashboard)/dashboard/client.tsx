@@ -15,9 +15,11 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { cn } from '@/lib/utils';
 import { useTenant } from '@/hooks';
 import { productsApi, customersApi, ordersApi, getErrorMessage } from '@/lib/api';
+import { subscriptionApi, type SubscriptionInfo } from '@/lib/api/subscription';
 import { ProductsTable, ProductsGrid, ProductsGridSkeleton } from '@/components/products';
 import { CustomersTable, CustomersGrid, CustomersGridSkeleton } from '@/components/customers';
 import { OrdersTable, OrdersGrid, OrdersGridSkeleton } from '@/components/orders';
+import { UpgradeModal } from '@/components/dashboard/upgrade-modal';
 
 import type { Product, Customer, OrderListItem } from '@/types';
 
@@ -41,9 +43,26 @@ const TABS = [
 export function DashboardClient() {
   const { tenant } = useTenant();
   const [activeTab, setActiveTab] = useState<TabType>('products');
+  const [planInfo, setPlanInfo] = useState<SubscriptionInfo | null>(null);
+  const [upgradeOpen, setUpgradeOpen] = useState(false);
+  const [upgradeMessage, setUpgradeMessage] = useState('');
+
+  useEffect(() => {
+    subscriptionApi.getMyPlan().then(setPlanInfo).catch(() => {});
+  }, []);
+
+  const showUpgradeModal = (message: string) => {
+    setUpgradeMessage(message);
+    setUpgradeOpen(true);
+  };
 
   return (
     <div>
+      <UpgradeModal
+        open={upgradeOpen}
+        onOpenChange={setUpgradeOpen}
+        description={upgradeMessage}
+      />
       {/* ════════════════════════════════════════════════════════ */}
       {/* PROFILE SECTION - Avatar + Store Info                    */}
       {/* ════════════════════════════════════════════════════════ */}
@@ -116,8 +135,22 @@ export function DashboardClient() {
       {/* TAB CONTENT                                              */}
       {/* ════════════════════════════════════════════════════════ */}
       <div className="mt-6">
-        {activeTab === 'products' && <ProductsTabContent />}
-        {activeTab === 'customers' && <CustomersTabContent />}
+        {activeTab === 'products' && (
+          <ProductsTabContent
+            isAtLimit={planInfo?.isAtLimit?.products}
+            onAtLimit={() => showUpgradeModal(
+              `Batas ${planInfo?.limits.maxProducts} produk tercapai. Upgrade ke Business untuk produk unlimited.`
+            )}
+          />
+        )}
+        {activeTab === 'customers' && (
+          <CustomersTabContent
+            isAtLimit={planInfo?.isAtLimit?.customers}
+            onAtLimit={() => showUpgradeModal(
+              `Batas ${planInfo?.limits.maxCustomers} pelanggan tercapai. Upgrade ke Business untuk pelanggan unlimited.`
+            )}
+          />
+        )}
         {activeTab === 'orders' && <OrdersTabContent />}
       </div>
     </div>
@@ -134,12 +167,14 @@ function TabHeader({
   actionHref,
   actionLabel,
   disabled,
+  onAtLimit,
 }: {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   actionHref: string;
   actionLabel: string;
   disabled?: boolean;
+  onAtLimit?: () => void;
 }) {
   return (
     <div className="flex items-center justify-between mb-6">
@@ -158,6 +193,11 @@ function TabHeader({
 
       {disabled ? (
         <Button disabled>
+          <Plus className="h-4 w-4 mr-2" />
+          {actionLabel}
+        </Button>
+      ) : onAtLimit ? (
+        <Button onClick={onAtLimit}>
           <Plus className="h-4 w-4 mr-2" />
           {actionLabel}
         </Button>
@@ -201,7 +241,7 @@ function ErrorBlock({
 // PRODUCTS TAB CONTENT
 // ══════════════════════════════════════════════════════════════
 
-function ProductsTabContent() {
+function ProductsTabContent({ isAtLimit, onAtLimit }: { isAtLimit?: boolean; onAtLimit?: () => void }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -285,6 +325,7 @@ function ProductsTabContent() {
         onViewModeChange={setViewMode}
         actionHref="/dashboard/products/new"
         actionLabel="Tambah Produk"
+        onAtLimit={isAtLimit ? onAtLimit : undefined}
       />
       {viewMode === 'list' ? (
         <ProductsTable
@@ -308,7 +349,7 @@ function ProductsTabContent() {
 // CUSTOMERS TAB CONTENT
 // ══════════════════════════════════════════════════════════════
 
-function CustomersTabContent() {
+function CustomersTabContent({ isAtLimit, onAtLimit }: { isAtLimit?: boolean; onAtLimit?: () => void }) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -385,6 +426,7 @@ function CustomersTabContent() {
         onViewModeChange={setViewMode}
         actionHref="/dashboard/customers/new"
         actionLabel="Tambah Pelanggan"
+        onAtLimit={isAtLimit ? onAtLimit : undefined}
       />
       {viewMode === 'list' ? (
         <CustomersTable customers={customers} onRefresh={() => fetchData(false)} />
