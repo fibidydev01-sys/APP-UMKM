@@ -174,16 +174,18 @@ Terima kasih! 🙏`;
           </div>
 
           {/* Header */}
-          <div className="px-4 pb-3 border-b">
-            <h3 className="font-semibold text-lg">Pesan {product.name}</h3>
-            <p className="text-sm text-muted-foreground">
-              Lengkapi detail pesanan untuk dikirim ke {tenant.name}
-            </p>
+          <div className="px-6 pb-3 border-b shrink-0">
+            <div className="max-w-2xl mx-auto w-full">
+              <h3 className="font-semibold text-lg">Pesan {product.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                Lengkapi detail pesanan untuk dikirim ke {tenant.name}
+              </p>
+            </div>
           </div>
 
           {/* Scrollable Body */}
-          <div className="flex-1 overflow-y-auto px-4 py-4">
-            <div className="space-y-4">
+          <div className="flex-1 overflow-y-auto">
+            <div className="max-w-2xl mx-auto w-full px-6 py-4 space-y-4">
               {/* Product Info */}
               <div className="rounded-lg bg-muted p-3">
                 <p className="font-medium">{product.name}</p>
@@ -280,18 +282,20 @@ Terima kasih! 🙏`;
           </div>
 
           {/* Sticky Footer */}
-          <div className="border-t p-4 flex gap-2">
-            <Button variant="outline" className="flex-1" onClick={() => setOpen(false)}>
-              Batal
-            </Button>
-            <Button className="flex-1" onClick={handleOrder} disabled={isSubmitting}>
-              {isSubmitting ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <MessageCircle className="mr-2 h-4 w-4" />
-              )}
-              Kirim via WhatsApp
-            </Button>
+          <div className="border-t px-6 py-4 shrink-0">
+            <div className="max-w-2xl mx-auto w-full flex gap-2">
+              <Button variant="outline" className="flex-1" onClick={() => setOpen(false)}>
+                Batal
+              </Button>
+              <Button className="flex-1" onClick={handleOrder} disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <MessageCircle className="mr-2 h-4 w-4" />
+                )}
+                Kirim via WhatsApp
+              </Button>
+            </div>
           </div>
         </Drawer.Content>
       </Drawer.Portal>
