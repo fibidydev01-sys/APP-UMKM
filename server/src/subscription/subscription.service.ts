@@ -118,6 +118,10 @@ export class SubscriptionService {
         products: productCount >= limits.maxProducts,
         customers: customerCount >= limits.maxCustomers,
       },
+      isOverLimit: {
+        products: productCount > limits.maxProducts,
+        customers: customerCount > limits.maxCustomers,
+      },
     };
   }
 

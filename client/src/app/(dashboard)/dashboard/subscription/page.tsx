@@ -182,6 +182,9 @@ export default function SubscriptionPage() {
   const daysRemaining = trialEndsAt ? getDaysRemaining(trialEndsAt) : periodEnd ? getDaysRemaining(periodEnd) : null;
   const showUpgrade = isStarter || isExpired || (isBusiness && isTrial);
   const showCancel = isBusiness && isActive && !isTrial && !planInfo?.subscription.cancelledAt;
+  const overLimitProducts = planInfo?.isOverLimit?.products ?? false;
+  const overLimitCustomers = planInfo?.isOverLimit?.customers ?? false;
+  const hasOverLimit = overLimitProducts || overLimitCustomers;
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto">
@@ -241,6 +244,39 @@ export default function SubscriptionPage() {
                 >
                   {upgrading && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
                   Perpanjang Langganan
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Over-Limit Banner (grandfathered data) */}
+      {isStarter && hasOverLimit && (
+        <Card className="border-destructive/50 bg-destructive/5">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <AlertTriangle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="font-medium text-sm">Data melebihi batas plan Starter</p>
+                <p className="text-sm text-muted-foreground">
+                  {overLimitProducts && overLimitCustomers
+                    ? `Anda memiliki ${planInfo?.usage.products} produk (limit ${planInfo?.limits.maxProducts}) dan ${planInfo?.usage.customers} pelanggan (limit ${planInfo?.limits.maxCustomers}).`
+                    : overLimitProducts
+                      ? `Anda memiliki ${planInfo?.usage.products} produk (limit ${planInfo?.limits.maxProducts}).`
+                      : `Anda memiliki ${planInfo?.usage.customers} pelanggan (limit ${planInfo?.limits.maxCustomers}).`}
+                  {' '}Data yang sudah ada tetap aman, tapi Anda tidak bisa menambah baru.
+                  Upgrade untuk membuka limit.
+                </p>
+                <Button
+                  size="sm"
+                  className="mt-2"
+                  onClick={handleUpgrade}
+                  disabled={upgrading}
+                >
+                  {upgrading && <Loader2 className="mr-2 h-3 w-3 animate-spin" />}
+                  <Crown className="mr-2 h-3 w-3" />
+                  Upgrade ke Business - Rp 100.000/bulan
                 </Button>
               </div>
             </div>

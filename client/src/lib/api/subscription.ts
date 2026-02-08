@@ -34,6 +34,10 @@ export interface SubscriptionInfo {
     products: boolean;
     customers: boolean;
   };
+  isOverLimit: {
+    products: boolean;
+    customers: boolean;
+  };
 }
 
 export interface CreatePaymentResponse {
