@@ -18,10 +18,10 @@ animations, dan sophisticated layouts.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import CardSwap from '@/components/ui/CardSwap';
-import PixelTransition from '@/components/ui/PixelTransition';
-import CircularText from '@/components/ui/CircularText';
-import Magnet from '@/components/ui/Magnet';
+import CardSwap from '@/components/ui/card-swap/CardSwap';
+import PixelTransition from '@/components/ui/pixel-transition/PixelTransition';
+import CircularText from '@/components/ui/circular-text/CircularText';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About31Props {
   title: string;
@@ -171,10 +171,10 @@ export function About31({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import DecayCard from '@/components/ui/DecayCard';
-import GlareHover from '@/components/ui/GlareHover';
-import SplitText from '@/components/ui/SplitText';
-import FadeContent from '@/components/ui/FadeContent';
+import DecayCard from '@/components/ui/decay-card/DecayCard';
+import GlareHover from '@/components/ui/glare-hover/GlareHover';
+import SplitText from '@/components/ui/split-text/SplitText';
+import FadeContent from '@/components/ui/fade-content/FadeContent';
 
 interface About32Props {
   title: string;
@@ -292,10 +292,10 @@ export function About32({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import PixelCard from '@/components/ui/PixelCard';
-import ElectricBorder from '@/components/ui/ElectricBorder';
-import ShinyText from '@/components/ui/ShinyText';
-import AnimatedContent from '@/components/ui/AnimatedContent';
+import PixelCard from '@/components/ui/pixel-card/PixelCard';
+import ElectricBorder from '@/components/ui/electric-border/ElectricBorder';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import AnimatedContent from '@/components/ui/animated-content/AnimatedContent';
 
 interface About33Props {
   title: string;
@@ -432,10 +432,10 @@ export function About33({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ScrollStack, { ScrollStackItem } from '@/components/ui/ScrollStack';
-import LaserFlow from '@/components/ui/LaserFlow';
-import GradientText from '@/components/ui/GradientText';
-import ClickSpark from '@/components/ui/ClickSpark';
+import ScrollStack, { ScrollStackItem } from '@/components/ui/scroll-stack/ScrollStack';
+import LaserFlow from '@/components/ui/laser-flow/LaserFlow';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
 
 interface About34Props {
   title: string;
@@ -582,10 +582,10 @@ export function About34({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Dock from '@/components/ui/Dock';
-import TargetCursor from '@/components/ui/TargetCursor';
-import TrueFocus from '@/components/ui/TrueFocus';
-import Shuffle from '@/components/ui/Shuffle';
+import Dock from '@/components/ui/dock/Dock';
+import TargetCursor from '@/components/ui/target-cursor/TargetCursor';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import Shuffle from '@/components/ui/shuffle/Shuffle';
 
 interface About35Props {
   title: string;

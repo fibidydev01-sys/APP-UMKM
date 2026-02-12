@@ -17,9 +17,9 @@ modern design.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Aurora from '@/components/ui/Aurora';
-import SplitText from '@/components/ui/SplitText';
-import FadeContent from '@/components/ui/FadeContent';
+import Aurora from '@/components/ui/aurora/Aurora';
+import SplitText from '@/components/ui/split-text/SplitText';
+import FadeContent from '@/components/ui/fade-content/FadeContent';
 
 interface About01Props {
   title: string;
@@ -155,10 +155,10 @@ export function About01({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import GradientBlinds from '@/components/ui/GradientBlinds';
-import MagicBento from '@/components/ui/MagicBento';
-import BlurText from '@/components/ui/BlurText';
-import TiltedCard from '@/components/ui/TiltedCard';
+import GradientBlinds from '@/components/ui/gradient-blinds/GradientBlinds';
+import MagicBento from '@/components/ui/magic-bento/MagicBento';
+import BlurText from '@/components/ui/blur-text/BlurText';
+import TiltedCard from '@/components/ui/tilted-card/TiltedCard';
 
 interface About02Props {
   title: string;
@@ -286,10 +286,10 @@ export function About02({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import DotGrid from '@/components/ui/DotGrid';
-import SpotlightCard from '@/components/ui/SpotlightCard';
-import ScrollReveal from '@/components/ui/ScrollReveal';
-import GlareHover from '@/components/ui/GlareHover';
+import DotGrid from '@/components/ui/dot-grid/DotGrid';
+import SpotlightCard from '@/components/ui/spotlight-card/SpotlightCard';
+import ScrollReveal from '@/components/ui/scroll-reveal/ScrollReveal';
+import GlareHover from '@/components/ui/glare-hover/GlareHover';
 
 interface About03Props {
   title: string;
@@ -426,9 +426,9 @@ export function About03({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Particles from '@/components/ui/Particles';
-import Masonry from '@/components/ui/Masonry';
-import ClickSpark from '@/components/ui/ClickSpark';
+import Particles from '@/components/ui/particles/Particles';
+import Masonry from '@/components/ui/masonry/Masonry';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
 
 interface About04Props {
   title: string;
@@ -531,10 +531,10 @@ export function About04({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Threads from '@/components/ui/Threads';
-import CircularGallery from '@/components/ui/CircularGallery';
-import ShinyText from '@/components/ui/ShinyText';
-import ScrollFloat from '@/components/ui/ScrollFloat';
+import Threads from '@/components/ui/threads/Threads';
+import CircularGallery from '@/components/ui/circular-gallery/CircularGallery';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import ScrollFloat from '@/components/ui/scroll-float/ScrollFloat';
 
 interface About05Props {
   title: string;

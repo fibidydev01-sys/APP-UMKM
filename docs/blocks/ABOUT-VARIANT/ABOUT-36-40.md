@@ -18,10 +18,10 @@ experimental layouts, dan creative combinations.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import MagnetLines from '@/components/ui/MagnetLines';
-import BubbleMenu from '@/components/ui/BubbleMenu';
-import BlurText from '@/components/ui/BlurText';
-import GradualBlur from '@/components/ui/GradualBlur';
+import MagnetLines from '@/components/ui/magnet-lines/MagnetLines';
+import BubbleMenu from '@/components/ui/bubble-menu/BubbleMenu';
+import BlurText from '@/components/ui/blur-text/BlurText';
+import GradualBlur from '@/components/ui/gradual-blur/GradualBlur';
 
 interface About36Props {
   title: string;
@@ -207,10 +207,10 @@ export function About36({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import GooeyNav from '@/components/ui/GooeyNav';
-import StickerPeel from '@/components/ui/StickerPeel';
-import ScrollFloat from '@/components/ui/ScrollFloat';
-import DecryptedText from '@/components/ui/DecryptedText';
+import GooeyNav from '@/components/ui/gooey-nav/GooeyNav';
+import StickerPeel from '@/components/ui/sticker-peel/StickerPeel';
+import ScrollFloat from '@/components/ui/scroll-float/ScrollFloat';
+import DecryptedText from '@/components/ui/decrypted-text/DecryptedText';
 
 interface About37Props {
   title: string;
@@ -368,10 +368,10 @@ export function About37({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import FlowingMenu from '@/components/ui/FlowingMenu';
-import ModelViewer from '@/components/ui/ModelViewer';
-import ShinyText from '@/components/ui/ShinyText';
-import FuzzyText from '@/components/ui/FuzzyText';
+import FlowingMenu from '@/components/ui/flowing-menu/FlowingMenu';
+import ModelViewer from '@/components/ui/model-viewer/ModelViewer';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import FuzzyText from '@/components/ui/fuzzy-text/FuzzyText';
 
 interface About38Props {
   title: string;
@@ -522,10 +522,10 @@ export function About38({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import InfiniteMenu from '@/components/ui/InfiniteMenu';
-import GlassIcons from '@/components/ui/GlassIcons';
-import GradientText from '@/components/ui/GradientText';
-import ClickSpark from '@/components/ui/ClickSpark';
+import InfiniteMenu from '@/components/ui/infinite-menu/InfiniteMenu';
+import GlassIcons from '@/components/ui/glass-icons/GlassIcons';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
 
 interface About39Props {
   title: string;
@@ -657,10 +657,10 @@ export function About39({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import CardNav from '@/components/ui/CardNav';
-import Cubes from '@/components/ui/Cubes';
-import TrueFocus from '@/components/ui/TrueFocus';
-import Shuffle from '@/components/ui/Shuffle';
+import CardNav from '@/components/ui/card-nav/CardNav';
+import Cubes from '@/components/ui/cubes/Cubes';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import Shuffle from '@/components/ui/shuffle/Shuffle';
 
 interface About40Props {
   title: string;

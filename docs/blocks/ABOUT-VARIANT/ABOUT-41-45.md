@@ -18,10 +18,10 @@ experimental combinations, dan unique layouts.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import PillNav from '@/components/ui/PillNav';
-import Folder from '@/components/ui/Folder';
-import ASCIIText from '@/components/ui/ASCIIText';
-import BlurText from '@/components/ui/BlurText';
+import PillNav from '@/components/ui/pill-nav/PillNav';
+import Folder from '@/components/ui/folder/Folder';
+import ASCIIText from '@/components/ui/ascii-text/ASCIIText';
+import BlurText from '@/components/ui/blur-text/BlurText';
 
 interface About41Props {
   title: string;
@@ -181,10 +181,10 @@ export function About41({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import StaggeredMenu from '@/components/ui/StaggeredMenu';
-import PixelTrail from '@/components/ui/PixelTrail';
-import ShinyText from '@/components/ui/ShinyText';
-import DecryptedText from '@/components/ui/DecryptedText';
+import StaggeredMenu from '@/components/ui/staggered-menu/StaggeredMenu';
+import PixelTrail from '@/components/ui/pixel-trail/PixelTrail';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import DecryptedText from '@/components/ui/decrypted-text/DecryptedText';
 
 interface About42Props {
   title: string;
@@ -360,10 +360,10 @@ export function About42({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Lanyard from '@/components/ui/Lanyard';
-import AnimatedContent from '@/components/ui/AnimatedContent';
-import GradientText from '@/components/ui/GradientText';
-import SplitText from '@/components/ui/SplitText';
+import Lanyard from '@/components/ui/lanyard/Lanyard';
+import AnimatedContent from '@/components/ui/animated-content/AnimatedContent';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import SplitText from '@/components/ui/split-text/SplitText';
 
 interface About43Props {
   title: string;
@@ -504,10 +504,10 @@ export function About43({
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import FluidGlass from '@/components/ui/FluidGlass';
-import Crosshair from '@/components/ui/Crosshair';
-import TrueFocus from '@/components/ui/TrueFocus';
-import ScrollFloat from '@/components/ui/ScrollFloat';
+import FluidGlass from '@/components/ui/fluid-glass/FluidGlass';
+import Crosshair from '@/components/ui/crosshair/Crosshair';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import ScrollFloat from '@/components/ui/scroll-float/ScrollFloat';
 
 interface About44Props {
   title: string;
@@ -666,10 +666,10 @@ export function About44({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ImageTrail from '@/components/ui/ImageTrail';
-import BlobCursor from '@/components/ui/BlobCursor';
-import ShinyText from '@/components/ui/ShinyText';
-import FuzzyText from '@/components/ui/FuzzyText';
+import ImageTrail from '@/components/ui/image-trail/ImageTrail';
+import BlobCursor from '@/components/ui/blob-cursor/BlobCursor';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import FuzzyText from '@/components/ui/fuzzy-text/FuzzyText';
 
 interface About45Props {
   title: string;
@@ -865,7 +865,7 @@ pnpm dlx shadcn@latest add @react-bits/AnimatedContent-TS-CSS
 <Lanyard position={[0, 0, 24]} gravity={[0, -40, 0]} />
 ```
 
-**Note**: Requires `card.glb` and `lanyard.png` files
+**Note**: Requires `card.glb` and `lanyard.png` files in the appropriate directory
 
 ### ABOUT-44 - Fluid Glass:
 
@@ -879,7 +879,7 @@ pnpm dlx shadcn@latest add @react-bits/AnimatedContent-TS-CSS
 />
 ```
 
-**Note**: Requires 3D model files (lens.glb, bar.glb, cube.glb)
+**Note**: Requires 3D model files (lens.glb, bar.glb, cube.glb) in the appropriate directory
 
 ---
 

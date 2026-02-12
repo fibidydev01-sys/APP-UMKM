@@ -1,4 +1,4 @@
-# Midtrans Integration - Gap Analysis
+# Midtrans Integration - Gap Analysis (UPDATED)
 
 ## Konteks: UMKM Bayar ke Platform untuk Fitur Premium
 
@@ -26,12 +26,23 @@ Model bisnis: **Freemium SaaS** - UMKM daftar gratis (Starter), upgrade ke Busin
 
 **Source:** `client-web/src/components/platform-landing/pricing-section.tsx`
 
-### Yang BELUM Ada (Gap)
+### ✅ Schema SUDAH Ada
+
+Berikut komponen yang **sudah diimplementasikan** di `prisma/schema.prisma`:
+
+| Komponen | Status | Detail |
+|----------|--------|--------|
+| Enum `SubscriptionPlan` | ✅ Sudah ada | `STARTER`, `BUSINESS` |
+| Enum `SubscriptionStatus` | ✅ Sudah ada | `ACTIVE`, `EXPIRED`, `CANCELLED`, `PAST_DUE` |
+| Model `Subscription` | ✅ Sudah ada | Termasuk field `isTrial`, `trialEndsAt`, pricing snapshot, cancellation |
+| Model `SubscriptionPayment` | ✅ Sudah ada | Midtrans fields lengkap (`snapToken`, `snapRedirectUrl`, `vaNumber`, dll) |
+| Relasi di `Tenant` | ✅ Sudah ada | `subscription` (1:1) dan `subscriptionPayments` (1:many) |
+| `Subscription.tenantId` @unique | ✅ Sudah ada | 1 tenant = 1 subscription |
+
+### ❌ Yang BELUM Ada (Gap Tersisa)
 
 | Gap | Detail |
 |-----|--------|
-| Schema subscription | Tidak ada model `Subscription`, `Plan`, atau `Payment` di Prisma |
-| Field plan di Tenant | Tenant model tidak punya field `plan` atau `subscriptionStatus` |
 | Feature gating | Tidak ada guard/middleware yang cek plan sebelum izinkan aksi |
 | Limit enforcement | Limit 50 produk & 200 customer **tidak di-enforce** di backend |
 | Payment infrastructure | Tidak ada integrasi Midtrans atau payment gateway apapun |
@@ -39,9 +50,9 @@ Model bisnis: **Freemium SaaS** - UMKM daftar gratis (Starter), upgrade ke Busin
 
 ---
 
-## 2. SCHEMA YANG PERLU DITAMBAH
+## 2. SCHEMA REVIEW (Kondisi Saat Ini)
 
-### 2a. Enum `SubscriptionPlan`
+### 2a. Enums ✅
 
 ```prisma
 enum SubscriptionPlan {
@@ -57,29 +68,33 @@ enum SubscriptionStatus {
 }
 ```
 
-### 2b. Model `Subscription`
+### 2b. Model `Subscription` ✅
 
-Track subscription aktif per tenant.
+Sudah ada di schema dengan field berikut:
 
 ```prisma
 model Subscription {
   id                 String             @id @default(cuid())
 
-  tenantId           String
+  tenantId           String             @unique  // ✅ 1:1 dengan Tenant
   tenant             Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
   plan               SubscriptionPlan   @default(STARTER)
   status             SubscriptionStatus @default(ACTIVE)
 
-  // Periode
+  // Periode aktif
   currentPeriodStart DateTime?          @map("current_period_start")
   currentPeriodEnd   DateTime?          @map("current_period_end")
 
-  // Pricing snapshot (harga saat subscribe, bisa berubah di kemudian hari)
+  // Trial support ✅ (ada di schema, belum di dokumen sebelumnya)
+  isTrial            Boolean            @default(false) @map("is_trial")
+  trialEndsAt        DateTime?          @map("trial_ends_at")
+
+  // Pricing snapshot
   priceAmount        Float              @default(0) @map("price_amount")
   currency           String             @default("IDR")
 
-  // Metadata
+  // Cancellation
   cancelledAt        DateTime?          @map("cancelled_at")
   cancelReason       String?            @map("cancel_reason")
 
@@ -98,9 +113,9 @@ model Subscription {
 }
 ```
 
-### 2c. Model `SubscriptionPayment`
+### 2c. Model `SubscriptionPayment` ✅
 
-Record setiap pembayaran subscription via Midtrans.
+Sudah ada di schema:
 
 ```prisma
 model SubscriptionPayment {
@@ -112,7 +127,7 @@ model SubscriptionPayment {
   tenantId              String       @map("tenant_id")
   tenant                Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
 
-  // Midtrans
+  // Midtrans identifiers
   midtransOrderId       String       @unique @map("midtrans_order_id")
   midtransTransactionId String?      @unique @map("midtrans_transaction_id")
   snapToken             String?      @map("snap_token")
@@ -122,12 +137,12 @@ model SubscriptionPayment {
   amount                Float
   currency              String       @default("IDR")
 
-  // Payment info
-  paymentType           String?      @map("payment_type")  // bank_transfer, gopay, credit_card, dll
-  bank                  String?                             // bca, bni, mandiri, dll
+  // Payment method detail (dari Midtrans webhook)
+  paymentType           String?      @map("payment_type")
+  bank                  String?
   vaNumber              String?      @map("va_number")
 
-  // Status: pending | settlement | capture | cancel | deny | expire | failure | refund
+  // Status
   paymentStatus         String       @default("pending") @map("payment_status")
   fraudStatus           String?      @map("fraud_status")
 
@@ -135,8 +150,8 @@ model SubscriptionPayment {
   periodStart           DateTime     @map("period_start")
   periodEnd             DateTime     @map("period_end")
 
-  // Metadata
-  rawNotification       Json?        @map("raw_notification")  // Webhook data terakhir
+  // Webhook raw data
+  rawNotification       Json?        @map("raw_notification")
   metadata              Json?
 
   // Timestamps
@@ -153,15 +168,15 @@ model SubscriptionPayment {
 }
 ```
 
-### 2d. Update Model `Tenant`
+### 2d. Relasi di Model `Tenant` ✅
 
-Tambah relasi:
+Sudah ada:
 
 ```prisma
 model Tenant {
   // ... existing fields ...
 
-  // Subscription Relations
+  // Subscription (sudah ada)
   subscription          Subscription?
   subscriptionPayments  SubscriptionPayment[]
 
@@ -169,9 +184,7 @@ model Tenant {
 }
 ```
 
-### 2e. Plan Limits Config (Tidak di DB - di Code)
-
-Tidak perlu model `PlanFeature` terpisah. Cukup config di code:
+### 2e. Plan Limits Config (Tetap di Code, bukan DB)
 
 ```typescript
 // src/subscription/plan-limits.ts
@@ -233,11 +246,12 @@ server/src/
 
 | File | Perubahan |
 |------|-----------|
-| `prisma/schema.prisma` | Tambah `Subscription`, `SubscriptionPayment`, enums, relasi Tenant |
 | `app.module.ts` | Import `SubscriptionModule`, `PaymentModule`, midtrans config |
 | `products/products.service.ts` | Cek limit produk sebelum create (50 untuk Starter) |
 | `customers/customers.service.ts` | Cek limit customer sebelum create (200 untuk Starter) |
 | `.env` / `.env.example` | Tambah `MIDTRANS_*` variables |
+
+> **Catatan:** `prisma/schema.prisma` TIDAK perlu dimodifikasi — schema subscription sudah lengkap.
 
 ---
 
@@ -287,7 +301,8 @@ client/src/
 ┌─────────────────────────────────────────────┐
 │ Frontend:                                    │
 │ POST /api/subscription/upgrade               │
-│ -> Backend buat Subscription + Payment       │
+│ -> Backend buat/update Subscription          │
+│ -> Backend buat SubscriptionPayment          │
 │ -> Backend panggil Midtrans Snap API         │
 │ -> Return snapToken                          │
 └──────────────┬──────────────────────────────┘
@@ -317,11 +332,13 @@ client/src/
 │ POST /api/payment/webhook                    │
 │                                              │
 │ Backend:                                     │
-│ 1. Verify signature                          │
-│ 2. Update SubscriptionPayment.status = PAID  │
-│ 3. Update Subscription.plan = BUSINESS       │
-│ 4. Update Subscription.status = ACTIVE       │
-│ 5. Set periode: now -> +30 hari              │
+│ 1. Verify signature (SHA-512)                │
+│ 2. Update SubscriptionPayment.paymentStatus  │
+│ 3. If settlement:                            │
+│    a. Update Subscription.plan = BUSINESS    │
+│    b. Update Subscription.status = ACTIVE    │
+│    c. Set periode: now -> +30 hari           │
+│    d. Set SubscriptionPayment.paidAt = now   │
 └──────────────┬──────────────────────────────┘
                │
                ▼
@@ -350,8 +367,8 @@ client/src/
 @UseGuards(JwtAuthGuard)
 async create(@CurrentTenant() tenantId: string, @Body() dto) {
   // Service cek limit:
-  // 1. Ambil subscription tenant
-  // 2. Kalau STARTER, cek count produk < 50
+  // 1. Ambil subscription tenant (include: { subscription: true })
+  // 2. Kalau plan = STARTER (atau subscription null), cek count produk < 50
   // 3. Kalau >= 50, throw "Upgrade ke Business untuk tambah produk"
   return this.productsService.create(tenantId, dto);
 }
@@ -367,6 +384,24 @@ async create(@CurrentTenant() tenantId: string, @Body() dto) {
 | Hapus branding | Tidak bisa | Bisa toggle | Cek plan, return branding flag |
 | Export data | Endpoint blocked | Endpoint accessible | Guard di endpoint export |
 | Laporan lengkap | Basic stats | Full analytics | Conditional di `TenantsService.getStats()` |
+
+### Trial Support
+
+Schema sudah mendukung trial period via field `isTrial` dan `trialEndsAt` di model `Subscription`. Implementasi yang perlu dibuat:
+
+```typescript
+// Cek apakah tenant dalam trial period
+function isInTrial(subscription: Subscription): boolean {
+  return subscription.isTrial && subscription.trialEndsAt && new Date() < subscription.trialEndsAt;
+}
+
+// Cek apakah tenant punya akses Business features
+function hasBusinessAccess(subscription: Subscription): boolean {
+  return (
+    subscription.plan === 'BUSINESS' && subscription.status === 'ACTIVE'
+  ) || isInTrial(subscription);
+}
+```
 
 ---
 
@@ -403,7 +438,7 @@ NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=false
 | Webhook handler | Ya | Status mapping: settlement -> activate subscription |
 | Snap.js di frontend | Ya | Sama, load via CDN |
 | `useSnapPayment` hook | Ya | Sama |
-| Transaction model | Tidak | Ganti jadi `SubscriptionPayment` (lebih spesifik) |
+| Transaction model | Tidak | Gunakan `SubscriptionPayment` yang sudah ada di schema |
 | Transaction di Order | Tidak | Payment ini bukan untuk Order tapi untuk Subscription |
 | Customer details di Midtrans | Adaptasi | Yang bayar = Tenant (UMKM owner), bukan end-customer |
 | Order ID format | Adaptasi | Format: `SUB-{tenantSlug}-{timestamp}` bukan `TXN-...` |
@@ -421,12 +456,16 @@ NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=false
 - [x] Rate limiting sudah ada
 - [x] CORS configured
 - [x] ConfigModule siap tambah midtrans config
+- [x] Schema `Subscription` sudah ada (termasuk trial support)
+- [x] Schema `SubscriptionPayment` sudah ada (termasuk Midtrans fields)
+- [x] Enum `SubscriptionPlan` & `SubscriptionStatus` sudah ada
+- [x] Relasi Tenant ↔ Subscription sudah ada
 - [ ] Perlu install `midtrans-client`
-- [ ] Perlu buat `subscription/` module
-- [ ] Perlu buat `payment/` module
-- [ ] Perlu tambah schema + migration
+- [ ] Perlu buat `subscription/` module (service, controller, guards)
+- [ ] Perlu buat `payment/` module (webhook, midtrans service)
 - [ ] Perlu enforce limit di products & customers service
 - [ ] Perlu tambah env variables
+- [ ] Perlu implement trial logic (field sudah ada)
 
 ### Frontend
 - [x] Dashboard framework siap
@@ -441,6 +480,19 @@ NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=false
 
 ---
 
+## RINGKASAN PERUBAHAN DARI DOKUMEN SEBELUMNYA
+
+| Aspek | Dokumen Lama | Dokumen Ini (Updated) |
+|-------|-------------|----------------------|
+| Schema subscription | ❌ "Belum ada, perlu dibuat" | ✅ "Sudah ada di schema" |
+| Relasi Tenant | ❌ "Perlu ditambah" | ✅ "Sudah ada" |
+| Trial support | ❌ Tidak disebutkan | ✅ Didokumentasikan (`isTrial`, `trialEndsAt`) |
+| `Subscription.tenantId` | Tidak `@unique` di contoh | ✅ Sudah `@unique` (1:1) |
+| Checklist schema | `[ ]` (belum) | `[x]` (sudah) |
+| Focus area | Schema + Backend + Frontend | **Backend logic + Frontend only** (schema selesai) |
+
+---
+
 **Dokumen selanjutnya:**
-- `02_BACKEND_IMPLEMENTATION.md` - Step-by-step backend
-- `03_FRONTEND_IMPLEMENTATION.md` - Step-by-step frontend
+- `02_BACKEND_IMPLEMENTATION.md` - Step-by-step backend (focus: modules, guards, Midtrans integration)
+- `03_FRONTEND_IMPLEMENTATION.md` - Step-by-step frontend (focus: subscription page, Snap.js, payment UI)

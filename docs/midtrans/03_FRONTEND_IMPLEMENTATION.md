@@ -1,9 +1,17 @@
-# Midtrans Frontend Implementation - Step by Step
+# Midtrans Frontend Implementation - Step by Step (UPDATED)
 
 ## Konteks: UMKM Upgrade Plan via Dashboard
 
 > UMKM login ke dashboard -> buka halaman "Langganan" -> klik "Upgrade ke Business" -> Snap popup -> bayar -> plan aktif.
 > Diadaptasi ke: Next.js App Router, Zustand, custom ApiClient (fetch), Radix UI, Sonner toast.
+
+---
+
+## CATATAN UPDATE
+
+> **Schema Prisma sudah lengkap** (Subscription, SubscriptionPayment, trial fields).
+> Backend response sekarang menyertakan `effectivePlan` dan `isInTrial`.
+> Frontend perlu handle trial state di UI (badge, info, dsb).
 
 ---
 
@@ -88,17 +96,23 @@ export interface PlanLimits {
   prioritySupport: boolean;
 }
 
+export interface SubscriptionData {
+  id: string;
+  tenantId: string;
+  plan: 'STARTER' | 'BUSINESS';
+  status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'PAST_DUE';
+  currentPeriodStart: string | null;
+  currentPeriodEnd: string | null;
+  isTrial: boolean;
+  trialEndsAt: string | null;
+  priceAmount: number;
+  currency: string;
+}
+
 export interface SubscriptionInfo {
-  subscription: {
-    id: string;
-    tenantId: string;
-    plan: 'STARTER' | 'BUSINESS';
-    status: 'ACTIVE' | 'EXPIRED' | 'CANCELLED' | 'PAST_DUE';
-    currentPeriodStart: string | null;
-    currentPeriodEnd: string | null;
-    priceAmount: number;
-    currency: string;
-  };
+  subscription: SubscriptionData;
+  effectivePlan: 'STARTER' | 'BUSINESS';
+  isInTrial: boolean;
   limits: PlanLimits;
   usage: {
     products: number;
@@ -282,12 +296,14 @@ import {
   ShieldCheck,
   Calendar,
   Receipt,
+  FlaskConical,
 } from 'lucide-react';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 import { subscriptionApi, SubscriptionInfo, PaymentHistory } from '@/lib/api/subscription';
 import { useSnapPayment } from '@/hooks/use-snap-payment';
@@ -329,6 +345,7 @@ export default function SubscriptionPage() {
       toast.success('Pembayaran berhasil! Plan Business aktif.');
       // Refetch plan info
       subscriptionApi.getMyPlan().then(setPlanInfo);
+      subscriptionApi.getPaymentHistory().then(setPayments);
     } else if (paymentStatus === 'unfinish') {
       toast.info('Pembayaran belum selesai. Anda bisa melanjutkan kapan saja.');
     } else if (paymentStatus === 'error') {
@@ -380,8 +397,15 @@ export default function SubscriptionPage() {
     );
   }
 
-  const isStarter = planInfo?.subscription.plan === 'STARTER';
-  const isBusiness = planInfo?.subscription.plan === 'BUSINESS';
+  const isStarter = planInfo?.effectivePlan === 'STARTER';
+  const isBusiness = planInfo?.effectivePlan === 'BUSINESS';
+  const isInTrial = planInfo?.isInTrial ?? false;
+  const trialEndsAt = planInfo?.subscription.trialEndsAt;
+
+  // Hitung sisa hari trial
+  const trialDaysLeft = trialEndsAt
+    ? Math.max(0, Math.ceil((new Date(trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   return (
     <div className="space-y-6">
@@ -389,6 +413,18 @@ export default function SubscriptionPage() {
         <h1 className="text-2xl font-bold">Langganan</h1>
         <p className="text-muted-foreground">Kelola plan dan pembayaran Anda</p>
       </div>
+
+      {/* Trial Banner */}
+      {isInTrial && (
+        <Alert>
+          <FlaskConical className="h-4 w-4" />
+          <AlertDescription>
+            Anda sedang dalam masa percobaan Business Plan.{' '}
+            <strong>{trialDaysLeft} hari tersisa.</strong>{' '}
+            Upgrade sekarang untuk akses permanen.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* Current Plan Card */}
       <Card>
@@ -401,15 +437,29 @@ export default function SubscriptionPage() {
                 <Crown className="h-6 w-6 text-primary" />
               )}
               <div>
-                <CardTitle>Plan {planInfo?.subscription.plan}</CardTitle>
+                <CardTitle>
+                  Plan {planInfo?.effectivePlan}
+                  {isInTrial && <span className="text-sm font-normal text-muted-foreground ml-2">(Trial)</span>}
+                </CardTitle>
                 <CardDescription>
-                  {isStarter ? 'Gratis selamanya' : `Rp ${planInfo?.subscription.priceAmount.toLocaleString('id-ID')}/bulan`}
+                  {isStarter
+                    ? 'Gratis selamanya'
+                    : isInTrial
+                      ? 'Gratis selama masa percobaan'
+                      : `Rp ${planInfo?.subscription.priceAmount.toLocaleString('id-ID')}/bulan`}
                 </CardDescription>
               </div>
             </div>
-            <Badge variant={isBusiness ? 'default' : 'secondary'}>
-              {planInfo?.subscription.status}
-            </Badge>
+            <div className="flex gap-2">
+              {isInTrial && (
+                <Badge variant="outline" className="border-amber-500 text-amber-600">
+                  Trial
+                </Badge>
+              )}
+              <Badge variant={isBusiness && !isInTrial ? 'default' : 'secondary'}>
+                {planInfo?.subscription.status}
+              </Badge>
+            </div>
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -438,7 +488,7 @@ export default function SubscriptionPage() {
           </div>
 
           {/* Business Period */}
-          {isBusiness && planInfo?.subscription.currentPeriodEnd && (
+          {isBusiness && !isInTrial && planInfo?.subscription.currentPeriodEnd && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               <span>
@@ -447,17 +497,30 @@ export default function SubscriptionPage() {
             </div>
           )}
 
-          {/* Upgrade Button */}
-          {isStarter && (
+          {/* Trial Period */}
+          {isInTrial && trialEndsAt && (
+            <div className="flex items-center gap-2 text-sm text-amber-600">
+              <FlaskConical className="h-4 w-4" />
+              <span>
+                Trial berakhir: {new Date(trialEndsAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                {' '}({trialDaysLeft} hari lagi)
+              </span>
+            </div>
+          )}
+
+          {/* Upgrade Button - tampil untuk Starter DAN Trial */}
+          {(isStarter || isInTrial) && (
             <Button onClick={handleUpgrade} disabled={upgrading} className="w-full" size="lg">
               {upgrading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               <Crown className="mr-2 h-4 w-4" />
-              Upgrade ke Business - Rp 149.000/bulan
+              {isInTrial
+                ? 'Upgrade Sekarang - Rp 149.000/bulan'
+                : 'Upgrade ke Business - Rp 149.000/bulan'}
             </Button>
           )}
 
           {/* Renew Button (kalau expired) */}
-          {isBusiness && planInfo?.subscription.status === 'EXPIRED' && (
+          {isBusiness && !isInTrial && planInfo?.subscription.status === 'EXPIRED' && (
             <Button onClick={handleUpgrade} disabled={upgrading} className="w-full" size="lg">
               {upgrading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Perpanjang Business Plan
@@ -467,13 +530,18 @@ export default function SubscriptionPage() {
       </Card>
 
       {/* Plan Comparison */}
-      {isStarter && (
+      {(isStarter || isInTrial) && (
         <Card>
           <CardHeader>
-            <CardTitle>Kenapa Upgrade?</CardTitle>
+            <CardTitle>{isInTrial ? 'Fitur yang Anda nikmati' : 'Kenapa Upgrade?'}</CardTitle>
+            {isInTrial && (
+              <CardDescription>Upgrade untuk mempertahankan akses setelah trial berakhir</CardDescription>
+            )}
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
+              <div className="py-2 border-b font-medium text-muted-foreground">Starter</div>
+              <div className="py-2 border-b font-medium text-primary">Business</div>
               {[
                 { feature: 'Produk/Layanan', starter: 'Max 50', business: 'Unlimited' },
                 { feature: 'Pelanggan/Klien', starter: 'Max 200', business: 'Unlimited' },
@@ -508,7 +576,7 @@ export default function SubscriptionPage() {
       )}
 
       {/* Payment Methods Info */}
-      {isStarter && (
+      {(isStarter || isInTrial) && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground justify-center">
           <ShieldCheck className="h-4 w-4 text-green-500" />
           <span>Bank Transfer, GoPay, ShopeePay, QRIS, Kartu Kredit - diproses aman oleh Midtrans</span>
@@ -700,6 +768,7 @@ Tidak ada (Snap.js via CDN)
 │ -> SubscriptionPayment status = PAID  │
 │ -> Subscription plan = BUSINESS       │
 │ -> Subscription aktif 30 hari         │
+│ -> Trial cleared (isTrial = false)    │
 └──────────────┬───────────────────────┘
                │
                ▼
@@ -722,11 +791,46 @@ Tidak ada (Snap.js via CDN)
 
 ---
 
+## FLOW DIAGRAM: TRIAL → UPGRADE
+
+```
+┌──────────────────────────────────────┐
+│ Admin/Promo: Start Trial 14 hari      │
+│ -> subscription.isTrial = true        │
+│ -> subscription.trialEndsAt = +14d    │
+│ -> plan tetap STARTER                 │
+│ -> effectivePlan = BUSINESS           │
+└──────────────┬───────────────────────┘
+               │
+               ▼
+┌──────────────────────────────────────┐
+│ UMKM buka Dashboard:                  │
+│ Banner: "Trial 14 hari tersisa"       │
+│ Produk: 45/Unlimited (trial)          │
+│ Semua fitur Business aktif            │
+│                                       │
+│ Button: "Upgrade Sekarang"            │
+└──────────────┬───────────────────────┘
+               │
+        ┌──────┴──────────┐
+        │                 │
+        ▼                 ▼
+  ┌───────────┐   ┌─────────────────┐
+  │ Upgrade   │   │ Trial habis     │
+  │ (bayar)   │   │ -> effectivePlan│
+  │ -> PAID   │   │    = STARTER    │
+  │ -> trial  │   │ -> limits kembali│
+  │    cleared│   │    50/200       │
+  └───────────┘   └─────────────────┘
+```
+
+---
+
 ## INTEGRASI DENGAN EXISTING FEATURES
 
 | Feature Existing | Dampak Subscription | Perlu Modifikasi? |
 |---|---|---|
-| Product CRUD | Limit 50 (Starter) / Unlimited (Business) | Ya - handle 403 di frontend |
+| Product CRUD | Limit 50 (Starter) / Unlimited (Business & Trial) | Ya - handle 403 di frontend |
 | Customer CRUD | Limit 200 / Unlimited | Ya - handle 403 di frontend |
 | WhatsApp Chat | Semua plan | Tidak |
 | Auto-Reply | Semua plan | Tidak |
@@ -734,10 +838,10 @@ Tidak ada (Snap.js via CDN)
 | Landing Builder | Semua plan | Tidak |
 | Explore Feed | Semua plan | Tidak |
 | SEO Settings | Semua plan | Tidak |
-| Custom Domain | Business only | Ya - cek plan di settings |
-| Remove Branding | Business only | Ya - conditional render |
-| Export Data | Business only | Ya - cek plan di endpoint |
-| Advanced Reports | Business only | Ya - conditional di stats page |
+| Custom Domain | Business only (termasuk Trial) | Ya - cek plan di settings |
+| Remove Branding | Business only (termasuk Trial) | Ya - conditional render |
+| Export Data | Business only (termasuk Trial) | Ya - cek plan di endpoint |
+| Advanced Reports | Business only (termasuk Trial) | Ya - conditional di stats page |
 
 ---
 
@@ -747,6 +851,15 @@ Tidak ada (Snap.js via CDN)
 - Di-load via CDN saat masuk halaman subscription
 - Hook `useSnapPayment` handle lazy loading
 - Script di-load 1x, reuse di semua component
+
+### Trial Behavior
+- Trial memberikan akses Business tanpa bayar
+- `effectivePlan` = BUSINESS selama trial aktif
+- Semua limit menggunakan `effectivePlan`, bukan `plan`
+- Setelah trial habis, kembali ke Starter limits
+- Data yang sudah dibuat TIDAK dihapus
+- UMKM yang sedang trial bisa langsung upgrade (bayar)
+- Setelah bayar, `isTrial` di-clear dan plan resmi jadi BUSINESS
 
 ### Expired Handling
 - Kalau Business expired, UMKM kembali ke limit Starter

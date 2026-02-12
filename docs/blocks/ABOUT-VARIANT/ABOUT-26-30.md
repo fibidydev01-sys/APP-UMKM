@@ -18,10 +18,10 @@ layouts, dan digital design.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ScrollReveal from '@/components/ui/ScrollReveal';
-import ProfileCard from '@/components/ui/ProfileCard';
-import BlurText from '@/components/ui/BlurText';
-import Counter from '@/components/ui/Counter';
+import ScrollReveal from '@/components/ui/scroll-reveal/ScrollReveal';
+import ProfileCard from '@/components/ui/profile-card/ProfileCard';
+import BlurText from '@/components/ui/blur-text/BlurText';
+import Counter from '@/components/ui/counter/Counter';
 
 interface About26Props {
   title: string;
@@ -167,10 +167,10 @@ export function About26({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import DomeGallery from '@/components/ui/DomeGallery';
-import GradientText from '@/components/ui/GradientText';
-import SplitText from '@/components/ui/SplitText';
-import Magnet from '@/components/ui/Magnet';
+import DomeGallery from '@/components/ui/dome-gallery/DomeGallery';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import SplitText from '@/components/ui/split-text/SplitText';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About27Props {
   title: string;
@@ -327,10 +327,10 @@ export function About27({
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ChromaGrid from '@/components/ui/ChromaGrid';
-import ShinyText from '@/components/ui/ShinyText';
-import DecryptedText from '@/components/ui/DecryptedText';
-import ElasticSlider from '@/components/ui/ElasticSlider';
+import ChromaGrid from '@/components/ui/chroma-grid/ChromaGrid';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import DecryptedText from '@/components/ui/decrypted-text/DecryptedText';
+import ElasticSlider from '@/components/ui/elastic-slider/ElasticSlider';
 
 interface About28Props {
   title: string;
@@ -483,10 +483,10 @@ export function About28({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import FlyingPosters from '@/components/ui/FlyingPosters';
-import TrueFocus from '@/components/ui/TrueFocus';
-import Shuffle from '@/components/ui/Shuffle';
-import ClickSpark from '@/components/ui/ClickSpark';
+import FlyingPosters from '@/components/ui/flying-posters/FlyingPosters';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import Shuffle from '@/components/ui/shuffle/Shuffle';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
 
 interface About29Props {
   title: string;
@@ -644,10 +644,10 @@ export function About29({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Stack from '@/components/ui/Stack';
-import TextType from '@/components/ui/TextType';
-import ScrollFloat from '@/components/ui/ScrollFloat';
-import FuzzyText from '@/components/ui/FuzzyText';
+import Stack from '@/components/ui/stack/Stack';
+import TextType from '@/components/ui/text-type/TextType';
+import ScrollFloat from '@/components/ui/scroll-float/ScrollFloat';
+import FuzzyText from '@/components/ui/fuzzy-text/FuzzyText';
 
 interface About30Props {
   title: string;

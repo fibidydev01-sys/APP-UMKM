@@ -17,10 +17,10 @@ modern design.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import LiquidEther from '@/components/ui/LiquidEther';
-import BounceCards from '@/components/ui/BounceCards';
-import TextPressure from '@/components/ui/TextPressure';
-import ReflectiveCard from '@/components/ui/ReflectiveCard';
+import LiquidEther from '@/components/ui/liquid-ether/LiquidEther';
+import BounceCards from '@/components/ui/bounce-cards/BounceCards';
+import TextPressure from '@/components/ui/text-pressure/TextPressure';
+import ReflectiveCard from '@/components/ui/reflective-card/ReflectiveCard';
 
 interface About11Props {
   title: string;
@@ -163,9 +163,9 @@ export function About11({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Hyperspeed from '@/components/ui/Hyperspeed';
-import Stack from '@/components/ui/Stack';
-import FallingText from '@/components/ui/FallingText';
+import Hyperspeed from '@/components/ui/hyperspeed/Hyperspeed';
+import Stack from '@/components/ui/stack/Stack';
+import FallingText from '@/components/ui/falling-text/FallingText';
 
 interface About12Props {
   title: string;
@@ -309,9 +309,9 @@ export function About12({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Ballpit from '@/components/ui/Ballpit';
-import ProfileCard from '@/components/ui/ProfileCard';
-import Magnet from '@/components/ui/Magnet';
+import Ballpit from '@/components/ui/ballpit/Ballpit';
+import ProfileCard from '@/components/ui/profile-card/ProfileCard';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About13Props {
   title: string;
@@ -455,9 +455,9 @@ export function About13({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import PixelSnow from '@/components/ui/PixelSnow';
-import GlassSurface from '@/components/ui/GlassSurface';
-import FluidGlass from '@/components/ui/FluidGlass';
+import PixelSnow from '@/components/ui/pixel-snow/PixelSnow';
+import GlassSurface from '@/components/ui/glass-surface/GlassSurface';
+import FluidGlass from '@/components/ui/fluid-glass/FluidGlass';
 
 interface About14Props {
   title: string;
@@ -606,9 +606,9 @@ export function About14({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Plasma from '@/components/ui/Plasma';
-import DecayCard from '@/components/ui/DecayCard';
-import Lightning from '@/components/ui/Lightning';
+import Plasma from '@/components/ui/plasma/Plasma';
+import DecayCard from '@/components/ui/decay-card/DecayCard';
+import Lightning from '@/components/ui/lightning/Lightning';
 
 interface About15Props {
   title: string;

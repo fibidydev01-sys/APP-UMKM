@@ -17,10 +17,10 @@ modern design.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Iridescence from '@/components/ui/Iridescence';
-import DomeGallery from '@/components/ui/DomeGallery';
-import TrueFocus from '@/components/ui/TrueFocus';
-import AnimatedContent from '@/components/ui/AnimatedContent';
+import Iridescence from '@/components/ui/iridescence/Iridescence';
+import DomeGallery from '@/components/ui/dome-gallery/DomeGallery';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import AnimatedContent from '@/components/ui/animated-content/AnimatedContent';
 
 interface About06Props {
   title: string;
@@ -160,10 +160,10 @@ export function About06({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import LightRays from '@/components/ui/LightRays';
-import ChromaGrid from '@/components/ui/ChromaGrid';
-import DecryptedText from '@/components/ui/DecryptedText';
-import GradualBlur from '@/components/ui/GradualBlur';
+import LightRays from '@/components/ui/light-rays/LightRays';
+import ChromaGrid from '@/components/ui/chroma-grid/ChromaGrid';
+import DecryptedText from '@/components/ui/decrypted-text/DecryptedText';
+import GradualBlur from '@/components/ui/gradual-blur/GradualBlur';
 
 interface About07Props {
   title: string;
@@ -307,10 +307,10 @@ export function About07({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Silk from '@/components/ui/Silk';
-import FlyingPosters from '@/components/ui/FlyingPosters';
-import TextType from '@/components/ui/TextType';
-import MetallicPaint from '@/components/ui/MetallicPaint';
+import Silk from '@/components/ui/silk/Silk';
+import FlyingPosters from '@/components/ui/flying-posters/FlyingPosters';
+import TextType from '@/components/ui/text-type/TextType';
+import MetallicPaint from '@/components/ui/metallic-paint/MetallicPaint';
 
 interface About08Props {
   title: string;
@@ -472,10 +472,10 @@ export function About08({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Ribbons from '@/components/ui/Ribbons';
-import GridMotion from '@/components/ui/GridMotion';
-import ASCIIText from '@/components/ui/ASCIIText';
-import ElectricBorder from '@/components/ui/ElectricBorder';
+import Ribbons from '@/components/ui/ribbons/Ribbons';
+import GridMotion from '@/components/ui/grid-motion/GridMotion';
+import ASCIIText from '@/components/ui/ascii-text/ASCIIText';
+import ElectricBorder from '@/components/ui/electric-border/ElectricBorder';
 
 interface About09Props {
   title: string;
@@ -623,10 +623,10 @@ export function About09({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Galaxy from '@/components/ui/Galaxy';
-import InfiniteMenu from '@/components/ui/InfiniteMenu';
-import GradientText from '@/components/ui/GradientText';
-import StarBorder from '@/components/ui/StarBorder';
+import Galaxy from '@/components/ui/galaxy/Galaxy';
+import InfiniteMenu from '@/components/ui/infinite-menu/InfiniteMenu';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import StarBorder from '@/components/ui/star-border/StarBorder';
 
 interface About10Props {
   title: string;

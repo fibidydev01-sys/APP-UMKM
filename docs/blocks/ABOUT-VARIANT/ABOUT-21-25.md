@@ -18,10 +18,10 @@ modern design.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import FallingText from '@/components/ui/FallingText';
-import ReflectiveCard from '@/components/ui/ReflectiveCard';
-import TextCursor from '@/components/ui/TextCursor';
-import BlurText from '@/components/ui/BlurText';
+import FallingText from '@/components/ui/falling-text/FallingText';
+import ReflectiveCard from '@/components/ui/reflective-card/ReflectiveCard';
+import TextCursor from '@/components/ui/text-cursor/TextCursor';
+import BlurText from '@/components/ui/blur-text/BlurText';
 
 interface About21Props {
   title: string;
@@ -147,10 +147,10 @@ export function About21({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ASCIIText from '@/components/ui/ASCIIText';
-import TiltedCard from '@/components/ui/TiltedCard';
-import SplitText from '@/components/ui/SplitText';
-import Magnet from '@/components/ui/Magnet';
+import ASCIIText from '@/components/ui/ascii-text/ASCIIText';
+import TiltedCard from '@/components/ui/tilted-card/TiltedCard';
+import SplitText from '@/components/ui/split-text/SplitText';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About22Props {
   title: string;
@@ -296,10 +296,10 @@ export function About22({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import CurvedLoop from '@/components/ui/CurvedLoop';
-import SpotlightCard from '@/components/ui/SpotlightCard';
-import DecryptedText from '@/components/ui/DecryptedText';
-import ShinyText from '@/components/ui/ShinyText';
+import CurvedLoop from '@/components/ui/curved-loop/CurvedLoop';
+import SpotlightCard from '@/components/ui/spotlight-card/SpotlightCard';
+import DecryptedText from '@/components/ui/decrypted-text/DecryptedText';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
 
 interface About23Props {
   title: string;
@@ -424,10 +424,10 @@ export function About23({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import TextPressure from '@/components/ui/TextPressure';
-import GlassSurface from '@/components/ui/GlassSurface';
-import ScrollFloat from '@/components/ui/ScrollFloat';
-import GradientText from '@/components/ui/GradientText';
+import TextPressure from '@/components/ui/text-pressure/TextPressure';
+import GlassSurface from '@/components/ui/glass-surface/GlassSurface';
+import ScrollFloat from '@/components/ui/scroll-float/ScrollFloat';
+import GradientText from '@/components/ui/gradient-text/GradientText';
 
 interface About24Props {
   title: string;
@@ -608,10 +608,10 @@ export function About24({
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import BounceCards from '@/components/ui/BounceCards';
-import Stepper, { Step } from '@/components/ui/Stepper';
-import TrueFocus from '@/components/ui/TrueFocus';
-import Shuffle from '@/components/ui/Shuffle';
+import BounceCards from '@/components/ui/bounce-cards/BounceCards';
+import Stepper, { Step } from '@/components/ui/stepper/Stepper';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import Shuffle from '@/components/ui/shuffle/Shuffle';
 
 interface About25Props {
   title: string;

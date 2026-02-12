@@ -1,10 +1,19 @@
-# Midtrans Backend Implementation - Step by Step
+# Midtrans Backend Implementation - Step by Step (UPDATED)
 
 ## Konteks: UMKM Bayar ke Platform untuk Upgrade Plan (Subscription)
 
 > Bukan customer checkout. Yang bayar = UMKM owner (Tenant).
 > Yang terima = Platform (Fibidy).
 > Untuk: Upgrade dari Starter (Free) ke Business (Rp 149.000/bulan).
+
+---
+
+## CATATAN UPDATE
+
+> **Schema Prisma (`Subscription`, `SubscriptionPayment`, enums, relasi Tenant) sudah ada di database.**
+> Dokumen ini tidak lagi menyertakan step pembuatan schema/migration.
+> Field `isTrial` dan `trialEndsAt` juga sudah ada di model `Subscription`.
+> Focus dokumen ini: **backend logic, modules, guards, dan Midtrans integration.**
 
 ---
 
@@ -45,150 +54,7 @@ Tambah template yang sama (tanpa value sensitif).
 
 ---
 
-## STEP 3: Update Prisma Schema
-
-### File: `server/prisma/schema.prisma`
-
-#### 3a. Tambah Enums
-
-```prisma
-enum SubscriptionPlan {
-  STARTER
-  BUSINESS
-}
-
-enum SubscriptionStatus {
-  ACTIVE
-  EXPIRED
-  CANCELLED
-  PAST_DUE
-}
-```
-
-#### 3b. Tambah Model `Subscription`
-
-```prisma
-// ==========================================
-// SUBSCRIPTION (Plan UMKM)
-// ==========================================
-
-model Subscription {
-  id                 String             @id @default(cuid())
-
-  tenantId           String             @unique
-  tenant             Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
-  plan               SubscriptionPlan   @default(STARTER)
-  status             SubscriptionStatus @default(ACTIVE)
-
-  // Periode aktif (null = Starter/free, tidak ada expiry)
-  currentPeriodStart DateTime?          @map("current_period_start")
-  currentPeriodEnd   DateTime?          @map("current_period_end")
-
-  // Harga saat subscribe (snapshot, bisa berubah di kemudian hari)
-  priceAmount        Float              @default(0) @map("price_amount")
-  currency           String             @default("IDR")
-
-  // Cancellation
-  cancelledAt        DateTime?          @map("cancelled_at")
-  cancelReason       String?            @map("cancel_reason")
-
-  // Timestamps
-  createdAt          DateTime           @default(now()) @map("created_at")
-  updatedAt          DateTime           @updatedAt @map("updated_at")
-
-  // Relations
-  payments           SubscriptionPayment[]
-
-  @@map("subscriptions")
-  @@index([tenantId])
-  @@index([status])
-  @@index([plan])
-  @@index([currentPeriodEnd])
-}
-```
-
-#### 3c. Tambah Model `SubscriptionPayment`
-
-```prisma
-// ==========================================
-// SUBSCRIPTION PAYMENT (Pembayaran via Midtrans)
-// ==========================================
-
-model SubscriptionPayment {
-  id                    String       @id @default(cuid())
-
-  subscriptionId        String       @map("subscription_id")
-  subscription          Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-
-  tenantId              String       @map("tenant_id")
-  tenant                Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-
-  // Midtrans identifiers
-  midtransOrderId       String       @unique @map("midtrans_order_id")
-  midtransTransactionId String?      @unique @map("midtrans_transaction_id")
-  snapToken             String?      @map("snap_token")
-  snapRedirectUrl       String?      @map("snap_redirect_url")
-
-  // Amount
-  amount                Float
-  currency              String       @default("IDR")
-
-  // Payment method detail (dari Midtrans webhook)
-  paymentType           String?      @map("payment_type")
-  bank                  String?
-  vaNumber              String?      @map("va_number")
-
-  // Status: pending | settlement | capture | cancel | deny | expire | failure | refund
-  paymentStatus         String       @default("pending") @map("payment_status")
-  fraudStatus           String?      @map("fraud_status")
-
-  // Periode yang dibayar
-  periodStart           DateTime     @map("period_start")
-  periodEnd             DateTime     @map("period_end")
-
-  // Webhook raw data (untuk audit/debugging)
-  rawNotification       Json?        @map("raw_notification")
-  metadata              Json?
-
-  // Timestamps
-  paidAt                DateTime?    @map("paid_at")
-  createdAt             DateTime     @default(now()) @map("created_at")
-  updatedAt             DateTime     @updatedAt @map("updated_at")
-
-  @@map("subscription_payments")
-  @@index([tenantId])
-  @@index([subscriptionId])
-  @@index([midtransOrderId])
-  @@index([paymentStatus])
-  @@index([tenantId, createdAt])
-}
-```
-
-#### 3d. Update Model `Tenant` - Tambah Relasi
-
-```prisma
-model Tenant {
-  // ... existing fields ...
-
-  // Subscription
-  subscription          Subscription?
-  subscriptionPayments  SubscriptionPayment[]
-
-  // ... existing relations (products, orders, etc.) ...
-}
-```
-
-#### 3e. Jalankan Migration
-
-```bash
-npx prisma migrate dev --name add_subscription_payment
-npx prisma generate
-```
-
----
-
-## STEP 4: Buat Plan Limits Config
+## STEP 3: Buat Plan Limits Config
 
 ### File: `server/src/subscription/plan-limits.ts` (BARU)
 
@@ -226,7 +92,7 @@ export type PlanFeature = keyof typeof PLAN_LIMITS.STARTER;
 
 ---
 
-## STEP 5: Buat Midtrans Config
+## STEP 4: Buat Midtrans Config
 
 ### File: `server/src/config/midtrans.config.ts` (BARU)
 
@@ -262,7 +128,7 @@ export class AppModule {}
 
 ---
 
-## STEP 6: Buat Subscription Service
+## STEP 5: Buat Subscription Service
 
 ### File: `server/src/subscription/subscription.service.ts` (BARU)
 
@@ -275,7 +141,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { PLAN_LIMITS, PlanFeature } from './plan-limits';
-import { SubscriptionPlan } from '@prisma/client';
+import { SubscriptionPlan, Subscription } from '@prisma/client';
 
 @Injectable()
 export class SubscriptionService {
@@ -307,11 +173,43 @@ export class SubscriptionService {
   }
 
   /**
+   * Cek apakah tenant dalam trial period
+   */
+  isInTrial(subscription: Subscription): boolean {
+    return (
+      subscription.isTrial &&
+      !!subscription.trialEndsAt &&
+      new Date() < subscription.trialEndsAt
+    );
+  }
+
+  /**
+   * Cek apakah tenant punya akses Business features
+   * (plan BUSINESS aktif ATAU dalam trial period)
+   */
+  hasBusinessAccess(subscription: Subscription): boolean {
+    // Trial active = Business access
+    if (this.isInTrial(subscription)) return true;
+
+    // Business plan active + belum expired
+    if (subscription.plan === 'BUSINESS' && subscription.status === 'ACTIVE') {
+      if (subscription.currentPeriodEnd && subscription.currentPeriodEnd < new Date()) {
+        return false; // Expired
+      }
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Get plan info + usage counts
    */
   async getPlanInfo(tenantId: string) {
     const subscription = await this.getSubscription(tenantId);
-    const limits = PLAN_LIMITS[subscription.plan];
+    const hasBusiness = this.hasBusinessAccess(subscription);
+    const effectivePlan = hasBusiness ? 'BUSINESS' : 'STARTER';
+    const limits = PLAN_LIMITS[effectivePlan];
 
     // Count current usage
     const [productCount, customerCount] = await Promise.all([
@@ -321,6 +219,8 @@ export class SubscriptionService {
 
     return {
       subscription,
+      effectivePlan,
+      isInTrial: this.isInTrial(subscription),
       limits,
       usage: {
         products: productCount,
@@ -338,16 +238,9 @@ export class SubscriptionService {
    */
   async checkFeatureAccess(tenantId: string, feature: PlanFeature): Promise<boolean> {
     const subscription = await this.getSubscription(tenantId);
-
-    // Cek apakah subscription masih aktif
-    if (subscription.plan === 'BUSINESS') {
-      if (subscription.status !== 'ACTIVE') return false;
-      if (subscription.currentPeriodEnd && subscription.currentPeriodEnd < new Date()) {
-        return false; // Expired
-      }
-    }
-
-    return !!PLAN_LIMITS[subscription.plan][feature];
+    const hasBusiness = this.hasBusinessAccess(subscription);
+    const effectivePlan = hasBusiness ? 'BUSINESS' : 'STARTER';
+    return !!PLAN_LIMITS[effectivePlan][feature];
   }
 
   /**
@@ -356,7 +249,9 @@ export class SubscriptionService {
    */
   async checkProductLimit(tenantId: string) {
     const subscription = await this.getSubscription(tenantId);
-    const limit = PLAN_LIMITS[subscription.plan].maxProducts;
+    const hasBusiness = this.hasBusinessAccess(subscription);
+    const effectivePlan = hasBusiness ? 'BUSINESS' : 'STARTER';
+    const limit = PLAN_LIMITS[effectivePlan].maxProducts;
 
     if (limit === Infinity) return; // Unlimited
 
@@ -374,7 +269,9 @@ export class SubscriptionService {
    */
   async checkCustomerLimit(tenantId: string) {
     const subscription = await this.getSubscription(tenantId);
-    const limit = PLAN_LIMITS[subscription.plan].maxCustomers;
+    const hasBusiness = this.hasBusinessAccess(subscription);
+    const effectivePlan = hasBusiness ? 'BUSINESS' : 'STARTER';
+    const limit = PLAN_LIMITS[effectivePlan].maxCustomers;
 
     if (limit === Infinity) return;
 
@@ -404,6 +301,8 @@ export class SubscriptionService {
         currentPeriodStart: now,
         currentPeriodEnd: periodEnd,
         priceAmount: price,
+        isTrial: false,
+        trialEndsAt: null,
       },
       update: {
         plan: 'BUSINESS',
@@ -411,12 +310,43 @@ export class SubscriptionService {
         currentPeriodStart: now,
         currentPeriodEnd: periodEnd,
         priceAmount: price,
+        isTrial: false,        // Clear trial ketika bayar
+        trialEndsAt: null,
         cancelledAt: null,
         cancelReason: null,
       },
     });
 
     this.logger.log(`Tenant ${tenantId} upgraded to BUSINESS until ${periodEnd.toISOString()}`);
+
+    return subscription;
+  }
+
+  /**
+   * Start trial period (opsional, bisa dipanggil dari admin atau promo)
+   */
+  async startTrial(tenantId: string, trialDays: number = 14) {
+    const now = new Date();
+    const trialEnd = new Date(now);
+    trialEnd.setDate(trialEnd.getDate() + trialDays);
+
+    const subscription = await this.prisma.subscription.upsert({
+      where: { tenantId },
+      create: {
+        tenantId,
+        plan: 'STARTER',       // Plan tetap STARTER
+        status: 'ACTIVE',
+        isTrial: true,
+        trialEndsAt: trialEnd,
+        priceAmount: 0,
+      },
+      update: {
+        isTrial: true,
+        trialEndsAt: trialEnd,
+      },
+    });
+
+    this.logger.log(`Tenant ${tenantId} started ${trialDays}-day trial until ${trialEnd.toISOString()}`);
 
     return subscription;
   }
@@ -436,7 +366,7 @@ export class SubscriptionService {
 
 ---
 
-## STEP 7: Buat Subscription Controller
+## STEP 6: Buat Subscription Controller
 
 ### File: `server/src/subscription/subscription.controller.ts` (BARU)
 
@@ -474,7 +404,7 @@ export class SubscriptionController {
 
 ---
 
-## STEP 8: Buat Midtrans Service (untuk Subscription Payment)
+## STEP 7: Buat Midtrans Service (untuk Subscription Payment)
 
 ### File: `server/src/payment/midtrans.service.ts` (BARU)
 
@@ -536,12 +466,12 @@ export class MidtransService {
     // 2. Get current subscription
     const subscription = await this.subscriptionService.getSubscription(tenantId);
 
-    if (subscription.plan === 'BUSINESS' && subscription.status === 'ACTIVE') {
-      // Cek apakah masih aktif
-      if (subscription.currentPeriodEnd && subscription.currentPeriodEnd > new Date()) {
+    // Cek apakah sudah Business aktif (termasuk trial)
+    if (this.subscriptionService.hasBusinessAccess(subscription)) {
+      // Kalau masih trial, boleh upgrade (bayar beneran)
+      if (!this.subscriptionService.isInTrial(subscription)) {
         throw new BadRequestException('Subscription Business masih aktif');
       }
-      // Kalau expired, boleh perpanjang
     }
 
     // 3. Check existing pending payment
@@ -746,7 +676,7 @@ export class MidtransService {
 
 ---
 
-## STEP 9: Buat Payment Controller
+## STEP 8: Buat Payment Controller
 
 ### File: `server/src/payment/payment.controller.ts` (BARU)
 
@@ -816,7 +746,7 @@ export class PaymentController {
 
 ---
 
-## STEP 10: Buat Modules
+## STEP 9: Buat Modules
 
 ### File: `server/src/subscription/subscription.module.ts` (BARU)
 
@@ -855,7 +785,7 @@ export class PaymentModule {}
 
 ---
 
-## STEP 11: Enforce Limits di Existing Services
+## STEP 10: Enforce Limits di Existing Services
 
 ### File: `server/src/products/products.service.ts` (UPDATE)
 
@@ -904,7 +834,7 @@ imports: [PrismaModule, SubscriptionModule],
 
 ---
 
-## STEP 12: Register di AppModule
+## STEP 11: Register di AppModule
 
 ### File: `server/src/app.module.ts` (UPDATE)
 
@@ -929,7 +859,7 @@ export class AppModule {}
 
 ---
 
-## STEP 13: Konfigurasi Midtrans Dashboard
+## STEP 12: Konfigurasi Midtrans Dashboard
 
 ### Payment Notification URL (Webhook)
 ```
@@ -988,14 +918,18 @@ server/src/payment/midtrans.service.ts
 
 ### UPDATE:
 ```
-server/.env                           -> MIDTRANS_*, SUBSCRIPTION_* vars
-server/.env.example                   -> Template
-server/prisma/schema.prisma           -> Subscription, SubscriptionPayment, enums, Tenant relasi
-server/src/app.module.ts              -> Import modules + config
+server/.env                              -> MIDTRANS_*, SUBSCRIPTION_* vars
+server/.env.example                      -> Template
+server/src/app.module.ts                 -> Import modules + config
 server/src/products/products.service.ts  -> checkProductLimit()
 server/src/products/products.module.ts   -> Import SubscriptionModule
 server/src/customers/customers.service.ts -> checkCustomerLimit()
 server/src/customers/customers.module.ts  -> Import SubscriptionModule
+```
+
+### TIDAK PERLU DIUBAH:
+```
+server/prisma/schema.prisma              -> ✅ Sudah lengkap (Subscription, SubscriptionPayment, enums, relasi Tenant, trial fields)
 ```
 
 ### PACKAGE:
@@ -1016,6 +950,7 @@ npm install midtrans-client
 - [x] Tenant isolation (tenantId check di semua query)
 - [x] Snap token reuse (tidak generate baru kalau pending masih ada)
 - [x] Existing pending payment check sebelum buat baru
+- [x] Trial-aware access control (trial users bisa upgrade/bayar)
 
 ---
 
@@ -1029,7 +964,7 @@ POST /api/auth/login
 
 # 2. Cek plan sekarang
 GET /api/subscription/me
--> { plan: "STARTER", usage: { products: 5, customers: 10 } }
+-> { plan: "STARTER", effectivePlan: "STARTER", isInTrial: false, usage: { products: 5, customers: 10 } }
 
 # 3. Upgrade
 POST /api/payment/subscribe
@@ -1041,7 +976,20 @@ POST /api/payment/subscribe
 
 # 7. Cek plan sekarang
 GET /api/subscription/me
--> { plan: "BUSINESS", status: "ACTIVE", currentPeriodEnd: "2026-03-10T..." }
+-> { plan: "BUSINESS", effectivePlan: "BUSINESS", isInTrial: false, status: "ACTIVE", currentPeriodEnd: "2026-03-10T..." }
+```
+
+### Test Trial Flow
+```bash
+# Admin start trial untuk tenant
+-> subscription.isTrial = true, trialEndsAt = +14 hari
+
+# Cek plan
+GET /api/subscription/me
+-> { plan: "STARTER", effectivePlan: "BUSINESS", isInTrial: true }
+
+# Tenant bisa akses semua fitur Business selama trial
+# Setelah trial habis, kembali ke Starter limits
 ```
 
 ### Test Limit Enforcement

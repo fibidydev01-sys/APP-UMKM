@@ -18,10 +18,10 @@ creative combinations, dan experimental masterpieces! 🎉
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import MetallicPaint from '@/components/ui/MetallicPaint';
-import Noise from '@/components/ui/Noise';
-import CircularText from '@/components/ui/CircularText';
-import Magnet from '@/components/ui/Magnet';
+import MetallicPaint from '@/components/ui/metallic-paint/MetallicPaint';
+import Noise from '@/components/ui/noise/Noise';
+import CircularText from '@/components/ui/circular-text/CircularText';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About46Props {
   title: string;
@@ -200,10 +200,10 @@ export function About46({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import Ribbons from '@/components/ui/Ribbons';
-import ElectricBorder from '@/components/ui/ElectricBorder';
-import GradientText from '@/components/ui/GradientText';
-import ClickSpark from '@/components/ui/ClickSpark';
+import Ribbons from '@/components/ui/ribbons/Ribbons';
+import ElectricBorder from '@/components/ui/electric-border/ElectricBorder';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
 
 interface About47Props {
   title: string;
@@ -367,10 +367,10 @@ export function About47({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import GlareHover from '@/components/ui/GlareHover';
-import ScrollReveal from '@/components/ui/ScrollReveal';
-import TrueFocus from '@/components/ui/TrueFocus';
-import Counter from '@/components/ui/Counter';
+import GlareHover from '@/components/ui/glare-hover/GlareHover';
+import ScrollReveal from '@/components/ui/scroll-reveal/ScrollReveal';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import Counter from '@/components/ui/counter/Counter';
 
 interface About48Props {
   title: string;
@@ -555,10 +555,10 @@ export function About48({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import MetaBalls from '@/components/ui/MetaBalls';
-import StarBorder from '@/components/ui/StarBorder';
-import ShinyText from '@/components/ui/ShinyText';
-import FuzzyText from '@/components/ui/FuzzyText';
+import MetaBalls from '@/components/ui/meta-balls/MetaBalls';
+import StarBorder from '@/components/ui/star-border/StarBorder';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import FuzzyText from '@/components/ui/fuzzy-text/FuzzyText';
 
 interface About49Props {
   title: string;
@@ -726,14 +726,14 @@ export function About49({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import GradientText from '@/components/ui/GradientText';
-import SplitText from '@/components/ui/SplitText';
-import MagicBento from '@/components/ui/MagicBento';
-import ElectricBorder from '@/components/ui/ElectricBorder';
-import GlareHover from '@/components/ui/GlareHover';
-import Counter from '@/components/ui/Counter';
-import ClickSpark from '@/components/ui/ClickSpark';
-import Magnet from '@/components/ui/Magnet';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import SplitText from '@/components/ui/split-text/SplitText';
+import MagicBento from '@/components/ui/magic-bento/MagicBento';
+import ElectricBorder from '@/components/ui/electric-border/ElectricBorder';
+import GlareHover from '@/components/ui/glare-hover/GlareHover';
+import Counter from '@/components/ui/counter/Counter';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About50Props {
   title: string;
@@ -1115,4 +1115,4 @@ pnpm dlx shadcn@latest add @react-bits/CircularText-TS-CSS
 
 ---
 
-**FILE SUDAH TERSEDIA!** 📄🎉
+**ALL IMPORT PATHS FIXED & READY FOR PRODUCTION!** 📄🎉

@@ -18,10 +18,10 @@ modern design.
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import SplitText from '@/components/ui/SplitText';
-import BlurText from '@/components/ui/BlurText';
-import AnimatedList from '@/components/ui/AnimatedList';
-import Magnet from '@/components/ui/Magnet';
+import SplitText from '@/components/ui/split-text/SplitText';
+import BlurText from '@/components/ui/blur-text/BlurText';
+import AnimatedList from '@/components/ui/animated-list/AnimatedList';
+import Magnet from '@/components/ui/magnet/Magnet';
 
 interface About16Props {
   title: string;
@@ -143,10 +143,10 @@ export function About16({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ShinyText from '@/components/ui/ShinyText';
-import Carousel from '@/components/ui/Carousel';
-import DecryptedText from '@/components/ui/DecryptedText';
-import GradientText from '@/components/ui/GradientText';
+import ShinyText from '@/components/ui/shiny-text/ShinyText';
+import Carousel from '@/components/ui/carousel-custom/Carousel';
+import DecryptedText from '@/components/ui/decrypted-text/DecryptedText';
+import GradientText from '@/components/ui/gradient-text/GradientText';
 
 interface About17Props {
   title: string;
@@ -285,10 +285,10 @@ export function About17({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ScrollReveal from '@/components/ui/ScrollReveal';
-import Masonry from '@/components/ui/Masonry';
-import TrueFocus from '@/components/ui/TrueFocus';
-import Shuffle from '@/components/ui/Shuffle';
+import ScrollReveal from '@/components/ui/scroll-reveal/ScrollReveal';
+import Masonry from '@/components/ui/masonry/Masonry';
+import TrueFocus from '@/components/ui/true-focus/TrueFocus';
+import Shuffle from '@/components/ui/shuffle/Shuffle';
 
 interface About18Props {
   title: string;
@@ -422,10 +422,10 @@ export function About18({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import TextType from '@/components/ui/TextType';
-import CircularGallery from '@/components/ui/CircularGallery';
-import FuzzyText from '@/components/ui/FuzzyText';
-import CircularText from '@/components/ui/CircularText';
+import TextType from '@/components/ui/text-type/TextType';
+import CircularGallery from '@/components/ui/circular-gallery/CircularGallery';
+import FuzzyText from '@/components/ui/fuzzy-text/FuzzyText';
+import CircularText from '@/components/ui/circular-text/CircularText';
 
 interface About19Props {
   title: string;
@@ -578,10 +578,10 @@ export function About19({
 
 import { motion } from 'framer-motion';
 import { OptimizedImage } from '@/components/ui/optimized-image';
-import ScrollFloat from '@/components/ui/ScrollFloat';
-import MagicBento from '@/components/ui/MagicBento';
-import GradientText from '@/components/ui/GradientText';
-import ClickSpark from '@/components/ui/ClickSpark';
+import ScrollFloat from '@/components/ui/scroll-float/ScrollFloat';
+import MagicBento from '@/components/ui/magic-bento/MagicBento';
+import GradientText from '@/components/ui/gradient-text/GradientText';
+import ClickSpark from '@/components/ui/click-spark/ClickSpark';
 
 interface About20Props {
   title: string;
